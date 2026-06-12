@@ -6,9 +6,11 @@ function zoneCost(p, zones = []) { return Number((1 + zones.reduce((sum, z) => s
 export function createOrchardWalkabilitySnapshot(orchard = {}, options = {}) {
   const cellSize = Math.max(0.5, n(options.cellSize, 2));
   const margin = Math.max(0, n(options.margin, 8));
-  const width = Math.ceil((n(orchard.width, 72) + margin * 2) / cellSize);
-  const height = Math.ceil((n(orchard.depth, 96) + margin * 2) / cellSize);
-  const origin = { x: -n(orchard.width, 72) / 2 - margin, z: -n(orchard.depth, 96) / 2 - margin };
+  const orchardWidth = n(orchard.width, 72);
+  const orchardDepth = n(orchard.depth, 96);
+  const width = Math.ceil((orchardWidth + margin * 2) / cellSize);
+  const height = Math.ceil((orchardDepth + margin * 2) / cellSize);
+  const origin = { x: -orchardWidth / 2 - margin, z: -orchardDepth / 2 - margin };
   const trees = (orchard.treeRows ?? []).flatMap((r) => r.trees ?? []);
   const barns = orchard.barnLandmarks ?? [];
   const cells = [];
@@ -17,8 +19,8 @@ export function createOrchardWalkabilitySnapshot(orchard = {}, options = {}) {
     const world = { x: origin.x + (x + 0.5) * cellSize, y: 0, z: origin.z + (y + 0.5) * cellSize };
     const tree = trees.find((t) => d(world, t.position) <= n(t.radius, 0.8) + n(options.treePadding, 1.1));
     const barn = barns.find((b) => inBarn(world, b, n(options.barnPadding, 1.5)));
-    const outside = Math.abs(world.x) > n(orchard.width, 72) / 2 + 2 || Math.abs(world.z) > n(orchard.depth, 96) / 2 + 2;
-    const walkable = !tree && !barn && !outside;
+    const outsideGrid = Math.abs(world.x) > orchardWidth / 2 + margin - cellSize || Math.abs(world.z) > orchardDepth / 2 + margin - cellSize;
+    const walkable = !tree && !barn && !outsideGrid;
     const cell = { x, y, key: key(x, y), world, walkable, cost: walkable ? zoneCost(world, orchard.hauntedZones) : Infinity, material: walkable ? "orchard-lane" : tree ? "tree" : barn ? "barn" : "fence" };
     cells.push(cell); if (!walkable) blockedCells.push({ x, y, key: cell.key, world, reason: cell.material });
   }
