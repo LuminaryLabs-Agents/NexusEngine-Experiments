@@ -1,0 +1,11 @@
+import assert from "node:assert/strict";
+import { CONTENT, appleEffect } from "../experiments/zombie-orchard/src/content.js";
+import { createOrchardWalkabilitySnapshot } from "../experiments/zombie-orchard/src/navigation-content.js";
+assert.equal(CONTENT.title, "Zombie Orchard");
+assert.ok(CONTENT.survivalRounds.baseSpawnBudget > 0);
+assert.ok(CONTENT.foundWeapons.pickups.length >= 4);
+assert.ok(appleEffect("black-apple").score > appleEffect("red-apple").score);
+const walk = createOrchardWalkabilitySnapshot({ width: 20, depth: 20, treeRows: [{ trees: [{ position: { x: 0, z: 0 }, radius: 1 }] }], barnLandmarks: [{ position: { x: 5, z: 5 }, size: { x: 4, z: 4 } }], hauntedZones: [{ position: { x: -3, z: -3 }, radius: 4, intensity: 0.5 }], safeClearings: [{ position: { x: 0, z: 8 } }] }, { cellSize: 2, margin: 2 });
+assert.ok(walk.cells.length > 0);
+assert.ok(walk.blockedCells.length > 0);
+console.log("Zombie Orchard content smoke passed.");
