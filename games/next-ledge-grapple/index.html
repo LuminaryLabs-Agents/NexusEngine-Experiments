@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Next Ledge Grapple, a NexusRealtime game folder built on a ProtoKit." />
+  <title>Next Ledge Grapple</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <main id="app" aria-label="Next Ledge Grapple">
+    <canvas id="game" role="application" aria-label="Game canvas"></canvas>
+    <aside id="hud" aria-label="Game HUD">
+      <header id="topHud" aria-live="polite">NEXT LEDGE</header>
+      <footer id="bottomHud">Click/Space action · A/D swing · R restart · N next sector</footer>
+    </aside>
+    <section id="errorPanel" role="alert" hidden></section>
+  </main>
+  <script type="module" src="./src/game.js"></script>
+</body>
+</html>
