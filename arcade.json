@@ -1,0 +1,36 @@
+{
+  "title": "NexusRealtime Arcade",
+  "description": "Playable NexusRealtime browser games and experiments.",
+  "entries": [
+    {
+      "title": "Fogline Relay",
+      "path": "./experiments/fogline-relay/",
+      "kind": ["featured", "experiment"],
+      "tags": ["Nexus 0.0.1", "ProtoKit visual", "Fog forest"]
+    },
+    {
+      "title": "Sora The Infinite",
+      "path": "./experiments/sora-the-infinite/",
+      "kind": ["featured", "experiment"],
+      "tags": ["Aerial", "Three.js", "ProtoKits"]
+    },
+    {
+      "title": "Zombie Orchard",
+      "path": "./experiments/zombie-orchard/",
+      "kind": ["experiment"],
+      "tags": ["Survival", "Combat", "Canvas"]
+    },
+    {
+      "title": "Rogue-Lite Hellscape Siege V2",
+      "path": "./games/rogue-lite-hellscape-siege-v2/",
+      "kind": ["game"],
+      "tags": ["V2", "Local kits", "Defense"]
+    },
+    {
+      "title": "Rogue-Lite Hellscape Siege",
+      "path": "./games/rogue-lite-hellscape-siege/",
+      "kind": ["game"],
+      "tags": ["Canvas", "Rogue-lite", "Base defense"]
+    }
+  ]
+}
