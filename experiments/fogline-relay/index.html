@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Fogline Relay · NexusRealtime Experiment</title>
+  <style>
+    html, body { margin: 0; height: 100%; overflow: hidden; background: #04070a; color: #dff7ff; font-family: system-ui, sans-serif; }
+    #app, #game, #hud { position: fixed; inset: 0; }
+    #game { display: block; width: 100vw; height: 100vh; }
+    #hud { pointer-events: none; }
+    #status { position: fixed; left: 16px; top: 14px; font-size: 13px; letter-spacing: .02em; color: #dff7ff; text-shadow: 0 1px 10px #000; }
+    #prompt { position: fixed; left: 50%; bottom: 54px; transform: translateX(-50%); padding: 7px 11px; border: 1px solid rgba(126,232,255,.22); border-radius: 999px; background: rgba(4, 10, 14, .38); color: #eaffff; font-size: 13px; text-shadow: 0 1px 8px #000; }
+    #controls { position: fixed; left: 14px; bottom: 10px; font-size: 12px; color: rgba(210,246,255,.72); text-shadow: 0 1px 8px #000; }
+    #errorPanel { position: fixed; inset: 32px; z-index: 5; padding: 22px; border: 1px solid #ff5068; border-radius: 18px; background: #22070dcc; color: #ffd7dc; overflow: auto; }
+    #errorPanel[hidden] { display: none; }
+    #errorPanel h2 { margin-top: 0; }
+    #errorText { white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <main id="app">
+    <canvas id="game" role="application" aria-label="Fogline Relay game canvas"></canvas>
+    <aside id="hud" aria-label="Game HUD">
+      <header id="status" aria-live="polite">Loading…</header>
+      <section id="prompt" aria-live="polite">Booting NexusRealtime kits…</section>
+      <footer id="controls">WASD move · mouse/←→ look · hold E scan · R restart · click canvas to lock</footer>
+    </aside>
+    <section id="errorPanel" role="alert" hidden>
+      <h2>Could not start Fogline Relay</h2>
+      <pre id="errorText"></pre>
+    </section>
+  </main>
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>
