@@ -5,14 +5,20 @@ import {
 } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusRealtime-ProtoKits@main/protokits/next-ledge-kit/cinematic-ascent-kit.js";
 
 function optionalKit(factory, ...args) {
-  return typeof factory === "function" ? factory(...args) : null;
+  if (typeof factory !== "function") return null;
+  try {
+    return factory(...args);
+  } catch (error) {
+    console.warn("Optional NexusRealtime kit skipped:", error);
+    return null;
+  }
 }
 
 export function createNextLedgeSession(options = {}) {
   const level = createProceduralNextLedgeLevel({ seed: options.seed ?? "summit-recovery-protocol", summitBase: options.summitBase ?? 2200, summitStep: options.summitStep ?? 800 });
   const kits = [
     optionalKit(NexusRealtime.createRenderDescriptorKit, level),
-    optionalKit(NexusRealtime.createInteractionTargetKit, { sceneRecipe: level.sceneRecipe ?? { id: level.id, objects: [] } }),
+    level.sceneRecipe ? optionalKit(NexusRealtime.createInteractionTargetKit, { sceneRecipe: level.sceneRecipe }) : null,
     optionalKit(NexusRealtime.createObjectiveFlowKit, { id: level.id, steps: level.steps ?? [] }),
     createNextLedgeKit(NexusRealtime, { level, sector: options.sector ?? 1, staminaMax: options.staminaMax ?? 100, maxCableLength: options.maxCableLength ?? 150, ropeLength: options.ropeLength ?? 52 })
   ].filter(Boolean);
