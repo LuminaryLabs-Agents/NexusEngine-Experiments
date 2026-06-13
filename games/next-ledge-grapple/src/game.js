@@ -2,9 +2,13 @@ const NEXUS_URLS = [
   "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusRealtime@main/src/index.js",
   "../../../NexusRealtime/src/index.js"
 ];
-const KIT_URLS = [
+const GRAPPLE_KIT_URLS = [
   "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusRealtime-ProtoKits@main/protokits/next-ledge-grapple-kit/index.js",
   "../../../NexusRealtime-ProtoKits/protokits/next-ledge-grapple-kit/index.js"
+];
+const ACTION_INPUT_KIT_URLS = [
+  "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusRealtime-ProtoKits@main/protokits/action-input-kit/index.js",
+  "../../../NexusRealtime-ProtoKits/protokits/action-input-kit/index.js"
 ];
 const THREE_URLS = ["https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"];
 
@@ -31,8 +35,46 @@ function createHud() {
   };
 }
 
+function recordDisposers(engine, surfaces) {
+  return surfaces.filter(Boolean).map((surface) => () => engine.unregisterSurface?.(surface));
+}
+
+function createActionSubscriptions(engine) {
+  const surfaces = [];
+  const axisSurface = engine.eventSurface(engine.actionInput.events.AxisChanged, { label: "next-ledge-axis" });
+  axisSurface.subscribe((batch) => {
+    for (const record of batch) engine.nextLedgeGrapple.swingAxis(record.payload?.axis?.x ?? 0);
+  });
+  surfaces.push(axisSurface);
+
+  const aimSurface = engine.eventSurface(engine.actionInput.events.AimChanged, { label: "next-ledge-aim" });
+  aimSurface.subscribe((batch) => {
+    for (const record of batch) {
+      const aim = record.payload?.aim;
+      if (aim) engine.nextLedgeGrapple.setAimVector(aim.x, aim.y);
+    }
+  });
+  surfaces.push(aimSurface);
+
+  const pressedSurface = engine.eventSurface(engine.actionInput.events.ActionPressed, { label: "next-ledge-pressed" });
+  pressedSurface.subscribe((batch) => {
+    for (const record of batch) {
+      const action = record.payload?.action;
+      if (action === "primary") engine.nextLedgeGrapple.action();
+      if (action === "restart") engine.nextLedgeGrapple.restart();
+      if (action === "debugAdvance") engine.nextLedgeGrapple.advanceSector();
+    }
+  });
+  surfaces.push(pressedSurface);
+
+  const clearedSurface = engine.eventSurface(engine.actionInput.events.Cleared, { label: "next-ledge-clear" });
+  clearedSurface.subscribe(() => engine.nextLedgeGrapple.swingAxis(0));
+  surfaces.push(clearedSurface);
+
+  return { dispose: recordDisposers(engine, surfaces) };
+}
+
 function createInput({ canvas, engine, camera, THREE }) {
-  const keys = new Set();
   const mouse = new THREE.Vector2(0, 0);
   const world = new THREE.Vector3();
 
@@ -44,34 +86,36 @@ function createInput({ canvas, engine, camera, THREE }) {
     const distance = -camera.position.z / (dir.z || 0.0001);
     const point = camera.position.clone().add(dir.multiplyScalar(distance));
     const snapshot = engine.nextLedgeGrapple.getSnapshot();
-    engine.nextLedgeGrapple.setAimVector(point.x - snapshot.player.x, point.y - snapshot.player.y);
+    engine.actionInput.aim(point.x - snapshot.player.x, point.y - snapshot.player.y, { source: "pointer" });
   }
 
   addEventListener("keydown", (event) => {
-    const key = event.key.toLowerCase();
-    keys.add(key);
-    if (key === " " || event.code === "Space") { event.preventDefault(); engine.nextLedgeGrapple.action(); }
-    if (key === "r") engine.nextLedgeGrapple.restart();
-    if (key === "n") engine.nextLedgeGrapple.advanceSector();
+    const key = event.code === "Space" ? "space" : event.key.toLowerCase();
+    if (key === "space") event.preventDefault();
+    engine.actionInput.key(key, true, { source: "keyboard" });
   });
-  addEventListener("keyup", (event) => keys.delete(event.key.toLowerCase()));
-  addEventListener("blur", () => keys.clear());
+  addEventListener("keyup", (event) => {
+    const key = event.code === "Space" ? "space" : event.key.toLowerCase();
+    engine.actionInput.key(key, false, { source: "keyboard" });
+  });
+  addEventListener("blur", () => engine.actionInput.clear({ source: "blur" }));
+
   canvas.addEventListener("mousemove", (event) => updateAim(event.clientX, event.clientY));
-  canvas.addEventListener("mousedown", (event) => { updateAim(event.clientX, event.clientY); engine.nextLedgeGrapple.action(); });
+  canvas.addEventListener("mousedown", (event) => {
+    updateAim(event.clientX, event.clientY);
+    engine.actionInput.press("primary", { source: "pointer" });
+  });
+  addEventListener("mouseup", () => engine.actionInput.release("primary", { source: "pointer" }));
   canvas.addEventListener("touchstart", (event) => {
     const touch = event.touches[0];
     if (!touch) return;
     updateAim(touch.clientX, touch.clientY);
-    engine.nextLedgeGrapple.action();
+    engine.actionInput.press("primary", { source: "touch" });
   }, { passive: true });
+  addEventListener("touchend", () => engine.actionInput.release("primary", { source: "touch" }), { passive: true });
 
   return {
-    flush() {
-      const axis = (keys.has("d") || keys.has("arrowright") ? 1 : 0) - (keys.has("a") || keys.has("arrowleft") ? 1 : 0);
-      engine.nextLedgeGrapple.swingAxis(axis);
-      const up = (keys.has("w") || keys.has("arrowup") ? 1 : 0) - (keys.has("s") || keys.has("arrowdown") ? 1 : 0);
-      if (axis || up) engine.nextLedgeGrapple.setAimVector(axis || 0.01, up || 0.45);
-    }
+    flush() {}
   };
 }
 
@@ -202,17 +246,24 @@ function createRenderer({ canvas, THREE }) {
 
 async function boot() {
   const canvas = document.querySelector("#game");
-  const [NexusRealtime, Kit, THREE] = await Promise.all([
+  const [NexusRealtime, GrappleKit, ActionInputKit, THREE] = await Promise.all([
     importFirst(NEXUS_URLS, "NexusRealtime"),
-    importFirst(KIT_URLS, "Next Ledge Grapple ProtoKit"),
+    importFirst(GRAPPLE_KIT_URLS, "Next Ledge Grapple ProtoKit"),
+    importFirst(ACTION_INPUT_KIT_URLS, "Action Input ProtoKit"),
     importFirst(THREE_URLS, "Three.js")
   ]);
 
-  const level = Kit.createDefaultNextLedgeGrappleLevel({ seed: "games-next-ledge-grapple" });
-  const engine = NexusRealtime.createRealtimeGame({ kits: [Kit.createNextLedgeGrappleKit(NexusRealtime, { level, seed: level.seed })] });
+  const level = GrappleKit.createDefaultNextLedgeGrappleLevel({ seed: "games-next-ledge-grapple" });
+  const engine = NexusRealtime.createRealtimeGame({
+    kits: [
+      ActionInputKit.createActionInputKit(NexusRealtime, { context: "next-ledge-grapple" }),
+      GrappleKit.createNextLedgeGrappleKit(NexusRealtime, { level, seed: level.seed })
+    ]
+  });
   const renderer = createRenderer({ canvas, THREE });
   const hud = createHud();
   const input = createInput({ canvas, engine, camera: renderer.camera, THREE });
+  const actions = createActionSubscriptions(engine);
 
   let last = performance.now();
   let running = true;
@@ -238,7 +289,9 @@ async function boot() {
     engine,
     renderer,
     input,
+    actions,
     getState: () => engine.nextLedgeGrapple.getState(),
+    getInput: () => engine.actionInput.getState(),
     getSnapshot: () => engine.nextLedgeGrapple.getSnapshot(),
     tick,
     stop: () => { running = false; },
