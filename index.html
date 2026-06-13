@@ -166,6 +166,15 @@
       position: relative;
     }
 
+    .thumb.v2 {
+      background:
+        radial-gradient(circle at 50% 50%, rgba(86, 199, 255, 0.92) 0 7px, transparent 8px),
+        radial-gradient(circle at 30% 38%, rgba(16, 185, 129, 0.5), transparent 4.5rem),
+        radial-gradient(circle at 68% 40%, rgba(168, 85, 247, 0.5), transparent 4.5rem),
+        radial-gradient(circle at 50% 72%, rgba(249, 115, 22, 0.5), transparent 4.5rem),
+        linear-gradient(135deg, #160505, #08121d);
+    }
+
     .thumb::before,
     .thumb::after {
       position: absolute;
@@ -222,18 +231,9 @@
     }
 
     @media (max-width: 820px) {
-      main {
-        align-content: start;
-        padding-top: 32px;
-      }
-
-      .section-title {
-        display: grid;
-      }
-
-      .gallery {
-        grid-template-columns: 1fr;
-      }
+      main { align-content: start; padding-top: 32px; }
+      .section-title { display: grid; }
+      .gallery { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -270,6 +270,21 @@
           demonic siege waves in the home hellscape.
         </p>
         <span class="play">Play experiment →</span>
+      </a>
+
+      <a class="card" href="./games/rogue-lite-hellscape-siege-v2/" aria-label="Play Rogue-Lite Hellscape Siege V2">
+        <div class="thumb v2" aria-hidden="true"></div>
+        <div class="meta">
+          <span class="tag">V2</span>
+          <span class="tag">Local ProtoKits</span>
+          <span class="tag">Better input</span>
+        </div>
+        <h3>Rogue-Lite Hellscape Siege V2</h3>
+        <p>
+          A separate kit-shaped rebuild with local runtime-style ProtoKits for realms, inventory, harvesting,
+          build blueprints, wave defense, FX, and renderer-only presentation.
+        </p>
+        <span class="play">Play V2 →</span>
       </a>
     </section>
 
