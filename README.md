@@ -2,6 +2,17 @@
 
 Browser experiments that compose NexusRealtime kits into playable slices.
 
+## Unified domain-kit cutover
+
+The experiment repo now treats each visible game as a single base-name experiment rather than parallel v1/v2 variants. The visible base experiments are:
+
+- `experiments/next-ledge/`
+- `experiments/fogline-relay/`
+- `experiments/sora-the-infinite/`
+- `experiments/zombie-orchard/`
+
+Reusable gameplay should be installed through NexusRealtime runtime kits and NexusRealtime-ProtoKits domain kits. Experiment hosts own HTML, browser input capture, renderer setup, HUD rendering, error panels, and GameHost attachment. They should not own reusable gameplay rules.
+
 ## Next Ledge
 
 experiments/next-ledge/ is a cinematic grapple-climb validation demo. It imports the real NexusRealtime runtime, composes the Next Ledge cinematic ascent ProtoKit, maps browser input into engine.nextLedge APIs, ticks the runtime, and renders engine.nextLedge.getSnapshot() with Three.js.
