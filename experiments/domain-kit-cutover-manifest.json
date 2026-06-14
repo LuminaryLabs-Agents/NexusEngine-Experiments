@@ -1,0 +1,142 @@
+{
+  "version": 1,
+  "policy": "one canonical base route per experiment or game",
+  "protokitsCommit": "762a8146e31960e6da2f629036cded3201addff3",
+  "canonicalRoutes": [
+    {
+      "id": "next-ledge",
+      "kind": "experiment",
+      "canonicalPath": "experiments/next-ledge/",
+      "status": "existing",
+      "domainCutover": [
+        "action-input-kit",
+        "route-checkpoint-kit",
+        "resource-pressure-kit",
+        "camera-cinematic-maker-kit",
+        "visual-fidelity-maker-kit",
+        "scenario-qa-harness"
+      ],
+      "bridgeNeeded": "next-ledge-compatibility-bridge",
+      "featureParity": [
+        "click/tap/Space grapple",
+        "A/D swing",
+        "R restart",
+        "N sector advance",
+        "snapshot renderer"
+      ]
+    },
+    {
+      "id": "fogline-relay",
+      "kind": "experiment",
+      "canonicalPath": "experiments/fogline-relay/",
+      "status": "existing",
+      "domainCutover": [
+        "action-input-kit",
+        "scan-survey-kit",
+        "zone-field-kit",
+        "timed-pressure-director-kit",
+        "resource-pressure-kit",
+        "hazard-director-kit",
+        "fogline-survey-pressure-bridge-kit",
+        "visual-fidelity-maker-kit",
+        "audio-event-feedback-maker-kit",
+        "scenario-qa-harness"
+      ],
+      "bridgeNeeded": "fogline-survey-pressure-bridge-kit",
+      "featureParity": [
+        "first-person movement/look",
+        "hold scan",
+        "fog volumes",
+        "relay objectives",
+        "wraith pressure"
+      ]
+    },
+    {
+      "id": "sora-the-infinite",
+      "kind": "experiment",
+      "canonicalPath": "experiments/sora-the-infinite/",
+      "status": "existing",
+      "domainCutover": [
+        "action-input-kit",
+        "route-checkpoint-kit",
+        "zone-field-kit",
+        "agent-group-kit",
+        "visual-fidelity-maker-kit",
+        "camera-cinematic-maker-kit",
+        "content-preset-kit",
+        "scenario-qa-harness"
+      ],
+      "bridgeNeeded": "sora-flight-compatibility-bridge",
+      "featureParity": [
+        "pitch/bank/boost",
+        "ring checkpoints",
+        "updraft volumes",
+        "terrain/render descriptors",
+        "GameHost"
+      ]
+    },
+    {
+      "id": "zombie-orchard",
+      "kind": "experiment",
+      "canonicalPath": "experiments/zombie-orchard/",
+      "status": "existing",
+      "domainCutover": [
+        "action-input-kit",
+        "timed-pressure-director-kit",
+        "zone-field-kit",
+        "resource-pressure-kit",
+        "agent-group-kit",
+        "hazard-director-kit",
+        "content-preset-kit",
+        "scenario-qa-harness"
+      ],
+      "bridgeNeeded": "zombie-orchard-survival-bridge",
+      "featureParity": [
+        "move/sprint/dodge",
+        "collect/pickup",
+        "gear use/swap",
+        "survival waves",
+        "canvas view"
+      ]
+    },
+    {
+      "id": "rogue-lite-hellscape-siege",
+      "kind": "game",
+      "canonicalPath": "games/rogue-lite-hellscape-siege/",
+      "status": "unified-base-route",
+      "removedLegacyPaths": [
+        "games/rogue-lite-hellscape-siege-v2/"
+      ],
+      "domainCutover": [
+        "action-input-kit",
+        "resource-pressure-kit",
+        "cargo-delivery-kit",
+        "agent-group-kit",
+        "hazard-director-kit",
+        "route-checkpoint-kit",
+        "visual-fidelity-maker-kit",
+        "audio-event-feedback-maker-kit",
+        "camera-cinematic-maker-kit",
+        "scenario-qa-harness",
+        "gamehost-standard-kit"
+      ],
+      "bridgeNeeded": "hellscape-siege-bridge",
+      "featureParity": [
+        "realm portals",
+        "inventory/materials",
+        "harvest/pickup",
+        "build blueprints",
+        "wave/core defense",
+        "FX renderer"
+      ]
+    }
+  ],
+  "versionedRoutePolicy": {
+    "rootGalleryMustNotLink": [
+      "-v1",
+      "-v2"
+    ],
+    "legacyVersionFolders": "should be removed once successful variants are folded into base routes",
+    "newWork": "updates the base route and records bridge/preset ownership here"
+  }
+}
