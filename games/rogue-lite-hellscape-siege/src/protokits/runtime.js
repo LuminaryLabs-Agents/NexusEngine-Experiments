@@ -22,3 +22,5 @@ export const makeGame = ({ kits = [] } = {}) => {
   for (const kit of kits) kit.install?.(engine, world);
   return engine;
 };
+
+export const createRealtimeGame = makeGame;
