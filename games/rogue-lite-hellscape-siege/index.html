@@ -11,6 +11,10 @@
     <canvas id="game"></canvas>
     <section id="errorPanel" hidden></section>
   </main>
+  <script type="module">
+    import { attachNexusRealtimePageLoader } from "../../experiments/_shared/nexus-realtime-page-loader.js";
+    attachNexusRealtimePageLoader({ title: "Base Game", loadingLabel: "Loading game" });
+  </script>
   <script type="module" src="./src/main.js"></script>
 </body>
 </html>
