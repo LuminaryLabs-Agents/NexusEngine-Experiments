@@ -3,6 +3,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { games, galleryConfig } from "../experiments/_shared/nexus-gallery-data.js";
 
 const rootIndex = readFileSync("index.html", "utf8");
+const shell = readFileSync("experiments/_shared/nexus-experiments-shell.js", "utf8");
 const manifest = JSON.parse(readFileSync("experiments/domain-kit-cutover-manifest.json", "utf8"));
 
 assert.ok(rootIndex.includes('id="app"'), "root index should keep only the app mount");
@@ -14,10 +15,17 @@ assert.ok(!rootIndex.includes("gallery-wrap"), "root index should not keep the o
 assert.ok(!rootIndex.includes("shader-bg"), "root index should not keep inline shader canvas markup");
 assert.ok(!rootIndex.includes("data-filter"), "root gallery should not use filter buttons");
 
+assert.ok(shell.includes("data-launch-selected"), "shell should expose a top launch-selected button");
+assert.ok(shell.includes("is-selected"), "shell should use selected state for the scaled card");
+assert.ok(shell.includes("getNearestTile"), "shell should compute selected card from scroll position");
+assert.ok(shell.includes("updateFromScroll"), "shell should update selected card while scrolling");
+assert.ok(shell.includes("centerTile"), "shell should center selected cards for arrows/clicks");
+assert.ok(!shell.includes("is-featured"), "shell should not keep static featured-card scaling");
+
 assert.equal(galleryConfig.title, "Experiments", "gallery config should expose the product title");
 assert.ok(galleryConfig.repoUrl.includes("NexusRealtime-Experiments"), "gallery config should expose the repo URL");
 assert.ok(games.length >= 5, "gallery data should list every visible route");
-assert.equal(games.filter((game) => game.featured).length, 1, "gallery should have exactly one featured route");
+assert.equal(games.filter((game) => game.featured).length, 1, "gallery should have exactly one initial featured route");
 
 for (const game of games) {
   assert.ok(game.id, "gallery games need ids");
