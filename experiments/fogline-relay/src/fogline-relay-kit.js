@@ -1,6 +1,6 @@
 import { clamp, distance, distance2, forwardFromYaw, normalize2, rightFromYaw, wrapAngle } from "./math.js";
 
-export const FOGLINE_RELAY_KIT_VERSION = "0.2.0";
+export const FOGLINE_RELAY_KIT_VERSION = "0.2.1";
 
 function clone(value) {
   return typeof structuredClone === "function" ? structuredClone(value) : JSON.parse(JSON.stringify(value));
@@ -11,7 +11,7 @@ function relayMap(level) {
 }
 
 function createInitialState(level, version = FOGLINE_RELAY_KIT_VERSION) {
-  const spawn = level.spawn ?? { x: 0, z: 0, yaw: 0 };
+  const spawn = level.spawn ?? { x: 0, z: 0, yaw: 0, pitch: 0 };
   return {
     id: level.id ?? "fogline-relay",
     version,
@@ -24,6 +24,9 @@ function createInitialState(level, version = FOGLINE_RELAY_KIT_VERSION) {
       x: Number(spawn.x ?? 0),
       z: Number(spawn.z ?? 0),
       yaw: Number(spawn.yaw ?? 0),
+      pitch: clamp(Number(spawn.pitch ?? 0), -1.12, 1.05),
+      height: 2,
+      eyeHeight: 1.82,
       health: 100,
       speed: 7.6,
       scan: { targetId: null, progress: 0 }
@@ -57,7 +60,7 @@ function createInitialState(level, version = FOGLINE_RELAY_KIT_VERSION) {
       damageCooldown: 0
     })),
     stats: { scanned: 0, damageTaken: 0, rejected: 0, restarts: 0, elapsed: 0 },
-    input: { moveX: 0, moveZ: 0, turn: 0, scan: false }
+    input: { moveX: 0, moveZ: 0, turn: 0, pitch: 0, scan: false }
   };
 }
 
@@ -90,6 +93,7 @@ function nearestScannableRelay(state, level) {
 
 function updateMovement(state, input, level, dt) {
   state.player.yaw = wrapAngle(state.player.yaw + Number(input.turn ?? 0));
+  state.player.pitch = clamp(Number(state.player.pitch ?? 0) + Number(input.pitch ?? 0), -1.12, 1.05);
   const move = normalize2(Number(input.moveX ?? 0), Number(input.moveZ ?? 0));
   const forward = forwardFromYaw(state.player.yaw);
   const right = rightFromYaw(state.player.yaw);
@@ -240,7 +244,7 @@ export function createFoglineRelayKit(NexusRealtime, config = {}) {
     }
 
     const state = clone(previous);
-    state.input = { moveX: Number(input.moveX ?? 0), moveZ: Number(input.moveZ ?? 0), turn: Number(input.turn ?? 0), scan: Boolean(input.scan) };
+    state.input = { moveX: Number(input.moveX ?? 0), moveZ: Number(input.moveZ ?? 0), turn: Number(input.turn ?? 0), pitch: Number(input.pitch ?? 0), scan: Boolean(input.scan) };
     state.stats.elapsed += dt;
 
     if (state.mode === "playing") {
@@ -278,9 +282,6 @@ export function createFoglineRelayKit(NexusRealtime, config = {}) {
         events: { FoglineRelayInput, RelayScanned, GateOpened, GateEntered, PlayerDamaged, PlayerFailed }
       };
     },
-    metadata: {
-      version: FOGLINE_RELAY_KIT_VERSION,
-      purpose: "Fogline Relay experiment gameplay: first-person movement intent, relay scanning, gate state, wraith hazards, and sequence prompt state."
-    }
+    metadata: { domain: "first-person-relay", reusable: false, version: FOGLINE_RELAY_KIT_VERSION }
   });
 }
