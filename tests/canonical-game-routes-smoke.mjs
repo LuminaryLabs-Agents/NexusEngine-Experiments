@@ -1,16 +1,34 @@
 import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
+import { games, galleryConfig } from "../experiments/_shared/nexus-gallery-data.js";
 
 const rootIndex = readFileSync("index.html", "utf8");
 const manifest = JSON.parse(readFileSync("experiments/domain-kit-cutover-manifest.json", "utf8"));
 
-assert.ok(rootIndex.includes("./games/rogue-lite-hellscape-siege/"), "root gallery should link the base Hellscape route");
+assert.ok(rootIndex.includes('id="app"'), "root index should keep only the app mount");
+assert.ok(rootIndex.includes("nexus-experiments-shell.js"), "root index should load the data-driven gallery shell");
+assert.ok(rootIndex.includes("./games/rogue-lite-hellscape-siege/"), "root noscript fallback should link the base Hellscape route");
 assert.ok(!rootIndex.includes("./games/rogue-lite-hellscape-siege-v2/"), "root gallery should not link the legacy V2 route");
 assert.ok(!/Play V2|>V2<|Rogue-Lite Hellscape Siege V2|rogue-lite-hellscape-siege-v2/.test(rootIndex), "root gallery should not advertise or link a V2 route");
-assert.ok(rootIndex.includes('class="gallery-row"'), "root gallery should use a one-row horizontal gallery");
-assert.ok(rootIndex.includes('class="game-tile featured"'), "root gallery should show one larger featured game tile");
+assert.ok(!rootIndex.includes("gallery-wrap"), "root index should not keep the old gallery wrapper");
+assert.ok(!rootIndex.includes("shader-bg"), "root index should not keep inline shader canvas markup");
 assert.ok(!rootIndex.includes("data-filter"), "root gallery should not use filter buttons");
-assert.ok(rootIndex.includes("Open repo"), "root top bar should include one repo button");
+
+assert.equal(galleryConfig.title, "Experiments", "gallery config should expose the product title");
+assert.ok(galleryConfig.repoUrl.includes("NexusRealtime-Experiments"), "gallery config should expose the repo URL");
+assert.ok(games.length >= 5, "gallery data should list every visible route");
+assert.equal(games.filter((game) => game.featured).length, 1, "gallery should have exactly one featured route");
+
+for (const game of games) {
+  assert.ok(game.id, "gallery games need ids");
+  assert.ok(game.title, `${game.id} should have a title`);
+  assert.ok(game.route, `${game.id} should have a route`);
+  assert.ok(!/-v[0-9]+\/?$/.test(game.route), `${game.id} route should not be versioned`);
+  assert.ok(Array.isArray(game.tags) && game.tags.length > 0, `${game.id} should have tags`);
+  assert.ok(game.description, `${game.id} should have a description`);
+  const routePath = game.route.replace(/^\.\//, "");
+  assert.ok(existsSync(`${routePath}index.html`), `${game.id} route should have index.html`);
+}
 
 for (const entry of manifest.canonicalRoutes) {
   assert.ok(entry.id, "manifest entries need ids");
