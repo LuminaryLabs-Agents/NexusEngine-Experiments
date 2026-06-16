@@ -79,7 +79,7 @@ function makeWraith(THREE) {
 
 function makeTree(THREE, object) {
   const group = new THREE.Group();
-  const scale = clamp(positionOf(object).scale, 0.55, 2.6);
+  const scale = clamp(positionOf(object).scale, 0.55, 14);
   const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.08 * scale, 0.14 * scale, 2.1 * scale, 6), new THREE.MeshStandardMaterial({ color: "#101812", roughness: 0.95 }));
   trunk.position.y = 1.05 * scale;
   const canopy = new THREE.Mesh(new THREE.ConeGeometry(0.9 * scale, 2.3 * scale, 7), new THREE.MeshStandardMaterial({ color: object.archetype === "glow-plant" ? "#315f40" : "#162819", roughness: 0.9 }));
@@ -140,7 +140,6 @@ function makeDenseForest(THREE, environment) {
   group.name = "fogline-dense-environment";
   const dummy = new THREE.Object3D();
   const speciesById = new Map(environment.preset.species.map((species) => [species.id, species]));
-  const matrix = new THREE.Matrix4();
 
   for (const [speciesId, instances] of groupBySpecies(environment.vegetation)) {
     const species = speciesById.get(speciesId) ?? {};
@@ -159,15 +158,17 @@ function makeDenseForest(THREE, environment) {
 
     instances.forEach((instance, index) => {
       const scale = instance.scale;
+      const tiltX = Number(instance.tiltX ?? 0);
+      const tiltZ = Number(instance.tiltZ ?? 0);
       dummy.position.set(instance.position.x, instance.position.y + 1.05 * scale, instance.position.z);
-      dummy.rotation.set(0, instance.rotation, 0);
+      dummy.rotation.set(tiltX, instance.rotation, tiltZ);
       dummy.scale.set(scale, scale, scale);
       dummy.updateMatrix();
       trunkMesh.setMatrixAt(index, dummy.matrix);
 
       if (canopyMesh) {
         dummy.position.set(instance.position.x, instance.position.y + 2.55 * scale, instance.position.z);
-        dummy.rotation.set(0, instance.rotation, 0);
+        dummy.rotation.set(tiltX, instance.rotation, tiltZ);
         const crownScale = instance.lod === "far" ? scale * 0.82 : scale;
         dummy.scale.set(crownScale, crownScale, crownScale);
         dummy.updateMatrix();
@@ -183,7 +184,6 @@ function makeDenseForest(THREE, environment) {
     }
   }
 
-  matrix.identity();
   return group;
 }
 
@@ -199,7 +199,7 @@ export async function createThreeRenderer(canvas, options = {}) {
   scene.background = new THREE.Color("#07111a");
   scene.fog = new THREE.FogExp2("#102333", 0.032);
 
-  const camera = new THREE.PerspectiveCamera(68, 1, 0.05, 180);
+  const camera = new THREE.PerspectiveCamera(68, 1, 0.05, 220);
   const hemi = new THREE.HemisphereLight("#9cdfff", "#07100b", 1.25);
   const moon = new THREE.DirectionalLight("#dff8ff", 1.35);
   moon.position.set(-8, 16, -10);
@@ -228,9 +228,15 @@ export async function createThreeRenderer(canvas, options = {}) {
 
   function syncCamera(snapshot) {
     const player = snapshot.game.player;
+    const pitch = clamp(Number(player.pitch ?? 0), -1.12, 1.05);
     const forward = forwardFromYaw(player.yaw);
-    camera.position.set(player.x, 1.72, player.z);
-    camera.lookAt(player.x + forward.x * 12, 1.56, player.z + forward.z * 12);
+    const eyeHeight = Number(player.eyeHeight ?? 1.82);
+    const groundY = environment?.terrain?.heightAt?.(player.x, player.z) ?? 0;
+    const lookDistance = 14;
+    const flatDistance = Math.cos(pitch) * lookDistance;
+    const eyeY = groundY + eyeHeight;
+    camera.position.set(player.x, eyeY, player.z);
+    camera.lookAt(player.x + forward.x * flatDistance, eyeY + Math.sin(pitch) * lookDistance, player.z + forward.z * flatDistance);
   }
 
   function syncEnvironment(snapshot) {
@@ -302,7 +308,7 @@ export async function createThreeRenderer(canvas, options = {}) {
       if (!mesh) continue;
       const y = environment?.terrain?.heightAt?.(pos.x, pos.z) ?? 0;
       mesh.position.set(pos.x, y, pos.z);
-      mesh.rotation.y = Number(object.rotation ?? object.transform?.yaw ?? 0);
+      mesh.rotation.set(Number(object.tiltX ?? object.transform?.tiltX ?? 0), Number(object.rotation ?? object.transform?.yaw ?? 0), Number(object.tiltZ ?? object.transform?.tiltZ ?? 0));
       setObjectVisible(mesh, true);
     }
 
