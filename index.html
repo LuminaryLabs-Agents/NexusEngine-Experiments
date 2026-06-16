@@ -127,8 +127,10 @@
       flex-direction:column;
       scroll-snap-align:center;
       overflow:hidden;
-      border:1px solid rgba(236,242,245,.16);
-      border-radius:30px;
+      border:0;
+      border-left:1px solid rgba(236,242,245,.22);
+      border-right:1px solid rgba(236,242,245,.22);
+      border-radius:0;
       color:inherit;
       text-decoration:none;
       background:linear-gradient(180deg,rgba(20,25,27,.76),rgba(4,6,7,.74));
@@ -142,13 +144,14 @@
       flex-basis:var(--selected);
       width:var(--selected);
       aspect-ratio:5/6;
-      border-color:rgba(255,227,109,.64);
+      border-left-color:rgba(255,227,109,.74);
+      border-right-color:rgba(255,227,109,.74);
       box-shadow:0 52px 140px rgba(0,0,0,.62),0 0 94px rgba(255,227,109,.16),inset 0 1px 0 rgba(255,255,255,.1);
       transform:translateY(-8px) scale(1) rotateX(2deg);
       filter:saturate(1.04) brightness(1);
     }
-    .game-tile:hover,.game-tile:focus-visible { transform:translateY(-18px) scale(1.02) rotateX(3deg); border-color:rgba(255,227,109,.74); outline:none; box-shadow:0 60px 150px rgba(0,0,0,.64),0 0 110px rgba(255,227,109,.13),inset 0 1px 0 rgba(255,255,255,.12); filter:saturate(1.08) brightness(1.04); }
-    .thumb { flex:0 0 39%; border-bottom:1px solid rgba(255,255,255,.08); position:relative; overflow:hidden; background:linear-gradient(135deg,#101315,#050606); }
+    .game-tile:hover,.game-tile:focus-visible { transform:translateY(-18px) scale(1.02) rotateX(3deg); border-left-color:rgba(255,227,109,.82); border-right-color:rgba(255,227,109,.82); outline:none; box-shadow:0 60px 150px rgba(0,0,0,.64),0 0 110px rgba(255,227,109,.13),inset 0 1px 0 rgba(255,255,255,.12); filter:saturate(1.08) brightness(1.04); }
+    .thumb { flex:0 0 39%; border-bottom:0; position:relative; overflow:hidden; background:linear-gradient(135deg,#101315,#050606); }
     .featured .thumb { flex-basis:43%; }
     .thumb::after { position:absolute; inset:0; content:""; background:radial-gradient(circle at 50% 0%,rgba(255,255,255,.14),transparent 62%),linear-gradient(180deg,transparent,rgba(0,0,0,.18)); opacity:.85; }
     .next::before,.fogline::before,.sora::before,.zombie::before,.hell::before { position:absolute; inset:0; content:""; }
@@ -197,7 +200,7 @@
         <a class="game-tile" href="./games/rogue-lite-hellscape-siege/" aria-label="Play Rogue-Lite Hellscape Siege"><div class="thumb hell" aria-hidden="true"></div><div class="body"><div class="meta"><span class="tag gold">Unified</span><span class="tag green">Base name</span><span class="tag red">Defense</span></div><h2>Rogue-Lite Hellscape Siege</h2><p>Unified high-fidelity base route for the kit-shaped realm, inventory, harvesting, building, wave-defense, FX, and renderer-only presentation loop.</p><span class="play">Play game →</span></div></a>
       </div>
     </section>
-    <footer>One row gallery · centered selected route · floating fixed-aspect cards.</footer>
+    <footer>One row gallery · centered selected route · floating side-line cards.</footer>
   </main>
   <script>
     (() => {
