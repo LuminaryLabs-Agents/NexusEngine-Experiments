@@ -21,7 +21,7 @@
 </script>
 <script type="module">
 const NEXUS_URL="https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusRealtime@0.0.1/src/index.js";
-const KIT_URL=new URLSearchParams(location.search).get("kit")||"https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusRealtime-ProtoKits@main/protokits/aerial-flight-kits/index.js";
+const KIT_URL=new URLSearchParams(location.search).get("kit")||"https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusRealtime-ProtoKits@e900b88584d6aabf894aaf8311beb565c9ea63b4/protokits/aerial-flight-kits/index.js";
 const canvas=document.querySelector("#game"),topHud=document.querySelector("#top"),err=document.querySelector("#err"),cross=document.querySelector("#cross");
 function fatal(e){err.hidden=false;err.textContent=String(e?.stack||e?.message||e);topHud.textContent="Runtime error — see panel"}
 function rgb(hex,f=[.16,.32,.2]){const s=String(hex||"").replace("#","");return s.length===6?[parseInt(s.slice(0,2),16)/255,parseInt(s.slice(2,4),16)/255,parseInt(s.slice(4,6),16)/255]:f}
