@@ -17,9 +17,13 @@ assert.ok(!rootIndex.includes("data-filter"), "root gallery should not use filte
 
 assert.ok(shell.includes("data-launch-selected"), "shell should expose a top launch-selected button");
 assert.ok(shell.includes("is-selected"), "shell should use selected state for the scaled card");
+assert.ok(shell.includes("--selected-scale"), "shell should visually scale selection without layout-width mutation");
+assert.ok(!shell.includes("flex-basis:var(--selected)"), "selected card should not mutate layout width");
 assert.ok(shell.includes("getNearestTile"), "shell should compute selected card from scroll position");
 assert.ok(shell.includes("updateFromScroll"), "shell should update selected card while scrolling");
+assert.ok(shell.includes("scheduleScrollUpdate"), "shell should schedule scroll-driven selection updates");
 assert.ok(shell.includes("centerTile"), "shell should center selected cards for arrows/clicks");
+assert.ok(shell.includes("dblclick"), "shell should support double-click launch for selected tiles");
 assert.ok(!shell.includes("is-featured"), "shell should not keep static featured-card scaling");
 
 assert.equal(galleryConfig.title, "Experiments", "gallery config should expose the product title");
