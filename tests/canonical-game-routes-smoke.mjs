@@ -7,6 +7,10 @@ const manifest = JSON.parse(readFileSync("experiments/domain-kit-cutover-manifes
 assert.ok(rootIndex.includes("./games/rogue-lite-hellscape-siege/"), "root gallery should link the base Hellscape route");
 assert.ok(!rootIndex.includes("./games/rogue-lite-hellscape-siege-v2/"), "root gallery should not link the legacy V2 route");
 assert.ok(!/Play V2|>V2<|Rogue-Lite Hellscape Siege V2|rogue-lite-hellscape-siege-v2/.test(rootIndex), "root gallery should not advertise or link a V2 route");
+assert.ok(rootIndex.includes('class="gallery-row"'), "root gallery should use a one-row horizontal gallery");
+assert.ok(rootIndex.includes('class="game-tile featured"'), "root gallery should show one larger featured game tile");
+assert.ok(!rootIndex.includes("data-filter"), "root gallery should not use filter buttons");
+assert.ok(rootIndex.includes("Open repo"), "root top bar should include one repo button");
 
 for (const entry of manifest.canonicalRoutes) {
   assert.ok(entry.id, "manifest entries need ids");
