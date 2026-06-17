@@ -1,6 +1,6 @@
 # AAA 100 Game Backlog
 
-Status: Batch 07 implemented from `gpt-it` output.
+Status: Batch 08 implemented from `gpt-it` output.
 
 ## Batch 01
 
@@ -95,4 +95,17 @@ Status: Batch 07 implemented from `gpt-it` output.
 | `lumen-reef-cartographer` | Lumen Reef Cartographer | Scan | Exploration fog, beacon routes, darkness pressure | Reef caves, scan rings, glowing map lines | pressure, resource, action window, affordance | implemented |
 | `crimson-orbit-foundry` | Crimson Orbit Foundry | Launch | Conveyor routing, debris hazards, integrity meter | Orbital foundry, red conveyors, moon debris | pressure, resource, action window, affordance | implemented |
 
-44 additional unique games remain. Future batches must continue through `gpt-it` first, then repo-verified implementation.
+## Batch 08
+
+| Slug | Title | Verb | Pressure Loop | Visual Identity | Kits | Status |
+| --- | --- | --- | --- | --- | --- | --- |
+| `glass-leviathan-trench` | Glass Leviathan Trench | Ping | Oxygen drain, closing bone gates, sonar cooldown | Abyss silhouettes, crystal ribs, bio trails | pressure, resource, action window, affordance | implemented |
+| `cinder-opera-siege` | Cinder Opera Siege | Cue | Enemy waves, heat budget, collapsing lanes | Lava proscenium, spotlight towers, smoke curtains | pressure, resource, action window, affordance | implemented |
+| `mirror-hound-parallax` | Mirror Hound Parallax | Reveal | Mirror timing, predator pursuit, false reflections | Noir mirror hall, fractured reflections, strike flashes | pressure, resource, action window, affordance | implemented |
+| `thunder-orchard-rail` | Thunder Orchard Rail | Harvest | Rail forks, storm surges, charge overload | Floating orchards, copper rails, lightning blossoms | pressure, resource, action window, affordance | implemented |
+| `ivory-titan-forge` | Ivory Titan Forge | Hammer | Moving limbs, grip stamina, timed glyph windows | Ivory automaton, brass seams, dust shafts | pressure, resource, action window, affordance | implemented |
+| `neon-courier-reef` | Neon Courier Reef | Drift | Drone pursuit, packet decay, shortcut gates | Cyber-coral skyline, wet streets, hologram reefs | pressure, resource, action window, affordance | implemented |
+| `graveyard-satellite-choir` | Graveyard Satellite Choir | Tune | Signal sync, debris storms, orbital decay | Orbital cathedral, satellite halos, wave ribbons | pressure, resource, action window, affordance | implemented |
+| `marble-wasp-catacomb` | Marble Wasp Catacomb | Swarm | Swarm loss, sealed chambers, predator patrols | Marble insects, gold tunnels, living stone organs | pressure, resource, action window, affordance | implemented |
+
+36 additional unique games remain. Future batches must continue through `gpt-it` first, then repo-verified implementation.

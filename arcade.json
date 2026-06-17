@@ -361,6 +361,54 @@
       "path": "./experiments/aaa-batch/crimson-orbit-foundry/",
       "kind": ["experiment", "aaa-seed"],
       "tags": ["Launch", "Orbit", "Foundry"]
+    },
+    {
+      "title": "Glass Leviathan Trench",
+      "path": "./experiments/aaa-batch/glass-leviathan-trench/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Ping", "Abyss", "Leviathan"]
+    },
+    {
+      "title": "Cinder Opera Siege",
+      "path": "./experiments/aaa-batch/cinder-opera-siege/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Cue", "Siege", "Heat"]
+    },
+    {
+      "title": "Mirror Hound Parallax",
+      "path": "./experiments/aaa-batch/mirror-hound-parallax/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Reveal", "Mirror", "Pursuit"]
+    },
+    {
+      "title": "Thunder Orchard Rail",
+      "path": "./experiments/aaa-batch/thunder-orchard-rail/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Harvest", "Rail", "Storm"]
+    },
+    {
+      "title": "Ivory Titan Forge",
+      "path": "./experiments/aaa-batch/ivory-titan-forge/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Hammer", "Titan", "Glyphs"]
+    },
+    {
+      "title": "Neon Courier Reef",
+      "path": "./experiments/aaa-batch/neon-courier-reef/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Drift", "Courier", "Reef"]
+    },
+    {
+      "title": "Graveyard Satellite Choir",
+      "path": "./experiments/aaa-batch/graveyard-satellite-choir/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Tune", "Orbit", "Signal"]
+    },
+    {
+      "title": "Marble Wasp Catacomb",
+      "path": "./experiments/aaa-batch/marble-wasp-catacomb/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Swarm", "Catacomb", "Maze"]
     }
   ]
 }
