@@ -153,7 +153,7 @@ export function createThreeRenderer({ canvas }) {
     aimParticles.visible = active;
     if (!active) return;
     aimHead.position.set(data.end.x, data.end.y, data.end.z + 1.2);
-    aimHead.rotation.set(Math.PI / 2, 0, data.angle - Math.PI / 2);
+    aimHead.rotation.set(0, 0, data.angle - Math.PI / 2);
     aimHead.scale.setScalar(1 + pulse * 0.22);
     aimEnd.position.set(data.end.x, data.end.y, data.end.z);
     aimEnd.rotation.z += 0.045 + pulse * 0.01;
