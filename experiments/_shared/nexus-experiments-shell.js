@@ -1,4 +1,4 @@
-import { galleryConfig, games, getFeaturedGame } from "./nexus-gallery-data.js";
+import { galleryConfig, games, getFeaturedGame } from "./nexus-gallery-data.js?v=signal-bastion-20260617";
 import { startNexusGalleryShader } from "./nexus-gallery-shader.js";
 
 const STYLE_ID = "nexus-experiments-shell-style";
