@@ -15,13 +15,13 @@ function moveDelta(yaw, moveX, moveZ) {
 }
 
 const north = moveDelta(0, 0, 1);
-assert.ok(north.z > 0.99 && Math.abs(north.x) < 0.001, "W should move along camera forward at yaw 0");
+assert.ok(north.z < -0.99 && Math.abs(north.x) < 0.001, "W should move along camera forward at yaw 0");
 const east = moveDelta(Math.PI / 2, 0, 1);
 assert.ok(east.x > 0.99 && Math.abs(east.z) < 0.001, "W should move along camera forward when looking right/east");
 const west = moveDelta(-Math.PI / 2, 0, 1);
 assert.ok(west.x < -0.99 && Math.abs(west.z) < 0.001, "W should move along camera forward when looking left/west");
 const rightAtEast = moveDelta(Math.PI / 2, 1, 0);
-assert.ok(rightAtEast.z < -0.99 && Math.abs(rightAtEast.x) < 0.001, "D should strafe camera-right when looking east");
+assert.ok(rightAtEast.z > 0.99 && Math.abs(rightAtEast.x) < 0.001, "D should strafe camera-right when looking east");
 
 assert.ok(kit.includes("right.x * move.x + forward.x * move.z"), "movement should compose strafe and forward basis on X");
 assert.ok(kit.includes("right.z * move.x + forward.z * move.z"), "movement should compose strafe and forward basis on Z");

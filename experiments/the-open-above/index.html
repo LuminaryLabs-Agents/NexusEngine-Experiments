@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>The Open Above</title>
+  <style>
+    html,body{margin:0;height:100%;overflow:hidden;background:#08121b;color:#fff;font-family:system-ui,-apple-system,Segoe UI,sans-serif}
+    main,canvas{position:fixed;inset:0;width:100vw;height:100vh}
+    canvas{display:block}
+    #hud{position:fixed;inset:0;pointer-events:none}
+    #top{position:fixed;left:14px;top:12px;min-width:210px;padding:8px 10px;border:1px solid rgba(255,255,255,.14);border-radius:8px;background:rgba(2,8,18,.52);font-size:12px;line-height:1.35;backdrop-filter:blur(8px)}
+    #status{position:fixed;left:14px;bottom:12px;padding:7px 9px;border:1px solid rgba(255,255,255,.1);border-radius:8px;background:rgba(2,8,18,.34);font-size:11px;opacity:.86}
+    #err{position:fixed;left:16px;right:16px;bottom:16px;white-space:pre-wrap;background:rgba(32,5,4,.93);color:#fff0e8;border:1px solid rgba(255,150,100,.55);border-radius:10px;padding:12px;font:12px/1.4 ui-monospace,Menlo,monospace}
+    #err[hidden]{display:none}
+  </style>
+</head>
+<body>
+  <main>
+    <canvas id="game" role="application" aria-label="The Open Above"></canvas>
+    <aside id="hud">
+      <header id="top">Booting The Open Above...</header>
+      <footer id="status">Preparing terrain stream</footer>
+    </aside>
+    <section id="err" role="alert" hidden></section>
+  </main>
+  <script type="module">
+    import { attachNexusRealtimePageLoader } from "../_shared/nexus-realtime-page-loader.js";
+    attachNexusRealtimePageLoader({ title: "The Open Above", loadingLabel: "Loading The Open Above" });
+  </script>
+  <script type="module" src="./open-above.js"></script>
+</body>
+</html>

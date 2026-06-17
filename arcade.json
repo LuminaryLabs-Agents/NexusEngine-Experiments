@@ -9,10 +9,10 @@
       "tags": ["Nexus 0.0.1", "ProtoKit visual", "Fog forest"]
     },
     {
-      "title": "Sora The Infinite",
-      "path": "./experiments/sora-the-infinite/",
+      "title": "The Open Above",
+      "path": "./experiments/the-open-above/",
       "kind": ["featured", "experiment"],
-      "tags": ["Aerial", "Three.js", "ProtoKits"]
+      "tags": ["Bird sim", "Terrain streaming", "ProtoKits"]
     },
     {
       "title": "Zombie Orchard",

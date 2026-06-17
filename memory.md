@@ -1,0 +1,17 @@
+# NexusRealtime-Experiments Memory
+
+## Purpose
+NexusRealtime-Experiments hosts playable browser experiments that compose NexusRealtime and ProtoKits into app-specific pages.
+
+## Architecture
+- Experiments own branded app configuration, presets, copy, routes, and renderer-host decisions.
+- The Open Above is split into `index.html`, `open-above.config.js`, and `open-above.js`.
+- The Open Above composes generic ProtoKit DSKs directly from `open-above.js`; app-specific tuning stays in `open-above.config.js`.
+- The Open Above exposes `window.GameHost` for private NexusSimulator validation.
+
+## Conventions
+- Do not put The Open Above presets or app-specific tuning into ProtoKits.
+- The Open Above is a high-fidelity bird flight and terrain-streaming simulator.
+- The Open Above should not use wind/updraft gameplay forces, checkpoint rings, ring challenges, or terrain ring objectives.
+- Ambient clouds, lighting, and atmosphere are allowed only as presentation descriptors.
+- Keep validation state explicit enough for NexusSimulator to prove airborne motion, terrain streaming, and no console errors.

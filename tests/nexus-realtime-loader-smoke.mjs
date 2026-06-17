@@ -51,7 +51,7 @@ assert.equal(NexusRealtimeLoader.loadExperiment, loadNexusRealtimeExperiment, "n
 for (const route of [
   "experiments/next-ledge/index.html",
   "experiments/fogline-relay/index.html",
-  "experiments/sora-the-infinite/index.html",
+  "experiments/the-open-above/index.html",
   "experiments/zombie-orchard/index.html",
   "games/rogue-lite-hellscape-siege/index.html"
 ]) {
@@ -59,5 +59,8 @@ for (const route of [
   assert.ok(html.includes("nexus-realtime-page-loader.js"), `${route} should load Nexus Realtime Loader before its game script`);
   assert.ok(html.includes("attachNexusRealtimePageLoader"), `${route} should attach Nexus Realtime Loader`);
 }
+
+const legacySoraHtml = readFileSync("experiments/sora-the-infinite/index.html", "utf8");
+assert.ok(legacySoraHtml.includes("../the-open-above/"), "legacy Sora route should redirect to The Open Above");
 
 console.log("Nexus Realtime Loader smoke passed.");

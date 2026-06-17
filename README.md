@@ -57,15 +57,15 @@ Controls: WASD move, mouse or arrow keys look, hold E scan, R restart, click can
 
 Cutover target: make this the canonical `scan-survey-kit` + `zone-field-kit` + `timed-pressure-director-kit` + `fogline-survey-pressure-bridge-kit` validation slice.
 
-## Sora The Infinite
+## The Open Above
 
-`experiments/sora-the-infinite/` is a branded aerial-flight validation demo for the generic aerial ProtoKit stack. It imports the real NexusRealtime runtime, composes `createGenericAerialAdventureKits`, maps keyboard input into `engine.genericFlightInput.setInput()`, ticks the runtime, and renders `engine.genericAerialRenderDescriptor.getState()`.
+`experiments/the-open-above/` is a high-fidelity bird simulation over streamed terrain. It imports the real NexusRealtime runtime, composes generic ProtoKit DSKs from app-owned config, maps browser input into `GameHost`/flight motion APIs, ticks the runtime, and renders terrain, bird, sky, flock, and scatter descriptors without wind/updraft gameplay or checkpoint rings.
 
-Open `experiments/sora-the-infinite/index.html` in a browser or serve the repository with any static file server.
+Open `experiments/the-open-above/index.html` in a browser or serve the repository with any static file server.
 
-Controls: W/S pitch, A/D bank, Space boost, debug key logs debug state.
+Controls: W/S pitch, A/D bank, Space boost, R reset.
 
-Cutover target: preserve flight feel while normalizing checkpoint/ring state, updraft/zone state, content presets, visual descriptors, camera descriptors, GameHost state, and replay smoke coverage.
+Cutover target: preserve bird flight feel while keeping simulator-specific presets in the experiment host and leaving ProtoKits as generic terrain, flight, render, camera, VFX, audio, and descriptor DSKs.
 
 ## Zombie Orchard
 
