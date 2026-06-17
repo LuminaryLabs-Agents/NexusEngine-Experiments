@@ -12,22 +12,60 @@ function makeNodes(game) {
   }));
 }
 
+function baseAction(action) {
+  return String(action).split(":")[0];
+}
+
 export function createAaaBatchGameHost(game) {
+  const validActions = new Set([
+    ...game.smokeActions.map(baseAction),
+    "switchLane",
+    "vertical",
+    "jump",
+    "recover",
+    "scan",
+    "burst",
+    "selectWard",
+    "fireTether",
+    "blink",
+    "placeAnchor",
+    "recallAnchor"
+  ]);
   const state = {
     id: game.id,
     title: game.title,
     mode: "active",
+    completed: false,
+    failed: false,
     time: 0,
     score: 0,
     progress: 0,
     pressure: 0,
     resource: 100,
+    resources: {
+      primary: {
+        id: "primary",
+        label: `${game.verb} resource`,
+        value: 100,
+        min: 0,
+        max: 100,
+        empty: false,
+        full: true
+      }
+    },
     player: { x: 90, y: 280, lane: 1, depth: 0 },
     nodes: makeNodes(game),
     recentEvents: ["booted"],
     kitStack: [...game.kitStack],
-    objective: game.smoke.join(" -> ")
+    objective: game.smokeActions.join(" -> "),
+    lastRejectionReason: null
   };
+
+  function syncResources() {
+    state.resources.primary.value = Number(state.resource.toFixed(3));
+    state.resources.primary.empty = state.resource <= state.resources.primary.min;
+    state.resources.primary.full = state.resource >= state.resources.primary.max;
+  }
 
   function event(label) {
     state.recentEvents.unshift(label);
@@ -47,6 +85,12 @@ export function createAaaBatchGameHost(game) {
 
   function dispatch(action, payload = {}) {
     if (state.mode !== "active") return getState();
+    if (!validActions.has(action)) {
+      state.lastRejectionReason = `unknown action: ${action}`;
+      event(`rejected:${action}`);
+      return getState();
+    }
+    state.lastRejectionReason = null;
     event(action);
     if (["vent", "recover", "dampen", "channel", "repair", "crouch", "grab", "scan"].includes(action)) {
       state.resource = Math.min(100, state.resource + 8);
@@ -59,6 +103,7 @@ export function createAaaBatchGameHost(game) {
     }
     if (action === "switchLane") state.player.lane = payload.direction === "left" ? Math.max(0, state.player.lane - 1) : Math.min(2, state.player.lane + 1);
     if (action === "vertical") state.player.depth = payload.direction === "up" ? Math.max(0, state.player.depth - 1) : Math.min(3, state.player.depth + 1);
+    syncResources();
     return tick(1 / 30);
   }
 
@@ -72,17 +117,20 @@ export function createAaaBatchGameHost(game) {
     state.progress = state.nodes.filter((node) => node.secured).length / state.nodes.length;
     if (state.progress >= 1) {
       state.mode = "completed";
+      state.completed = true;
       event("completed");
     } else if (state.pressure >= 100 || state.resource <= 0) {
       state.mode = "failed";
+      state.failed = true;
       event("failed");
     }
+    syncResources();
     return getState();
   }
 
   function runSmoke() {
     for (let frame = 0; frame < 120; frame++) tick(1 / 60);
-    for (const step of game.smoke) {
+    for (const step of game.smokeActions) {
       const [action, value] = step.split(":");
       dispatch(action, { direction: value, value });
       for (let frame = 0; frame < 20; frame++) tick(1 / 60);
@@ -106,7 +154,11 @@ export function createAaaBatchGameHost(game) {
       progress: Number(state.progress.toFixed(2)),
       pressure: Number(state.pressure.toFixed(2)),
       resource: Number(state.resource.toFixed(2)),
+      resources: clone(state.resources),
+      completed: state.completed,
+      failed: state.failed,
       score: state.score,
+      lastRejectionReason: state.lastRejectionReason,
       recentEvents: [...state.recentEvents],
       kitStack: [...state.kitStack]
     };

@@ -73,6 +73,54 @@
       "path": "./experiments/aaa-batch/starwell-cartographer/",
       "kind": ["experiment", "aaa-seed"],
       "tags": ["Survey", "Anchors", "Replay"]
+    },
+    {
+      "title": "Gravity Anvil",
+      "path": "./experiments/aaa-batch/gravity-anvil/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Sling", "Gravity", "Forge"]
+    },
+    {
+      "title": "Lantern Vow",
+      "path": "./experiments/aaa-batch/lantern-vow/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Seal", "Spirits", "Lantern"]
+    },
+    {
+      "title": "Mammoth Bell",
+      "path": "./experiments/aaa-batch/mammoth-bell/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Herd", "Glacier", "Avalanche"]
+    },
+    {
+      "title": "Mirrorfall Prism",
+      "path": "./experiments/aaa-batch/mirrorfall-prism/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Prism", "Moonlight", "Puzzle"]
+    },
+    {
+      "title": "Thunder Kite",
+      "path": "./experiments/aaa-batch/thunder-kite/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Kite", "Lightning", "Tether"]
+    },
+    {
+      "title": "Glyph Sprinter",
+      "path": "./experiments/aaa-batch/glyph-sprinter/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Runes", "Sprint", "Void"]
+    },
+    {
+      "title": "Sporewright Canopy",
+      "path": "./experiments/aaa-batch/sporewright-canopy/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Spores", "Canopy", "Growth"]
+    },
+    {
+      "title": "Rift Bazaar",
+      "path": "./experiments/aaa-batch/rift-bazaar/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Trade", "Relics", "Debt"]
     }
   ]
 }

@@ -1,4 +1,4 @@
-export const aaaBatchGames = Object.freeze([
+const aaaBatchGameSpecs = [
   {
     id: "ember-rail",
     title: "Ember Rail",
@@ -102,8 +102,118 @@ export const aaaBatchGames = Object.freeze([
     kitStack: ["scan-survey-kit", "route-field-kit", "resource-pressure-kit", "deterministic-replay-harness"],
     palette: ["#090b24", "#7c6cff", "#f5f1ff", "#14154a"],
     smoke: ["scan", "placeAnchor", "placeAnchor"]
+  },
+  {
+    id: "gravity-anvil",
+    title: "Gravity Anvil",
+    route: "./experiments/aaa-batch/gravity-anvil/",
+    fantasy: "Forge star-metal by slinging ore through orbiting gravity wells.",
+    verb: "Sling",
+    pressureLoop: "Orbit decay increases instability; bad launches shatter ore; forge window closes.",
+    visualIdentity: "Cosmic blacksmith arena, blue gravity wells, gold-hot ore trails, star sparks.",
+    controls: "Drag/release aim, A/D nudge orbit, Space forge, R restart.",
+    kitStack: ["generic-pressure-loop-kit", "generic-resource-loop-kit", "route-topology-data", "action-window-data"],
+    palette: ["#050711", "#1a5cff", "#ffb347", "#f6f0d0"],
+    smoke: ["aimSling", "releaseOre", "forgeAtAnvil"]
+  },
+  {
+    id: "lantern-vow",
+    title: "Lantern Vow",
+    route: "./experiments/aaa-batch/lantern-vow/",
+    fantasy: "Seal roaming spirits by drawing sacred lantern circles before the shrine goes dark.",
+    verb: "Encircle",
+    pressureLoop: "Lantern oil drains; spirits split when missed; shrine fear rises.",
+    visualIdentity: "Night shrine, paper lantern glow, ink circles, pale spirit trails, red ward gates.",
+    controls: "Mouse draw seal path, E ignite lantern, Space banish, R restart.",
+    kitStack: ["generic-pressure-loop-kit", "generic-resource-loop-kit", "spatial-query-data", "affordance-descriptor-kit"],
+    palette: ["#09060d", "#ffcf70", "#f5f0df", "#b9384e"],
+    smoke: ["igniteLantern", "drawSeal", "banishSpirit"]
+  },
+  {
+    id: "mammoth-bell",
+    title: "Mammoth Bell",
+    route: "./experiments/aaa-batch/mammoth-bell/",
+    fantasy: "Guide a caravan of crystal mammoths across a collapsing glacier.",
+    verb: "Herd",
+    pressureLoop: "Herd panic rises; ice cracks spread; avalanche meter advances.",
+    visualIdentity: "Arctic blue glacier, giant luminous mammoths, brass bells, snow gusts, crack lines.",
+    controls: "A/D move caller, Click place bell marker, E calm herd, Space drive forward, R restart.",
+    kitStack: ["generic-pressure-loop-kit", "generic-resource-loop-kit", "route-topology-data", "ai-intent-data"],
+    palette: ["#061923", "#a8ecff", "#f6fbff", "#c49a52"],
+    smoke: ["placeBell", "driveHerd", "calmHerd"]
+  },
+  {
+    id: "mirrorfall-prism",
+    title: "Mirrorfall Prism",
+    route: "./experiments/aaa-batch/mirrorfall-prism/",
+    fantasy: "Rotate ancient prisms to catch falling moonlight before an eclipse consumes the temple.",
+    verb: "Redirect",
+    pressureLoop: "Eclipse shadow advances; prisms overload; wrong beams awaken sentry statues.",
+    visualIdentity: "Silver temple, violet moonbeams, rotating glass prisms, black eclipse wall.",
+    controls: "Click prism select, Q/E rotate, Space lock beam, R restart.",
+    kitStack: ["generic-pressure-loop-kit", "generic-resource-loop-kit", "action-window-data", "affordance-descriptor-kit"],
+    palette: ["#0b0b18", "#d7e8ff", "#8f6bff", "#2d1f4f"],
+    smoke: ["selectPrism", "rotatePrism", "lockBeam"]
+  },
+  {
+    id: "thunder-kite",
+    title: "Thunder Kite",
+    route: "./experiments/aaa-batch/thunder-kite/",
+    fantasy: "Fly a ritual kite through storm gates to harvest lightning without snapping the tether.",
+    verb: "Tack",
+    pressureLoop: "Gusts spike tether tension; lightning charge overloads; storm gates drift.",
+    visualIdentity: "High storm sky, silk kite, glowing tether, rain sheets, electric clouds.",
+    controls: "A/D tack, W/S climb/dive, Space discharge, Shift slack line, R restart.",
+    kitStack: ["generic-pressure-loop-kit", "generic-resource-loop-kit", "route-topology-data", "camera-intent-descriptor-kit"],
+    palette: ["#07101f", "#7ad7ff", "#f7e36b", "#ffffff"],
+    smoke: ["tackRight", "collectCharge", "dischargeAtGate"]
+  },
+  {
+    id: "glyph-sprinter",
+    title: "Glyph Sprinter",
+    route: "./experiments/aaa-batch/glyph-sprinter/",
+    fantasy: "Race across a blank void by drawing runes that become temporary platforms.",
+    verb: "Inscribe",
+    pressureLoop: "Ink reserve drains; glyph platforms decay; void wave catches slow routes.",
+    visualIdentity: "White-black void, neon calligraphy, dissolving rune bridges, trailing ink particles.",
+    controls: "WASD run, Mouse draw glyph, Space leap, E stabilize glyph, R restart.",
+    kitStack: ["generic-pressure-loop-kit", "generic-resource-loop-kit", "action-window-data", "procedural-layout-data"],
+    palette: ["#020207", "#f7f7ef", "#00f0ff", "#ff3df2"],
+    smoke: ["drawGlyph", "leap", "stabilizeGlyph"]
+  },
+  {
+    id: "sporewright-canopy",
+    title: "Sporewright Canopy",
+    route: "./experiments/aaa-batch/sporewright-canopy/",
+    fantasy: "Grow living mushroom bridges through a vertical rainforest before rot eats the canopy.",
+    verb: "Cultivate",
+    pressureLoop: "Rot spreads; spore charge regens slowly; unstable caps collapse under weight.",
+    visualIdentity: "Bioluminescent jungle, giant mushrooms, amber spores, green rot veins, mist shafts.",
+    controls: "Click plant spore, Q/E choose strain, Space bloom bridge, E cleanse rot, R restart.",
+    kitStack: ["generic-pressure-loop-kit", "generic-resource-loop-kit", "affordance-descriptor-kit", "procedural-layout-data"],
+    palette: ["#05150b", "#38ff9d", "#f2b95e", "#a64cff"],
+    smoke: ["plantSpore", "bloomBridge", "cleanseRot"]
+  },
+  {
+    id: "rift-bazaar",
+    title: "Rift Bazaar",
+    route: "./experiments/aaa-batch/rift-bazaar/",
+    fantasy: "Trade cursed relics in a shifting market before debt collectors seal the portal.",
+    verb: "Barter",
+    pressureLoop: "Debt timer rises; prices mutate; cursed goods corrupt inventory slots.",
+    visualIdentity: "Floating night market, portal stalls, coin sparks, mask merchants, purple rift fog.",
+    controls: "A/D choose stall, Click inspect item, E trade, Q cleanse curse, R restart.",
+    kitStack: ["generic-pressure-loop-kit", "generic-resource-loop-kit", "inventory-economy-data", "affordance-descriptor-kit"],
+    palette: ["#12081c", "#ffcc66", "#b05cff", "#32ffd2"],
+    smoke: ["inspectRelic", "tradeItem", "cleanseCurse"]
   }
-]);
+];
+
+export const aaaBatchGames = Object.freeze(aaaBatchGameSpecs.map((game) => Object.freeze({
+  ...game,
+  routePath: game.route,
+  smokeActions: Object.freeze([...game.smoke])
+})));
 
 export const aaaBatchGalleryGames = Object.freeze(aaaBatchGames.map((game) => ({
   id: `aaa-${game.id}`,

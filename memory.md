@@ -16,3 +16,4 @@ NexusRealtime-Experiments hosts playable browser experiments that compose NexusR
 - Ambient clouds, lighting, and atmosphere are allowed only as presentation descriptors.
 - Keep validation state explicit enough for NexusSimulator to prove airborne motion, terrain streaming, and no console errors.
 - For the 100-game AAA experiment track, every batch must start with `gpt-it` in the NexusRealtime/Experiments ChatGPT project, then local implementation must verify GPT advice against repo files before editing. Future batch additions should preserve unique fantasy, verb, pressure loop, visual identity, kit/DSK composition, GameHost smoke coverage, and renderer-as-presentation boundaries.
+- Batch 02 established `generic-pressure-loop-kit` + planned `generic-resource-loop-kit` as reusable DSK composition markers for new AAA seeds; GameHost owns resource/pressure/rejection/completion state, while canvas renderers stay presentation-only.
