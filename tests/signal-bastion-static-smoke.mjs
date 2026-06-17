@@ -37,21 +37,30 @@ assert.equal(resolveSignalBastionPreset("?preset=hard").mode, "hard");
 assert.equal(resolveSignalBastionPreset("?preset=endless").level.waves.length, 60);
 
 const index = readFileSync("games/signal-bastion/index.html", "utf8");
-assert.match(index, /src\/boot\.js\?v=aaa-content-pass/);
-assert.match(index, /preset=hard\/endless\/debug/);
+assert.match(index, /src\/boot\.js\?v=presentation-stack-phase/);
+assert.match(index, /statStrip/);
+assert.match(index, /towerPanel/);
+assert.match(index, /contextPanel/);
+assert.doesNotMatch(index, /Click anchors build\/select/);
+assert.doesNotMatch(index, /Space wave/);
 
 const boot = readFileSync("games/signal-bastion/src/boot.js", "utf8");
 assert.match(boot, /generic-defense-aaa-kits/);
-assert.match(boot, /resolveSignalBastionPreset/);
-assert.match(boot, /getRewards/);
-assert.match(boot, /getCampaign/);
+assert.match(boot, /generic-defense-presentation-stack-kit/);
+assert.match(boot, /createGenericDefensePresentationStackKits/);
+assert.match(boot, /getPresentation/);
 
 const input = readFileSync("games/signal-bastion/src/input-host.js", "utf8");
+assert.match(input, /placementProjector/);
+assert.match(input, /towerPanelEl/);
 assert.match(input, /defenseBuild/);
 assert.match(input, /defenseWaves/);
 
 const renderer = readFileSync("games/signal-bastion/src/renderer-canvas.js", "utf8");
-assert.match(renderer, /draw\(snapshot/);
+assert.match(renderer, /draw\(presentation/);
+assert.match(renderer, /drawTower/);
+assert.match(renderer, /renderTowerPanel/);
+assert.match(renderer, /renderContext/);
 assert.doesNotMatch(renderer, /createRealtimeGame/);
 
-console.log("signal-bastion full content static smoke passed");
+console.log("signal-bastion presentation stack static smoke passed");
