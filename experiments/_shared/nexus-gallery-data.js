@@ -7,15 +7,15 @@ export const galleryConfig = Object.freeze({
 
 export const games = Object.freeze([
   {
-    id: "the-open-above-v2",
+    id: "the-open-above-harness",
     title: "The Open Above V2",
-    route: "./experiments/the-open-above-v2/",
+    route: "./experiments/the-open-above-harness/",
     kind: "experiment",
     featured: true,
     visual: "sora",
-    playLabel: "Play V2 harness",
+    playLabel: "Play harness",
     tags: [
-      { label: "V2 Harness", tone: "gold" },
+      { label: "Harness", tone: "gold" },
       { label: "Composed", tone: "green" },
       { label: "Flight", tone: "blue" }
     ],
