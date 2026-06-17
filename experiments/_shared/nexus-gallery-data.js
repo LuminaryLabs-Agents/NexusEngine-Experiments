@@ -57,11 +57,11 @@ export const games = Object.freeze([
     visual: "hell",
     playLabel: "Play game",
     tags: [
-      { label: "Generic DSK", tone: "gold" },
-      { label: "Defense", tone: "green" },
-      { label: "Canvas", tone: "blue" }
+      { label: "AAA Content", tone: "gold" },
+      { label: "Generic DSK", tone: "green" },
+      { label: "Defense", tone: "blue" }
     ],
-    description: "Playable 2.5D defense game composed from the generic-defense ProtoKit bundle: paths, build slots, structures, waves, agents, projectiles, currency, and descriptors."
+    description: "Full content-pass 2.5D defense game with 3 maps, 12 towers, 12+ enemies, 3 bosses, 30 waves, hard/endless/debug presets, rewards, and campaign metadata."
   },
   {
     id: "next-ledge",
