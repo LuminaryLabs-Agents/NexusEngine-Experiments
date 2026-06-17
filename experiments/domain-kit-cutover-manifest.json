@@ -1,7 +1,7 @@
 {
   "version": 1,
   "policy": "one canonical base route per experiment or game",
-  "protokitsCommit": "762a8146e31960e6da2f629036cded3201addff3",
+  "protokitsCommit": "6841cfeacddf918b18813ccb9c213189788fc7bb",
   "canonicalRoutes": [
     {
       "id": "next-ledge",
@@ -97,6 +97,28 @@
         "gear use/swap",
         "survival waves",
         "canvas view"
+      ]
+    },
+    {
+      "id": "signal-bastion",
+      "kind": "game",
+      "canonicalPath": "games/signal-bastion/",
+      "status": "playable-protokit-game",
+      "domainCutover": [
+        "generic-defense-kits",
+        "gamehost-standard-kit",
+        "scenario-qa-harness",
+        "deterministic-replay-harness"
+      ],
+      "bridgeNeeded": "none; generic-defense-kits expose the host-facing facade",
+      "featureParity": [
+        "click anchors to build/select",
+        "1/2/3 blueprint selection",
+        "U upgrade selected structure",
+        "Space start wave",
+        "R restart",
+        "path/slot/vital target descriptors",
+        "waves, agents, projectiles, damage, rewards"
       ]
     },
     {
