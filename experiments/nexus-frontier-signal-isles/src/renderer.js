@@ -1,0 +1,160 @@
+const THREE_URL = "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js";
+const color = (hex, fallback = 0xffffff) => hex ? Number.parseInt(String(hex).replace("#", ""), 16) : fallback;
+const dist = (a = {}, b = {}) => Math.hypot(Number(a.x ?? 0) - Number(b.x ?? 0), Number(a.z ?? 0) - Number(b.z ?? 0));
+
+function seeded01(text) {
+  let h = 2166136261;
+  for (const c of String(text)) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); }
+  h += 0x6D2B79F5;
+  h = Math.imul(h ^ (h >>> 15), h | 1);
+  h ^= h + Math.imul(h ^ (h >>> 7), h | 61);
+  return ((h ^ (h >>> 14)) >>> 0) / 4294967296;
+}
+
+function height(level, x, z) {
+  const ridge = Math.sin(x * 0.19 + z * 0.07) * 0.22;
+  const ripple = Math.sin(z * 0.31) * 0.08;
+  const edge = Math.max(0, Math.hypot(x, z) - level.sceneRecipe.terrain.radius * 0.72) * 0.04;
+  return ridge + ripple - edge;
+}
+
+function terrainMesh(THREE, level, preset) {
+  const radius = level.sceneRecipe.terrain.radius;
+  const geometry = new THREE.PlaneGeometry(radius * 2.1, radius * 2.1, 72, 72).rotateX(-Math.PI / 2);
+  const pos = geometry.attributes.position;
+  for (let i = 0; i < pos.count; i += 1) {
+    const x = pos.getX(i), z = pos.getZ(i), edge = Math.hypot(x, z) / radius;
+    pos.setY(i, edge > 1.04 ? -2.2 : height(level, x, z));
+  }
+  geometry.computeVertexNormals();
+  const mesh = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({ color: color(preset.visual.palette.terrain, 0x2f5b48), roughness: 0.92 }));
+  mesh.receiveShadow = true;
+  return mesh;
+}
+
+function pylon(THREE, preset) {
+  const group = new THREE.Group();
+  const stone = new THREE.MeshStandardMaterial({ color: color(preset.visual.palette.stone, 0x7a8075), roughness: 0.9 });
+  const signal = new THREE.MeshStandardMaterial({ color: color(preset.visual.palette.signal, 0x65f1ff), emissive: color(preset.visual.palette.signal, 0x65f1ff), emissiveIntensity: 0.58 });
+  const base = new THREE.Mesh(new THREE.CylinderGeometry(0.54, 0.76, 1.2, 8), stone);
+  const shard = new THREE.Mesh(new THREE.OctahedronGeometry(0.42, 0), signal);
+  shard.position.y = 1.14;
+  group.add(base, shard);
+  return group;
+}
+
+function crystal(THREE, preset) {
+  const group = new THREE.Group();
+  const mat = new THREE.MeshStandardMaterial({ color: color(preset.visual.palette.signal, 0x65f1ff), emissive: color(preset.visual.palette.signal, 0x65f1ff), emissiveIntensity: 0.25 });
+  const gem = new THREE.Mesh(new THREE.IcosahedronGeometry(0.5, 0), mat);
+  const ring = new THREE.Mesh(new THREE.TorusGeometry(0.72, 0.025, 8, 32), mat);
+  gem.position.y = 0.52; ring.rotation.x = Math.PI / 2; ring.position.y = 0.06;
+  group.add(gem, ring);
+  return group;
+}
+
+function gateObject(THREE, preset) {
+  const group = new THREE.Group();
+  const frame = new THREE.MeshStandardMaterial({ color: color(preset.visual.palette.stone, 0x7a8075), roughness: 0.84 });
+  const glow = new THREE.MeshStandardMaterial({ color: color(preset.visual.palette.locked, 0xff8c5a), emissive: color(preset.visual.palette.locked, 0xff8c5a), emissiveIntensity: 0.35 });
+  const l = new THREE.Mesh(new THREE.BoxGeometry(0.42, 3.1, 0.42), frame);
+  const r = l.clone(); const t = new THREE.Mesh(new THREE.BoxGeometry(2.8, 0.36, 0.42), frame);
+  const ring = new THREE.Mesh(new THREE.TorusGeometry(1.1, 0.055, 12, 48), glow);
+  l.position.set(-1.24, 1.55, 0); r.position.set(1.24, 1.55, 0); t.position.set(0, 3.05, 0); ring.position.set(0, 1.55, 0.02);
+  group.userData.lightMaterial = glow;
+  group.add(l, r, t, ring);
+  return group;
+}
+
+function mastObject(THREE, preset) {
+  const group = new THREE.Group();
+  const metal = new THREE.MeshStandardMaterial({ color: 0x93a5a4, roughness: 0.56, metalness: 0.45 });
+  const glow = new THREE.MeshStandardMaterial({ color: color(preset.visual.palette.signal, 0x65f1ff), emissive: color(preset.visual.palette.signal, 0x65f1ff), emissiveIntensity: 0.8 });
+  const mast = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.12, 3.4, 10), metal);
+  const dish = new THREE.Mesh(new THREE.TorusGeometry(0.68, 0.04, 8, 48), glow);
+  const beacon = new THREE.Mesh(new THREE.SphereGeometry(0.18, 16, 12), glow);
+  mast.position.y = 1.7; dish.position.y = 3.2; dish.rotation.x = Math.PI / 3; beacon.position.y = 3.2;
+  group.add(mast, dish, beacon); group.visible = false;
+  return group;
+}
+
+function setGround(level, object, pos) {
+  object.position.set(Number(pos.x ?? 0), height(level, Number(pos.x ?? 0), Number(pos.z ?? 0)), Number(pos.z ?? 0));
+}
+
+export async function createSignalIslesRenderer({ canvas, level, preset }) {
+  const THREE = await import(THREE_URL);
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference: "high-performance" });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.shadowMap.enabled = true;
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(color(preset.visual.palette.sky, 0x0e2130));
+  scene.fog = new THREE.FogExp2(color(preset.visual.fog.color, 0x7dbbd1), preset.visual.fog.density);
+  const camera = new THREE.PerspectiveCamera(70, 1, 0.08, 240);
+  const sun = new THREE.DirectionalLight(color(preset.visual.palette.sun, 0xffd879), 2.15);
+  sun.position.set(-18, 32, 10); sun.castShadow = true;
+  scene.add(new THREE.HemisphereLight(color(preset.visual.palette.sky, 0x0e2130), 0x18311f, 1.2), sun, terrainMesh(THREE, level, preset));
+  const water = new THREE.Mesh(new THREE.CircleGeometry(level.sceneRecipe.terrain.radius * 1.75, 96), new THREE.MeshStandardMaterial({ color: 0x0b2b36, roughness: 0.72, transparent: true, opacity: 0.8 }));
+  water.rotation.x = -Math.PI / 2; water.position.y = -2.05; scene.add(water);
+
+  const objects = new Map();
+  const pickables = [];
+  function add(id, mesh, pos) {
+    setGround(level, mesh, pos); objects.set(id, mesh); scene.add(mesh);
+    mesh.traverse((child) => { child.userData.objectId = id; if (child.isMesh) pickables.push(child); });
+  }
+  level.scanSites.forEach((site) => add(site.id, pylon(THREE, preset), site));
+  level.resourceNodes.forEach((node) => add(node.id, crystal(THREE, preset), node));
+  level.gates.forEach((gate) => add(gate.id, gateObject(THREE, preset), gate));
+  level.cargo.forEach((item) => add(item.id, crystal(THREE, preset), item));
+  const beacon = level.sceneRecipe.objects.find((entry) => entry.id === "final-beacon");
+  if (beacon) add("final-beacon", pylon(THREE, preset), beacon.transform);
+  const mast = mastObject(THREE, preset); setGround(level, mast, level.buildSites[0]); objects.set("signal-mast-01", mast); scene.add(mast);
+
+  const vegMat = new THREE.MeshStandardMaterial({ color: 0x23472e, roughness: 0.95 });
+  const trunkMat = new THREE.MeshStandardMaterial({ color: 0x5b3b22, roughness: 0.9 });
+  for (let i = 0; i < 150; i += 1) {
+    const a = seeded01(`${level.seed}:veg:a:${i}`) * Math.PI * 2, r = Math.sqrt(seeded01(`${level.seed}:veg:r:${i}`)) * level.sceneRecipe.terrain.radius * 0.95;
+    const x = Math.cos(a) * r, z = Math.sin(a) * r;
+    if (level.scanSites.some((target) => dist({ x, z }, target) < 3.4)) continue;
+    const tree = new THREE.Group();
+    const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.12, 0.9, 6), trunkMat);
+    const crown = new THREE.Mesh(new THREE.ConeGeometry(0.42 + seeded01(`${i}:c`) * 0.35, 1.2 + seeded01(`${i}:h`) * 0.9, 7), vegMat);
+    trunk.position.y = 0.45; crown.position.y = 1.22; tree.add(trunk, crown); tree.position.set(x, height(level, x, z) - 0.08, z); tree.rotation.y = a; scene.add(tree);
+  }
+
+  const player = new THREE.Group();
+  player.add(new THREE.Mesh(new THREE.CapsuleGeometry(0.24, 0.9, 4, 12), new THREE.MeshStandardMaterial({ color: color(preset.visual.palette.player, 0xeaf6ff), roughness: 0.4 })));
+  player.children[0].position.y = 0.72; scene.add(player);
+  const agentMeshes = new Map();
+  const agentMat = new THREE.MeshStandardMaterial({ color: color(preset.visual.palette.agent, 0xff6a5c), emissive: color(preset.visual.palette.agent, 0xff6a5c), emissiveIntensity: 0.16 });
+  const marker = new THREE.Mesh(new THREE.RingGeometry(0.72, 0.86, 64), new THREE.MeshBasicMaterial({ color: color(preset.visual.palette.signal, 0x65f1ff), transparent: true, opacity: 0.54, side: THREE.DoubleSide }));
+  marker.rotation.x = -Math.PI / 2; scene.add(marker);
+
+  const raycaster = new THREE.Raycaster();
+  const pointer = new THREE.Vector2();
+  function resize() { const w = innerWidth, h = innerHeight; camera.aspect = w / h; camera.updateProjectionMatrix(); renderer.setSize(w, h, false); }
+  function pick(event) { const rect = canvas.getBoundingClientRect(); pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1; pointer.y = -(((event.clientY - rect.top) / rect.height) * 2 - 1); raycaster.setFromCamera(pointer, camera); const id = raycaster.intersectObjects(pickables, false)[0]?.object?.userData?.objectId; return id ? { id, kind: "world-object" } : null; }
+
+  function draw(snapshot) {
+    const session = snapshot.session, p = session.player, px = Number(p.x ?? 0), pz = Number(p.z ?? 0);
+    player.position.set(px, height(level, px, pz), pz); player.rotation.y = Number(p.yaw ?? 0);
+    const eye = player.position.y + 1.28, yaw = Number(p.yaw ?? 0), pitch = Number(p.pitch ?? 0);
+    camera.position.set(px, eye, pz); camera.lookAt(px + Math.sin(yaw) * Math.cos(pitch), eye + Math.sin(pitch), pz - Math.cos(yaw) * Math.cos(pitch));
+    const targetId = snapshot.objective.current?.targetId ?? "final-beacon"; const target = objects.get(targetId) ?? objects.get("final-beacon");
+    marker.visible = Boolean(target); if (target) { marker.position.copy(target.position); marker.position.y += 0.08 + Math.sin(session.elapsed * 3) * 0.04; }
+    mast.visible = session.placedStructureIds.includes("signal-mast-01");
+    const gate = objects.get("gate-01"); if (gate?.userData?.lightMaterial) { const c = session.gateUnlocked ? color(preset.visual.palette.signal) : color(preset.visual.palette.locked); gate.userData.lightMaterial.color.setHex(c); gate.userData.lightMaterial.emissive.setHex(c); }
+    const agents = snapshot.kitStates.agentGroup?.agents ?? {};
+    for (const [id, agent] of Object.entries(agents)) { let mesh = agentMeshes.get(id); if (!mesh) { mesh = new THREE.Mesh(new THREE.IcosahedronGeometry(0.32, 1), agentMat); agentMeshes.set(id, mesh); scene.add(mesh); } const x = Number(agent.x ?? 0), z = Number(agent.y ?? agent.z ?? 0); mesh.position.set(x, height(level, x, z) + 0.38, z); }
+    water.material.opacity = 0.76 + Math.sin(session.elapsed * 0.7) * 0.03;
+    renderer.render(scene, camera);
+  }
+
+  addEventListener("resize", resize); resize();
+  return { THREE, scene, camera, renderer, draw, pick, resize, dispose() { removeEventListener("resize", resize); renderer.dispose(); } };
+}
+
+export default createSignalIslesRenderer;
