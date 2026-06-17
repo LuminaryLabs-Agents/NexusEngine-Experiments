@@ -21,16 +21,610 @@
       "tags": ["Survival", "Combat", "Canvas"]
     },
     {
-      "title": "Rogue-Lite Hellscape Siege V2",
-      "path": "./games/rogue-lite-hellscape-siege-v2/",
-      "kind": ["game"],
-      "tags": ["V2", "Local kits", "Defense"]
-    },
-    {
       "title": "Rogue-Lite Hellscape Siege",
       "path": "./games/rogue-lite-hellscape-siege/",
       "kind": ["game"],
       "tags": ["Canvas", "Rogue-lite", "Base defense"]
+    },
+    {
+      "title": "Ember Rail",
+      "path": "./experiments/aaa-batch/ember-rail/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Rail", "Heat", "Action input"]
+    },
+    {
+      "title": "Tideglass Salvage",
+      "path": "./experiments/aaa-batch/tideglass-salvage/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Salvage", "Water", "Cargo"]
+    },
+    {
+      "title": "Echo Lock",
+      "path": "./experiments/aaa-batch/echo-lock/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Resonance", "Stealth", "Audio"]
+    },
+    {
+      "title": "Hollow Warden",
+      "path": "./experiments/aaa-batch/hollow-warden/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Wards", "Defense", "Hazards"]
+    },
+    {
+      "title": "Skyrig Suture",
+      "path": "./experiments/aaa-batch/skyrig-suture/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Tether", "Repair", "Sky"]
+    },
+    {
+      "title": "Mirage Stalker",
+      "path": "./experiments/aaa-batch/mirage-stalker/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Stealth", "Shadow", "Agents"]
+    },
+    {
+      "title": "Core Diver",
+      "path": "./experiments/aaa-batch/core-diver/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Dive", "Oxygen", "Reactor"]
+    },
+    {
+      "title": "Starwell Cartographer",
+      "path": "./experiments/aaa-batch/starwell-cartographer/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Survey", "Anchors", "Replay"]
+    },
+    {
+      "title": "Gravity Anvil",
+      "path": "./experiments/aaa-batch/gravity-anvil/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Sling", "Gravity", "Forge"]
+    },
+    {
+      "title": "Lantern Vow",
+      "path": "./experiments/aaa-batch/lantern-vow/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Seal", "Spirits", "Lantern"]
+    },
+    {
+      "title": "Mammoth Bell",
+      "path": "./experiments/aaa-batch/mammoth-bell/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Herd", "Glacier", "Avalanche"]
+    },
+    {
+      "title": "Mirrorfall Prism",
+      "path": "./experiments/aaa-batch/mirrorfall-prism/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Prism", "Moonlight", "Puzzle"]
+    },
+    {
+      "title": "Thunder Kite",
+      "path": "./experiments/aaa-batch/thunder-kite/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Kite", "Lightning", "Tether"]
+    },
+    {
+      "title": "Glyph Sprinter",
+      "path": "./experiments/aaa-batch/glyph-sprinter/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Runes", "Sprint", "Void"]
+    },
+    {
+      "title": "Sporewright Canopy",
+      "path": "./experiments/aaa-batch/sporewright-canopy/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Spores", "Canopy", "Growth"]
+    },
+    {
+      "title": "Rift Bazaar",
+      "path": "./experiments/aaa-batch/rift-bazaar/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Trade", "Relics", "Debt"]
+    },
+    {
+      "title": "Nerve Forge",
+      "path": "./experiments/aaa-batch/nerve-forge/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Cauterize", "Titan", "Timing"]
+    },
+    {
+      "title": "Clockwork Verdict",
+      "path": "./experiments/aaa-batch/clockwork-verdict/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Court", "Evidence", "Timing"]
+    },
+    {
+      "title": "Beetle Siege",
+      "path": "./experiments/aaa-batch/beetle-siege/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Siege", "Beetle", "Armor"]
+    },
+    {
+      "title": "Opera Of Knives",
+      "path": "./experiments/aaa-batch/opera-of-knives/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Opera", "Traps", "Beat"]
+    },
+    {
+      "title": "Quartz Undertaker",
+      "path": "./experiments/aaa-batch/quartz-undertaker/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Match", "Cemetery", "Crystal"]
+    },
+    {
+      "title": "Sunken Choir",
+      "path": "./experiments/aaa-batch/sunken-choir/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Conduct", "Abyss", "Harmony"]
+    },
+    {
+      "title": "Meteor Tailor",
+      "path": "./experiments/aaa-batch/meteor-tailor/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Stitch", "Meteor", "Reentry"]
+    },
+    {
+      "title": "Catacomb Postmaster",
+      "path": "./experiments/aaa-batch/catacomb-postmaster/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Route", "Mail", "Valves"]
+    },
+    {
+      "title": "Inkstorm Cartel",
+      "path": "./experiments/aaa-batch/inkstorm-cartel/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Reroute", "Noir", "Maps"]
+    },
+    {
+      "title": "Bone Orchard Courier",
+      "path": "./experiments/aaa-batch/bone-orchard-courier/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Deliver", "Bones", "Crows"]
+    },
+    {
+      "title": "Plasma Calligrapher",
+      "path": "./experiments/aaa-batch/plasma-calligrapher/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Trace", "Plasma", "Glyphs"]
+    },
+    {
+      "title": "Iron Whale Vault",
+      "path": "./experiments/aaa-batch/iron-whale-vault/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Divert", "Whale", "Valves"]
+    },
+    {
+      "title": "Velvet Parasite",
+      "path": "./experiments/aaa-batch/velvet-parasite/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Nibble", "Velvet", "Needles"]
+    },
+    {
+      "title": "Monolith Gardener",
+      "path": "./experiments/aaa-batch/monolith-gardener/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Prune", "Garden", "Vines"]
+    },
+    {
+      "title": "Ashen Sommelier",
+      "path": "./experiments/aaa-batch/ashen-sommelier/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Blend", "Volcanic", "Wine"]
+    },
+    {
+      "title": "Halo Mason",
+      "path": "./experiments/aaa-batch/halo-mason/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Socket", "Halo", "Alignment"]
+    },
+    {
+      "title": "Aurora Ferromancer",
+      "path": "./experiments/aaa-batch/aurora-ferromancer/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Magnetize", "Aurora", "Rails"]
+    },
+    {
+      "title": "Glass Harbor Notary",
+      "path": "./experiments/aaa-batch/glass-harbor-notary/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Notarize", "Harbor", "Contracts"]
+    },
+    {
+      "title": "Eclipse Locksmith",
+      "path": "./experiments/aaa-batch/eclipse-locksmith/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Pick", "Eclipse", "Locks"]
+    },
+    {
+      "title": "Obsidian Luthier",
+      "path": "./experiments/aaa-batch/obsidian-luthier/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Tune", "Obsidian", "Concert"]
+    },
+    {
+      "title": "Frostwire Bailiff",
+      "path": "./experiments/aaa-batch/frostwire-bailiff/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Serve", "Tribunal", "Grid"]
+    },
+    {
+      "title": "Prism Archivist",
+      "path": "./experiments/aaa-batch/prism-archivist/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Refract", "Archive", "Memory"]
+    },
+    {
+      "title": "Null Tide Anchorite",
+      "path": "./experiments/aaa-batch/null-tide-anchorite/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Anchor", "Void", "Monastery"]
+    },
+    {
+      "title": "Signal Pyre Diplomat",
+      "path": "./experiments/aaa-batch/signal-pyre-diplomat/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Negotiate", "Pyre", "Treaty"]
+    },
+    {
+      "title": "Glass Titan Choir",
+      "path": "./experiments/aaa-batch/glass-titan-choir/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Conduct", "Glass", "Resonance"]
+    },
+    {
+      "title": "Grave Signal Diver",
+      "path": "./experiments/aaa-batch/grave-signal-diver/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Ping", "Abyss", "Signal"]
+    },
+    {
+      "title": "Brass Moon Smuggler",
+      "path": "./experiments/aaa-batch/brass-moon-smuggler/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Smuggle", "Moon", "Scan"]
+    },
+    {
+      "title": "Orchid Mech Harvest",
+      "path": "./experiments/aaa-batch/orchid-mech-harvest/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Harvest", "Mech", "Spores"]
+    },
+    {
+      "title": "Midnight Bridge Warden",
+      "path": "./experiments/aaa-batch/midnight-bridge-warden/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Repair", "Bridge", "Storm"]
+    },
+    {
+      "title": "Saffron Skull Market",
+      "path": "./experiments/aaa-batch/saffron-skull-market/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Trade", "Market", "Curse"]
+    },
+    {
+      "title": "Comet Forge Runner",
+      "path": "./experiments/aaa-batch/comet-forge-runner/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Catch", "Comet", "Forge"]
+    },
+    {
+      "title": "Ivory Wolf Court",
+      "path": "./experiments/aaa-batch/ivory-wolf-court/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Command", "Court", "Morale"]
+    },
+    {
+      "title": "Stormglass Vanguard",
+      "path": "./experiments/aaa-batch/stormglass-vanguard/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Brace", "Glass", "Storm"]
+    },
+    {
+      "title": "Velvet Siege Orchestra",
+      "path": "./experiments/aaa-batch/velvet-siege-orchestra/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Conduct", "Siege", "Crescendo"]
+    },
+    {
+      "title": "Ashfall Star Miner",
+      "path": "./experiments/aaa-batch/ashfall-star-miner/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Drill", "Ashfall", "Extraction"]
+    },
+    {
+      "title": "Mirrorgrave Duelist",
+      "path": "./experiments/aaa-batch/mirrorgrave-duelist/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Parry", "Mirror", "Echo"]
+    },
+    {
+      "title": "Sunken Crown Dispatch",
+      "path": "./experiments/aaa-batch/sunken-crown-dispatch/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Deliver", "Canal", "Crown"]
+    },
+    {
+      "title": "Ironroot Colossus",
+      "path": "./experiments/aaa-batch/ironroot-colossus/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Grapple", "Colossus", "Weak points"]
+    },
+    {
+      "title": "Lumen Reef Cartographer",
+      "path": "./experiments/aaa-batch/lumen-reef-cartographer/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Scan", "Reef", "Map"]
+    },
+    {
+      "title": "Crimson Orbit Foundry",
+      "path": "./experiments/aaa-batch/crimson-orbit-foundry/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Launch", "Orbit", "Foundry"]
+    },
+    {
+      "title": "Glass Leviathan Trench",
+      "path": "./experiments/aaa-batch/glass-leviathan-trench/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Ping", "Abyss", "Leviathan"]
+    },
+    {
+      "title": "Cinder Opera Siege",
+      "path": "./experiments/aaa-batch/cinder-opera-siege/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Cue", "Siege", "Heat"]
+    },
+    {
+      "title": "Mirror Hound Parallax",
+      "path": "./experiments/aaa-batch/mirror-hound-parallax/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Reveal", "Mirror", "Pursuit"]
+    },
+    {
+      "title": "Thunder Orchard Rail",
+      "path": "./experiments/aaa-batch/thunder-orchard-rail/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Harvest", "Rail", "Storm"]
+    },
+    {
+      "title": "Ivory Titan Forge",
+      "path": "./experiments/aaa-batch/ivory-titan-forge/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Hammer", "Titan", "Glyphs"]
+    },
+    {
+      "title": "Neon Courier Reef",
+      "path": "./experiments/aaa-batch/neon-courier-reef/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Drift", "Courier", "Reef"]
+    },
+    {
+      "title": "Graveyard Satellite Choir",
+      "path": "./experiments/aaa-batch/graveyard-satellite-choir/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Tune", "Orbit", "Signal"]
+    },
+    {
+      "title": "Marble Wasp Catacomb",
+      "path": "./experiments/aaa-batch/marble-wasp-catacomb/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Swarm", "Catacomb", "Maze"]
+    },
+    {
+      "title": "Starforge Salvager",
+      "path": "./experiments/aaa-batch/starforge-salvager/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Salvage", "Orbit", "Flare"]
+    },
+    {
+      "title": "Thunder Rail Outrider",
+      "path": "./experiments/aaa-batch/thunder-rail-outrider/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Boost", "Rail", "Storm"]
+    },
+    {
+      "title": "Glass Dune Excavator",
+      "path": "./experiments/aaa-batch/glass-dune-excavator/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Excavate", "Dune", "Tremor"]
+    },
+    {
+      "title": "Neon Abbey Exorcist",
+      "path": "./experiments/aaa-batch/neon-abbey-exorcist/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Purify", "Abbey", "Rhythm"]
+    },
+    {
+      "title": "Abyssal Lift Diver",
+      "path": "./experiments/aaa-batch/abyssal-lift-diver/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Repair", "Abyss", "Lift"]
+    },
+    {
+      "title": "Ember Crown Duelist",
+      "path": "./experiments/aaa-batch/ember-crown-duelist/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Counter", "Duel", "Crown"]
+    },
+    {
+      "title": "Gravemark Cartographer",
+      "path": "./experiments/aaa-batch/gravemark-cartographer/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Triangulate", "Survey", "Patrol"]
+    },
+    {
+      "title": "Solar Mirror Bastion",
+      "path": "./experiments/aaa-batch/solar-mirror-bastion/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Redirect", "Mirror", "Bastion"]
+    },
+    {
+      "title": "Void Harbor Pilot",
+      "path": "./experiments/aaa-batch/void-harbor-pilot/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Dock", "Void", "Harbor"]
+    },
+    {
+      "title": "Magma Choir Smith",
+      "path": "./experiments/aaa-batch/magma-choir-smith/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Conduct", "Magma", "Forge"]
+    },
+    {
+      "title": "Frost Lantern Reclaimer",
+      "path": "./experiments/aaa-batch/frost-lantern-reclaimer/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Reclaim", "Frost", "Lantern"]
+    },
+    {
+      "title": "Chrome Basilisk Garden",
+      "path": "./experiments/aaa-batch/chrome-basilisk-garden/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Prune", "Chrome", "Gaze"]
+    },
+    {
+      "title": "Orbit Suture Runner",
+      "path": "./experiments/aaa-batch/orbit-suture-runner/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Suture", "Orbit", "Repair"]
+    },
+    {
+      "title": "Dusk Cannon Cartographer",
+      "path": "./experiments/aaa-batch/dusk-cannon-cartographer/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Chart", "Dusk", "Cannon"]
+    },
+    {
+      "title": "Palladium Reef Harvester",
+      "path": "./experiments/aaa-batch/palladium-reef-harvester/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Harvest", "Reef", "Metal"]
+    },
+    {
+      "title": "Ghostline Bellwright",
+      "path": "./experiments/aaa-batch/ghostline-bellwright/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Cast", "Ghostline", "Bell"]
+    },
+    {
+      "title": "Aurora Lance Herder",
+      "path": "./experiments/aaa-batch/aurora-lance-herder/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Herding", "Route Control", "Weather"]
+    },
+    {
+      "title": "Rust Moon Sapper",
+      "path": "./experiments/aaa-batch/rust-moon-sapper/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Sabotage", "Timer", "Traversal"]
+    },
+    {
+      "title": "Silica Titan Mender",
+      "path": "./experiments/aaa-batch/silica-titan-mender/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Repair", "Giant Scale", "Pressure"]
+    },
+    {
+      "title": "Nocturne Lock Diviner",
+      "path": "./experiments/aaa-batch/nocturne-lock-diviner/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Puzzle", "Pattern Read", "Precision"]
+    },
+    {
+      "title": "Crimson Monsoon Librarian",
+      "path": "./experiments/aaa-batch/crimson-monsoon-librarian/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Collection", "Archive", "Hazard"]
+    },
+    {
+      "title": "Ivory Dragon Ferryman",
+      "path": "./experiments/aaa-batch/ivory-dragon-ferryman/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Vehicle", "Cargo", "Navigation"]
+    },
+    {
+      "title": "Quantum Puppet Bailiff",
+      "path": "./experiments/aaa-batch/quantum-puppet-bailiff/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Control", "Chase", "Timeline"]
+    },
+    {
+      "title": "Opal Wind Sculptor",
+      "path": "./experiments/aaa-batch/opal-wind-sculptor/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Airflow", "Physics", "Protection"]
+    },
+    {
+      "title": "Tarot Engine Broker",
+      "path": "./experiments/aaa-batch/tarot-engine-broker/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Negotiation", "Cards", "Systems"]
+    },
+    {
+      "title": "Glacier Chain Towmaster",
+      "path": "./experiments/aaa-batch/glacier-chain-towmaster/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Towing", "Inertia", "Avoidance"]
+    },
+    {
+      "title": "Lilac Crypt Whisperer",
+      "path": "./experiments/aaa-batch/lilac-crypt-whisperer/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Stealth", "Dialogue", "Maze"]
+    },
+    {
+      "title": "Basalt Gyro Calibrator",
+      "path": "./experiments/aaa-batch/basalt-gyro-calibrator/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Balance", "City Scale", "Timing"]
+    },
+    {
+      "title": "Marble Rift Magnetist",
+      "path": "./experiments/aaa-batch/marble-rift-magnetist/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Magnetism", "Traversal", "Assembly"]
+    },
+    {
+      "title": "Amber Wasp Chorister",
+      "path": "./experiments/aaa-batch/amber-wasp-chorister/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Swarm", "Rhythm", "Defense"]
+    },
+    {
+      "title": "Cinder Ink Tracer",
+      "path": "./experiments/aaa-batch/cinder-ink-tracer/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Investigation", "Pursuit", "Reveal"]
+    },
+    {
+      "title": "Saffron Anchor Priest",
+      "path": "./experiments/aaa-batch/saffron-anchor-priest/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Ritual", "Stabilization", "Traversal"]
+    },
+    {
+      "title": "Aether Thread Braider",
+      "path": "./experiments/aaa-batch/aether-thread-braider/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Construction", "Pathing", "Rescue"]
+    },
+    {
+      "title": "Bluefire Marrow Igniter",
+      "path": "./experiments/aaa-batch/bluefire-marrow-igniter/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Ignition", "Oxygen", "Climb"]
+    },
+    {
+      "title": "Onyx Sand Distiller",
+      "path": "./experiments/aaa-batch/onyx-sand-distiller/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Resource", "Refinery", "Survival"]
+    },
+    {
+      "title": "Prism Bastion Sealer",
+      "path": "./experiments/aaa-batch/prism-bastion-sealer/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Matching", "Defense", "Magic"]
     }
   ]
 }

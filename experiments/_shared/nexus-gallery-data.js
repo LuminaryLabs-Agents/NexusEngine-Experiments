@@ -7,33 +7,61 @@ export const galleryConfig = Object.freeze({
 
 export const games = Object.freeze([
   {
+    id: "the-open-above-harness",
+    title: "The Open Above V2",
+    route: "./experiments/the-open-above-harness/",
+    kind: "experiment",
+    featured: true,
+    visual: "sora",
+    playLabel: "Play harness",
+    tags: [
+      { label: "Flight", tone: "gold" },
+      { label: "Traversal", tone: "green" },
+      { label: "3D", tone: "blue" }
+    ],
+    description: "Clean high-fidelity free-flight harness for assisted bird carving, camera-relative sky, terrain patches, scatter, flocking, and validation-first composition."
+  },
+  {
     id: "fogline-relay",
     title: "Fogline Relay",
     route: "./experiments/fogline-relay/",
     kind: "experiment",
-    featured: true,
     visual: "fogline",
     playLabel: "Play experiment",
     tags: [
-      { label: "Featured", tone: "gold" },
-      { label: "Domain cutover", tone: "green" },
+      { label: "First Person", tone: "gold" },
+      { label: "Scan", tone: "green" },
       { label: "Fog", tone: "blue" }
     ],
     description: "First-person survey-pressure loop for scan targets, fog zones, timed pressure, hazard state, and renderer-only visual buckets."
   },
   {
-    id: "signal-bastion",
-    title: "Signal Bastion",
-    route: "./experiments/signal-bastion/",
+    id: "nexus-frontier-signal-isles",
+    title: "Nexus Frontier: Signal Isles",
+    route: "./experiments/nexus-frontier-signal-isles/",
     kind: "experiment",
-    visual: "hell",
+    visual: "fogline",
     playLabel: "Play experiment",
     tags: [
-      { label: "Generic DSK", tone: "gold" },
-      { label: "Defense", tone: "green" },
-      { label: "Canvas", tone: "blue" }
+      { label: "Field Engineer", tone: "gold" },
+      { label: "Systems", tone: "green" },
+      { label: "3D", tone: "blue" }
     ],
-    description: "Playable 2.5D defense slice composed from the generic-defense ProtoKit bundle: paths, build slots, structures, waves, agents, projectiles, currency, and descriptors."
+    description: "3D field-engineer slice built to exercise scan, harvest, build, pressure, gates, route, cargo, beacon, feedback, and debug/replay surfaces."
+  },
+  {
+    id: "signal-bastion",
+    title: "Signal Bastion",
+    route: "./games/signal-bastion/",
+    kind: "game",
+    visual: "hell",
+    playLabel: "Play game",
+    tags: [
+      { label: "Tower Defense", tone: "gold" },
+      { label: "2.5D Cel", tone: "green" },
+      { label: "Tactics", tone: "blue" }
+    ],
+    description: "2.5D cel-style defense game with sleek gameplay-only HUD, 12-card tower panel, upgrade/context panel, placement ghost, range rings, and full AAA content pass."
   },
   {
     id: "next-ledge",
@@ -43,9 +71,9 @@ export const games = Object.freeze([
     visual: "next",
     playLabel: "Play experiment",
     tags: [
-      { label: "Climb", tone: "gold" },
-      { label: "Route", tone: "green" },
-      { label: "ProtoKit", tone: "blue" }
+      { label: "Grapple", tone: "gold" },
+      { label: "Climb", tone: "green" },
+      { label: "Route", tone: "blue" }
     ],
     description: "Cinematic grapple-climb validation with action input, ledge routes, swing pressure, feedback descriptors, and a Three.js host."
   },
@@ -57,11 +85,11 @@ export const games = Object.freeze([
     visual: "sora",
     playLabel: "Play experiment",
     tags: [
-      { label: "Aerial", tone: "gold" },
-      { label: "World", tone: "green" },
-      { label: "Three.js", tone: "blue" }
+      { label: "Air Race", tone: "gold" },
+      { label: "Checkpoint", tone: "green" },
+      { label: "World", tone: "blue" }
     ],
-    description: "Flight-domain validation for terrain patches, updraft volumes, checkpoints, render descriptors, and aerial camera state."
+    description: "Aerial checkpoint validation for terrain patches, updraft volumes, checkpoints, render descriptors, and racing camera state."
   },
   {
     id: "zombie-orchard",
@@ -71,9 +99,9 @@ export const games = Object.freeze([
     visual: "zombie",
     playLabel: "Play experiment",
     tags: [
-      { label: "Survival", tone: "blue" },
+      { label: "Survival", tone: "gold" },
       { label: "Horde", tone: "red" },
-      { label: "Canvas", tone: "green" }
+      { label: "Scavenge", tone: "green" }
     ],
     description: "Kit-composed survival slice for rounds, horde pressure, pickups, weapons, orchard content, and debug-friendly runtime state."
   },
@@ -85,11 +113,179 @@ export const games = Object.freeze([
     visual: "hell",
     playLabel: "Play game",
     tags: [
-      { label: "Unified", tone: "gold" },
-      { label: "Base name", tone: "green" },
-      { label: "Defense", tone: "red" }
+      { label: "Action RPG", tone: "gold" },
+      { label: "Base Siege", tone: "green" },
+      { label: "Harvest", tone: "red" }
     ],
-    description: "Unified high-fidelity base route for the kit-shaped realm, inventory, harvesting, building, wave-defense, FX, and renderer-only presentation loop."
+    description: "Unified high-fidelity base route for realm portals, inventory, harvesting, building, wave-defense, FX, and renderer-only presentation loop."
+  },
+  {
+    id: "tideglass-salvage",
+    title: "Tideglass Salvage",
+    route: "./experiments/aaa-batch/tideglass-salvage/",
+    kind: "experiment",
+    visual: "fogline",
+    playLabel: "Play experiment",
+    tags: [
+      { label: "Boat", tone: "gold" },
+      { label: "Salvage", tone: "green" },
+      { label: "Water", tone: "blue" }
+    ],
+    description: "Pilot a glass-hulled salvage skiff through storm ruins, dock near wreckage, and recover relic crates under cargo and weather pressure."
+  },
+  {
+    id: "ember-rail",
+    title: "Ember Rail",
+    route: "./experiments/aaa-batch/ember-rail/",
+    kind: "experiment",
+    visual: "hell",
+    playLabel: "Play experiment",
+    tags: [
+      { label: "Rail Runner", tone: "gold" },
+      { label: "Lane", tone: "green" },
+      { label: "Speed", tone: "red" }
+    ],
+    description: "Surf a molten mag-rail through a collapsing forge canyon by switching rails, jumping gaps, and venting heat at coolant gates."
+  },
+  {
+    id: "skyrig-suture",
+    title: "Skyrig Suture",
+    route: "./experiments/aaa-batch/skyrig-suture/",
+    kind: "experiment",
+    visual: "sora",
+    playLabel: "Play experiment",
+    tags: [
+      { label: "Tether", tone: "gold" },
+      { label: "Repair", tone: "green" },
+      { label: "Sky Rig", tone: "blue" }
+    ],
+    description: "Repair a floating storm rig by tethering broken conduits before platforms drift apart and battery pressure collapses the repair route."
+  },
+  {
+    id: "core-diver",
+    title: "Core Diver",
+    route: "./experiments/aaa-batch/core-diver/",
+    kind: "experiment",
+    visual: "fogline",
+    playLabel: "Play experiment",
+    tags: [
+      { label: "Underwater", tone: "gold" },
+      { label: "Oxygen", tone: "green" },
+      { label: "Reactor", tone: "blue" }
+    ],
+    description: "Dive into a flooded reactor core, manage oxygen and radiation, grab rods, and surface before the pressure loop peaks."
+  },
+  {
+    id: "starwell-cartographer",
+    title: "Starwell Cartographer",
+    route: "./experiments/aaa-batch/starwell-cartographer/",
+    kind: "experiment",
+    visual: "sora",
+    playLabel: "Play experiment",
+    tags: [
+      { label: "Survey", tone: "gold" },
+      { label: "Beacons", tone: "green" },
+      { label: "Astral", tone: "blue" }
+    ],
+    description: "Map a shifting astral basin by scanning zones and anchoring beacons before rift drift corrupts the chart."
+  },
+  {
+    id: "gravity-anvil",
+    title: "Gravity Anvil",
+    route: "./experiments/aaa-batch/gravity-anvil/",
+    kind: "experiment",
+    visual: "sora",
+    playLabel: "Play experiment",
+    tags: [
+      { label: "Physics", tone: "gold" },
+      { label: "Sling", tone: "green" },
+      { label: "Forge", tone: "red" }
+    ],
+    description: "Forge star-metal by slinging ore through orbiting gravity wells, using trajectory timing and forge windows instead of movement combat."
+  },
+  {
+    id: "mirrorfall-prism",
+    title: "Mirrorfall Prism",
+    route: "./experiments/aaa-batch/mirrorfall-prism/",
+    kind: "experiment",
+    visual: "next",
+    playLabel: "Play experiment",
+    tags: [
+      { label: "Beam Puzzle", tone: "gold" },
+      { label: "Prism", tone: "green" },
+      { label: "Temple", tone: "blue" }
+    ],
+    description: "Rotate ancient prisms to redirect moonlight, lock beams, and hold back the eclipse wall before the temple is consumed."
+  },
+  {
+    id: "echo-lock",
+    title: "Echo Lock",
+    route: "./experiments/aaa-batch/echo-lock/",
+    kind: "experiment",
+    visual: "next",
+    playLabel: "Play experiment",
+    tags: [
+      { label: "Audio Puzzle", tone: "gold" },
+      { label: "Tune", tone: "green" },
+      { label: "Vault", tone: "blue" }
+    ],
+    description: "Crack a cathedral vault by tuning resonance, pulsing sonic tumblers, and dampening noise before patrol alert closes the window."
+  },
+  {
+    id: "clockwork-verdict",
+    title: "Clockwork Verdict",
+    route: "./experiments/aaa-batch/clockwork-verdict/",
+    kind: "experiment",
+    visual: "hell",
+    playLabel: "Play experiment",
+    tags: [
+      { label: "Courtroom", tone: "gold" },
+      { label: "Cards", tone: "green" },
+      { label: "Timing", tone: "red" }
+    ],
+    description: "Argue before a mechanical court by selecting evidence, objecting during brief windows, and managing credibility before the verdict gears lock."
+  },
+  {
+    id: "orchid-mech-harvest",
+    title: "Orchid Mech Harvest",
+    route: "./experiments/aaa-batch/orchid-mech-harvest/",
+    kind: "experiment",
+    visual: "zombie",
+    playLabel: "Play experiment",
+    tags: [
+      { label: "Mech", tone: "gold" },
+      { label: "Harvest", tone: "green" },
+      { label: "Spore", tone: "blue" }
+    ],
+    description: "Pilot a soft biotech mech, select tool arms, harvest unstable flowers, and vent spores before greenhouse pressure blooms out of control."
+  },
+  {
+    id: "beetle-siege",
+    title: "Beetle Siege",
+    route: "./experiments/aaa-batch/beetle-siege/",
+    kind: "experiment",
+    visual: "hell",
+    playLabel: "Play experiment",
+    tags: [
+      { label: "Rhythm Siege", tone: "gold" },
+      { label: "Command", tone: "green" },
+      { label: "Armor", tone: "red" }
+    ],
+    description: "Command a giant siege beetle by rhythmically loading armor plates, bracing sides, and timing mandible strikes against wall volleys."
+  },
+  {
+    id: "sunken-choir",
+    title: "Sunken Choir",
+    route: "./experiments/aaa-batch/sunken-choir/",
+    kind: "experiment",
+    visual: "fogline",
+    playLabel: "Play experiment",
+    tags: [
+      { label: "Rhythm", tone: "gold" },
+      { label: "Conduct", tone: "green" },
+      { label: "Underwater", tone: "blue" }
+    ],
+    description: "Conduct drowned statues in the correct phrase order to raise a cathedral bell from the abyss while current and breath pressure disrupt tempo."
   }
 ]);
 
