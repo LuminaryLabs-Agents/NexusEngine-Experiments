@@ -265,6 +265,54 @@
       "path": "./experiments/aaa-batch/signal-pyre-diplomat/",
       "kind": ["experiment", "aaa-seed"],
       "tags": ["Negotiate", "Pyre", "Treaty"]
+    },
+    {
+      "title": "Glass Titan Choir",
+      "path": "./experiments/aaa-batch/glass-titan-choir/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Conduct", "Glass", "Resonance"]
+    },
+    {
+      "title": "Grave Signal Diver",
+      "path": "./experiments/aaa-batch/grave-signal-diver/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Ping", "Abyss", "Signal"]
+    },
+    {
+      "title": "Brass Moon Smuggler",
+      "path": "./experiments/aaa-batch/brass-moon-smuggler/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Smuggle", "Moon", "Scan"]
+    },
+    {
+      "title": "Orchid Mech Harvest",
+      "path": "./experiments/aaa-batch/orchid-mech-harvest/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Harvest", "Mech", "Spores"]
+    },
+    {
+      "title": "Midnight Bridge Warden",
+      "path": "./experiments/aaa-batch/midnight-bridge-warden/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Repair", "Bridge", "Storm"]
+    },
+    {
+      "title": "Saffron Skull Market",
+      "path": "./experiments/aaa-batch/saffron-skull-market/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Trade", "Market", "Curse"]
+    },
+    {
+      "title": "Comet Forge Runner",
+      "path": "./experiments/aaa-batch/comet-forge-runner/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Catch", "Comet", "Forge"]
+    },
+    {
+      "title": "Ivory Wolf Court",
+      "path": "./experiments/aaa-batch/ivory-wolf-court/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Command", "Court", "Morale"]
     }
   ]
 }

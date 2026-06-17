@@ -1,6 +1,6 @@
 # AAA 100 Game Backlog
 
-Status: Batch 05 implemented from `gpt-it`-started workflow.
+Status: Batch 06 implemented from `gpt-it`-started workflow.
 
 ## Batch 01
 
@@ -69,4 +69,17 @@ Status: Batch 05 implemented from `gpt-it`-started workflow.
 | `null-tide-anchorite` | Null Tide Anchorite | Anchor | Null current, chain stress, room detachment | Ink-black tide, monastery slabs, silver chains | pressure, resource, action window, affordance | implemented |
 | `signal-pyre-diplomat` | Signal Pyre Diplomat | Negotiate | Trust decay, smoke drift, tower retaliation | Night ridgelines, colored pyres, treaty glyphs | pressure, resource, action window, affordance | implemented |
 
-60 additional unique games remain. Future batches must continue through `gpt-it` first, then repo-verified implementation.
+## Batch 06
+
+| Slug | Title | Verb | Pressure Loop | Visual Identity | Kits | Status |
+| --- | --- | --- | --- | --- | --- | --- |
+| `glass-titan-choir` | Glass Titan Choir | Conduct | Resonance alignment, titan stress, engine collapse | Glass titans, cathedral ribs, sound-wave rings | pressure, resource, action window, affordance | implemented |
+| `grave-signal-diver` | Grave Signal Diver | Ping | Oxygen drain, signal ghosts, scrambled route | Abyss towers, sonar blooms, green signal rings | pressure, resource, action window, affordance | implemented |
+| `brass-moon-smuggler` | Brass Moon Smuggler | Smuggle | Cargo heat, scan cones, exposed shipment | Brass rails, moon dust, red mirror scans | pressure, resource, action window, affordance | implemented |
+| `orchid-mech-harvest` | Orchid Mech Harvest | Harvest | Spore load, vent timing, bloom pressure | Greenhouse swamp, mech arms, orchids | pressure, resource, action window, affordance | implemented |
+| `midnight-bridge-warden` | Midnight Bridge Warden | Repair | Segment decay, caravan routing, storm splits | Bridge grid, rain slashes, ghost lanterns | pressure, resource, action window, affordance | implemented |
+| `saffron-skull-market` | Saffron Skull Market | Trade | Curse pressure, moving stalls, closing exit | Saffron banners, obsidian stalls, jade glow | pressure, resource, action window, affordance | implemented |
+| `comet-forge-runner` | Comet Forge Runner | Catch | Heat climb, missed comets, cooled weapon | Forge platforms, comet trails, star machinery | pressure, resource, action window, affordance | implemented |
+| `ivory-wolf-court` | Ivory Wolf Court | Command | Morale decay, late commands, duel tempo | Snow arena, ivory banners, crimson court marks | pressure, resource, action window, affordance | implemented |
+
+52 additional unique games remain. Future batches must continue through `gpt-it` first, then repo-verified implementation.
