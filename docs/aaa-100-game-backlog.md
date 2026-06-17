@@ -1,6 +1,6 @@
 # AAA 100 Game Backlog
 
-Status: Batch 02 implemented from `gpt-it` output.
+Status: Batch 03 implemented from `gpt-it` output.
 
 ## Batch 01
 
@@ -30,4 +30,17 @@ Status: Batch 02 implemented from `gpt-it` output.
 | `sporewright-canopy` | Sporewright Canopy | Cultivate | Rot spread, spore charge, cap collapse | Bioluminescent jungle, mushrooms, spores, rot veins | generic pressure, generic resource, affordances, procedural layout | implemented |
 | `rift-bazaar` | Rift Bazaar | Barter | Debt timer, mutating prices, cursed inventory | Floating night market, portals, coin sparks, rift fog | generic pressure, generic resource, inventory economy, affordances | implemented |
 
-84 additional unique games remain. Future batches must continue through `gpt-it` first, then repo-verified implementation.
+## Batch 03
+
+| Slug | Title | Verb | Pressure Loop | Visual Identity | Kits | Status |
+| --- | --- | --- | --- | --- | --- | --- |
+| `nerve-forge` | Nerve Forge | Cauterize | Immune response, lesion timing, shock spread | Bioluminescent nerve tunnels, surgical sparks | generic pressure, generic resource, generic action window, objective flow | implemented |
+| `clockwork-verdict` | Clockwork Verdict | Present | Credibility, objection windows, verdict advance | Brass courtroom, judge automaton, evidence cards | generic pressure, generic resource, generic action window, evidence data | implemented |
+| `beetle-siege` | Beetle Siege | Load | Wall volleys, stamina, late armor exposure | Desert siege, obsidian beetle, bronze engines | generic pressure, generic resource, generic action window, health data | implemented |
+| `opera-of-knives` | Opera Of Knives | Cue | Assassin lanes, shrinking beat windows, diva damage | Crimson opera house, spotlights, blades | generic pressure, generic resource, generic action window, lane route data | implemented |
+| `quartz-undertaker` | Quartz Undertaker | Match | Resonance decay, wrong burial cracks, ghost multiply | Quartz cemetery, coffins, spectral roots | generic pressure, generic resource, generic action window, match data | implemented |
+| `sunken-choir` | Sunken Choir | Conduct | Breath hymn, statue order, current tempo | Underwater cathedral, stone singers, bell chains | generic pressure, generic resource, generic action window, phrase data | implemented |
+| `meteor-tailor` | Meteor Tailor | Stitch | Reentry heat, stitch windows, torn sail descent | High atmosphere, meteors, silver thread | generic pressure, generic resource, generic action window, rotation data | implemented |
+| `catacomb-postmaster` | Catacomb Postmaster | Route | Trace meter, valve jams, warden alerts | Catacombs, brass tubes, glowing letters | generic pressure, generic resource, generic action window, route topology | implemented |
+
+76 additional unique games remain. Future batches must continue through `gpt-it` first, then repo-verified implementation.

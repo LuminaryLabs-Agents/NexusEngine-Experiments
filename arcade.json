@@ -121,6 +121,54 @@
       "path": "./experiments/aaa-batch/rift-bazaar/",
       "kind": ["experiment", "aaa-seed"],
       "tags": ["Trade", "Relics", "Debt"]
+    },
+    {
+      "title": "Nerve Forge",
+      "path": "./experiments/aaa-batch/nerve-forge/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Cauterize", "Titan", "Timing"]
+    },
+    {
+      "title": "Clockwork Verdict",
+      "path": "./experiments/aaa-batch/clockwork-verdict/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Court", "Evidence", "Timing"]
+    },
+    {
+      "title": "Beetle Siege",
+      "path": "./experiments/aaa-batch/beetle-siege/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Siege", "Beetle", "Armor"]
+    },
+    {
+      "title": "Opera Of Knives",
+      "path": "./experiments/aaa-batch/opera-of-knives/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Opera", "Traps", "Beat"]
+    },
+    {
+      "title": "Quartz Undertaker",
+      "path": "./experiments/aaa-batch/quartz-undertaker/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Match", "Cemetery", "Crystal"]
+    },
+    {
+      "title": "Sunken Choir",
+      "path": "./experiments/aaa-batch/sunken-choir/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Conduct", "Abyss", "Harmony"]
+    },
+    {
+      "title": "Meteor Tailor",
+      "path": "./experiments/aaa-batch/meteor-tailor/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Stitch", "Meteor", "Reentry"]
+    },
+    {
+      "title": "Catacomb Postmaster",
+      "path": "./experiments/aaa-batch/catacomb-postmaster/",
+      "kind": ["experiment", "aaa-seed"],
+      "tags": ["Route", "Mail", "Valves"]
     }
   ]
 }

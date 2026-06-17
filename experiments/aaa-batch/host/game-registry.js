@@ -1,3 +1,5 @@
+import { createActionContract } from "./action-contract.js";
+
 const aaaBatchGameSpecs = [
   {
     id: "ember-rail",
@@ -206,13 +208,118 @@ const aaaBatchGameSpecs = [
     kitStack: ["generic-pressure-loop-kit", "generic-resource-loop-kit", "inventory-economy-data", "affordance-descriptor-kit"],
     palette: ["#12081c", "#ffcc66", "#b05cff", "#32ffd2"],
     smoke: ["inspectRelic", "tradeItem", "cleanseCurse"]
+  },
+  {
+    id: "nerve-forge",
+    title: "Nerve Forge",
+    route: "./experiments/aaa-batch/nerve-forge/",
+    fantasy: "Operate inside a sleeping titan's nervous system to cauterize nightmare lesions.",
+    verb: "Cauterize",
+    pressureLoop: "Immune response rises, lesions pulse on timing windows, missed cautery spreads shock.",
+    visualIdentity: "Bioluminescent nerve tunnels, gold surgical sparks, red pulse nodes.",
+    controls: "Mouse aim, Click cauterize, Q/E cycle tool, Space stabilize pulse, R restart.",
+    kitStack: ["generic-pressure-loop-kit", "generic-resource-loop-kit", "generic-action-window-kit", "objective-flow-data"],
+    palette: ["#170814", "#ff3b5f", "#ffd36a", "#39f0d4"],
+    smoke: ["aimLesion", "stabilizePulse", "cauterizeNode"]
+  },
+  {
+    id: "clockwork-verdict",
+    title: "Clockwork Verdict",
+    route: "./experiments/aaa-batch/clockwork-verdict/",
+    fantasy: "Argue before a mechanical court by presenting evidence before the judge gears lock.",
+    verb: "Present",
+    pressureLoop: "Credibility drains, objection windows open briefly, wrong evidence advances the verdict.",
+    visualIdentity: "Brass courtroom, rotating judge automaton, parchment evidence cards, red verdict gears.",
+    controls: "A/D select evidence, E present, Space object, Q discard, R restart.",
+    kitStack: ["generic-pressure-loop-kit", "generic-resource-loop-kit", "generic-action-window-kit", "inventory-evidence-data"],
+    palette: ["#1b1208", "#c58a3a", "#f4e2bd", "#b72f2f"],
+    smoke: ["selectEvidence", "objectWindow", "presentEvidence"]
+  },
+  {
+    id: "beetle-siege",
+    title: "Beetle Siege",
+    route: "./experiments/aaa-batch/beetle-siege/",
+    fantasy: "Command a giant siege beetle by rhythmically loading armor plates and mandible strikes.",
+    verb: "Load",
+    pressureLoop: "Enemy wall fires volleys, beetle stamina drops, late armor loads expose weak points.",
+    visualIdentity: "Desert siege field, obsidian beetle shell, bronze wall engines, dust impacts.",
+    controls: "1/2/3 choose plate, Space load timing, E mandible strike, A/D brace side, R restart.",
+    kitStack: ["generic-pressure-loop-kit", "generic-resource-loop-kit", "generic-action-window-kit", "damage-health-data"],
+    palette: ["#21140a", "#d28a35", "#15151d", "#f2d09b"],
+    smoke: ["braceLeft", "loadPlate", "strikeGate"]
+  },
+  {
+    id: "opera-of-knives",
+    title: "Opera Of Knives",
+    route: "./experiments/aaa-batch/opera-of-knives/",
+    fantasy: "Survive a masked assassin opera by cueing stage traps on musical beats.",
+    verb: "Cue",
+    pressureLoop: "Assassins approach lanes, beat windows shrink, missed cues damage the diva.",
+    visualIdentity: "Crimson opera house, spotlight cones, silver falling blades, velvet smoke.",
+    controls: "A/D choose lane, Space cue trap, E swap trap type, Shift hold spotlight, R restart.",
+    kitStack: ["generic-pressure-loop-kit", "generic-resource-loop-kit", "generic-action-window-kit", "lane-route-data"],
+    palette: ["#16050a", "#b91432", "#f3d7a4", "#c7d7ff"],
+    smoke: ["selectLane", "cueTrap", "holdSpotlight"]
+  },
+  {
+    id: "quartz-undertaker",
+    title: "Quartz Undertaker",
+    route: "./experiments/aaa-batch/quartz-undertaker/",
+    fantasy: "Lay restless crystal dead into matching graves before the cemetery fractures.",
+    verb: "Match",
+    pressureLoop: "Grave resonance decays, wrong burials crack the ground, ghosts multiply.",
+    visualIdentity: "Moonlit quartz cemetery, translucent coffins, spectral blue roots, fracture glow.",
+    controls: "Click pick spirit, A/D choose grave, E bury, Space soothe, R restart.",
+    kitStack: ["generic-pressure-loop-kit", "generic-resource-loop-kit", "generic-action-window-kit", "match-data"],
+    palette: ["#07101a", "#9ee7ff", "#e8f4ff", "#8d5cff"],
+    smoke: ["pickSpirit", "sootheSpirit", "buryMatch"]
+  },
+  {
+    id: "sunken-choir",
+    title: "Sunken Choir",
+    route: "./experiments/aaa-batch/sunken-choir/",
+    fantasy: "Conduct drowned statues to lift a cathedral bell from the abyss.",
+    verb: "Conduct",
+    pressureLoop: "Breath hymn fades, wrong statue order sinks the bell, deep current disrupts tempo.",
+    visualIdentity: "Underwater cathedral, stone singers, golden bell chains, drifting sheet music.",
+    controls: "A/D select statue, Space cue note, E hold harmony, Q reset phrase, R restart.",
+    kitStack: ["generic-pressure-loop-kit", "generic-resource-loop-kit", "generic-action-window-kit", "sequence-phrase-data"],
+    palette: ["#03151d", "#2e9cca", "#d6b15f", "#e7f7ff"],
+    smoke: ["selectSinger", "cueNote", "holdHarmony"]
+  },
+  {
+    id: "meteor-tailor",
+    title: "Meteor Tailor",
+    route: "./experiments/aaa-batch/meteor-tailor/",
+    fantasy: "Stitch protective sails onto falling meteors so they burn into safe constellations.",
+    verb: "Stitch",
+    pressureLoop: "Reentry heat climbs, stitch windows pass quickly, torn sails destabilize descent.",
+    visualIdentity: "High atmosphere, flaming rocks, silver thread arcs, star-map overlays.",
+    controls: "Mouse aim stitch, Click anchor thread, Space pull seam, A/D rotate meteor, R restart.",
+    kitStack: ["generic-pressure-loop-kit", "generic-resource-loop-kit", "generic-action-window-kit", "rotation-state-data"],
+    palette: ["#060818", "#ff7438", "#f8f0d2", "#7ab8ff"],
+    smoke: ["anchorThread", "rotateMeteor", "pullSeam"]
+  },
+  {
+    id: "catacomb-postmaster",
+    title: "Catacomb Postmaster",
+    route: "./experiments/aaa-batch/catacomb-postmaster/",
+    fantasy: "Route forbidden letters through a haunted pneumatic mail maze before wardens trace them.",
+    verb: "Route",
+    pressureLoop: "Trace meter rises, valves jam, wrong tubes alert wardens and reroute parcels.",
+    visualIdentity: "Green-black catacombs, brass tube network, glowing letters, ghostly inspection lamps.",
+    controls: "Click valve, Q/E rotate valve, Space dispatch letter, E purge jam, R restart.",
+    kitStack: ["generic-pressure-loop-kit", "generic-resource-loop-kit", "generic-action-window-kit", "route-topology-data"],
+    palette: ["#07100b", "#2fff9a", "#b9853b", "#e9e0b8"],
+    smoke: ["rotateValve", "dispatchLetter", "purgeJam"]
   }
 ];
 
 export const aaaBatchGames = Object.freeze(aaaBatchGameSpecs.map((game) => Object.freeze({
   ...game,
   routePath: game.route,
-  smokeActions: Object.freeze([...game.smoke])
+  smokeActions: Object.freeze([...game.smoke]),
+  actions: Object.freeze(createActionContract(game).actions.slice(0, game.smoke.length))
 })));
 
 export const aaaBatchGalleryGames = Object.freeze(aaaBatchGames.map((game) => ({

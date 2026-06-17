@@ -1,3 +1,5 @@
+import { createActionContract } from "./action-contract.js";
+
 function clone(value) {
   return JSON.parse(JSON.stringify(value));
 }
@@ -12,25 +14,8 @@ function makeNodes(game) {
   }));
 }
 
-function baseAction(action) {
-  return String(action).split(":")[0];
-}
-
 export function createAaaBatchGameHost(game) {
-  const validActions = new Set([
-    ...game.smokeActions.map(baseAction),
-    "switchLane",
-    "vertical",
-    "jump",
-    "recover",
-    "scan",
-    "burst",
-    "selectWard",
-    "fireTether",
-    "blink",
-    "placeAnchor",
-    "recallAnchor"
-  ]);
+  const actionContract = createActionContract(game);
   const state = {
     id: game.id,
     title: game.title,
@@ -57,7 +42,11 @@ export function createAaaBatchGameHost(game) {
     nodes: makeNodes(game),
     recentEvents: ["booted"],
     kitStack: [...game.kitStack],
-    objective: game.smokeActions.join(" -> "),
+    objective: actionContract.smokeActions.join(" -> "),
+    actionContract: {
+      actions: actionContract.actions.map((action) => ({ ...action })),
+      controls: [...actionContract.controls]
+    },
     lastRejectionReason: null
   };
 
@@ -85,12 +74,15 @@ export function createAaaBatchGameHost(game) {
 
   function dispatch(action, payload = {}) {
     if (state.mode !== "active") return getState();
-    if (!validActions.has(action)) {
-      state.lastRejectionReason = `unknown action: ${action}`;
+    const actionResult = actionContract.validateAction(action, payload, state);
+    if (!actionResult.ok) {
+      state.lastRejectionReason = actionResult.rejectionReason;
       event(`rejected:${action}`);
       return getState();
     }
     state.lastRejectionReason = null;
+    action = actionResult.actionId;
+    payload = actionResult.payload;
     event(action);
     if (["vent", "recover", "dampen", "channel", "repair", "crouch", "grab", "scan"].includes(action)) {
       state.resource = Math.min(100, state.resource + 8);
@@ -130,7 +122,7 @@ export function createAaaBatchGameHost(game) {
 
   function runSmoke() {
     for (let frame = 0; frame < 120; frame++) tick(1 / 60);
-    for (const step of game.smokeActions) {
+    for (const step of actionContract.smokeActions) {
       const [action, value] = step.split(":");
       dispatch(action, { direction: value, value });
       for (let frame = 0; frame < 20; frame++) tick(1 / 60);
