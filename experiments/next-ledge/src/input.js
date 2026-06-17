@@ -1,7 +1,7 @@
 export function createInputController({ canvas, leftPad, rightPad }) {
   const keys = new Set();
   const pointer = { x: innerWidth / 2, y: innerHeight / 2, active: false };
-  const queued = { action: false, restart: false, advanceSector: false, pause: null, userGesture: false };
+  const queued = { action: false, restart: false, advanceSector: false, pause: false, userGesture: false };
   const pads = { left: false, right: false };
 
   const lowerKey = (event) => String(event.key ?? "").toLowerCase();
@@ -17,7 +17,7 @@ export function createInputController({ canvas, leftPad, rightPad }) {
     if (key === " " || event.code === "Space") { event.preventDefault(); queued.action = true; queued.userGesture = true; }
     if (key === "r") queued.restart = true;
     if (key === "n") queued.advanceSector = true;
-    if (key === "p") queued.pause = null;
+    if (key === "p") queued.pause = true;
   });
 
   addEventListener("keyup", (event) => keys.delete(lowerKey(event)));
@@ -43,7 +43,7 @@ export function createInputController({ canvas, leftPad, rightPad }) {
     queued.action = false;
     queued.restart = false;
     queued.advanceSector = false;
-    queued.pause = null;
+    queued.pause = false;
     queued.userGesture = false;
     return result;
   }
