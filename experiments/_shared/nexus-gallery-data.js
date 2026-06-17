@@ -64,6 +64,20 @@ export const games = Object.freeze([
     description: "Kit-composed survival slice for rounds, horde pressure, pickups, weapons, orchard content, and debug-friendly runtime state."
   },
   {
+    id: "signal-bastion",
+    title: "Signal Bastion",
+    route: "./experiments/signal-bastion/",
+    kind: "experiment",
+    visual: "hell",
+    playLabel: "Play experiment",
+    tags: [
+      { label: "Generic DSK", tone: "gold" },
+      { label: "Defense", tone: "green" },
+      { label: "Canvas", tone: "blue" }
+    ],
+    description: "Playable 2.5D defense slice composed from the generic-defense ProtoKit bundle: paths, build slots, structures, waves, agents, projectiles, currency, and descriptors."
+  },
+  {
     id: "rogue-lite-hellscape-siege",
     title: "Rogue-Lite Hellscape Siege",
     route: "./games/rogue-lite-hellscape-siege/",
