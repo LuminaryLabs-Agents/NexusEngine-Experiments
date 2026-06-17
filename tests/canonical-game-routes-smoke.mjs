@@ -28,9 +28,15 @@ assert.ok(!shell.includes("is-featured"), "shell should not keep static featured
 
 assert.equal(galleryConfig.title, "Experiments", "gallery config should expose the product title");
 assert.ok(galleryConfig.repoUrl.includes("NexusRealtime-Experiments"), "gallery config should expose the repo URL");
-assert.ok(games.length >= 5, "gallery data should list every visible route");
+assert.equal(games.length, 20, "gallery data should expose exactly 20 canonical games");
 assert.equal(games.filter((game) => game.featured).length, 1, "gallery should have exactly one initial featured route");
 
+const galleryData = readFileSync("experiments/_shared/nexus-gallery-data.js", "utf8");
+assert.ok(!galleryData.includes("aaaBatchGalleryGames"), "main gallery should not spread the full AAA batch registry");
+
+const seenRoutes = new Set();
+const seenIds = new Set();
+const seenGenreTags = new Set();
 for (const game of games) {
   assert.ok(game.id, "gallery games need ids");
   assert.ok(game.title, `${game.id} should have a title`);
@@ -38,6 +44,14 @@ for (const game of games) {
   assert.ok(!/-v[0-9]+\/?$/.test(game.route), `${game.id} route should not be versioned`);
   assert.ok(Array.isArray(game.tags) && game.tags.length > 0, `${game.id} should have tags`);
   assert.ok(game.description, `${game.id} should have a description`);
+  assert.ok(!seenIds.has(game.id), `${game.id} should not duplicate a gallery id`);
+  assert.ok(!seenRoutes.has(game.route), `${game.id} should not duplicate a gallery route`);
+  const primaryTag = game.tags[0]?.label;
+  assert.ok(primaryTag, `${game.id} should have a primary genre tag`);
+  assert.ok(!seenGenreTags.has(primaryTag), `${game.id} should not duplicate primary genre tag ${primaryTag}`);
+  seenIds.add(game.id);
+  seenRoutes.add(game.route);
+  seenGenreTags.add(primaryTag);
   const routePath = game.route.replace(/^\.\//, "");
   assert.ok(existsSync(`${routePath}index.html`), `${game.id} route should have index.html`);
 }
