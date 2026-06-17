@@ -7,11 +7,25 @@ export const galleryConfig = Object.freeze({
 
 export const games = Object.freeze([
   {
+    id: "the-open-above-v2",
+    title: "The Open Above V2",
+    route: "./experiments/the-open-above-v2/",
+    kind: "experiment",
+    featured: true,
+    visual: "sora",
+    playLabel: "Play V2 harness",
+    tags: [
+      { label: "V2 Harness", tone: "gold" },
+      { label: "Composed", tone: "green" },
+      { label: "Flight", tone: "blue" }
+    ],
+    description: "Clean high-fidelity flight harness for assisted bird carving, camera-relative sky, terrain patches, scatter, flocking, and validation-first NexusRealtime composition."
+  },
+  {
     id: "fogline-relay",
     title: "Fogline Relay",
     route: "./experiments/fogline-relay/",
     kind: "experiment",
-    featured: true,
     visual: "fogline",
     playLabel: "Play experiment",
     tags: [
