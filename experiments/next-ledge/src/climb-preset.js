@@ -1,7 +1,11 @@
+const n = (value, fallback = 0) => Number.isFinite(Number(value)) ? Number(value) : fallback;
+
 export function createNextLedgeClimbPreset(options = {}) {
   const sector = Math.max(1, Math.floor(Number(options.sector ?? 1)));
-  const summitY = Number(options.summitY ?? 2200 + sector * 800);
+  const pacing = options.routePacing ?? options.pacing ?? options;
+  const summitY = Number(options.summitY ?? n(pacing.summitBaseY, 2200) + sector * n(pacing.summitPerSectorY, 760));
   const routeId = `next-ledge-sector-${sector}`;
+  const sampleSpacingY = Math.max(80, n(pacing.sampleSpacingY, 125));
   return {
     id: "next-ledge-cinematic-ascent",
     sector,
@@ -20,9 +24,9 @@ export function createNextLedgeClimbPreset(options = {}) {
         end: { x: 0, y: summitY, z: 0 }
       },
       sampling: {
-        count: Math.max(12, Math.floor(summitY / 135)),
-        jitterX: 150,
-        jitterY: 30,
+        count: Math.max(Math.floor(n(pacing.minAnchors, 14)), Math.floor(summitY / sampleSpacingY)),
+        jitterX: n(pacing.jitterX, 165),
+        jitterY: n(pacing.jitterY, 36),
         seed: `${options.seed ?? "summit-recovery-protocol"}:${sector}`
       },
       projection: {
@@ -31,11 +35,11 @@ export function createNextLedgeClimbPreset(options = {}) {
         normal: { x: 0, y: 0, z: 1 }
       },
       validation: {
-        minSpacing: 58,
-        maxEdgeDistance: 190
+        minSpacing: n(pacing.minSpacing, 54),
+        maxEdgeDistance: n(pacing.maxEdgeDistance, 205)
       },
-      restEvery: 5,
-      anchorRadius: 6.5
+      restEvery: Math.max(2, Math.floor(n(pacing.restEvery, 4))),
+      anchorRadius: n(pacing.anchorRadius, 6.5)
     },
     climb: {
       routeId,
@@ -47,7 +51,7 @@ export function createNextLedgeClimbPreset(options = {}) {
       startRadius: 9,
       restRadius: 7,
       summitRadius: 15,
-      staminaRestore: 45
+      staminaRestore: n(options.restRestore, n(pacing.restRestore, 58))
     },
     objective: {
       id: "next-ledge-objective-flow",
