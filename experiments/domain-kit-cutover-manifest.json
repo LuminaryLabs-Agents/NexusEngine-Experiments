@@ -1,7 +1,7 @@
 {
   "version": 1,
   "policy": "one canonical base route per experiment or game",
-  "protokitsCommit": "cc9eda32623d5f45edc3d6f6257546dc01ee919a",
+  "protokitsCommit": "6511240f0396619b69dcfb39c01b15f21731d16c",
   "canonicalRoutes": [
     {
       "id": "next-ledge",
@@ -52,10 +52,10 @@
       "id": "signal-bastion",
       "kind": "game",
       "canonicalPath": "games/signal-bastion/",
-      "status": "aaa-full-content-pass",
-      "domainCutover": ["generic-defense-aaa-kits", "generic-defense-foundation-kit", "generic-defense-world-kit", "generic-defense-build-kit", "generic-defense-combat-kit", "generic-defense-agent-kit", "generic-defense-wave-kit", "generic-defense-economy-kit", "generic-defense-ability-kit", "generic-defense-objective-kit", "generic-defense-presentation-kit", "generic-defense-scale-kit", "generic-defense-authoring-qa-kit"],
-      "bridgeNeeded": "none; generic-defense-aaa-kits expose the consolidated host-facing DSK facade",
-      "featureParity": ["3 maps", "12 towers", "12+ enemies", "3 bosses", "30 authored waves", "60-wave endless preset", "hard/debug presets", "reward pool", "campaign metadata", "click anchors to build/select", "1-5 blueprint hotkeys", "U upgrade selected structure", "Backspace sell selected structure", "Space start wave", "R restart", "modular preset/input/renderer/boot host split"]
+      "status": "2.5d-cel-presentation-stack-pass",
+      "domainCutover": ["generic-defense-aaa-kits", "generic-defense-presentation-stack-kit", "generic-stylized-view-rig-kit", "generic-cel-material-kit", "generic-ink-outline-kit", "generic-stylized-lighting-kit", "generic-defense-ground-readability-kit", "generic-placement-projector-kit", "generic-range-ring-kit", "generic-defense-unit-render-kit", "generic-tower-identity-layer-kit", "generic-enemy-readability-layer-kit", "generic-combat-vfx-kit", "generic-hit-feedback-kit", "generic-layered-hud-shell-kit", "generic-gameplay-stat-strip-kit", "generic-tower-selection-panel-kit", "generic-upgrade-tree-panel-kit", "generic-selection-context-panel-kit", "generic-ui-motion-polish-kit"],
+      "bridgeNeeded": "none; presentation stack emits descriptor surfaces consumed by the Signal Bastion renderer",
+      "featureParity": ["2.5D oblique cel-style renderer", "inked tower/enemy silhouettes", "sleek gameplay-only stat strip", "12 tower card panel", "selected tower context/upgrade panel", "placement ghost", "range rings", "free-placement presentation over slot-backed validation", "no controls tutorial text", "3 maps", "12 towers", "12+ enemies", "3 bosses", "30 authored waves", "60-wave endless preset"]
     },
     {
       "id": "rogue-lite-hellscape-siege",
