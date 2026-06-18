@@ -58,10 +58,10 @@ export const games = Object.freeze([
     playLabel: "Play experiment",
     tags: [
       { label: "ONNX", tone: "gold" },
-      { label: "Loader", tone: "green" },
-      { label: "Agent", tone: "blue" }
+      { label: "Chat", tone: "green" },
+      { label: "Dispose", tone: "blue" }
     ],
-    description: "Dry-run model pipeline for manifests, Hugging Face download plans, cache state, tokenizer output, ONNX inference state, and validated agent proposal output."
+    description: "Browser chat interface that loads Xenova/distilgpt2 through Transformers.js/ONNX, sends prompts, uses fallback output on failure, and disposes the active model session."
   },
   {
     id: "nexus-frontier-signal-isles",
