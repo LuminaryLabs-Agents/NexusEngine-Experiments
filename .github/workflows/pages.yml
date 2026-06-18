@@ -3,6 +3,7 @@ name: Deploy static site to GitHub Pages
 on:
   push:
     branches:
+      - "main"
       - "0.0.2"
   workflow_dispatch:
 
@@ -13,8 +14,7 @@ permissions:
   contents: read
   pages: write
   id-token: write
-
-concurrency:
+\concurrency:
   group: pages
   cancel-in-progress: false
 
