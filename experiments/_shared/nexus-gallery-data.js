@@ -36,6 +36,34 @@ export const games = Object.freeze([
     description: "First-person survey-pressure loop for scan targets, fog zones, timed pressure, hazard state, and renderer-only visual buckets."
   },
   {
+    id: "living-agent-lab",
+    title: "Living Agent Lab",
+    route: "./experiments/living-agent-lab/",
+    kind: "experiment",
+    visual: "fogline",
+    playLabel: "Play experiment",
+    tags: [
+      { label: "Agent Kit", tone: "gold" },
+      { label: "Dry Run", tone: "green" },
+      { label: "No LLM", tone: "blue" }
+    ],
+    description: "Deterministic dry-run village slice for agent memory, fake harness proposals, validation traces, and in-world dialogue without live model calls."
+  },
+  {
+    id: "onnx-agent-lab",
+    title: "ONNX Agent Lab",
+    route: "./experiments/onnx-agent-lab/",
+    kind: "experiment",
+    visual: "sora",
+    playLabel: "Play experiment",
+    tags: [
+      { label: "ONNX", tone: "gold" },
+      { label: "Loader", tone: "green" },
+      { label: "Agent", tone: "blue" }
+    ],
+    description: "Dry-run model pipeline for manifests, Hugging Face download plans, cache state, tokenizer output, ONNX inference state, and validated agent proposal output."
+  },
+  {
     id: "nexus-frontier-signal-isles",
     title: "Nexus Frontier: Signal Isles",
     route: "./experiments/nexus-frontier-signal-isles/",
