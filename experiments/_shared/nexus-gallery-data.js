@@ -18,6 +18,16 @@ export const games = Object.freeze([
     description: "Clean high-fidelity free-flight harness for assisted bird carving, camera-relative sky, terrain patches, scatter, flocking, and validation-first composition."
   },
   {
+    id: "high-fidelity-meadow",
+    title: "High Fidelity Meadow",
+    route: "./experiments/high-fidelity-meadow/",
+    kind: "experiment",
+    visual: "sora",
+    playLabel: "Play experiment",
+    tags: [{ label: "WebGL", tone: "gold" }, { label: "Procedural", tone: "green" }, { label: "Shaders", tone: "blue" }],
+    description: "Procedural WebGL meadow scene with shader grass, generated cottage, wool-shell sheep, pollen VFX, terrain, lighting, fog, and no preloaded art assets."
+  },
+  {
     id: "fogline-relay",
     title: "Fogline Relay",
     route: "./experiments/fogline-relay/",
