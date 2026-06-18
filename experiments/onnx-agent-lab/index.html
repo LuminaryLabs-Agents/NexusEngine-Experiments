@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ONNX Agent Lab</title>
+  <style>
+    html,body{margin:0;height:100%;overflow:hidden;background:#080b12;color:#edf7ff;font-family:system-ui,sans-serif}canvas{display:block;width:100vw;height:100vh}#hud{position:fixed;inset:0;pointer-events:none}#objective,#controls{position:absolute;left:16px;padding:8px 10px;border:1px solid rgba(130,216,255,.35);border-radius:999px;background:rgba(5,8,14,.62);font-size:12px;letter-spacing:.04em}#objective{top:14px;color:#83d8ff}#controls{bottom:14px;color:#ffe36d}#error{position:fixed;right:14px;bottom:14px;max-width:min(520px,90vw);white-space:pre-wrap;color:#ffd5cd;background:#3b0c08;border:1px solid #ff8b7b;border-radius:14px;padding:12px;font-size:12px}#error[hidden]{display:none}
+  </style>
+</head>
+<body>
+  <main id="app">
+    <canvas id="game" role="application" aria-label="ONNX Agent Loader Lab"></canvas>
+    <aside id="hud" aria-label="Game HUD"><header id="objective">Objective: run dry ONNX tone ranker</header><footer id="controls">Click model core to step loader</footer></aside>
+    <section id="error" role="alert" hidden></section>
+  </main>
+  <script type="module">
+    const canvas=document.querySelector('#game');const ctx=canvas.getContext('2d');const objective=document.querySelector('#objective');
+    const model={id:'tone-ranker',repo:'luminary/tone-ranker',revision:'dry-run',files:['onnx/model.onnx','tokenizer.json'],runtime:'onnx',task:'tone-classification'};
+    const state={step:0,status:'manifest-ready',downloads:[],cache:false,session:false,encoded:null,output:null,proposal:null,trace:['manifest:tone-ranker']};
+    function step(){state.step++;if(state.step===1){state.downloads=model.files.map(path=>({path,status:'planned'}));state.status='download-plan-created';state.trace.unshift('huggingface-loader:plan')}else if(state.step===2){state.downloads=state.downloads.map(file=>({...file,status:'cached'}));state.cache=true;state.status='model-cache-ready';state.trace.unshift('model-cache:cached')}else if(state.step===3){state.encoded={inputIds:[319,492,122,0,0,0,0,0],attentionMask:[1,1,1,0,0,0,0,0]};state.status='tokenized-context';state.trace.unshift('tokenizer:encoded')}else if(state.step===4){state.session=true;state.output={labels:['calm','suspicious'],logits:[0.22,0.78]};state.status='onnx-run-complete';state.trace.unshift('onnx-loader:run-complete')}else{state.proposal={intent:'accuse',tone:'suspicious',confidence:0.78,validated:true};state.status='proposal-validated';state.trace.unshift('agent-kit:proposal-validated')}}
+    canvas.addEventListener('click',step);
+    function resize(){const dpr=Math.min(devicePixelRatio||1,2);canvas.width=innerWidth*dpr;canvas.height=innerHeight*dpr;ctx.setTransform(dpr,0,0,dpr,0,0)}addEventListener('resize',resize);resize();
+    function drawCore(){const x=innerWidth/2,y=innerHeight/2;ctx.fillStyle='rgba(131,216,255,.08)';ctx.beginPath();ctx.arc(x,y,140+Math.sin(performance.now()/420)*10,0,Math.PI*2);ctx.fill();ctx.strokeStyle='rgba(131,216,255,.45)';ctx.lineWidth=2;ctx.beginPath();ctx.arc(x,y,96,0,Math.PI*2);ctx.stroke();ctx.fillStyle=state.proposal?'#ffe36d':state.output?'#83d8ff':state.cache?'#9ee8cf':'#c6d5ff';ctx.beginPath();ctx.arc(x,y,48,0,Math.PI*2);ctx.fill();ctx.fillStyle='#071017';ctx.textAlign='center';ctx.font='bold 12px system-ui';ctx.fillText(state.status,x,y+4)}
+    function drawPipeline(){const labels=['manifest','hf plan','cache','tokens','onnx','proposal'];labels.forEach((label,i)=>{const x=120+i*120,y=90;ctx.fillStyle=i<=state.step?'#83d8ff':'rgba(237,247,255,.22)';ctx.beginPath();ctx.arc(x,y,18,0,Math.PI*2);ctx.fill();ctx.fillStyle='#edf7ff';ctx.font='11px system-ui';ctx.textAlign='center';ctx.fillText(label,x,y+38)})}
+    function draw(){ctx.clearRect(0,0,innerWidth,innerHeight);ctx.fillStyle='#080b12';ctx.fillRect(0,0,innerWidth,innerHeight);drawPipeline();drawCore();if(state.proposal){ctx.fillStyle='rgba(4,7,13,.74)';ctx.strokeStyle='rgba(255,227,109,.45)';ctx.beginPath();ctx.roundRect(innerWidth/2-170,innerHeight/2+78,340,52,14);ctx.fill();ctx.stroke();ctx.fillStyle='#ffe36d';ctx.textAlign='center';ctx.font='14px system-ui';ctx.fillText('Agent proposal: suspicious accusation validated',innerWidth/2,innerHeight/2+110)}objective.textContent='Objective: '+state.status;requestAnimationFrame(draw)}draw();
+    window.GameHost={getState:()=>JSON.parse(JSON.stringify(state)),step,model};
+  </script>
+</body>
+</html>
