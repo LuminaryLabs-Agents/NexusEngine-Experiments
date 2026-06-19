@@ -14,6 +14,9 @@ const errorPanel = document.querySelector("#errorPanel");
 const clock = new THREE.Clock();
 const BUILD_ID = "0.0.2-aaa-clouds-post-audio-1";
 const PROTO_SEED = "high-fidelity-countryside-v0.0.2";
+const GOLDEN_HOUR_OFFSET_SECONDS = 420;
+const LOCAL_MEADOW_TARGET_KIT = "../../../../NexusRealtime-ProtoKits/protokits/high-fidelity-meadow-kits/index.js";
+const CDN_MEADOW_TARGET_KIT = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusRealtime-ProtoKits@main/protokits/high-fidelity-meadow-kits/index.js";
 
 function showFatal(error) {
   errorPanel.hidden = false;
@@ -69,9 +72,21 @@ function applyCycle(cycle, world, renderer, lights, sky, post, time) {
   post.update(cycle.postprocess, time);
 }
 
+async function loadMeadowVisualTargetKit() {
+  try {
+    return await import(LOCAL_MEADOW_TARGET_KIT);
+  } catch {
+    return import(CDN_MEADOW_TARGET_KIT);
+  }
+}
+
 async function boot() {
+  const { createMeadowVisualTargetKit } = await loadMeadowVisualTargetKit();
+  const visualTargetKit = createMeadowVisualTargetKit(null, { seed: PROTO_SEED });
+  const visualTarget = visualTargetKit.createTargetDescriptor();
   const meadowKit = createHighFidelityMeadowAaaKit(null, { seed: PROTO_SEED });
-  const raw = meadowKit.createSceneDescriptor({ width: 196, depth: 196, segments: 204, grass: { bladeCount: 34000, radius: 98 }, flowers: { count: 1800, radius: 96 }, vfx: { count: 2200, radius: 94 } });
+  const raw = { ...meadowKit.createSceneDescriptor({ width: 196, depth: 196, segments: 204, grass: { bladeCount: 34000, radius: 98 }, flowers: { count: 1800, radius: 96 }, vfx: { count: 2200, radius: 94 } }), visualTarget };
+  const visualTargetValidation = visualTargetKit.validateSceneDescriptor(raw);
   const desc = adapt(raw, createMeadowShaderVfxKit(null, { seed: PROTO_SEED }).listShaders());
   const uniforms = createUniformRegistry();
   const renderer = createRenderer();
@@ -80,7 +95,12 @@ async function boot() {
   world.fog = new THREE.FogExp2(0x9fbfb2, 0.012);
   const camera = new THREE.PerspectiveCamera(45, innerWidth / innerHeight, 0.1, 560);
   const target = new THREE.Vector3();
-  const controls = installControls(canvas, camera, target);
+  const controls = installControls(canvas, camera, target, {
+    distance: 34,
+    theta: Math.PI * 0.96,
+    phi: 1.34,
+    targets: [visualTarget.camera.target, visualTarget.focus.playerSilhouette, { x: 4, y: 1.4, z: 18 }]
+  });
   const sun = new THREE.DirectionalLight(0xffdda0, 4.2);
   sun.castShadow = true;
   sun.shadow.mapSize.set(2048, 2048);
@@ -102,10 +122,10 @@ async function boot() {
   addEventListener("pointerdown", unlockAudio, { once: true });
   addEventListener("keydown", unlockAudio, { once: true });
   addEventListener("resize", () => { camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight, false); post.resize(innerWidth, innerHeight); });
-  window.GameHost = { renderer, scene: world, camera, meadowKit, sceneDescriptor: raw, audio, build: BUILD_ID, getState: () => ({ build: BUILD_ID, grass: raw.grass.bladeCount, flowers: raw.flowers.flowers.length, sheep: raw.sheep.count, clouds: clouds.children.length, cycle: meadowKit.sampleCycle(clock.getElapsedTime()), audio: audio.getState() }) };
+  window.GameHost = { renderer, scene: world, camera, meadowKit, visualTargetKit, sceneDescriptor: raw, audio, build: BUILD_ID, getState: () => ({ build: BUILD_ID, grass: raw.grass.bladeCount, flowers: raw.flowers.flowers.length, sheep: raw.sheep.count, clouds: clouds.children.length, visualTarget: { id: visualTarget.id, validation: visualTargetValidation, focalFeatures: visualTarget.focus.focalFeatures }, cycle: meadowKit.sampleCycle(clock.getElapsedTime() + GOLDEN_HOUR_OFFSET_SECONDS), audio: audio.getState() }) };
   function frame() {
     const time = clock.getElapsedTime();
-    const cycle = meadowKit.sampleCycle(time);
+    const cycle = meadowKit.sampleCycle(time + GOLDEN_HOUR_OFFSET_SECONDS);
     uniforms.update(time, controls.control.windSeed);
     applyCycle(cycle, world, renderer, { sun, moon, hemi }, sky, post, time);
     controls.update();
@@ -113,7 +133,7 @@ async function boot() {
     animateHighCloudDeck(clouds, time);
     post.render();
     const audioState = audio.getState();
-    statusEl.textContent = `${raw.grass.bladeCount.toLocaleString()} grass · ${raw.flowers.flowers.length.toLocaleString()} flowers · ${raw.sheep.count} sheep · ${clouds.children.length} high clouds · ${cycle.time.phase} · ${audioState.enabled ? `audio ${audioState.section}` : "tap for 20m procedural audio"} · ${BUILD_ID}`;
+    statusEl.textContent = `${raw.grass.bladeCount.toLocaleString()} grass · ${raw.flowers.flowers.length.toLocaleString()} flowers · ${raw.sheep.count} sheep · ${clouds.children.length} high clouds · target ${visualTargetValidation.score}/6 · ${cycle.time.phase} · ${audioState.enabled ? `audio ${audioState.section}` : "tap for 20m procedural audio"} · ${BUILD_ID}`;
     requestAnimationFrame(frame);
   }
   frame();

@@ -12,6 +12,7 @@ NexusRealtime-Experiments hosts playable browser experiments that compose NexusR
 
 ## Conventions
 - Do not put The Open Above presets or app-specific tuning into ProtoKits.
+- Use `docs/VISUAL-EXPERIMENT-LOOP.md` for target-image upgrade passes: visual differences become ProtoKit gaps only when reusable, otherwise they stay in the experiment route, renderer, input, UI, or content.
 - The Open Above is a high-fidelity bird flight and terrain-streaming simulator.
 - The Open Above should not use wind/updraft gameplay forces, checkpoint rings, ring challenges, or terrain ring objectives.
 - Ambient clouds, lighting, and atmosphere are allowed only as presentation descriptors.

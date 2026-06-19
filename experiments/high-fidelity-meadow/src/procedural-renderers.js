@@ -183,10 +183,10 @@ export function createSky(uniforms) {
   return new THREE.Mesh(new THREE.SphereGeometry(260, 48, 24), new THREE.ShaderMaterial({ side: THREE.BackSide, uniforms: uniforms({ uZenith: { value: new THREE.Color(0x6aa1e0) }, uHorizon: { value: new THREE.Color(0xffbb75) } }), vertexShader: `varying vec3 vWorld; void main(){ vec4 w=modelMatrix*vec4(position,1.); vWorld=w.xyz; gl_Position=projectionMatrix*viewMatrix*w; }`, fragmentShader: `precision highp float; varying vec3 vWorld; uniform vec3 uZenith; uniform vec3 uHorizon; void main(){ float h=normalize(vWorld).y*.5+.5; vec3 c=mix(uHorizon,uZenith,smoothstep(.12,1.,h)); float sun=smoothstep(.995,1.,dot(normalize(vWorld),normalize(vec3(.38,.88,.22)))); gl_FragColor=vec4(c+vec3(1.,.75,.42)*sun*1.6,1.); }` }));
 }
 
-export function installControls(canvas, camera, target) {
-  const control = { distance: 31, theta: 0.58, phi: 0.93, dragging: false, x: 0, y: 0, beat: 0, windSeed: 0 };
+export function installControls(canvas, camera, target, options = {}) {
+  const control = { distance: options.distance ?? 31, theta: options.theta ?? 0.58, phi: options.phi ?? 0.93, dragging: false, x: 0, y: 0, beat: 0, windSeed: 0 };
+  const targets = (options.targets?.length ? options.targets : [{ x: -1.5, y: 2.1, z: -2.5 }, { x: -8, y: 2.6, z: -4 }, { x: 5, y: 1.6, z: 9 }]).map((entry) => new THREE.Vector3(entry.x, entry.y, entry.z));
   function update() {
-    const targets = [new THREE.Vector3(-1.5, 2.1, -2.5), new THREE.Vector3(-8, 2.6, -4), new THREE.Vector3(5, 1.6, 9)];
     target.copy(targets[control.beat % targets.length]);
     camera.position.lerp(new THREE.Vector3(target.x + Math.sin(control.theta) * Math.sin(control.phi) * control.distance, target.y + Math.cos(control.phi) * control.distance, target.z + Math.cos(control.theta) * Math.sin(control.phi) * control.distance), 0.16);
     camera.lookAt(target);
