@@ -1,3 +1,5 @@
+import { aaaBatchGalleryGames } from "../aaa-batch/host/game-registry.js";
+
 export const galleryConfig = Object.freeze({
   title: "Experiments",
   subtitle: "NexusRealtime playable routes",
@@ -5,7 +7,7 @@ export const galleryConfig = Object.freeze({
   hint: "Drag, swipe, wheel, double-click, or use arrows to browse."
 });
 
-export const games = Object.freeze([
+const featuredGames = Object.freeze([
   {
     id: "the-open-above-harness",
     title: "The Open Above V2",
@@ -24,8 +26,8 @@ export const games = Object.freeze([
     kind: "experiment",
     visual: "sora",
     playLabel: "Play experiment",
-    tags: [{ label: "WebGL", tone: "gold" }, { label: "Procedural", tone: "green" }, { label: "Shaders", tone: "blue" }],
-    description: "Procedural WebGL meadow scene with shader grass, generated cottage, wool-shell sheep, pollen VFX, terrain, lighting, fog, and no preloaded art assets."
+    tags: [{ label: "WebGL", tone: "gold" }, { label: "Procedural", tone: "green" }, { label: "DSK Cutover", tone: "blue" }],
+    description: "Experiment-owned procedural WebGL meadow scene composed from current terrain, wind, vegetation, creature, fur, sky, VFX, and visual-target ProtoKit domains."
   },
   {
     id: "fogline-relay",
@@ -116,109 +118,20 @@ export const games = Object.freeze([
     playLabel: "Play game",
     tags: [{ label: "Action RPG", tone: "gold" }, { label: "Base Siege", tone: "green" }, { label: "Harvest", tone: "red" }],
     description: "Unified high-fidelity base route for realm portals, inventory, harvesting, building, wave-defense, FX, and renderer-only presentation loop."
-  },
-  {
-    id: "tideglass-salvage",
-    title: "Tideglass Salvage",
-    route: "./experiments/aaa-batch/tideglass-salvage/",
-    kind: "experiment",
-    visual: "fogline",
-    playLabel: "Play experiment",
-    tags: [{ label: "Boat", tone: "gold" }, { label: "Salvage", tone: "green" }, { label: "Water", tone: "blue" }],
-    description: "Pilot a glass-hulled salvage skiff through storm ruins, dock near wreckage, and recover relic crates under cargo and weather pressure."
-  },
-  {
-    id: "ember-rail",
-    title: "Ember Rail",
-    route: "./experiments/aaa-batch/ember-rail/",
-    kind: "experiment",
-    visual: "hell",
-    playLabel: "Play experiment",
-    tags: [{ label: "Rail Runner", tone: "gold" }, { label: "Lane", tone: "green" }, { label: "Speed", tone: "red" }],
-    description: "Surf a molten mag-rail through a collapsing forge canyon by switching rails, jumping gaps, and venting heat at coolant gates."
-  },
-  {
-    id: "skyrig-suture",
-    title: "Skyrig Suture",
-    route: "./experiments/aaa-batch/skyrig-suture/",
-    kind: "experiment",
-    visual: "sora",
-    playLabel: "Play experiment",
-    tags: [{ label: "Tether", tone: "gold" }, { label: "Repair", tone: "green" }, { label: "Sky Rig", tone: "blue" }],
-    description: "Repair a floating storm rig by tethering broken conduits before platforms drift apart and battery pressure collapses the repair route."
-  },
-  {
-    id: "core-diver",
-    title: "Core Diver",
-    route: "./experiments/aaa-batch/core-diver/",
-    kind: "experiment",
-    visual: "fogline",
-    playLabel: "Play experiment",
-    tags: [{ label: "Underwater", tone: "gold" }, { label: "Oxygen", tone: "green" }, { label: "Reactor", tone: "blue" }],
-    description: "Dive into a flooded reactor core, manage oxygen and radiation, grab rods, and surface before the pressure loop peaks."
-  },
-  {
-    id: "starwell-cartographer",
-    title: "Starwell Cartographer",
-    route: "./experiments/aaa-batch/starwell-cartographer/",
-    kind: "experiment",
-    visual: "sora",
-    playLabel: "Play experiment",
-    tags: [{ label: "Survey", tone: "gold" }, { label: "Beacons", tone: "green" }, { label: "Astral", tone: "blue" }],
-    description: "Map a shifting astral basin by scanning zones and anchoring beacons before rift drift corrupts the chart."
-  },
-  {
-    id: "gravity-anvil",
-    title: "Gravity Anvil",
-    route: "./experiments/aaa-batch/gravity-anvil/",
-    kind: "experiment",
-    visual: "sora",
-    playLabel: "Play experiment",
-    tags: [{ label: "Physics", tone: "gold" }, { label: "Sling", tone: "green" }, { label: "Forge", tone: "red" }],
-    description: "Forge star-metal by slinging ore through orbiting gravity wells, using trajectory timing and forge windows instead of movement combat."
-  },
-  {
-    id: "mirrorfall-prism",
-    title: "Mirrorfall Prism",
-    route: "./experiments/aaa-batch/mirrorfall-prism/",
-    kind: "experiment",
-    visual: "next",
-    playLabel: "Play experiment",
-    tags: [{ label: "Beam Puzzle", tone: "gold" }, { label: "Prism", tone: "green" }, { label: "Temple", tone: "blue" }],
-    description: "Rotate ancient prisms to redirect moonlight, lock beams, and hold back the eclipse wall before the temple is consumed."
-  },
-  {
-    id: "echo-lock",
-    title: "Echo Lock",
-    route: "./experiments/aaa-batch/echo-lock/",
-    kind: "experiment",
-    visual: "next",
-    playLabel: "Play experiment",
-    tags: [{ label: "Audio Puzzle", tone: "gold" }, { label: "Tune", tone: "green" }, { label: "Vault", tone: "blue" }],
-    description: "Crack a cathedral vault by tuning resonance, pulsing sonic tumblers, and dampening noise before patrol alert closes the window."
-  },
-  {
-    id: "clockwork-verdict",
-    title: "Clockwork Verdict",
-    route: "./experiments/aaa-batch/clockwork-verdict/",
-    kind: "experiment",
-    visual: "hell",
-    playLabel: "Play experiment",
-    tags: [{ label: "Courtroom", tone: "gold" }, { label: "Cards", tone: "green" }, { label: "Timing", tone: "red" }],
-    description: "Argue before a mechanical court by selecting evidence, objecting during brief windows, and managing credibility before the verdict gears lock."
-  },
-  {
-    id: "orchid-mech-harvest",
-    title: "Orchid Mech Harvest",
-    route: "./experiments/aaa-batch/orchid-mech-harvest/",
-    kind: "experiment",
-    visual: "zombie",
-    playLabel: "Play experiment",
-    tags: [{ label: "Mech", tone: "gold" }, { label: "Harvest", tone: "green" }, { label: "Spore", tone: "blue" }],
-    description: "Pilot a soft biotech mech, select tool arms, harvest unstable flowers, and vent spores before greenhouse pressure blooms out of control."
   }
+]);
+
+const seen = new Set(featuredGames.map((game) => game.id));
+
+export const games = Object.freeze([
+  ...featuredGames,
+  ...aaaBatchGalleryGames.filter((game) => !seen.has(game.id))
 ]);
 
 export function getFeaturedGame() {
   return games.find((game) => game.featured) ?? games[0] ?? null;
+}
+
+export function getGameById(id) {
+  return games.find((game) => game.id === id) ?? null;
 }
