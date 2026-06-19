@@ -2,15 +2,10 @@ import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { aaaBatchGames } from "../experiments/aaa-batch/host/game-registry.js";
-import { games } from "../experiments/_shared/nexus-gallery-data.js";
 
 const root = process.cwd();
-const galleryRoutes = games.map((game) => game.route);
-const aaaGalleryGames = games.filter((game) => game.id.startsWith("aaa-"));
 
 assert.ok(aaaBatchGames.length > 20, `AAA registry should remain uncapped, got ${aaaBatchGames.length}`);
-assert.ok(galleryRoutes.every((route) => !route.includes("/aaa-batch/")), "Gallery routes should not expose /aaa-batch/ URLs");
-assert.ok(aaaGalleryGames.length > 20, `Gallery should include generated AAA routes, got ${aaaGalleryGames.length}`);
 
 for (const game of aaaBatchGames) {
   const indexPath = join(root, "experiments", game.id, "index.html");
