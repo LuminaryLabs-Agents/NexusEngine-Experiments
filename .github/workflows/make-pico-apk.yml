@@ -66,10 +66,8 @@ jobs:
 
             if (eventName === 'issues') {
               const issue = context.payload.issue;
-              const allowed = new Set(['OWNER', 'MEMBER', 'COLLABORATOR']);
               const titleOk = issue?.title === process.env.DEPLOY_ISSUE_TITLE;
-              const actorOk = allowed.has(issue?.author_association);
-              shouldRun = Boolean(titleOk && actorOk);
+              shouldRun = Boolean(titleOk);
 
               const body = issue?.body ?? '';
               const read = (name, fallback = '') => {
@@ -86,7 +84,7 @@ jobs:
                   owner: context.repo.owner,
                   repo: context.repo.repo,
                   issue_number: issue.number,
-                  body: 'PICO deploy was ignored. Required: exact title `[PICO_DEPLOY] make PICO apk` and author association OWNER/MEMBER/COLLABORATOR.'
+                  body: 'PICO deploy was ignored. Required exact issue title: `[PICO_DEPLOY] make PICO apk`.'
                 });
               } else {
                 await github.rest.issues.createComment({
