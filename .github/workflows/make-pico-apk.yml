@@ -36,7 +36,6 @@ concurrency:
 
 env:
   DEPLOY_ISSUE_TITLE: '[PICO_DEPLOY] make PICO apk'
-  DEPLOY_ISSUE_LABEL: pico-deploy
   PACKAGE_NAME: dev.luminarylabs.spatialauthoring.openxr
 
 jobs:
@@ -69,9 +68,8 @@ jobs:
               const issue = context.payload.issue;
               const allowed = new Set(['OWNER', 'MEMBER', 'COLLABORATOR']);
               const titleOk = issue?.title === process.env.DEPLOY_ISSUE_TITLE;
-              const labelOk = (issue?.labels ?? []).some((label) => label.name === process.env.DEPLOY_ISSUE_LABEL);
               const actorOk = allowed.has(issue?.author_association);
-              shouldRun = Boolean(titleOk && labelOk && actorOk);
+              shouldRun = Boolean(titleOk && actorOk);
 
               const body = issue?.body ?? '';
               const read = (name, fallback = '') => {
@@ -88,7 +86,7 @@ jobs:
                   owner: context.repo.owner,
                   repo: context.repo.repo,
                   issue_number: issue.number,
-                  body: 'PICO deploy was ignored. Required: exact title `[PICO_DEPLOY] make PICO apk`, label `pico-deploy`, and author association OWNER/MEMBER/COLLABORATOR.'
+                  body: 'PICO deploy was ignored. Required: exact title `[PICO_DEPLOY] make PICO apk` and author association OWNER/MEMBER/COLLABORATOR.'
                 });
               } else {
                 await github.rest.issues.createComment({
