@@ -22,90 +22,20 @@ on:
         default: true
         type: boolean
 
-  issues:
-    types: [opened]
-
 permissions:
   contents: read
   actions: read
-  issues: write
 
 concurrency:
   group: make-pico-apk
   cancel-in-progress: false
 
 env:
-  DEPLOY_ISSUE_TITLE: '[PICO_DEPLOY] make PICO apk'
   PACKAGE_NAME: dev.luminarylabs.spatialauthoring.openxr
 
 jobs:
-  guard:
-    name: Validate trigger
-    runs-on: ubuntu-latest
-    outputs:
-      should_run: ${{ steps.guard.outputs.should_run }}
-      device_ip: ${{ steps.guard.outputs.device_ip }}
-      adb_serial: ${{ steps.guard.outputs.adb_serial }}
-      adb_port: ${{ steps.guard.outputs.adb_port }}
-      launch_after_install: ${{ steps.guard.outputs.launch_after_install }}
-    steps:
-      - id: guard
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const eventName = context.eventName;
-            let shouldRun = false;
-            let deviceIp = core.getInput('device_ip') || '';
-            let adbSerial = core.getInput('adb_serial') || '';
-            let adbPort = core.getInput('adb_port') || '5555';
-            let launchAfterInstall = core.getInput('launch_after_install') || 'true';
-
-            if (eventName === 'workflow_dispatch') {
-              shouldRun = true;
-            }
-
-            if (eventName === 'issues') {
-              const issue = context.payload.issue;
-              const titleOk = issue?.title === process.env.DEPLOY_ISSUE_TITLE;
-              shouldRun = Boolean(titleOk);
-
-              const body = issue?.body ?? '';
-              const read = (name, fallback = '') => {
-                const match = body.match(new RegExp(`^${name}:\\s*(.+)$`, 'mi'));
-                return match ? match[1].trim() : fallback;
-              };
-              deviceIp = read('device_ip', '');
-              adbSerial = read('adb_serial', '');
-              adbPort = read('adb_port', '5555');
-              launchAfterInstall = read('launch_after_install', 'true');
-
-              if (!shouldRun) {
-                await github.rest.issues.createComment({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  issue_number: issue.number,
-                  body: 'PICO deploy was ignored. Required exact issue title: `[PICO_DEPLOY] make PICO apk`.'
-                });
-              } else {
-                await github.rest.issues.createComment({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  issue_number: issue.number,
-                  body: 'Accepted PICO deploy request. Building APK, then deploying from the self-hosted `pico` runner.'
-                });
-              }
-            }
-
-            core.setOutput('should_run', shouldRun ? 'true' : 'false');
-            core.setOutput('device_ip', deviceIp);
-            core.setOutput('adb_serial', adbSerial);
-            core.setOutput('adb_port', adbPort || '5555');
-            core.setOutput('launch_after_install', String(launchAfterInstall).toLowerCase() !== 'false' ? 'true' : 'false');
-
   build-apk:
     name: Build Spatial Authoring OpenXR APK
-    needs: guard
-    if: needs.guard.outputs.should_run == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -139,15 +69,14 @@ jobs:
 
   deploy-to-pico:
     name: Install APK on PICO headset
-    needs: [guard, build-apk]
-    if: needs.guard.outputs.should_run == 'true'
+    needs: build-apk
     runs-on: [self-hosted, pico]
     timeout-minutes: 20
     env:
-      ADB_PORT: ${{ needs.guard.outputs.adb_port }}
-      INPUT_DEVICE_IP: ${{ needs.guard.outputs.device_ip }}
-      INPUT_ADB_SERIAL: ${{ needs.guard.outputs.adb_serial }}
-      LAUNCH_AFTER_INSTALL: ${{ needs.guard.outputs.launch_after_install }}
+      ADB_PORT: ${{ inputs.adb_port || '5555' }}
+      INPUT_DEVICE_IP: ${{ inputs.device_ip }}
+      INPUT_ADB_SERIAL: ${{ inputs.adb_serial }}
+      LAUNCH_AFTER_INSTALL: ${{ inputs.launch_after_install }}
     steps:
       - uses: actions/download-artifact@v4
         with:
@@ -211,7 +140,7 @@ jobs:
           adb -s "${{ steps.target.outputs.serial }}" install -r "${APK}"
 
       - name: Launch app
-        if: env.LAUNCH_AFTER_INSTALL == 'true'
+        if: ${{ inputs.launch_after_install }}
         shell: bash
         run: |
           set -euo pipefail
@@ -223,32 +152,3 @@ jobs:
         run: |
           set +e
           adb -s "${{ steps.target.outputs.serial }}" logcat -d -t 250 | grep -E 'SpatialAuthoringOpenXR|AndroidRuntime|OpenXR|FATAL EXCEPTION' || true
-
-  issue-summary:
-    name: Comment issue result
-    needs: [guard, build-apk, deploy-to-pico]
-    if: always() && github.event_name == 'issues' && needs.guard.outputs.should_run == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/github-script@v7
-        with:
-          script: |
-            const result = '${{ needs.deploy-to-pico.result }}';
-            const body = result === 'success'
-              ? 'PICO deploy completed. APK was installed and launch was attempted on the headset.'
-              : `PICO deploy did not complete successfully. Deploy job result: ${result}. Check the workflow logs.`;
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.payload.issue.number,
-              body
-            });
-            if (result === 'success') {
-              await github.rest.issues.update({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.payload.issue.number,
-                state: 'closed',
-                state_reason: 'completed'
-              });
-            }
