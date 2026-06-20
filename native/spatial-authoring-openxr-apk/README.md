@@ -37,6 +37,7 @@ The OpenXR renderer reads that bridge state and draws panel-like colored objects
 - build script
 - PICO ADB-over-TCP install script
 - GitHub Actions APK build workflow
+- GitHub Actions PICO deployment workflow for a self-hosted runner
 
 ## Deferred
 
@@ -86,7 +87,51 @@ Artifact:
 spatial-authoring-openxr-debug-apk
 ```
 
-## Push/install to PICO over TCP after USB identification
+## Deploy to PICO with GitHub Actions
+
+Use:
+
+```txt
+Deploy Spatial Authoring APK to PICO
+```
+
+This workflow builds the APK on a GitHub-hosted runner, uploads the APK artifact, then installs it from a self-hosted runner labeled:
+
+```txt
+self-hosted
+pico
+```
+
+The self-hosted runner must be a machine that can actually reach the headset over USB and/or the same local Wi-Fi network. It must have `adb` installed and available on `PATH`.
+
+Workflow inputs:
+
+```txt
+device_ip
+  Optional headset IP address. Leave empty to discover through USB.
+
+adb_serial
+  Optional adb serial. Overrides discovery.
+
+adb_port
+  Defaults to 5555.
+
+launch_after_install
+  Defaults to true.
+```
+
+Recommended first run:
+
+```txt
+device_ip: empty
+adb_serial: empty
+adb_port: 5555
+launch_after_install: true
+```
+
+That path expects the self-hosted runner machine to have the PICO connected by USB with debugging authorized. The workflow will identify the USB device, discover the headset IP, switch ADB to TCP, connect to the headset, install the APK, launch the app, and capture recent logs.
+
+## Push/install to PICO locally over TCP after USB identification
 
 1. Enable Developer Mode / USB debugging on the headset.
 2. Connect the headset by USB.
