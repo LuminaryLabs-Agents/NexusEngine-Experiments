@@ -1,99 +1,474 @@
-# NexusRealtime Experiments
+# Nexus Arcade Game Ideas
 
-Browser experiments that compose NexusRealtime kits into playable slices.
+This repository is the organized idea bank for Nexus Arcade.
 
-## Canonical route rule
+It will hold game concepts, arcade cabinet experiments, prototype outlines, and long-term content planning for the Nexus Arcade ecosystem.
 
-Every playable game or experiment should have one base-name route. Do not add V1/V2 gallery cards. Fold successful variants back into the base folder and remove versioned playable routes once the unified implementation is in place.
+The goal is to keep every game idea easy to find, compare, refine, and eventually move toward prototype or production.
 
-The current canonical routes are tracked in:
+## Purpose
+
+This repo exists to:
+
+- Capture new arcade game ideas quickly.
+- Organize ideas by category, genre, status, and prototype readiness.
+- Track how ideas evolve over time.
+- Separate raw concepts from refined production candidates.
+- Create a reusable structure for future Nexus Arcade game planning.
+- Build a backlog of possible games for the Nexus Arcade cabinet and related platforms.
+
+## Repo Philosophy
+
+A game idea should not disappear inside a chat thread.
+
+Every useful idea should become a small, trackable document.
+
+Ideas can start messy.
+
+The repo should help them become clearer over time.
+
+A rough idea can move through these stages:
 
 ```txt
-experiments/domain-kit-cutover-manifest.json
+raw idea
+  ↓
+refined concept
+  ↓
+prototype candidate
+  ↓
+playtest candidate
+  ↓
+production candidate
+  ↓
+archived, shipped, merged, or retired
 ```
 
-## Domain-kit cutover target
-
-New and migrated experiments should compose reusable NexusRealtime / ProtoKit domains, keep game-specific behavior in bridge or preset code, and keep renderers presentation-only.
-
-Core target kits include:
+## Planned Folder Structure
 
 ```txt
-action-input-kit
-generic-defense-kits
-timed-pressure-director-kit
-zone-field-kit
-scan-survey-kit
-route-checkpoint-kit
-cargo-delivery-kit
-agent-group-kit
-resource-pressure-kit
-hazard-director-kit
-content-preset-kit
-visual-fidelity-maker-kit
-audio-event-feedback-maker-kit
-camera-cinematic-maker-kit
-scenario-qa-harness
-deterministic-replay-harness
-gamehost-standard-kit
+NexusArcade-GameIdeas/
+├─ README.md
+├─ README.pdf
+├─ templates/
+│  ├─ game-idea-template.md
+│  ├─ prototype-template.md
+│  ├─ playtest-notes-template.md
+│  └─ scoring-template.md
+├─ ideas/
+│  ├─ raw/
+│  ├─ refined/
+│  ├─ ready-for-prototype/
+│  ├─ playtest-candidates/
+│  └─ production-candidates/
+├─ genres/
+│  ├─ action/
+│  ├─ puzzle/
+│  ├─ racing/
+│  ├─ rhythm/
+│  ├─ co-op/
+│  ├─ competitive/
+│  ├─ party/
+│  ├─ experimental/
+│  └─ educational/
+├─ cabinet-fit/
+│  ├─ single-player/
+│  ├─ two-player/
+│  ├─ joystick-and-buttons/
+│  ├─ trackball/
+│  ├─ touchscreen/
+│  └─ specialty-input/
+├─ tracking/
+│  ├─ idea-index.md
+│  ├─ status-board.md
+│  ├─ prototype-queue.md
+│  └─ shipped-or-retired.md
+└─ archive/
+   ├─ merged/
+   ├─ retired/
+   └─ superseded/
 ```
 
-## Next Ledge
+## Game Idea Template
 
-`experiments/next-ledge/` is a cinematic grapple-climb validation demo. It imports the real NexusRealtime runtime, composes the Next Ledge cinematic ascent ProtoKit, maps browser input into `engine.nextLedge` APIs, ticks the runtime, and renders `engine.nextLedge.getSnapshot()` with Three.js.
+Each game idea should eventually follow this structure.
 
-Open `experiments/next-ledge/index.html` in a browser or serve the repository with any static file server.
+```txt
+# Game Title
 
-Controls: Click/tap/Space release or fire grapple, A/D or arrows swing momentum, R restart, N advance sector.
+## One-Line Pitch
 
-Cutover target: preserve climb feel while migrating action input, route progress, risk/resource pressure, camera, feedback, and replay snapshots into domain-kit-owned state.
+A short sentence explaining the game.
 
-## Fogline Relay
+## Core Fantasy
 
-`experiments/fogline-relay/` is a first-person fog-forest relay experiment. It imports NexusRealtime 0.0.1, composes stable kits with the ProtoKits render-layer-kit, keeps the Canvas renderer presentation-only, and validates renderer-agnostic visual buckets, fog volumes, volumetric light descriptors, relay scanning, objective flow, and wraith hazards.
+What does the player feel like they are doing?
 
-Open `experiments/fogline-relay/index.html` in a browser or serve the repository with any static file server.
+Examples:
 
-Controls: WASD move, mouse or arrow keys look, hold E scan, R restart, click canvas for pointer lock.
+- Escaping a collapsing space station.
+- Running a goblin repair shop.
+- Racing through neon tunnels.
+- Defending a haunted vending machine.
 
-Cutover target: make this the canonical `scan-survey-kit` + `zone-field-kit` + `timed-pressure-director-kit` + `fogline-survey-pressure-bridge-kit` validation slice.
+## Arcade Cabinet Fit
 
-## The Open Above
+Why does this work well on an arcade cabinet?
 
-`experiments/the-open-above/` is a high-fidelity bird simulation over streamed terrain. It imports the real NexusRealtime runtime, composes generic ProtoKit DSKs from app-owned config, maps browser input into `GameHost`/flight motion APIs, ticks the runtime, and renders terrain, bird, sky, flock, and scatter descriptors without wind/updraft gameplay or checkpoint rings.
+Consider:
 
-Open `experiments/the-open-above/index.html` in a browser or serve the repository with any static file server.
+- Short play sessions.
+- Immediate controls.
+- Clear visual feedback.
+- Easy to understand from a distance.
+- Fun to watch.
+- Replayable score chase.
+- Works with joystick and buttons.
 
-Controls: W/S pitch, A/D bank, Space boost, R reset.
+## Player Count
 
-Cutover target: preserve bird flight feel while keeping simulator-specific presets in the experiment host and leaving ProtoKits as generic terrain, flight, render, camera, VFX, audio, and descriptor DSKs.
+- Single-player
+- Two-player co-op
+- Two-player competitive
+- Alternating turns
+- Drop-in party play
 
-## Zombie Orchard
+## Controls
 
-`experiments/zombie-orchard/` is a kit-composed survival experiment. It intentionally does not define a new engine. The game layer only composes kits, defines content, feeds input into kit APIs/resources, reads snapshots/events, and renders a canvas view.
+Describe the exact control scheme.
 
-Open `experiments/zombie-orchard/index.html` in a browser or serve the repository with any static file server.
+Example:
 
-Controls: WASD/arrows move, Shift sprint, Space dodge, E collect or pick up, mouse/J use equipped gear, 1/2/3 swap, R force next round, P pause.
+Joystick: move
+Button A: primary action
+Button B: secondary action
+Home: pause / return to launcher
 
-Cutover target: preserve survival controls and wave pacing while aligning rounds, horde pressure, resources, pickups, weapons, orchard content, and debug state with domain-kit architecture.
+## Core Loop
 
-## Signal Bastion
+Describe what the player does repeatedly.
 
-`experiments/signal-bastion/` is a playable 2.5D generic defense slice. It imports the real NexusRealtime runtime, composes the `generic-defense-kits` ProtoKit bundle, maps browser input into `engine.genericDefense` APIs, ticks the runtime, and renders only descriptor snapshots with Canvas.
+Example:
 
-Open `experiments/signal-bastion/index.html` in a browser or serve the repository with any static file server.
+enter arena
+collect resource
+avoid threat
+use resource
+score points
+survive escalation
+repeat until failure
 
-Controls: Click anchors to build/select, 1/2/3 select blueprint, U upgrade selected structure, Space start wave, R restart.
+## Win State
 
-Cutover target: prove a generic defense DSK spine for paths, build slots, vital targets, structures, waves, agents, projectiles, currency, and renderer-only descriptors before splitting the bundle into smaller atomic DSKs.
+What counts as success?
 
-## Rogue-Lite Hellscape Siege
+Examples:
 
-`games/rogue-lite-hellscape-siege/` is the canonical base route for the high-fidelity rogue-lite base-defense game.
+- High score.
+- Survive as long as possible.
+- Complete stages.
+- Beat a boss.
+- Reach the finish line.
+- Clear waves.
 
-The old `games/rogue-lite-hellscape-siege-v2/` route has been folded into this base route and removed from the arcade.
+## Failure State
 
-Controls: WASD/arrows move, Space or mouse primary, E/Enter interact, B build, Q/C cycle, 1/2/3 select build.
+What causes the run to end?
 
-Cutover target: preserve realm portals, inventory, harvesting, pickups, build blueprints, wave/core defense, FX, and renderer-only presentation while replacing local temporary kits with shared domain ProtoKits.
+Examples:
+
+- Health reaches zero.
+- Timer runs out.
+- Base is destroyed.
+- Too many mistakes.
+- Player falls off the arena.
+
+## Scoring
+
+How does the game reward skill?
+
+Consider:
+
+- Combos.
+- Speed.
+- Accuracy.
+- Survival time.
+- Risk-taking.
+- Resource efficiency.
+- Style points.
+- Perfect clears.
+
+## Difficulty Curve
+
+How does the game get harder?
+
+Examples:
+
+- Faster enemies.
+- More hazards.
+- Less time.
+- Smaller safe zones.
+- More complex patterns.
+- Stronger score multipliers with higher risk.
+
+## Visual Identity
+
+Describe the look.
+
+Include:
+
+- Art style.
+- Color palette.
+- Camera angle.
+- Character style.
+- Environment style.
+- Animation feel.
+- Screen readability.
+
+## Audio Identity
+
+Describe the sound.
+
+Include:
+
+- Music style.
+- Sound effect style.
+- Feedback sounds.
+- Failure sounds.
+- Success sounds.
+- Ambient layer.
+
+## Cabinet Attract Mode
+
+What should the game show when nobody is playing?
+
+Include:
+
+- Looping animation.
+- Title screen.
+- Demo gameplay.
+- High scores.
+- Flashing prompt.
+- Cabinet-friendly visual hook.
+
+## Prototype Scope
+
+What is the smallest playable version?
+
+Example:
+
+One arena.
+One player character.
+One enemy type.
+One scoring rule.
+One failure state.
+One 60-second loop.
+
+## Production Scope
+
+What would a fuller version include?
+
+Examples:
+
+- Multiple levels.
+- Multiple enemy types.
+- Boss fights.
+- Unlockable modes.
+- Local multiplayer.
+- Scoreboards.
+- Cabinet effects.
+- Themed visual packs.
+
+## Required Assets
+
+List likely assets.
+
+characters:
+environments:
+props:
+VFX:
+music:
+SFX:
+UI:
+
+## Required Systems
+
+List likely systems.
+
+movement:
+input:
+camera:
+collision:
+scoring:
+timer:
+enemy behavior:
+spawning:
+audio:
+save data:
+leaderboard:
+
+## Replay Value
+
+Why would someone play again?
+
+Examples:
+
+- High score chase.
+- Randomized levels.
+- Daily challenge.
+- Increasing mastery.
+- Local competition.
+- Secret routes.
+- Unlockable modifiers.
+
+## Similar References
+
+List references without copying them directly.
+
+Examples:
+
+- Pac-Man for maze pressure.
+- Galaga for wave readability.
+- Downwell for compact action.
+- WarioWare for fast toy-like loops.
+- Geometry Wars for readable chaos.
+
+## Risks
+
+What might make the idea fail?
+
+Examples:
+
+- Too complex for arcade controls.
+- Not readable on cabinet screen.
+- Too slow to become fun.
+- Requires too much content.
+- Weak replay value.
+- Hard to explain quickly.
+
+## Open Questions
+
+List unresolved questions.
+
+Examples:
+
+- Is this better single-player or co-op?
+- Does it need a timer?
+- Should scoring reward speed or survival?
+- Can the game be understood in 5 seconds?
+- Is the control scheme simple enough?
+
+## Status
+
+Choose one:
+
+raw
+refined
+ready-for-prototype
+playtest-candidate
+production-candidate
+merged
+retired
+superseded
+shipped
+
+## Tags
+
+Example:
+
+tags:
+- arcade
+- joystick
+- two-button
+- score-chase
+- co-op
+- action
+- short-session
+
+## Version History
+
+v0.1 - initial idea
+v0.2 - refined core loop
+v0.3 - added prototype scope
+```
+
+## Tracking Ideas Over Time
+
+Every idea should be tracked by:
+
+- Status
+- Genre
+- Player count
+- Cabinet input type
+- Prototype difficulty
+- Visual complexity
+- Replay potential
+- Production priority
+
+## Suggested Scoring Rubric
+
+Each idea can be rated from 1 to 5.
+
+```txt
+Arcade Fit:
+Control Simplicity:
+Visual Hook:
+Replay Value:
+Prototype Speed:
+Production Potential:
+Multiplayer Potential:
+Originality:
+```
+
+Example:
+
+```txt
+Arcade Fit: 5
+Control Simplicity: 4
+Visual Hook: 5
+Replay Value: 4
+Prototype Speed: 3
+Production Potential: 5
+Multiplayer Potential: 2
+Originality: 4
+```
+
+## Idea Lifecycle
+
+```txt
+Raw
+A quick idea with minimal structure.
+
+Refined
+The idea has a clear loop, controls, and arcade fit.
+
+Ready for Prototype
+The idea is scoped tightly enough to build a small playable version.
+
+Playtest Candidate
+The prototype is playable enough to test.
+
+Production Candidate
+The idea has proven enough promise to expand.
+
+Merged
+The idea was combined with another idea.
+
+Retired
+The idea is intentionally abandoned.
+
+Superseded
+A better version replaced it.
+
+Shipped
+The idea became a finished or released game.
+```
+
+## First Goal
+
+The first goal of this repo is to become a clean home for future Nexus Arcade game ideas.
+
+We will start by adding structured idea documents.
+
+Then we will sort them by genre, cabinet fit, and prototype readiness.
+
+The repo should eventually become a living design backlog for Nexus Arcade.
