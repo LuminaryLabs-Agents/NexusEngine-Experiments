@@ -15,9 +15,6 @@ create a GitHub issue in this repository with:
 ```txt
 Title:
 [PICO_DEPLOY] make PICO apk
-
-Label:
-pico-deploy
 ```
 
 Optional issue body fields:
@@ -87,8 +84,9 @@ The issue trigger only runs when all are true:
 
 ```txt
 title is exactly [PICO_DEPLOY] make PICO apk
-label includes pico-deploy
 author association is OWNER, MEMBER, or COLLABORATOR
 ```
 
 Otherwise the workflow comments that the request was ignored.
+
+A `pico-deploy` label can still be used for organization, but it is not required for the chat trigger.
