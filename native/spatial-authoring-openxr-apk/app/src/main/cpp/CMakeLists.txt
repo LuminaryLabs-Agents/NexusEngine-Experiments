@@ -18,9 +18,11 @@ FetchContent_MakeAvailable(OpenXRSDK)
 set(NATIVE_APP_GLUE ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c)
 
 add_library(spatial_authoring_openxr SHARED
-  spatial_authoring_openxr.cpp
+  spatial_authoring_toolkit_host.cpp
   ${NATIVE_APP_GLUE}
 )
+
+target_compile_features(spatial_authoring_openxr PRIVATE cxx_std_17)
 
 target_compile_definitions(spatial_authoring_openxr PRIVATE
   XR_USE_PLATFORM_ANDROID
