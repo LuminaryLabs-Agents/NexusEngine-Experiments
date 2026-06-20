@@ -1,32 +1,41 @@
-# Chat Tool: make PICO APK
+# Manual Tool: make PICO APK
 
-This repo supports a chat-driven PICO deployment command through GitHub Issues and GitHub Actions.
+This repo now supports PICO deployment through a manual GitHub Actions workflow only.
 
-## Chat phrase
+Issue-triggered deployment has been disabled because the repo is public and the PICO deploy job uses a self-hosted runner that can access local hardware.
 
-When the user says:
+## Manual workflow
+
+Use:
 
 ```txt
-make a PICO APK
+Actions → Make PICO APK → Run workflow
 ```
 
-create a GitHub issue in this repository with:
+Optional workflow inputs:
 
 ```txt
-Title:
-[PICO_DEPLOY] make PICO apk
+device_ip
+  Optional PICO headset IP address. Leave empty to discover through USB.
+
+adb_serial
+  Optional adb serial, e.g. 192.168.x.x:5555. Overrides discovery.
+
+adb_port
+  Defaults to 5555.
+
+launch_after_install
+  Defaults to true.
 ```
 
-Optional issue body fields:
+Recommended first run:
 
 ```txt
-device_ip: 192.168.x.x
-adb_serial: 192.168.x.x:5555
+device_ip: empty
+adb_serial: empty
 adb_port: 5555
 launch_after_install: true
 ```
-
-Leave `device_ip` and `adb_serial` empty for USB discovery on the self-hosted runner.
 
 ## What the workflow does
 
@@ -46,7 +55,6 @@ resolves the PICO headset through adb
 installs the APK
 launches the app
 captures recent launch logs
-comments back on the trigger issue
 ```
 
 ## Required local runner setup
@@ -78,15 +86,8 @@ RSA debugging prompt accepted
 headset connected over USB for first discovery, or already reachable over TCP
 ```
 
-## Safety guard
+## Security rule
 
-The issue trigger only runs when all are true:
+Do not re-enable issue-triggered deployment in the public repo.
 
-```txt
-title is exactly [PICO_DEPLOY] make PICO apk
-author association is OWNER, MEMBER, or COLLABORATOR
-```
-
-Otherwise the workflow comments that the request was ignored.
-
-A `pico-deploy` label can still be used for organization, but it is not required for the chat trigger.
+The local PICO runner should only be used by manual `workflow_dispatch` runs unless the deploy flow is moved to a private repository.
