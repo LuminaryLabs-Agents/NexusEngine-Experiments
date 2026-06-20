@@ -15,7 +15,6 @@
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
 
 struct Color { float r; float g; float b; float a; };
-struct UiRect { float cx; float cy; float sx; float sy; Color color; };
 struct NativeDskObject { std::string id; std::string type; float x; float y; float scaleX; float scaleY; Color color; };
 
 static float clampf(float value, float lo, float hi) { return std::max(lo, std::min(value, hi)); }
@@ -24,71 +23,119 @@ static bool ok(XrResult r, const char* label){ if(XR_FAILED(r)){ LOGE("%s failed
 
 class NativeDskBridge {
 public:
-  NativeDskBridge() { LOGI("Guided native DSK bridge initialized."); }
+  NativeDskBridge() { reset(); LOGI("Right-controller guided DSK bridge initialized."); }
 
   void tick() {
     frame++;
-    unsigned long long scriptFrame = frame % loopFrames;
-    phase = static_cast<int>(scriptFrame / phaseFrames);
-    phaseProgress = static_cast<float>(scriptFrame % phaseFrames) / static_cast<float>(phaseFrames);
-    rebuildObjects();
+    const float t = static_cast<float>(frame) * 0.035f;
+    pulse = 0.5f + 0.5f * std::sin(t);
+    if (stage == 1 && objects.size() > 1) {
+      objects[1].x = clampf(0.50f + (cursorX - 0.50f) * 0.28f, 0.18f, 0.82f);
+      objects[1].y = clampf(0.53f + (cursorY - 0.50f) * 0.18f, 0.28f, 0.76f);
+    }
   }
 
-  void updateCursorFromPose(const XrQuaternionf& q) {
+  void updateCursorFromPose(const XrQuaternionf& q, bool inverse = false) {
     const float sinYaw = 2.0f * (q.w * q.y + q.x * q.z);
     const float cosYaw = 1.0f - 2.0f * (q.y * q.y + q.z * q.z);
     const float yaw = std::atan2(sinYaw, cosYaw);
     float sinPitch = 2.0f * (q.w * q.x - q.z * q.y);
     sinPitch = clampf(sinPitch, -1.0f, 1.0f);
     const float pitch = std::asin(sinPitch);
-    // Inverse 3DOF: the floating workbench reacts opposite head rotation, like dragging the scene under gaze.
-    cursorX = clampf(0.50f - yaw * 0.70f, 0.10f, 0.90f);
-    cursorY = clampf(0.50f + pitch * 0.85f, 0.16f, 0.84f);
+    const float sx = inverse ? -1.0f : 1.0f;
+    const float sy = inverse ? -1.0f : 1.0f;
+    cursorX = clampf(0.50f + sx * yaw * 0.72f, 0.10f, 0.90f);
+    cursorY = clampf(0.50f - sy * pitch * 0.88f, 0.14f, 0.86f);
+  }
+
+  void controllerClick() {
+    lastClickFrame = frame;
+    const int hit = hitTest(cursorX, cursorY);
+    if (hit >= 0) selected = hit;
+
+    if (stage == 0) {
+      selected = hit >= 0 ? hit : 0;
+      stage = 1;
+      LOGI("DSK demo: selection-dsk selected object %d", selected);
+      return;
+    }
+    if (stage == 1) {
+      stage = 2;
+      if (objects.size() > 1) {
+        objects[1].x = clampf(cursorX, 0.16f, 0.84f);
+        objects[1].y = clampf(cursorY, 0.24f, 0.78f);
+      }
+      selected = 1;
+      LOGI("DSK demo: transform-dsk moved note by controller aim");
+      return;
+    }
+    if (stage == 2) {
+      stage = 3;
+      objects.push_back({"created-widget", "widget.note.created", clampf(cursorX, 0.18f, 0.82f), clampf(cursorY, 0.24f, 0.78f), 0.17f, 0.10f, {0.96f, 0.92f, 0.35f, 1.0f}});
+      selected = static_cast<int>(objects.size() - 1);
+      LOGI("DSK demo: widget-dsk created a new note object");
+      return;
+    }
+    if (stage == 3) {
+      stage = 4;
+      selected = 2;
+      if (objects.size() > 2) {
+        objects[2].scaleX = 0.22f;
+        objects[2].scaleY = 0.14f;
+      }
+      LOGI("DSK demo: transform-dsk resized timer object");
+      return;
+    }
+    if (stage == 4) {
+      stage = 5;
+      snapshots++;
+      LOGI("DSK demo: persistence-dsk captured snapshot %u", snapshots);
+      return;
+    }
+    reset();
+    stage = 0;
+    LOGI("DSK demo reset for next viewer");
   }
 
   const std::vector<NativeDskObject>& getObjects() const { return objects; }
   int selectedIndex() const { return selected; }
   unsigned long long currentFrame() const { return frame; }
-  int currentPhase() const { return phase; }
-  float currentPhaseProgress() const { return phaseProgress; }
+  int currentStage() const { return stage; }
+  float stagePulse() const { return pulse; }
   float getCursorX() const { return cursorX; }
   float getCursorY() const { return cursorY; }
+  bool clickFlash() const { return frame - lastClickFrame < 18; }
+  unsigned snapshotCount() const { return snapshots; }
 
 private:
-  static constexpr unsigned long long phaseFrames = 240;
-  static constexpr unsigned long long loopFrames = phaseFrames * 6;
-
-  void add(const char* id, const char* type, float x, float y, float sx, float sy, Color c) {
-    objects.push_back({id, type, x, y, sx, sy, c});
+  void reset() {
+    objects.clear();
+    objects.push_back({"panel-dashboard","widget.panel",0.25f,0.55f,0.20f,0.13f,{0.14f,0.42f,1.00f,1.0f}});
+    objects.push_back({"note-alpha","widget.note",0.50f,0.53f,0.16f,0.105f,{0.95f,0.67f,0.20f,1.0f}});
+    objects.push_back({"timer-focus","widget.timer",0.74f,0.54f,0.14f,0.09f,{0.14f,0.85f,0.74f,1.0f}});
+    selected = 0;
+    cursorX = 0.5f;
+    cursorY = 0.5f;
+    snapshots = 0;
   }
 
-  void rebuildObjects() {
-    objects.clear();
-    selected = phase == 0 ? 0 : phase == 1 ? 1 : phase == 2 ? 1 : phase == 3 ? 3 : phase == 4 ? 2 : 4;
-
-    const float pulse = 0.5f + 0.5f * std::sin(static_cast<float>(frame) * 0.075f);
-    const float noteShift = phase == 2 ? (phaseProgress - 0.5f) * 0.22f : 0.0f;
-    const float timerScale = phase == 4 ? (1.0f + phaseProgress * 0.65f) : 1.0f;
-    const float newGrow = phase >= 3 ? (phase == 3 ? phaseProgress : 1.0f) : 0.0f;
-
-    add("panel-dashboard", "widget.panel", 0.25f, 0.55f, 0.20f, 0.13f, {0.14f, 0.42f + 0.18f * pulse, 1.00f, 1.0f});
-    add("note-alpha", "widget.note", 0.50f + noteShift, 0.53f, 0.16f, 0.105f, {0.95f, 0.67f, 0.20f, 1.0f});
-    add("timer-focus", "widget.timer", 0.74f, 0.54f, 0.14f * timerScale, 0.09f * timerScale, {0.14f, 0.85f, 0.74f, 1.0f});
-
-    if (newGrow > 0.02f) {
-      add("created-widget", "widget.note.created", 0.50f, 0.32f, 0.18f * newGrow, 0.10f * newGrow, {0.96f, 0.92f, 0.35f, 1.0f});
+  int hitTest(float x, float y) const {
+    for (int i = static_cast<int>(objects.size()) - 1; i >= 0; --i) {
+      const auto& o = objects[static_cast<size_t>(i)];
+      if (std::fabs(x - o.x) <= o.scaleX * 0.58f && std::fabs(y - o.y) <= o.scaleY * 0.58f) return i;
     }
-
-    add("save-state", "persistence.snapshot", 0.50f, 0.18f, phase == 5 ? 0.18f + 0.22f * phaseProgress : 0.14f, 0.035f, phase == 5 ? Color{0.20f, 1.00f, 0.38f, 1.0f} : Color{0.18f, 0.30f, 0.42f, 1.0f});
+    return -1;
   }
 
   std::vector<NativeDskObject> objects;
   int selected = 0;
-  int phase = 0;
-  float phaseProgress = 0.0f;
+  int stage = 0;
+  float pulse = 0.0f;
   float cursorX = 0.5f;
   float cursorY = 0.5f;
+  unsigned snapshots = 0;
   unsigned long long frame = 0;
+  unsigned long long lastClickFrame = 0;
 };
 
 class SpatialAuthoringApp {
@@ -112,7 +159,7 @@ public:
 private:
   struct Swapchain { XrSwapchain handle{XR_NULL_HANDLE}; int32_t width{0}; int32_t height{0}; std::vector<XrSwapchainImageOpenGLESKHR> images; };
 
-  bool init(){ return initLoader() && createInstance() && getSystem() && initEgl() && createSession() && createSpace() && createSwapchains(); }
+  bool init(){ return initLoader() && createInstance() && createActions() && getSystem() && initEgl() && createSession() && attachActions() && createActionSpaces() && createSpace() && createSwapchains(); }
   bool initLoader(){
     PFN_xrInitializeLoaderKHR fn=nullptr;
     xrGetInstanceProcAddr(XR_NULL_HANDLE,"xrInitializeLoaderKHR",reinterpret_cast<PFN_xrVoidFunction*>(&fn));
@@ -142,6 +189,53 @@ private:
     ci.applicationInfo.apiVersion=XR_CURRENT_API_VERSION;
     return ok(xrCreateInstance(&ci,&instance),"xrCreateInstance");
   }
+
+  bool createActions(){
+    if(instance == XR_NULL_HANDLE) return false;
+    XrActionSetCreateInfo setInfo{XR_TYPE_ACTION_SET_CREATE_INFO};
+    std::strncpy(setInfo.actionSetName, "spatial_authoring", XR_MAX_ACTION_SET_NAME_SIZE - 1);
+    std::strncpy(setInfo.localizedActionSetName, "Spatial Authoring", XR_MAX_LOCALIZED_ACTION_SET_NAME_SIZE - 1);
+    setInfo.priority = 0;
+    if(!ok(xrCreateActionSet(instance, &setInfo, &actionSet), "xrCreateActionSet")) return false;
+
+    xrStringToPath(instance, "/user/hand/right", &rightHandPath);
+
+    XrActionCreateInfo selectInfo{XR_TYPE_ACTION_CREATE_INFO};
+    selectInfo.actionType = XR_ACTION_TYPE_BOOLEAN_INPUT;
+    std::strncpy(selectInfo.actionName, "right_select", XR_MAX_ACTION_NAME_SIZE - 1);
+    std::strncpy(selectInfo.localizedActionName, "Right Select", XR_MAX_LOCALIZED_ACTION_NAME_SIZE - 1);
+    selectInfo.countSubactionPaths = 1;
+    selectInfo.subactionPaths = &rightHandPath;
+    if(!ok(xrCreateAction(actionSet, &selectInfo, &selectAction), "xrCreateAction right_select")) return false;
+
+    XrActionCreateInfo aimInfo{XR_TYPE_ACTION_CREATE_INFO};
+    aimInfo.actionType = XR_ACTION_TYPE_POSE_INPUT;
+    std::strncpy(aimInfo.actionName, "right_aim_pose", XR_MAX_ACTION_NAME_SIZE - 1);
+    std::strncpy(aimInfo.localizedActionName, "Right Aim Pose", XR_MAX_LOCALIZED_ACTION_NAME_SIZE - 1);
+    aimInfo.countSubactionPaths = 1;
+    aimInfo.subactionPaths = &rightHandPath;
+    if(!ok(xrCreateAction(actionSet, &aimInfo, &aimPoseAction), "xrCreateAction right_aim_pose")) return false;
+
+    suggestSimpleControllerBindings();
+    return true;
+  }
+
+  void suggestSimpleControllerBindings(){
+    XrPath profile{XR_NULL_PATH};
+    XrPath selectPath{XR_NULL_PATH};
+    XrPath aimPath{XR_NULL_PATH};
+    xrStringToPath(instance, "/interaction_profiles/khr/simple_controller", &profile);
+    xrStringToPath(instance, "/user/hand/right/input/select/click", &selectPath);
+    xrStringToPath(instance, "/user/hand/right/input/aim/pose", &aimPath);
+    XrActionSuggestedBinding bindings[2] = {{selectAction, selectPath}, {aimPoseAction, aimPath}};
+    XrInteractionProfileSuggestedBinding suggested{XR_TYPE_INTERACTION_PROFILE_SUGGESTED_BINDING};
+    suggested.interactionProfile = profile;
+    suggested.countSuggestedBindings = 2;
+    suggested.suggestedBindings = bindings;
+    const XrResult result = xrSuggestInteractionProfileBindings(instance, &suggested);
+    if(XR_FAILED(result)) LOGE("xrSuggestInteractionProfileBindings simple controller failed %d", result);
+  }
+
   bool getSystem(){ XrSystemGetInfo info{XR_TYPE_SYSTEM_GET_INFO}; info.formFactor=XR_FORM_FACTOR_HEAD_MOUNTED_DISPLAY; return ok(xrGetSystem(instance,&info,&systemId),"xrGetSystem"); }
   bool initEgl(){
     display=eglGetDisplay(EGL_DEFAULT_DISPLAY);
@@ -171,6 +265,22 @@ private:
     si.systemId=systemId;
     return ok(xrCreateSession(instance,&si,&session),"xrCreateSession");
   }
+
+  bool attachActions(){
+    XrSessionActionSetsAttachInfo attachInfo{XR_TYPE_SESSION_ACTION_SETS_ATTACH_INFO};
+    attachInfo.countActionSets = 1;
+    attachInfo.actionSets = &actionSet;
+    return ok(xrAttachSessionActionSets(session, &attachInfo), "xrAttachSessionActionSets");
+  }
+
+  bool createActionSpaces(){
+    XrActionSpaceCreateInfo spaceInfo{XR_TYPE_ACTION_SPACE_CREATE_INFO};
+    spaceInfo.action = aimPoseAction;
+    spaceInfo.subactionPath = rightHandPath;
+    spaceInfo.poseInActionSpace = identityPose();
+    return ok(xrCreateActionSpace(session, &spaceInfo, &aimSpace), "xrCreateActionSpace right aim");
+  }
+
   bool createSpace(){ XrReferenceSpaceCreateInfo info{XR_TYPE_REFERENCE_SPACE_CREATE_INFO}; info.referenceSpaceType=XR_REFERENCE_SPACE_TYPE_LOCAL; info.poseInReferenceSpace=identityPose(); return ok(xrCreateReferenceSpace(session,&info,&space),"xrCreateReferenceSpace"); }
   int64_t chooseFormat(){ uint32_t count=0; xrEnumerateSwapchainFormats(session,0,&count,nullptr); std::vector<int64_t> fs(count); xrEnumerateSwapchainFormats(session,count,&count,fs.data()); return fs.empty()?GL_RGBA8:fs[0]; }
   bool createSwapchains(){
@@ -218,11 +328,45 @@ private:
       e={XR_TYPE_EVENT_DATA_BUFFER};
     }
   }
+
+  void syncController(XrTime time){
+    XrActiveActionSet activeActionSet{actionSet, XR_NULL_PATH};
+    XrActionsSyncInfo syncInfo{XR_TYPE_ACTIONS_SYNC_INFO};
+    syncInfo.countActiveActionSets = 1;
+    syncInfo.activeActionSets = &activeActionSet;
+    xrSyncActions(session, &syncInfo);
+
+    XrActionStateGetInfo getInfo{XR_TYPE_ACTION_STATE_GET_INFO};
+    getInfo.action = selectAction;
+    getInfo.subactionPath = rightHandPath;
+    XrActionStateBoolean selectState{XR_TYPE_ACTION_STATE_BOOLEAN};
+    if(XR_SUCCEEDED(xrGetActionStateBoolean(session, &getInfo, &selectState)) && selectState.isActive) {
+      if(selectState.currentState && !lastSelectState) bridge.controllerClick();
+      lastSelectState = selectState.currentState;
+    } else {
+      lastSelectState = false;
+    }
+
+    if(aimSpace != XR_NULL_HANDLE) {
+      XrSpaceLocation location{XR_TYPE_SPACE_LOCATION};
+      if(XR_SUCCEEDED(xrLocateSpace(aimSpace, space, time, &location))) {
+        const XrSpaceLocationFlags valid = XR_SPACE_LOCATION_ORIENTATION_VALID_BIT | XR_SPACE_LOCATION_ORIENTATION_TRACKED_BIT;
+        if((location.locationFlags & valid) == valid) {
+          bridge.updateCursorFromPose(location.pose.orientation, false);
+          controllerAimActive = true;
+          return;
+        }
+      }
+    }
+    controllerAimActive = false;
+  }
+
   void frame(){
     bridge.tick();
     XrFrameState fs{XR_TYPE_FRAME_STATE};
     XrFrameWaitInfo wi{XR_TYPE_FRAME_WAIT_INFO};
     if(!ok(xrWaitFrame(session,&wi,&fs),"xrWaitFrame")) return;
+    syncController(fs.predictedDisplayTime);
     XrFrameBeginInfo bi{XR_TYPE_FRAME_BEGIN_INFO};
     xrBeginFrame(session,&bi);
     std::vector<XrCompositionLayerBaseHeader*> layers;
@@ -235,7 +379,7 @@ private:
       XrViewState vs{XR_TYPE_VIEW_STATE};
       uint32_t vc=0;
       xrLocateViews(session,&li,&vs,(uint32_t)views.size(),&vc,views.data());
-      if(vc > 0) bridge.updateCursorFromPose(views[0].pose.orientation);
+      if(vc > 0 && !controllerAimActive) bridge.updateCursorFromPose(views[0].pose.orientation, true);
       for(uint32_t i=0;i<vc;i++) renderView(i,views[i]);
       layer.space=space;
       layer.viewCount=vc;
@@ -273,25 +417,29 @@ private:
   void overlay(const Swapchain& sc){
     glEnable(GL_SCISSOR_TEST);
 
-    // Six phase pips: scene graph, select, transform, create widget, resize, save.
     for(int i = 0; i < 6; ++i) {
-      Color pip = i <= bridge.currentPhase() ? Color{0.60f, 0.95f, 1.0f, 1.0f} : Color{0.10f, 0.18f, 0.26f, 1.0f};
+      Color pip = i <= bridge.currentStage() ? Color{0.60f, 0.95f, 1.0f, 1.0f} : Color{0.10f, 0.18f, 0.26f, 1.0f};
       rect(sc, 0.285f + 0.086f * i, 0.88f, 0.052f, 0.020f, pip);
     }
 
-    // Guided progress rail.
     rect(sc, 0.50f, 0.105f, 0.72f, 0.016f, {0.08f, 0.12f, 0.17f, 1.0f});
-    const float totalProgress = (static_cast<float>(bridge.currentPhase()) + bridge.currentPhaseProgress()) / 6.0f;
+    const float totalProgress = (static_cast<float>(bridge.currentStage()) + bridge.stagePulse()) / 6.0f;
     rect(sc, 0.14f + 0.72f * totalProgress * 0.5f, 0.105f, 0.72f * totalProgress, 0.016f, {0.25f, 0.82f, 1.0f, 1.0f});
 
     const auto& objects = bridge.getObjects();
     for(size_t i=0;i<objects.size();i++) drawObject(sc, objects[i], (int)i==bridge.selectedIndex());
 
-    // Inverse 3DOF gaze cursor.
+    if (bridge.currentStage() == 5) {
+      rect(sc, 0.50f, 0.18f, 0.15f + 0.07f * bridge.stagePulse(), 0.040f, {0.20f, 1.00f, 0.38f, 1.0f});
+    } else {
+      rect(sc, 0.50f, 0.18f, 0.14f, 0.030f, {0.18f, 0.30f, 0.42f, 1.0f});
+    }
+
     const float cx = bridge.getCursorX();
     const float cy = bridge.getCursorY();
-    rect(sc, cx, cy, 0.038f, 0.006f, {1.0f, 1.0f, 1.0f, 1.0f});
-    rect(sc, cx, cy, 0.006f, 0.038f, {1.0f, 1.0f, 1.0f, 1.0f});
+    const Color cursorColor = bridge.clickFlash() ? Color{1.0f, 0.95f, 0.25f, 1.0f} : controllerAimActive ? Color{1.0f, 1.0f, 1.0f, 1.0f} : Color{0.50f, 0.72f, 1.0f, 1.0f};
+    rect(sc, cx, cy, 0.040f, 0.006f, cursorColor);
+    rect(sc, cx, cy, 0.006f, 0.040f, cursorColor);
     rect(sc, cx, cy, 0.016f, 0.016f, {0.14f, 0.48f, 1.0f, 1.0f});
 
     glDisable(GL_SCISSOR_TEST);
@@ -310,7 +458,7 @@ private:
     glFramebufferTexture2D(GL_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,GL_TEXTURE_2D,sc.images[image].image,0);
     glViewport(0,0,sc.width,sc.height);
     glDisable(GL_SCISSOR_TEST);
-    glClearColor(0.025f, handTracking?0.11f:0.07f, 0.16f, 1.0f);
+    glClearColor(0.025f, controllerAimActive?0.12f:0.07f, 0.16f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
     overlay(sc);
     glBindFramebuffer(GL_FRAMEBUFFER,0);
@@ -325,6 +473,10 @@ private:
     xrReleaseSwapchainImage(sc.handle,&ri);
   }
   void shutdown(){
+    if(aimSpace!=XR_NULL_HANDLE) xrDestroySpace(aimSpace);
+    if(selectAction!=XR_NULL_HANDLE) xrDestroyAction(selectAction);
+    if(aimPoseAction!=XR_NULL_HANDLE) xrDestroyAction(aimPoseAction);
+    if(actionSet!=XR_NULL_HANDLE) xrDestroyActionSet(actionSet);
     for(auto& sc:swapchains) if(sc.handle!=XR_NULL_HANDLE) xrDestroySwapchain(sc.handle);
     if(space!=XR_NULL_HANDLE) xrDestroySpace(space);
     if(session!=XR_NULL_HANDLE) xrDestroySession(session);
@@ -336,15 +488,23 @@ private:
       eglTerminate(display);
     }
   }
+
   android_app* app=nullptr;
   NativeDskBridge bridge;
   bool exit=false;
   bool running=false;
   bool handTracking=false;
+  bool controllerAimActive=false;
+  bool lastSelectState=false;
   XrInstance instance{XR_NULL_HANDLE};
   XrSystemId systemId{XR_NULL_SYSTEM_ID};
   XrSession session{XR_NULL_HANDLE};
   XrSpace space{XR_NULL_HANDLE};
+  XrActionSet actionSet{XR_NULL_HANDLE};
+  XrAction selectAction{XR_NULL_HANDLE};
+  XrAction aimPoseAction{XR_NULL_HANDLE};
+  XrPath rightHandPath{XR_NULL_PATH};
+  XrSpace aimSpace{XR_NULL_HANDLE};
   EGLDisplay display{EGL_NO_DISPLAY};
   EGLConfig config{};
   EGLContext context{EGL_NO_CONTEXT};
