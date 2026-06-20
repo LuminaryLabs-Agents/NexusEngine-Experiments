@@ -83,6 +83,25 @@ jobs:
           name: spatial-authoring-openxr-debug-apk
           path: ./apk
 
+      - name: Persist APK on runner
+        id: persist_apk
+        shell: bash
+        run: |
+          set -euo pipefail
+          APK=$(find ./apk -name '*.apk' -type f | head -n 1)
+          if [[ -z "${APK}" ]]; then
+            echo "No APK artifact found."
+            exit 1
+          fi
+          OUT_DIR="${HOME}/pico-apks"
+          mkdir -p "${OUT_DIR}"
+          OUT_APK="${OUT_DIR}/spatial-authoring-openxr-${GITHUB_RUN_NUMBER}-${GITHUB_RUN_ATTEMPT}.apk"
+          cp "${APK}" "${OUT_APK}"
+          echo "apk=${APK}" >> "$GITHUB_OUTPUT"
+          echo "persisted_apk=${OUT_APK}" >> "$GITHUB_OUTPUT"
+          echo "APK artifact path in workflow workspace: ${APK}"
+          echo "APK persisted on runner at: ${OUT_APK}"
+
       - name: Verify adb is available
         run: |
           set -euo pipefail
@@ -132,12 +151,17 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          APK=$(find ./apk -name '*.apk' -type f | head -n 1)
-          if [[ -z "${APK}" ]]; then
-            echo "No APK artifact found."
-            exit 1
-          fi
+          APK="${{ steps.persist_apk.outputs.apk }}"
           adb -s "${{ steps.target.outputs.serial }}" install -r "${APK}"
+
+      - name: Verify installed package
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Local runner APK path: ${{ steps.persist_apk.outputs.persisted_apk }}"
+          adb -s "${{ steps.target.outputs.serial }}" shell pm list packages | grep "${PACKAGE_NAME}"
+          adb -s "${{ steps.target.outputs.serial }}" shell pm path "${PACKAGE_NAME}" || true
+          adb -s "${{ steps.target.outputs.serial }}" shell cmd package resolve-activity --brief "${PACKAGE_NAME}" || true
 
       - name: Launch app
         if: ${{ inputs.launch_after_install }}
@@ -151,4 +175,6 @@ jobs:
         shell: bash
         run: |
           set +e
+          echo "APK should also be available from this GitHub Actions run artifact: spatial-authoring-openxr-debug-apk"
+          echo "Runner copy path, if persist step ran: ${{ steps.persist_apk.outputs.persisted_apk }}"
           adb -s "${{ steps.target.outputs.serial }}" logcat -d -t 250 | grep -E 'SpatialAuthoringOpenXR|AndroidRuntime|OpenXR|FATAL EXCEPTION' || true
