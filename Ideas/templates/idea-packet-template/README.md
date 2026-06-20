@@ -39,17 +39,50 @@ domains/domain-scope.md
 subdomains/subdomain-scope.md
 ```
 
+## Generated object proof packet add-on
+
+For small idempotent object proofs, also include:
+
+```txt
+object-proof.md
+generation-spec.md
+mesh-variants.md
+texture-optimization.md
+material-variants.md
+lod-policy.md
+budget-report.md
+comparison-notes.md
+idempotency-checks.md
+```
+
+If the object has a special state, add one focused file for it:
+
+```txt
+interaction-states.md
+visual-states.md
+liquid-variants.md
+```
+
 ## Read order
 
 ```txt
 1. start-here.md
 2. concept.md
-3. protokit-proof.md
-4. domains/domain-scope.md
-5. subdomains/subdomain-scope.md
-6. prototype-plan.md
-7. scoring-rubric.md
-8. playtest-notes.md
+3. object-proof.md
+4. protokit-proof.md
+5. domains/domain-scope.md
+6. subdomains/subdomain-scope.md
+7. generation-spec.md
+8. mesh-variants.md
+9. texture-optimization.md
+10. material-variants.md
+11. lod-policy.md
+12. budget-report.md
+13. comparison-notes.md
+14. idempotency-checks.md
+15. prototype-plan.md
+16. scoring-rubric.md
+17. playtest-notes.md
 ```
 
 ## Packet status
@@ -110,3 +143,17 @@ my-game-domain
 level-one-system
 cool-vibes-kit
 ```
+
+## Idempotent proof rule
+
+For generated object proofs, record the idempotency contract:
+
+```txt
+same seed
+same object spec
+same optimization pass order
+same output descriptor tree
+same measurable budget fields
+```
+
+No proof should rely on hidden manual state.
