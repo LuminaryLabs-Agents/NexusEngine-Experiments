@@ -1,0 +1,54 @@
+import { readFileSync } from "node:fs";
+
+function read(path) {
+  return readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
+}
+
+function assertIncludes(path, needle, label = needle) {
+  const text = read(path);
+  if (!text.includes(needle)) throw new Error(`${path} is missing ${label}`);
+}
+
+function assertNotIncludes(path, needle, label = needle) {
+  const text = read(path);
+  if (text.includes(needle)) throw new Error(`${path} still contains ${label}`);
+}
+
+function assertMatch(path, pattern, label) {
+  const text = read(path);
+  if (!pattern.test(text)) throw new Error(`${path} did not match ${label}`);
+}
+
+const shellPath = "experiments/_shared/nexus-experiments-shell.js";
+const generatorPath = "scripts/generate-application-routes.mjs";
+const runtimeGeneratedPath = "apps/_shared/generated-app-route.js";
+const rendererPath = "experiments/aaa-batch/host/canvas-renderer.js";
+const meadowPath = "experiments/high-fidelity-meadow/index.html";
+const openAbovePath = "experiments/the-open-above-harness/index.html";
+
+assertIncludes(shellPath, "--contrast-panel", "contrast panel token");
+assertIncludes(shellPath, "--contrast-text", "contrast text token");
+assertIncludes(shellPath, ".nexus-route-desc", "route description contrast styling");
+assertMatch(shellPath, /\.nexus-route-desc\s*\{[^}]*opacity:\.(9[0-9]|88)/s, "route descriptions at or above .88 opacity");
+assertIncludes(shellPath, "nexus-contrast-boost", "contrast boost shell class");
+assertIncludes(shellPath, "outline:3px solid rgba(255,245,180,.86)", "high contrast focus outline");
+
+assertIncludes(generatorPath, "--hud-bg:rgba(4,3,12,.88)", "generated high contrast HUD token");
+assertIncludes(generatorPath, "#hud", "generated HUD style");
+assertIncludes(generatorPath, "#err", "generated error style");
+assertIncludes(runtimeGeneratedPath, "injectGeneratedRouteContrastStyles", "runtime generated route contrast injector");
+assertIncludes(runtimeGeneratedPath, "--hud-bg: rgba(4,3,12,.88)", "runtime generated HUD token");
+
+assertNotIncludes(rendererPath, "`${primary}55`", "low-alpha generated grid stroke");
+assertIncludes(rendererPath, "`${primary}88`", "higher-alpha generated grid stroke");
+assertIncludes(rendererPath, "createRadialGradient", "renderer vignette");
+assertIncludes(rendererPath, "#fff6c7", "high contrast unsecured node stroke");
+assertIncludes(rendererPath, "#11131a", "high contrast player outline");
+
+assertNotIncludes(meadowPath, "background:rgba(5,10,7,.28)", "low-contrast meadow status background");
+assertIncludes(meadowPath, "background:rgba(2,6,4,.78)", "high-contrast meadow status background");
+assertIncludes(meadowPath, "--muted:#f2e7bd", "high-contrast meadow muted text");
+assertIncludes(openAbovePath, "color:#10202a", "dark Open Above body fallback text");
+assertIncludes(openAbovePath, "background:rgba(3,10,16,.82)", "high-contrast Open Above HUD background");
+
+console.log("Contrast smoke checks passed.");
