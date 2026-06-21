@@ -4,25 +4,26 @@ import { aaaBatchGames } from "../experiments/aaa-batch/host/game-registry.js";
 
 const root = process.cwd();
 
-function titleFor(game) {
-  return `${game.title} — NexusRealtime`;
+function titleFor(app) {
+  return `${app.title} — NexusRealtime`;
 }
 
-function htmlFor(game) {
-  const safeTitle = titleFor(game).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;");
-  const safeId = game.id.replace(/[^a-z0-9-]/gi, "");
-  const safeLabel = game.title.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+function htmlFor(app) {
+  const safeTitle = titleFor(app).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;");
+  const safeId = app.id.replace(/[^a-z0-9-]/gi, "");
+  const safeLabel = app.title.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
   return `<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="Generated NexusRealtime application route for ${safeLabel}." />
   <title>${safeTitle}</title>
 </head>
-<body data-game-id="${safeId}">
-  <main id="app" aria-label="${safeLabel} experiment">
+<body data-app-id="${safeId}">
+  <main id="app" aria-label="${safeLabel} application">
     <canvas id="game" role="application"></canvas>
-    <aside id="hud" aria-label="Experiment HUD">
+    <aside id="hud" aria-label="Application HUD">
       <h1 id="title">${safeLabel}</h1>
       <p id="status">Loading…</p>
       <p id="readout"></p>
@@ -30,18 +31,18 @@ function htmlFor(game) {
     <pre id="err" role="alert" hidden></pre>
   </main>
   <script type="module">
-    import { startFlatAaaExperimentRoute } from "../_shared/aaa-flat-route.js";
-    startFlatAaaExperimentRoute("${safeId}");
+    import { startGeneratedApplicationRoute } from "../_shared/generated-app-route.js";
+    startGeneratedApplicationRoute("${safeId}");
   </script>
 </body>
 </html>
 `;
 }
 
-for (const game of aaaBatchGames) {
-  const dir = join(root, "experiments", game.id);
+for (const app of aaaBatchGames) {
+  const dir = join(root, "apps", app.id);
   if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
-  writeFileSync(join(dir, "index.html"), htmlFor(game));
+  writeFileSync(join(dir, "index.html"), htmlFor(app));
 }
 
-console.log(`Generated ${aaaBatchGames.length} flat experiment route wrappers.`);
+console.log(`Generated ${aaaBatchGames.length} promoted application route wrappers.`);
