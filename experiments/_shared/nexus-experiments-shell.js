@@ -1,6 +1,6 @@
 import { apps, tabs, galleryConfig } from "./nexus-gallery-data.js?v=main-app-grid";
 import { startNexusGalleryShader } from "./nexus-gallery-shader.js";
-import { attachNexusCardShaders } from "./nexus-card-shader.js?v=spark-cards-20260621";
+import { attachNexusCardShaders } from "./nexus-card-shader.js?v=spark-cards-safe-20260621";
 
 const STYLE_ID = "nexus-experiments-shell-style";
 
@@ -45,37 +45,43 @@ function injectStyles(documentRef) {
     body { overflow-y:auto; }
     a { color:inherit; }
     .nexus-shell { position:relative; z-index:1; width:min(100% - 28px,1680px); min-height:100svh; margin:0 auto; padding:18px 0 32px; display:flex; flex-direction:column; gap:14px; }
-    .nexus-topbar { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:13px 18px; border:1px solid var(--line); border-radius:24px; background:linear-gradient(180deg,rgba(65,30,6,.58),rgba(24,10,3,.62)); box-shadow:0 24px 90px rgba(34,10,0,.36), inset 0 1px 0 rgba(255,238,175,.08); backdrop-filter:blur(18px); }
+    .nexus-topbar { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:13px 18px; border:1px solid var(--line); border-radius:24px; background:linear-gradient(180deg,rgba(65,30,6,.72),rgba(24,10,3,.76)); box-shadow:0 24px 90px rgba(34,10,0,.36), inset 0 1px 0 rgba(255,238,175,.08); backdrop-filter:blur(18px); }
     .nexus-brand strong { display:block; color:var(--gold); font-size:1.05rem; font-weight:950; letter-spacing:.2em; text-transform:uppercase; text-shadow:0 0 26px rgba(255,197,52,.36); }
     .nexus-brand span { display:block; margin-top:3px; color:var(--muted); font-size:.86rem; }
     .nexus-top-actions,.nexus-tabs,.nexus-toolbar { display:flex; align-items:center; gap:8px; }
     .nexus-repo-button,.nexus-tab { border:1px solid rgba(255,224,92,.54); border-radius:999px; color:var(--gold); background:rgba(255,224,92,.07); font-weight:950; letter-spacing:.08em; text-transform:uppercase; text-decoration:none; box-shadow:0 14px 34px rgba(0,0,0,.22); cursor:pointer; }
     .nexus-repo-button,.nexus-tab { padding:10px 16px; font-size:.78rem; }
     .nexus-tabs { overflow-x:auto; padding:2px; }
-    .nexus-tab { color:rgba(255,248,223,.75); border-color:rgba(255,232,172,.2); background:rgba(40,17,3,.46); white-space:nowrap; }
+    .nexus-tab { color:rgba(255,248,223,.78); border-color:rgba(255,232,172,.22); background:rgba(40,17,3,.58); white-space:nowrap; }
     .nexus-tab.is-active { color:#170903; border-color:rgba(255,235,139,.9); background:linear-gradient(90deg,#ffe05c,#ff9d21 58%,#93f2a6); box-shadow:0 18px 50px rgba(255,152,22,.28); }
     .nexus-tab-count { opacity:.78; margin-left:4px; }
     .nexus-toolbar { justify-content:space-between; flex-wrap:wrap; padding:8px 2px 0; color:rgba(255,244,213,.74); }
-    .nexus-search { min-width:min(100%,420px); flex:0 1 480px; display:flex; align-items:center; gap:10px; border:1px solid var(--line); border-radius:999px; padding:9px 14px; background:rgba(54,22,3,.48); box-shadow:0 16px 44px rgba(0,0,0,.24), inset 0 1px 0 rgba(255,238,175,.08); }
+    .nexus-search { min-width:min(100%,420px); flex:0 1 480px; display:flex; align-items:center; gap:10px; border:1px solid var(--line); border-radius:999px; padding:9px 14px; background:rgba(54,22,3,.58); box-shadow:0 16px 44px rgba(0,0,0,.24), inset 0 1px 0 rgba(255,238,175,.08); }
     .nexus-search span { color:var(--gold); font-size:.73rem; font-weight:950; letter-spacing:.08em; text-transform:uppercase; white-space:nowrap; }
     .nexus-search-input { width:100%; border:0; outline:0; background:transparent; color:var(--text); font:inherit; }
-    .nexus-search-input::placeholder { color:rgba(255,244,213,.42); }
-    .nexus-result-count { color:var(--gold); font-weight:900; letter-spacing:.08em; text-transform:uppercase; }
-    .nexus-tab-heading { margin:0; font-size:clamp(1.45rem,2.6vw,2.35rem); line-height:1; text-shadow:0 0 28px rgba(255,184,42,.18); }
-    .nexus-tab-copy { margin:0; color:var(--muted); line-height:1.45; max-width:78ch; }
+    .nexus-search-input::placeholder { color:rgba(255,244,213,.48); }
+    .nexus-result-count { color:#ffd44d; font-weight:900; letter-spacing:.08em; text-transform:uppercase; text-shadow:0 1px 10px rgba(41,12,0,.35); }
+    .nexus-tab-heading { margin:0; color:#2a1306; font-size:clamp(1.45rem,2.6vw,2.35rem); line-height:1; text-shadow:0 1px 0 rgba(255,239,181,.28),0 0 28px rgba(255,184,42,.18); }
+    .nexus-tab-copy { margin:0; color:#6b3b13; line-height:1.45; max-width:78ch; font-weight:650; }
     .nexus-gallery-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(var(--card-min),1fr)); gap:14px; align-items:stretch; padding:4px 0 24px; perspective:1200px; }
-    .nexus-app-card { --tilt-x:0deg; --tilt-y:0deg; --mx:50%; --my:50%; min-height:282px; display:flex; flex-direction:column; overflow:hidden; position:relative; border:1px solid rgba(255,229,151,.24); border-radius:22px; color:inherit; text-decoration:none; background:linear-gradient(180deg,rgba(48,19,3,.66),rgba(14,6,2,.78)); box-shadow:0 24px 74px rgba(36,10,0,.32), inset 0 1px 0 rgba(255,241,183,.08); backdrop-filter:blur(18px); transform:rotateX(var(--tilt-x)) rotateY(var(--tilt-y)) translateY(0); transform-style:preserve-3d; transition:transform 170ms ease,border-color 170ms ease,box-shadow 170ms ease,filter 170ms ease; }
+    .nexus-app-card { --tilt-x:0deg; --tilt-y:0deg; --mx:50%; --my:50%; min-height:282px; display:flex; flex-direction:column; overflow:hidden; position:relative; border:1px solid rgba(255,229,151,.28); border-radius:22px; color:inherit; text-decoration:none; background:linear-gradient(180deg,rgba(48,19,3,.72),rgba(14,6,2,.86)); box-shadow:0 24px 74px rgba(36,10,0,.32), inset 0 1px 0 rgba(255,241,183,.08); backdrop-filter:blur(18px); transform:rotateX(var(--tilt-x)) rotateY(var(--tilt-y)) translateY(0); transform-style:preserve-3d; transition:transform 170ms ease,border-color 170ms ease,box-shadow 170ms ease,filter 170ms ease; }
     .nexus-app-card::after { position:absolute; inset:0; content:""; pointer-events:none; opacity:.0; background:radial-gradient(circle at var(--mx) var(--my),rgba(255,247,184,.34),transparent 28%),linear-gradient(115deg,transparent 16%,rgba(255,244,174,.2) 38%,transparent 56%); transition:opacity 170ms ease; }
     .nexus-app-card:hover,.nexus-app-card:focus-visible { transform:rotateX(var(--tilt-x)) rotateY(var(--tilt-y)) translateY(-5px) scale(1.012); border-color:rgba(255,224,92,.88); box-shadow:0 34px 120px rgba(81,24,0,.55),0 0 72px rgba(255,154,26,.2), inset 0 1px 0 rgba(255,245,184,.14); outline:0; }
     .nexus-app-card:hover::after,.nexus-app-card:focus-visible::after { opacity:1; }
     .nexus-app-art { flex:0 0 168px; position:relative; overflow:hidden; background:linear-gradient(135deg,#5a2d04,#f2a51e 48%,#fff2b0); }
-    .nexus-card-shader { position:absolute; inset:0; width:100%; height:100%; display:block; opacity:.92; mix-blend-mode:screen; }
-    .nexus-art-vignette { position:absolute; inset:0; pointer-events:none; background:radial-gradient(circle at 65% 20%,rgba(255,252,198,.28),transparent 30%),linear-gradient(180deg,transparent 48%,rgba(9,4,1,.55)); }
+    .nexus-app-art::before { position:absolute; inset:-20%; content:""; z-index:0; background:radial-gradient(circle at 64% 22%,rgba(255,244,153,.9),transparent 19%),radial-gradient(circle at 34% 44%,rgba(255,144,18,.75),transparent 36%),linear-gradient(135deg,#4b2103,#e68410 46%,#fff0a4); animation:nexusFallbackGlow 12s ease-in-out infinite alternate; }
+    .nexus-app-art::after { position:absolute; inset:-25%; content:""; z-index:1; opacity:.55; background:linear-gradient(118deg,transparent 18%,rgba(255,255,220,.36) 39%,transparent 52%),radial-gradient(circle at 25% 75%,rgba(255,233,114,.35),transparent 24%); transform:translateX(-8%); animation:nexusFallbackSweep 8s linear infinite; }
+    .nexus-card-shader { position:absolute; inset:0; z-index:2; width:100%; height:100%; display:block; opacity:0; mix-blend-mode:screen; transition:opacity 160ms ease; }
+    .has-live-shader .nexus-card-shader { opacity:.92; }
+    .shader-fallback .nexus-card-shader[hidden] { display:none; }
+    .nexus-art-vignette { position:absolute; inset:0; z-index:3; pointer-events:none; background:radial-gradient(circle at 65% 20%,rgba(255,252,198,.28),transparent 30%),linear-gradient(180deg,transparent 48%,rgba(9,4,1,.55)); }
     .nexus-app-info { padding:15px 16px 16px; display:flex; flex-direction:column; gap:9px; flex:1; position:relative; z-index:1; }
     .nexus-app-card h2 { margin:0; font-size:clamp(1.05rem,1.28vw,1.32rem); line-height:1.07; letter-spacing:-.02em; }
     .nexus-app-card p { margin:0; color:var(--muted); line-height:1.4; flex:1; display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; overflow:hidden; }
     .nexus-open { color:var(--gold); font-weight:950; letter-spacing:.08em; text-transform:uppercase; font-size:.75rem; }
-    .nexus-empty { border:1px dashed rgba(255,229,151,.28); border-radius:22px; padding:28px; color:var(--muted); background:rgba(54,22,3,.32); }
+    .nexus-empty { border:1px dashed rgba(255,229,151,.28); border-radius:22px; padding:28px; color:#5b2d10; background:rgba(255,230,170,.26); font-weight:800; }
+    @keyframes nexusFallbackGlow { from { transform:translate3d(-1%,0,0) scale(1.02); filter:saturate(1.05); } to { transform:translate3d(2%,-2%,0) scale(1.08); filter:saturate(1.25); } }
+    @keyframes nexusFallbackSweep { from { transform:translateX(-18%) rotate(0deg); } to { transform:translateX(18%) rotate(1deg); } }
     @media (max-width:980px) { :root { --card-min:220px; } .nexus-topbar { align-items:flex-start; flex-direction:column; } }
     @media (max-width:640px) { :root { --card-min:min(100%,240px); } .nexus-shell { width:min(100% - 20px,1680px); } .nexus-tabs { padding-bottom:4px; } .nexus-toolbar { align-items:flex-start; flex-direction:column; } .nexus-search { flex-basis:auto; } .nexus-app-card { min-height:260px; } }
   `;
@@ -84,7 +90,7 @@ function injectStyles(documentRef) {
 
 function renderCard(app) {
   const title = displayTitle(app);
-  return `<a class="nexus-app-card" href="${escapeHtml(app.route)}" target="_blank" rel="noopener" data-app-id="${escapeHtml(app.id)}"><div class="nexus-app-art" aria-hidden="true"><canvas class="nexus-card-shader"></canvas><div class="nexus-art-vignette"></div></div><div class="nexus-app-info"><h2>${escapeHtml(title)}</h2><p>${escapeHtml(description(app))}</p><span class="nexus-open">Open →</span></div></a>`;
+  return `<a class="nexus-app-card shader-fallback" href="${escapeHtml(app.route)}" target="_blank" rel="noopener" data-app-id="${escapeHtml(app.id)}"><div class="nexus-app-art" aria-hidden="true"><canvas class="nexus-card-shader"></canvas><div class="nexus-art-vignette"></div></div><div class="nexus-app-info"><h2>${escapeHtml(title)}</h2><p>${escapeHtml(description(app))}</p><span class="nexus-open">Open →</span></div></a>`;
 }
 
 function renderTabs(activeTabId) {
