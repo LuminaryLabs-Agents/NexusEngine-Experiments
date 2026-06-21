@@ -15,16 +15,20 @@ assert.ok(!rootIndex.includes("gallery-wrap"), "root index should not keep the o
 assert.ok(!rootIndex.includes("shader-bg"), "root index should not keep inline shader canvas markup");
 assert.ok(!rootIndex.includes("data-filter"), "root gallery should not use legacy filter buttons");
 
-assert.ok(shell.includes("data-launch-selected"), "shell should expose a top launch-selected button");
-assert.ok(shell.includes("is-selected"), "shell should use selected state for the scaled card");
-assert.ok(shell.includes("--selected-scale"), "shell should visually scale selection without layout-width mutation");
-assert.ok(!shell.includes("flex-basis:var(--selected)"), "selected card should not mutate layout width");
-assert.ok(shell.includes("getNearestTile"), "shell should compute selected card from scroll position");
-assert.ok(shell.includes("updateFromScroll"), "shell should update selected card while scrolling");
-assert.ok(shell.includes("scheduleScrollUpdate"), "shell should schedule scroll-driven selection updates");
-assert.ok(shell.includes("centerTile"), "shell should center selected cards for arrows/clicks");
-assert.ok(shell.includes("dblclick"), "shell should support double-click launch for selected tiles");
 assert.ok(shell.includes("nexus-tabs"), "shell should expose application type tabs");
+assert.ok(shell.includes("nexus-gallery-grid"), "shell should use a multi-column grid");
+assert.ok(shell.includes("grid-template-columns:repeat(auto-fill,minmax"), "shell should use responsive auto-fill columns");
+assert.ok(shell.includes("nexus-search-input"), "shell should include a search input");
+assert.ok(shell.includes("nexus-app-card"), "shell should render card-level route links");
+assert.ok(shell.includes("Open →"), "shell should expose card-level Open calls to action");
+assert.ok(!shell.includes("data-launch-selected"), "grid shell should not keep selected launch button");
+assert.ok(!shell.includes("nexus-gallery-row"), "grid shell should not keep the horizontal carousel row");
+assert.ok(!shell.includes("nexus-scroll-button"), "grid shell should not keep carousel arrow buttons");
+assert.ok(!shell.includes("getNearestTile"), "grid shell should not compute selected cards from scroll position");
+assert.ok(!shell.includes("centerTile"), "grid shell should not center selected cards");
+assert.ok(!shell.includes("scheduleScrollUpdate"), "grid shell should not schedule scroll-driven selection updates");
+assert.ok(!shell.includes("is-selected"), "grid shell should not keep selected-card scaling state");
+assert.ok(!shell.includes("--selected-scale"), "grid shell should not expose selected-card scale CSS");
 assert.ok(!shell.includes("is-featured"), "shell should not keep static featured-card scaling");
 
 assert.equal(galleryConfig.title, "NexusRealtime Applications", "gallery config should expose the product title");
@@ -78,4 +82,4 @@ assert.ok(baseMain.includes("makeGame") || baseMain.includes("createRealtimeGame
 assert.ok(!baseMain.includes("rogue-lite-hellscape-siege-v2"), "base Hellscape should not import the legacy V2 route");
 assert.equal(existsSync("games/rogue-lite-hellscape-siege-v2/index.html"), false, "legacy V2 folder should not keep a playable index");
 
-console.log("Canonical application route smoke passed.");
+console.log("Canonical application grid route smoke passed.");
