@@ -5,14 +5,14 @@ import { aaaBatchGames } from "../experiments/aaa-batch/host/game-registry.js";
 const ROOT = process.cwd();
 const DATA_PATH = join(ROOT, "experiments/_shared/nexus-gallery-data.js");
 const INDEX_PATH = join(ROOT, "index.html");
-const PROMOTED_APP_IDS = new Set(aaaBatchGames.map((app) => app.id));
 const PROMOTED_APP_BY_ID = new Map(aaaBatchGames.map((app) => [app.id, app]));
+const PROMOTED_APP_IDS = new Set(PROMOTED_APP_BY_ID.keys());
+const IGNORE = new Set(["_shared", "aaa-batch", "assets"]);
 const SEARCH_ROOTS = [
   { dir: "experiments", kind: "experiment", subtype: "experiment", tab: "experiments", tabLabel: "Experiments", playLabel: "Open experiment", source: "experiment" },
   { dir: "apps", kind: "app", subtype: "game", playLabel: "Open app", source: "generated-app" },
-  { dir: "games", kind: "app", subtype: "game", playLabel: "Open app", source: "legacy-game", legacy: true }
+  { dir: "games", kind: "app", subtype: "game", playLabel: "Open app", source: "legacy-game" }
 ];
-const IGNORE = new Set(["_shared", "aaa-batch", "assets"]);
 
 const CURATED = {
   "the-open-above-harness": {
@@ -165,7 +165,8 @@ function shortDescriptionFor({ curated, spec, htmlDescription, title, id }) {
     return trimSentence(`${verb}${spec.fantasy}`, 142);
   }
   return trimSentence(htmlDescription || `Open ${cleanTitle(title, id)}.`, 142);
-}\n
+}
+
 function searchTextFor(app, spec) {
   return [
     app.id,
