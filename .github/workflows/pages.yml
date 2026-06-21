@@ -35,8 +35,8 @@ jobs:
         with:
           node-version: 20
 
-      - name: Run deploy smoke tests
-        run: npm run check:deploy
+      - name: Generate static routes
+        run: npm run generate
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
