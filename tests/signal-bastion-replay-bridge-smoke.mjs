@@ -43,7 +43,14 @@ const renderer = readFileSync("games/signal-bastion/src/renderer-canvas.js", "ut
 assert.match(index, /<canvas id="game"/, "Signal Bastion browser route owns canvas presentation");
 assert.match(index, /statStrip/, "Signal Bastion browser route owns HUD presentation nodes");
 
-assert.match(boot, /createGenericDefenseKits/, "boot should compose generic-defense simulation from ProtoKits");
+assert.match(boot, /generic-defense-aaa-dsk-bridge/, "boot should import the generic-defense DSK bridge instead of the broad compatibility facade");
+assert.match(boot, /SIGNAL_BASTION_DEFENSE_DSK_BOUNDARY_IDS/, "boot should make the requested DSK boundary IDs explicit");
+assert.match(boot, /createGenericDefenseDskBundle/, "boot should compose generic-defense simulation from named ProtoKit DSK aliases");
+assert.match(boot, /createGenericDefenseFoundationKit/, "boot should keep only the minimal AAA foundation host facade beside DSK aliases");
+assert.match(boot, /createGenericDefenseBuildKit/, "boot should keep only the minimal build host facade beside DSK aliases");
+assert.match(boot, /createGenericDefenseWaveKit/, "boot should keep only the minimal wave host facade beside DSK aliases");
+assert.match(boot, /createGenericDefenseScaleKit/, "boot should keep only the minimal scale host facade beside DSK aliases");
+assert.doesNotMatch(boot, /\bcreateGenericDefenseKits\s*\(/, "boot should not import the entire broad generic-defense compatibility facade");
 assert.match(boot, /createGenericDefensePresentationStackKits/, "boot should compose descriptor presentation from ProtoKits");
 assert.match(boot, /engine\.tick\(0\)/, "boot should settle initial state through the runtime tick");
 assert.match(boot, /engine\.tick\(dt\)/, "boot should advance simulation through runtime ticks");
@@ -52,6 +59,10 @@ assert.match(boot, /engine\.defensePresentationStack\?\.getSnapshot\?\.\(\)/, "b
 assert.match(boot, /rawSnapshot:\s*engine\.genericDefense\.getSnapshot\(\)/, "boot should fall back to a raw DSK snapshot, not browser-local state");
 assert.match(boot, /requestAnimationFrame\(frame\)/, "browser frame scheduling should stay in the route host");
 assert.match(boot, /performance\.now\(\)/, "browser timing should stay isolated in the route host");
+
+for (const boundary of ["map", "economyWallet", "buildPlacement", "waveAgentDirector", "combatResolver", "sessionFacade", "renderDescriptors"]) {
+  assert.match(boot, new RegExp(`"${boundary}"`), `boot should request the ${boundary} generic-defense DSK alias`);
+}
 
 assert.match(input, /engine\.placementProjector\?\.confirm\?\.\(/, "input host should bridge placement into semantic methods");
 assert.match(input, /engine\.defenseWaves\?\.startWave\?\.\(/, "input host should bridge wave input into semantic methods");
