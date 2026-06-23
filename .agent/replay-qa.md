@@ -57,3 +57,16 @@ The manifest is validated by `tests/canonical-route-replay-manifest-smoke.mjs` a
 - `action-defense-extraction` / `rogue-lite-hellscape-siege`: harvest/build/wave/extraction methods, inventory/build/wave/extraction resources, and harvest/defense/core/portal descriptors.
 
 `tests/headless-lane-replay-contracts-smoke.mjs` validates the contracts against the canonical replay manifest and deterministic digest fields. This is durable QA progress, but only the strategic-pressure lane is currently ProtoKit-backed by executable replay. The next QA step is to turn the Signal Bastion bridge contract into a route-level headless smoke that proves the browser host consumes descriptors and semantic methods without duplicating generic-defense simulation.
+
+## 2026-06-23 Deterministic Replay QA bridge smoke
+
+`tests/signal-bastion-replay-bridge-smoke.mjs` now adds a route-level bridge guard for the currently strongest replay lane, `strategic-pressure-loop` / `signal-bastion`.
+
+The smoke is intentionally static and renderer-host focused: it does not create reusable kit implementation in Experiments and does not replace ProtoKits `generic-defense-replay-smoke.test.mjs`. It verifies that the canonical replay manifest and lane contract still point at generic-defense ProtoKit replay, then checks the Signal Bastion host boundary:
+
+- boot composes generic-defense simulation and presentation from ProtoKits and exposes `engine.genericDefense.getSnapshot()` / `engine.defensePresentationStack.getSnapshot()` instead of local simulation state;
+- input bridges browser events into semantic DSK-facing methods such as placement confirmation, wave start, upgrade, restart, and snapshot reads;
+- renderer code consumes `presentation.rawSnapshot`, UI descriptors, and Canvas/DOM presentation surfaces without owning runtime creation, kit construction, fixed ticks, or frame timing;
+- host files avoid obvious replay-breaking local randomness such as `Math.random`, `Date.now`, or `crypto.getRandomValues`.
+
+This closes a drift-visibility gap, not the executable route-domain replay gap. The remaining safest replay patch is still a browserless route-domain harness that imports the actual generic-defense DSK boundary aliases, advances fixed ticks, and proves Signal Bastion can be represented by descriptors and semantic methods without depending on Canvas, DOM, animation frames, or pointer/browser timing.
