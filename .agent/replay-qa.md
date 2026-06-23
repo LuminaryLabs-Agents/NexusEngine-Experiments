@@ -105,3 +105,17 @@ Do not add reusable kit logic or a duplicate defense interpreter under Experimen
 The gate records that `signal-bastion` is ProtoKit-backed at the lane/spec layer but still blocked from a true browserless executable replay because Experiments has no stable local dependency, workspace, or path wiring for Core `nexusrealtime` and ProtoKits `@luminarylabs/nexusrealtime-protokits`. The route boot currently uses browser CDN dynamic imports, including Core from `LuminaryLabs-Dev/NexusRealtime@main` and ProtoKits generic-defense/presentation imports from `LuminaryLabs-Agents/NexusRealtime-ProtoKits@0.0.1`.
 
 Replay QA implication: do not claim executable route replay until the harness imports the real Core runtime and ProtoKit generic-defense DSK aliases locally, advances the checked strategic-pressure fixed tick plan, and asserts resources, events, methods, snapshots, descriptors, and digest fields without DOM, Canvas, WebGL, Three.js, pointer lock, browser audio, asset loading, browser CDN imports, or route-local simulation copies.
+
+## 2026-06-23 ProtoKit Promotion Gate executable route replay QA
+
+`tests/signal-bastion-executable-route-replay-smoke.mjs` now closes the first executable route/domain replay for the canonical portfolio.
+
+Coverage:
+
+- imports real Core `nexusrealtime` and ProtoKits `@luminarylabs/nexusrealtime-protokits/generic-defense-dsk-boundaries` through package wiring rather than browser CDN URLs;
+- composes the Signal Bastion debug preset through the seven named generic-defense DSK aliases: map, economy wallet, build placement, wave/agent director, combat resolver, session facade, and render descriptors;
+- runs the checked strategic-pressure fixed tick plan with semantic build, upgrade, wave-start, and snapshot inputs;
+- asserts deterministic resource/snapshot/descriptor digest equality across fresh runs;
+- keeps DOM, Canvas, WebGL, Three.js, requestAnimationFrame, browser audio, and asset loading outside the Node replay.
+
+Remaining QA gap: the browser `games/signal-bastion/src/boot.js` still imports the broad generic-defense compatibility facade via CDN. That is acceptable for browser compatibility, but local JavaScript will not materially shrink until the route migrates toward the smallest proven DSK aliases. The next executable replay lane should not be added until a real reusable ProtoKit boundary exists; otherwise keep it as a contract-only lane.
