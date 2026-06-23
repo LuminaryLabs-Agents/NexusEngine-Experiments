@@ -45,10 +45,13 @@ assert.doesNotMatch(index, /Click anchors build\/select/);
 assert.doesNotMatch(index, /Space wave/);
 
 const boot = readFileSync("games/signal-bastion/src/boot.js", "utf8");
-assert.match(boot, /generic-defense-aaa-kits/);
+assert.match(boot, /generic-defense-aaa-dsk-bridge/);
+assert.match(boot, /SIGNAL_BASTION_DEFENSE_DSK_BOUNDARY_IDS/);
+assert.match(boot, /createGenericDefenseDskBundle/);
 assert.match(boot, /generic-defense-presentation-stack-kit/);
 assert.match(boot, /createGenericDefensePresentationStackKits/);
 assert.match(boot, /getPresentation/);
+assert.doesNotMatch(boot, /\bcreateGenericDefenseKits\s*\(/);
 
 const input = readFileSync("games/signal-bastion/src/input-host.js", "utf8");
 assert.match(input, /placementProjector/);
