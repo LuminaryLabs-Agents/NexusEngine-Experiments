@@ -26,3 +26,11 @@ Missing or under-specified smoke coverage:
 - This closes the first manifest-vs-gallery drift visibility gap without deleting routes or promoting seed/backlog routes.
 
 Next smoke priority: route-level smoke/replay manifests that map each canonical route to the ProtoKit/domain replay scenario it validates.
+
+## 2026-06-23 Canonical Route Pruner smoke closure
+
+- Added `tests/canonical-route-pruning-map-smoke.mjs` and wired it into both full and deploy check suites.
+- Added `experiments/canonical-route-pruning-map.json` so every manifest-owned canonical route now has a test-visible pruning issue with variants/backlog to fold, manifest/docs updates, local JavaScript to move toward ProtoKits, smoke/replay lanes to preserve, and about-20 portfolio effect.
+- This closes the route-level replay-manifest metadata gap noted by the prior cycle report, but it does not yet add executable fixed-tick route simulations.
+
+Next smoke priority: implement one compact fixed-tick route/domain scenario per higher-level lane: survey pressure, strategic pressure, survival ecology, traversal/cargo, aerial traversal, field-engineer composition, and action-defense-extraction.
