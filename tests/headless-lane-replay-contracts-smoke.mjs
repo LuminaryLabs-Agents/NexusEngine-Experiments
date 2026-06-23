@@ -101,6 +101,19 @@ for (const lane of replayManifest.replayLanes) {
     const coverageText = JSON.stringify(contract.protoKitReplayCoverage);
     assert.ok(coverageText.includes("ProtoKits") || coverageText.includes("protokits"), `${lane.id}: ProtoKit-backed lane should reference ProtoKit coverage`);
   }
+
+  const routeExecutableCoverage = routeReplays.flatMap((replay) => replay.routeExecutableReplayCoverage ?? []);
+  if (routeExecutableCoverage.length > 0) {
+    assert.ok(
+      Array.isArray(contract.routeExecutableReplayCoverage) && contract.routeExecutableReplayCoverage.length > 0,
+      `${lane.id}: lane contract should mirror route executable replay coverage when the route manifest has it`
+    );
+    const contractCoverageTests = new Set(contract.routeExecutableReplayCoverage.map((coverage) => coverage.test));
+    for (const coverage of routeExecutableCoverage) {
+      assert.ok(contractCoverageTests.has(coverage.test), `${lane.id}: lane contract should list route executable replay smoke ${coverage.test}`);
+    }
+    assert.ok(!contract.missingExecutableFixture, `${lane.id}: executable route coverage should replace stale missing-executable text`);
+  }
 }
 
 const strategicContract = contractById.get("strategic-pressure-loop");
@@ -108,6 +121,14 @@ assert.equal(strategicContract.executionStatus, "protokit-backed", "strategic pr
 assert.ok(
   strategicContract.protoKitReplayCoverage.some((coverage) => coverage.test === "tests/generic-defense-replay-smoke.test.mjs"),
   "strategic pressure should point at generic-defense replay smoke"
+);
+assert.ok(
+  strategicContract.routeExecutableReplayCoverage.some((coverage) => coverage.test === "tests/signal-bastion-executable-route-replay-smoke.mjs"),
+  "strategic pressure should point at the Signal Bastion executable route replay smoke"
+);
+assert.ok(
+  strategicContract.remainingBrowserHostReduction.includes("convenience facades") && strategicContract.remainingBrowserHostReduction.includes("DSK aliases"),
+  "strategic pressure should keep the remaining browser host/local-JS reduction seam explicit"
 );
 
 console.log("Headless lane replay contract smoke passed.");
