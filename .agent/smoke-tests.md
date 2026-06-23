@@ -19,4 +19,10 @@ Missing or under-specified smoke coverage:
 - Aerial traversal smoke: deterministic flight input ticks, updraft/terrain-window descriptors, checkpoint crossing, camera rig snapshot, and route completion for `sora-the-infinite` / `the-open-above` harnesses.
 - Economy/social smoke: keep `clockwork-verdict`, `rift-bazaar`, `market` and broker seeds non-canonical until a decision/economy/social DSK can expose headless resources, events, methods, snapshots, and descriptors.
 
-Next safe smoke PR should add a manifest-vs-gallery portfolio smoke before changing playable routes. That test should make drift visible without deleting or promoting anything.
+## 2026-06-23 Cycle Report Main Push Planner smoke closure
+
+- Added `tests/domain-cutover-manifest-smoke.mjs` so the canonical cutover manifest now proves each canonical entry has a real route `index.html`, non-empty `domainCutover`, bridge/preset ownership, and a generated gallery route/id match.
+- Wired the new smoke into both `npm run check` and `npm run check:deploy` through `scripts/run-checks.mjs`, which also removes the overlong inline test command from `package.json`.
+- This closes the first manifest-vs-gallery drift visibility gap without deleting routes or promoting seed/backlog routes.
+
+Next smoke priority: route-level smoke/replay manifests that map each canonical route to the ProtoKit/domain replay scenario it validates.
