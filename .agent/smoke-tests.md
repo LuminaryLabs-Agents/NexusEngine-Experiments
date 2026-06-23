@@ -41,3 +41,11 @@ Next smoke priority: route-level smoke/replay manifests that map each canonical 
 - Other canonical routes remain planned fixtures, but their missing replay lanes are now test-visible instead of implicit.
 
 Next smoke priority: implement one compact fixed-tick route/domain scenario per higher-level lane: survey pressure, strategic pressure bridge consumption, survival ecology, traversal/cargo, aerial traversal, field-engineer composition, and action-defense-extraction.
+
+## 2026-06-23 Headless Tick Smoke Builder lane-contract closure
+
+- Added `experiments/headless-lane-replay-contracts.json` so each higher-level lane now has a compact fixed-tick replay contract with semantic inputs, minimal config/entities, required resource/event/method/snapshot/descriptor assertions, deterministic digest fields, browser ownership exclusions, missing executable fixture notes, and local JavaScript reduction pressure.
+- Added `tests/headless-lane-replay-contracts-smoke.mjs` and wired it into both full and deploy check suites. The smoke asserts lane contracts stay aligned with `experiments/canonical-route-replay-manifest.json`, preserve renderer-free ownership boundaries, cover every canonical route assigned to each lane, and keep the five DSK communication surfaces visible.
+- This turns the replay-lane gap into a checked contract layer before adding executable simulations. It is not yet a substitute for route/domain code that imports Core/ProtoKits and advances real fixed ticks.
+
+Next smoke priority: convert one contract into executable headless replay. Safest first lane is `strategic-pressure-loop`, because Signal Bastion already has ProtoKit-backed generic-defense replay coverage; the route-level bridge smoke should assert the host consumes descriptors without re-owning defense simulation.
