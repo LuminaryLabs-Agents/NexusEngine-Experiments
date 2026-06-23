@@ -4,6 +4,10 @@
   "type": "module",
   "private": true,
   "description": "NexusRealtime browser experiments composed from kits.",
+  "devDependencies": {
+    "@luminarylabs/nexusrealtime-protokits": "github:LuminaryLabs-Agents/NexusRealtime-ProtoKits#main",
+    "nexusrealtime": "github:LuminaryLabs-Dev/NexusRealtime#main"
+  },
   "scripts": {
     "generate:application-routes": "node scripts/generate-application-routes.mjs",
     "generate:flat-routes": "npm run generate:application-routes",
