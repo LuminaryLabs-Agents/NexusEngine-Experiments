@@ -74,3 +74,12 @@ Next smoke priority: replace the spec with, or supplement it by, an executable r
 - The smoke also forbids route-local generic-defense interpreters, copied ProtoKit fixtures under Experiments, browser CDN imports inside Node replay, DOM/Canvas-owned simulation shims, and V1/V2/V3 Signal Bastion route forks as replay shortcuts.
 
 Next smoke priority: add stable local package/workspace/path wiring for Core `nexusrealtime` and ProtoKits `@luminarylabs/nexusrealtime-protokits`, then add the real browserless Signal Bastion executable replay against generic-defense DSK aliases.
+
+## 2026-06-23 ProtoKit Promotion Gate executable replay closure
+
+- Added package-level dev dependency wiring for Core `nexusrealtime` and ProtoKits `@luminarylabs/nexusrealtime-protokits`, then updated `experiments/executable-route-replay-import-gates.json` from blocked to `satisfied-by-package-wiring`.
+- Added `tests/signal-bastion-executable-route-replay-smoke.mjs`. It imports real Core plus ProtoKits `generic-defense-dsk-boundaries`, composes the Signal Bastion debug preset through the seven named DSK aliases, runs the checked 30 x 0.1s fixed-tick strategic-pressure plan, compares deterministic resource/snapshot/descriptor digests across fresh runs, and asserts browser ownership exclusions.
+- Wired the executable replay into the full `npm run check` suite only. It is intentionally not in `check:deploy` yet so dependency install behavior can settle before deploy checks depend on GitHub package imports.
+- This closes the first browserless route-domain executable replay for the strongest canonical route without adding reusable kit logic or copied ProtoKit fixtures to Experiments.
+
+Next smoke priority: migrate the browser Signal Bastion host from broad generic-defense compatibility imports toward the smallest proven DSK aliases, then repeat the executable-replay pattern for the next lane only after a real ProtoKit boundary exists.
