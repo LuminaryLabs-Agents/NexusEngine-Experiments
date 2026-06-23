@@ -71,13 +71,16 @@ for (const method of ["genericDefense.build", "genericDefense.upgrade", "generic
   assert.ok(replayMethods.has(method), `spec should include semantic replay method ${method}`);
 }
 assert.ok(spec.deterministicDigest.fields.includes("render.descriptors"), "spec digest should include renderer-agnostic descriptors");
-assert.ok(spec.remainingGap.includes("browser route") && spec.remainingGap.includes("DSK aliases"), "spec should keep the browser import/local-JS reduction gap explicit after executable replay coverage");
+assert.ok(spec.remainingGap.includes("host convenience facades") && spec.remainingGap.includes("DSK aliases"), "spec should keep the remaining browser host/local-JS reduction gap explicit after DSK bridge migration");
 
 const boot = readFileSync("games/signal-bastion/src/boot.js", "utf8");
 const input = readFileSync("games/signal-bastion/src/input-host.js", "utf8");
 const renderer = readFileSync("games/signal-bastion/src/renderer-canvas.js", "utf8");
 
-assert.match(boot, /createGenericDefenseKits/, "boot should still compose generic-defense simulation from ProtoKits");
+assert.match(boot, /generic-defense-aaa-dsk-bridge/, "boot should use the DSK bridge module, not the broad generic-defense facade URL");
+assert.match(boot, /createGenericDefenseDskBundle/, "boot should compose generic-defense simulation from named ProtoKit DSK aliases");
+assert.match(boot, /SIGNAL_BASTION_DEFENSE_DSK_BOUNDARY_IDS/, "boot should keep the browser DSK alias set explicit");
+assert.doesNotMatch(boot, /\bcreateGenericDefenseKits\s*\(/, "boot should not compose the entire broad generic-defense compatibility facade");
 assert.match(boot, /createGenericDefensePresentationStackKits/, "boot should still compose presentation descriptors from ProtoKits");
 assert.match(boot, /engine\.tick\(dt\)/, "boot should advance the route through runtime ticks");
 assert.match(boot, /engine\.defensePresentationStack\?\.getSnapshot\?\.\(\)/, "boot should surface descriptor snapshots");
