@@ -14,6 +14,7 @@ const fullCheckSuites = [
   "tests/signal-bastion-route-domain-replay-spec-smoke.mjs",
   "tests/executable-route-replay-import-gates-smoke.mjs",
   "tests/signal-bastion-executable-route-replay-smoke.mjs",
+  "tests/signal-bastion-host-facade-guard-smoke.mjs",
   "tests/nexus-realtime-loader-smoke.mjs",
   "tests/fogline-three-renderer-smoke.mjs",
   "tests/fogline-environment-content-smoke.mjs",
@@ -46,6 +47,7 @@ const deployCheckSuites = [
   "tests/signal-bastion-replay-bridge-smoke.mjs",
   "tests/signal-bastion-route-domain-replay-spec-smoke.mjs",
   "tests/executable-route-replay-import-gates-smoke.mjs",
+  "tests/signal-bastion-host-facade-guard-smoke.mjs",
   "tests/experiment-flat-routes-smoke.mjs",
   "tests/gallery-coverage-smoke.mjs",
   "tests/contrast-token-smoke.mjs"
