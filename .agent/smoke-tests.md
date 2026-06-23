@@ -65,3 +65,12 @@ Next smoke priority: replace the remaining static bridge gap with a compact brow
 - This is stronger than the prior static bridge check because the replay plan now has a checked route-domain spec, but it is still not the final browserless executable replay that imports Core plus ProtoKits and advances real fixed ticks.
 
 Next smoke priority: replace the spec with, or supplement it by, an executable route replay harness that imports the generic-defense DSK aliases from ProtoKits and Core, runs the fixed-tick strategic-pressure sequence, and asserts descriptor digests without Canvas, DOM, animation frames, browser audio, asset loading, or pointer timing.
+
+## 2026-06-23 Canonical Route Pruner import-gate smoke closure
+
+- Added `experiments/executable-route-replay-import-gates.json` and `tests/executable-route-replay-import-gates-smoke.mjs`.
+- Wired the import-gate smoke into both full and deploy check suites.
+- The smoke protects the remaining `signal-bastion` executable replay gap by proving the route still uses browser CDN dynamic imports, Experiments still lacks stable local Core/ProtoKits package wiring, and any future package-wiring change must update the gate before an executable replay can be claimed.
+- The smoke also forbids route-local generic-defense interpreters, copied ProtoKit fixtures under Experiments, browser CDN imports inside Node replay, DOM/Canvas-owned simulation shims, and V1/V2/V3 Signal Bastion route forks as replay shortcuts.
+
+Next smoke priority: add stable local package/workspace/path wiring for Core `nexusrealtime` and ProtoKits `@luminarylabs/nexusrealtime-protokits`, then add the real browserless Signal Bastion executable replay against generic-defense DSK aliases.
