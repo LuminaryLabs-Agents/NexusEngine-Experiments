@@ -1,0 +1,271 @@
+{
+  "version": 1,
+  "sourceReplayManifest": "experiments/canonical-route-replay-manifest.json",
+  "policy": "Compact lane replay contracts define the fixed-tick shape each canonical route lane must eventually execute. They are renderer-free bridge contracts, not reusable kit implementation.",
+  "requiredSurfaces": [
+    "resources",
+    "events",
+    "methods",
+    "snapshots",
+    "descriptors"
+  ],
+  "browserOwnershipExcluded": [
+    "DOM",
+    "Canvas",
+    "WebGL",
+    "Three.js",
+    "pointer lock",
+    "browser audio",
+    "asset loading"
+  ],
+  "contracts": [
+    {
+      "id": "traversal-cargo-pressure",
+      "higherLevelDomain": "Delivery/extraction loop",
+      "canonicalIds": ["next-ledge"],
+      "contractType": "planned-fixture-contract",
+      "executionStatus": "contract-only",
+      "fixedTickPlan": { "count": 180, "dt": 0.016667, "totalSeconds": 3 },
+      "setup": {
+        "minimalConfig": "route checkpoints, one cargo or tether target, one stamina/pressure meter, and descriptor ids for route ledger, carried state, and destination",
+        "entities": ["actor", "checkpoint-a", "cargo-a", "dropoff-a"]
+      },
+      "inputs": [
+        { "frame": 0, "method": "route.enterCheckpoint", "args": ["checkpoint-a"] },
+        { "frame": 15, "method": "cargo.pickup", "args": ["cargo-a"] },
+        { "frame": 90, "method": "route.enterCheckpoint", "args": ["dropoff-a"] },
+        { "frame": 120, "method": "cargo.deliver", "args": ["cargo-a", "dropoff-a"] }
+      ],
+      "assertions": {
+        "resources": ["routeLedger", "cargoState", "pressureMeter"],
+        "events": ["CheckpointEntered", "CargoPickedUp", "CargoDelivered", "RouteCompleted"],
+        "methods": ["enterCheckpoint", "pickup", "deliver", "getSnapshot"],
+        "snapshots": ["route.complete", "cargo.carried", "pressure.value"],
+        "descriptors": ["checkpoint", "cargo", "dropoff", "route-hud"]
+      },
+      "determinism": {
+        "digestFields": ["routeLedger", "cargoState", "events", "descriptors"],
+        "nondeterminismRisk": "host movement and presentation must be bridged into semantic methods before replay"
+      },
+      "localJsReductionSignal": [
+        "checkpoint ledger and cargo/tether ownership should move behind reusable DSK resources",
+        "route host should render descriptor snapshots only"
+      ],
+      "missingExecutableFixture": "checkpoint/cargo/tether deterministic replay lane"
+    },
+    {
+      "id": "survey-pressure",
+      "higherLevelDomain": "Survey pressure loop",
+      "canonicalIds": ["fogline-relay"],
+      "contractType": "planned-fixture-contract",
+      "executionStatus": "contract-only",
+      "fixedTickPlan": { "count": 240, "dt": 0.016667, "totalSeconds": 4 },
+      "setup": {
+        "minimalConfig": "one scan target, one zone pressure region, one timed hazard, one objective ledger, and descriptor ids for scan reticle, zone, hazard, and objective status",
+        "entities": ["surveyor", "scan-target-a", "zone-a", "hazard-a"]
+      },
+      "inputs": [
+        { "frame": 0, "method": "survey.registerTarget", "args": ["scan-target-a"] },
+        { "frame": 30, "method": "survey.beginScan", "args": ["scan-target-a"] },
+        { "frame": 120, "method": "zone.applyPressure", "args": ["zone-a", 0.5] },
+        { "frame": 180, "method": "survey.completeScan", "args": ["scan-target-a"] }
+      ],
+      "assertions": {
+        "resources": ["scanLedger", "zonePressure", "hazardState", "objectiveLedger"],
+        "events": ["ScanStarted", "ScanProgressed", "HazardEscalated", "ObjectiveCompleted"],
+        "methods": ["registerTarget", "beginScan", "applyPressure", "getSnapshot"],
+        "snapshots": ["scan.progress", "zone.pressure", "hazard.level", "objective.complete"],
+        "descriptors": ["scan-target", "zone-pressure", "hazard-warning", "objective-hud"]
+      },
+      "determinism": {
+        "digestFields": ["scanLedger", "zonePressure", "hazardState", "objectiveLedger", "descriptors"],
+        "nondeterminismRisk": "look vectors and browser input must be quantized into scan methods before replay"
+      },
+      "localJsReductionSignal": [
+        "scan target registration should leave route-local objects",
+        "zone pressure and hazard state should emit events/snapshots from reusable DSKs"
+      ],
+      "missingExecutableFixture": "scan-zone-hazard route-level replay with objective descriptor hashes"
+    },
+    {
+      "id": "field-engineer-composition",
+      "higherLevelDomain": "Field engineering composition loop",
+      "canonicalIds": ["nexus-frontier-signal-isles"],
+      "contractType": "planned-fixture-contract",
+      "executionStatus": "contract-only",
+      "fixedTickPlan": { "count": 300, "dt": 0.016667, "totalSeconds": 5 },
+      "setup": {
+        "minimalConfig": "one resource node, one build site, one unlockable objective, one pressure wave, and descriptor ids for node, build site, unlock, and beacon state",
+        "entities": ["engineer", "resource-node-a", "build-site-a", "beacon-a"]
+      },
+      "inputs": [
+        { "frame": 0, "method": "resourceNode.harvest", "args": ["resource-node-a"] },
+        { "frame": 45, "method": "buildPlacement.build", "args": ["build-site-a", "signal-mast"] },
+        { "frame": 120, "method": "objective.unlock", "args": ["beacon-a"] },
+        { "frame": 240, "method": "completionLedger.complete", "args": ["beacon-a"] }
+      ],
+      "assertions": {
+        "resources": ["resourceLedger", "buildLedger", "objectiveLedger", "pressureState"],
+        "events": ["ResourceHarvested", "StructureBuilt", "ObjectiveUnlocked", "ScenarioCompleted"],
+        "methods": ["harvest", "build", "unlock", "getSnapshot"],
+        "snapshots": ["resources.balance", "build.complete", "objective.unlocked", "scenario.complete"],
+        "descriptors": ["resource-node", "build-site", "structure", "beacon-hud"]
+      },
+      "determinism": {
+        "digestFields": ["resourceLedger", "buildLedger", "objectiveLedger", "pressureState", "descriptors"],
+        "nondeterminismRisk": "route-authored composition should shrink into kit config and completion-ledger snapshots"
+      },
+      "localJsReductionSignal": [
+        "route-owned objective bookkeeping can move to completion-ledger DSK snapshots",
+        "field-engineer presets can become reusable kit config"
+      ],
+      "missingExecutableFixture": "harvest/build/unlock replay mapped to resource-node, build-placement, objective, and pressure boundaries"
+    },
+    {
+      "id": "aerial-open-traversal",
+      "higherLevelDomain": "Aerial traversal loop",
+      "canonicalIds": ["sora-the-infinite"],
+      "contractType": "planned-fixture-contract",
+      "executionStatus": "contract-only",
+      "fixedTickPlan": { "count": 240, "dt": 0.016667, "totalSeconds": 4 },
+      "setup": {
+        "minimalConfig": "one flight body, one boost meter, one corridor/checkpoint pair, one camera rig, and descriptor ids for route, terrain window, and camera state",
+        "entities": ["flyer", "corridor-a", "checkpoint-a", "camera-rig-a"]
+      },
+      "inputs": [
+        { "frame": 0, "method": "flight.setInput", "args": [{ "pitch": -0.2, "bank": 0.35, "boost": false }] },
+        { "frame": 45, "method": "flight.setInput", "args": [{ "pitch": 0.05, "bank": 0.1, "boost": true }] },
+        { "frame": 120, "method": "corridor.crossCheckpoint", "args": ["checkpoint-a"] },
+        { "frame": 180, "method": "cameraRig.captureSnapshot", "args": ["camera-rig-a"] }
+      ],
+      "assertions": {
+        "resources": ["flightBody", "boostMeter", "checkpointLedger", "cameraRig"],
+        "events": ["FlightInputAccepted", "BoostSpent", "CheckpointCrossed", "CameraSnapshotUpdated"],
+        "methods": ["setInput", "crossCheckpoint", "captureSnapshot", "getSnapshot"],
+        "snapshots": ["flight.position", "flight.velocity", "checkpoint.complete", "camera.pose"],
+        "descriptors": ["flight-path", "checkpoint", "terrain-window", "camera-rig"]
+      },
+      "determinism": {
+        "digestFields": ["flightBody", "boostMeter", "checkpointLedger", "cameraRig", "descriptors"],
+        "nondeterminismRisk": "analog input and camera interpolation must be fixed-step quantized before replay"
+      },
+      "localJsReductionSignal": [
+        "flight envelope and checkpoint ledger should move into aerial traversal DSKs",
+        "camera and terrain-window output should become descriptor snapshots"
+      ],
+      "missingExecutableFixture": "pitch/bank/boost/checkpoint deterministic replay lane"
+    },
+    {
+      "id": "survival-ecology",
+      "higherLevelDomain": "Survival ecology loop",
+      "canonicalIds": ["zombie-orchard"],
+      "contractType": "planned-fixture-contract",
+      "executionStatus": "contract-only",
+      "fixedTickPlan": { "count": 360, "dt": 0.016667, "totalSeconds": 6 },
+      "setup": {
+        "minimalConfig": "one survivor, one pickup, one gear action, one horde wave, one pressure meter, and descriptor ids for health, gear, horde, and hazard status",
+        "entities": ["survivor", "pickup-a", "gear-a", "horde-a"]
+      },
+      "inputs": [
+        { "frame": 0, "method": "resource.pickup", "args": ["pickup-a"] },
+        { "frame": 60, "method": "actionWindow.commit", "args": ["gear-a"] },
+        { "frame": 120, "method": "agentGroup.spawnWave", "args": ["horde-a"] },
+        { "frame": 240, "method": "hazardDirector.applyPressure", "args": ["orchard-fog", 0.75] }
+      ],
+      "assertions": {
+        "resources": ["resourceLedger", "gearState", "agentGroupState", "hazardPressure"],
+        "events": ["PickupCollected", "GearCommitted", "AgentWaveSpawned", "HazardPressureChanged"],
+        "methods": ["pickup", "commit", "spawnWave", "getSnapshot"],
+        "snapshots": ["resources.count", "gear.ready", "agents.remaining", "health.value"],
+        "descriptors": ["pickup", "gear-hud", "horde-warning", "health-hud"]
+      },
+      "determinism": {
+        "digestFields": ["resourceLedger", "gearState", "agentGroupState", "hazardPressure", "descriptors"],
+        "nondeterminismRisk": "spawn cadence and combat affordances must move out of route-local timers"
+      },
+      "localJsReductionSignal": [
+        "pickup and gear ledgers should reuse resource/action boundaries",
+        "horde spawn cadence and hazard pressure should emit events/snapshots"
+      ],
+      "missingExecutableFixture": "pickup/gear/horde deterministic replay lane"
+    },
+    {
+      "id": "strategic-pressure-loop",
+      "higherLevelDomain": "Strategic pressure loop",
+      "canonicalIds": ["signal-bastion"],
+      "contractType": "protokit-backed-contract",
+      "executionStatus": "protokit-backed",
+      "fixedTickPlan": { "count": 30, "dt": 0.1, "totalSeconds": 3 },
+      "setup": {
+        "minimalConfig": "generic-defense level with path, vital target, one build slot, one tower blueprint, one wave, and renderer descriptor output",
+        "entities": ["core", "slot-a", "tower-bolt", "wave-runner"]
+      },
+      "inputs": [
+        { "frame": 0, "method": "genericDefense.build", "args": ["slot-a", "bolt"] },
+        { "frame": 0, "method": "genericDefense.upgrade", "args": ["structure-1"] },
+        { "frame": 1, "method": "genericDefense.startWave", "args": [{ "waveNumber": 1 }] }
+      ],
+      "assertions": {
+        "resources": ["map", "economy", "structures", "agents", "combat", "render"],
+        "events": ["BuildRequested", "StructureBuilt", "EconomyDebit", "WaveStarted", "EnemyKilled", "WaveCompleted"],
+        "methods": ["build", "upgrade", "startWave", "getSnapshot"],
+        "snapshots": ["session.status", "economy.currency", "map.vital.health", "render.hud.status"],
+        "descriptors": ["path", "vital", "build-slot", "structure", "effect"]
+      },
+      "determinism": {
+        "digestFields": ["map", "economy", "structures", "agents", "combat", "render.descriptors"],
+        "nondeterminismRisk": "covered by ProtoKits replay; Signal Bastion host must only bridge input and render descriptors"
+      },
+      "protoKitReplayCoverage": [
+        {
+          "repo": "LuminaryLabs-Agents/NexusRealtime-ProtoKits",
+          "test": "tests/generic-defense-dsk-boundaries-smoke.test.mjs"
+        },
+        {
+          "repo": "LuminaryLabs-Agents/NexusRealtime-ProtoKits",
+          "test": "tests/generic-defense-replay-smoke.test.mjs",
+          "fixture": "tests/fixtures/generic-defense-replay-fixtures.mjs"
+        }
+      ],
+      "localJsReductionSignal": [
+        "Signal Bastion should keep defense simulation in ProtoKits and consume descriptors",
+        "host-owned JS should remain canvas/HUD/input/audio/asset presentation only"
+      ],
+      "missingExecutableFixture": "route-level bridge replay asserting Signal Bastion consumes generic-defense descriptors without re-owning defense simulation"
+    },
+    {
+      "id": "action-defense-extraction",
+      "higherLevelDomain": "Action defense extraction loop",
+      "canonicalIds": ["rogue-lite-hellscape-siege"],
+      "contractType": "planned-fixture-contract",
+      "executionStatus": "contract-only",
+      "fixedTickPlan": { "count": 420, "dt": 0.016667, "totalSeconds": 7 },
+      "setup": {
+        "minimalConfig": "one extractor, one harvest node, one buildable defense, one wave, one core/extraction portal, and descriptor ids for inventory, core, wave, and exit status",
+        "entities": ["extractor", "harvest-node-a", "defense-slot-a", "portal-a", "wave-a"]
+      },
+      "inputs": [
+        { "frame": 0, "method": "resource.harvest", "args": ["harvest-node-a"] },
+        { "frame": 75, "method": "buildPlacement.build", "args": ["defense-slot-a", "ward"] },
+        { "frame": 150, "method": "agentGroup.spawnWave", "args": ["wave-a"] },
+        { "frame": 330, "method": "routeCheckpoint.extract", "args": ["portal-a"] }
+      ],
+      "assertions": {
+        "resources": ["inventoryLedger", "buildLedger", "waveState", "extractionState"],
+        "events": ["ResourceHarvested", "StructureBuilt", "WaveStarted", "ExtractionCompleted"],
+        "methods": ["harvest", "build", "spawnWave", "extract", "getSnapshot"],
+        "snapshots": ["inventory.materials", "core.health", "wave.remaining", "extraction.complete"],
+        "descriptors": ["harvest-node", "defense-slot", "core-hud", "extraction-portal"]
+      },
+      "determinism": {
+        "digestFields": ["inventoryLedger", "buildLedger", "waveState", "extractionState", "descriptors"],
+        "nondeterminismRisk": "mixed action-defense route logic should split into ledger/director/checkpoint DSKs before replay"
+      },
+      "localJsReductionSignal": [
+        "inventory/material ledger and harvest interaction should move into reusable resource boundaries",
+        "portal/extraction state should become route-checkpoint/cargo snapshots"
+      ],
+      "missingExecutableFixture": "harvest/build/wave/core/extraction deterministic replay lane"
+    }
+  ]
+}
