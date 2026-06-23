@@ -86,8 +86,16 @@ Next smoke priority: migrate the browser Signal Bastion host from broad generic-
 
 ## 2026-06-23 Headless Tick Smoke Builder browser DSK bridge closure
 
-- `games/signal-bastion/src/boot.js` now imports the ProtoKits `generic-defense-aaa-dsk-bridge` CDN module and composes the seven checked generic-defense DSK aliases instead of calling the broad `createGenericDefenseKits()` compatibility facade.
+- `games/signal-bastion/src/boot.js` now imports the ProtoKits `generic-defense-aaa-dsk-bridge` CDN module and composes the seven named generic-defense DSK aliases instead of calling the broad `createGenericDefenseKits()` compatibility facade.
 - Signal Bastion bridge/spec/import-gate/static smokes now assert the browser host keeps the DSK alias set explicit while still leaving Canvas, DOM, frame timing, and descriptor projection in the route host.
 - The route still keeps minimal host convenience facades for foundation/build/wave/scale APIs so existing input and UI bridges remain compatible; this is a smaller browser surface than the broad compatibility bundle but not a full local-JS shrink to only direct DSK methods.
 
 Next smoke priority: guard the remaining host convenience facades, then replace facade calls with direct DSK semantic methods only where the browser route stays compatible and the executable replay remains green.
+
+## 2026-06-23 Deterministic Replay QA host-facade guard closure
+
+- Fixed stale `tests/signal-bastion-replay-bridge-smoke.mjs` expectations after the executable route replay closure. The bridge smoke now requires the `signal-bastion` manifest entry to keep `missingExecutableFixtures` empty and list `tests/signal-bastion-executable-route-replay-smoke.mjs` as route executable replay coverage.
+- Added `tests/signal-bastion-host-facade-guard-smoke.mjs` to guard the remaining convenience-facade seam in the browser host. It allows only the named generic-defense DSK bundle plus foundation/build/wave/scale/authoring convenience exports, blocks the broad `createGenericDefenseKits()` facade, preserves the seven DSK alias IDs, blocks lower-level browser-host bypasses such as `engine.defenseCombat`, and keeps renderer/input code outside reusable simulation ownership.
+- Wired the facade guard into both full and deploy checks. The executable replay remains full-check-only, but this static guard can run during deploy checks without requiring dependency install behavior for GitHub package imports.
+
+Next smoke priority: reduce the remaining Signal Bastion browser host convenience calls only where existing bridge/spec/executable/facade smokes stay green. Do not add another executable route replay lane until a real reusable ProtoKit boundary exists for that lane.
