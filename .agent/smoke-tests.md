@@ -49,3 +49,11 @@ Next smoke priority: implement one compact fixed-tick route/domain scenario per 
 - This turns the replay-lane gap into a checked contract layer before adding executable simulations. It is not yet a substitute for route/domain code that imports Core/ProtoKits and advances real fixed ticks.
 
 Next smoke priority: convert one contract into executable headless replay. Safest first lane is `strategic-pressure-loop`, because Signal Bastion already has ProtoKit-backed generic-defense replay coverage; the route-level bridge smoke should assert the host consumes descriptors without re-owning defense simulation.
+
+## 2026-06-23 Deterministic Replay QA bridge-smoke closure
+
+- Added `tests/signal-bastion-replay-bridge-smoke.mjs` and wired it into both full and deploy check suites through `scripts/run-checks.mjs`.
+- The smoke guards the `strategic-pressure-loop` / `signal-bastion` replay lane by checking the replay manifest, lane contract, ProtoKit generic-defense coverage, boot composition, input semantic bridge methods, renderer descriptor consumption, and absence of obvious route-local randomness.
+- This is a bridge-boundary smoke, not a browserless executable route replay. It keeps the remaining gap explicit while preventing regression where Signal Bastion drifts back into owning defense simulation, runtime construction in renderer/input files, or browser-timing-dependent replay state.
+
+Next smoke priority: replace the remaining static bridge gap with a compact browserless Signal Bastion route-domain replay that imports the smallest generic-defense DSK aliases, runs fixed ticks, and asserts descriptor digests plus semantic-method/event/snapshot boundaries.
