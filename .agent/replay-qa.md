@@ -70,3 +70,19 @@ The smoke is intentionally static and renderer-host focused: it does not create 
 - host files avoid obvious replay-breaking local randomness such as `Math.random`, `Date.now`, or `crypto.getRandomValues`.
 
 This closes a drift-visibility gap, not the executable route-domain replay gap. The remaining safest replay patch is still a browserless route-domain harness that imports the actual generic-defense DSK boundary aliases, advances fixed ticks, and proves Signal Bastion can be represented by descriptors and semantic methods without depending on Canvas, DOM, animation frames, or pointer/browser timing.
+
+## 2026-06-23 Signal Bastion route-domain replay spec
+
+`experiments/signal-bastion-route-domain-replay.json` now records a checked route-domain replay spec for `strategic-pressure-loop` / `signal-bastion`.
+
+The spec captures:
+
+- the same fixed tick plan as `experiments/headless-lane-replay-contracts.json`;
+- the seven named generic-defense DSK boundaries and their resource/event/method/snapshot/descriptor surfaces;
+- semantic route inputs for build placement, upgrade, wave start, and descriptor snapshot reads;
+- expected resource, event, method, snapshot, descriptor, and digest fields;
+- explicit browser/renderer ownership exclusions so Canvas, DOM, animation frames, pointer timing, assets, and audio stay out of reusable kit logic.
+
+`tests/signal-bastion-route-domain-replay-spec-smoke.mjs` validates the spec against the canonical replay manifest, lane contract, existing bridge smoke, and Signal Bastion host files, and is wired into both full and deploy checks. This narrows the gap from "bridge smoke only" to "checked route-domain replay spec," but still leaves the executable replay harness open.
+
+Next replay priority: create the executable browserless Signal Bastion harness that imports Core plus ProtoKits generic-defense DSK aliases, advances the fixed tick sequence, and asserts descriptor digests without browser presentation dependencies.
