@@ -97,3 +97,11 @@ Safest next replay patch:
 - or keep the next Experiments patch to a guard smoke that asserts the executable replay remains blocked until real package imports are available, while keeping `generic-defense` simulation ownership in ProtoKits.
 
 Do not add reusable kit logic or a duplicate defense interpreter under Experiments just to make `npm run check` execute a route replay. That would make the local JavaScript larger and blur the DSK boundary the current manifests are trying to protect.
+
+## 2026-06-23 Canonical Route Pruner import-gate replay QA
+
+`experiments/executable-route-replay-import-gates.json` and `tests/executable-route-replay-import-gates-smoke.mjs` now make the replay-gate option from the previous planner concrete.
+
+The gate records that `signal-bastion` is ProtoKit-backed at the lane/spec layer but still blocked from a true browserless executable replay because Experiments has no stable local dependency, workspace, or path wiring for Core `nexusrealtime` and ProtoKits `@luminarylabs/nexusrealtime-protokits`. The route boot currently uses browser CDN dynamic imports, including Core from `LuminaryLabs-Dev/NexusRealtime@main` and ProtoKits generic-defense/presentation imports from `LuminaryLabs-Agents/NexusRealtime-ProtoKits@0.0.1`.
+
+Replay QA implication: do not claim executable route replay until the harness imports the real Core runtime and ProtoKit generic-defense DSK aliases locally, advances the checked strategic-pressure fixed tick plan, and asserts resources, events, methods, snapshots, descriptors, and digest fields without DOM, Canvas, WebGL, Three.js, pointer lock, browser audio, asset loading, browser CDN imports, or route-local simulation copies.
