@@ -70,7 +70,14 @@ for (const canonical of cutoverManifest.canonicalRoutes) {
   assert.ok(existsSync(`${replay.canonicalPath}index.html`), `${canonical.id} canonical route should have index.html`);
   assert.ok(typeof replay.hostRole === "string" && replay.hostRole.includes("render"), `${canonical.id} should define renderer-only host role`);
   assert.ok(Array.isArray(replay.protoKitReplayCoverage), `${canonical.id} should list ProtoKit replay coverage, even if empty`);
-  assert.ok(Array.isArray(replay.missingExecutableFixtures) && replay.missingExecutableFixtures.length > 0, `${canonical.id} should keep missing fixture pressure explicit`);
+  assert.ok(Array.isArray(replay.missingExecutableFixtures), `${canonical.id} should list missing executable fixtures, even when executable route coverage closes the list`);
+  if (Array.isArray(replay.routeExecutableReplayCoverage) && replay.routeExecutableReplayCoverage.length > 0) {
+    for (const coverage of replay.routeExecutableReplayCoverage) {
+      assert.ok(coverage.repo && coverage.test && existsSync(coverage.test), `${canonical.id} executable route replay coverage should point at a test file`);
+    }
+  } else {
+    assert.ok(replay.missingExecutableFixtures.length > 0, `${canonical.id} should keep missing fixture pressure explicit until executable replay exists`);
+  }
   assert.ok(Array.isArray(replay.localJsReductionOpportunity) && replay.localJsReductionOpportunity.length > 0, `${canonical.id} should identify local JS reduction opportunities`);
 }
 
@@ -87,5 +94,10 @@ assert.ok(
   signalBastionReplay.protoKitReplayCoverage.some((coverage) => coverage.test === "tests/generic-defense-replay-smoke.test.mjs"),
   "Signal Bastion should point at generic-defense deterministic replay smoke"
 );
+assert.ok(
+  signalBastionReplay.routeExecutableReplayCoverage.some((coverage) => coverage.test === "tests/signal-bastion-executable-route-replay-smoke.mjs"),
+  "Signal Bastion should point at the executable route-domain replay smoke"
+);
+assert.deepEqual(signalBastionReplay.missingExecutableFixtures, [], "Signal Bastion executable replay gap should be closed at the route-manifest layer");
 
 console.log("Canonical route replay manifest smoke passed.");
