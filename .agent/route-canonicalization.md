@@ -26,6 +26,16 @@ Route folders were not deleted in this pass. The safe next destructive step is s
 
 ## 2026-06-23 Canonical Route Pruner import-gate finding
 
-Added `experiments/executable-route-replay-import-gates.json` so the strongest current fold candidate, `signal-bastion` / `strategic-pressure-loop`, cannot be treated as executable route replay complete until Experiments can import Core and ProtoKits through stable local package/workspace/path wiring.
+Added `experiments/executable-route-replay-import-gates.json` so the strongest current fold candidate, `signal-bastion` / `strategic-pressure-loop`, could not be treated as executable route replay complete until Experiments could import Core and ProtoKits through stable local package/workspace/path wiring.
 
-Canonicalization implication: do not prune Signal Bastion variants, create new defense forks, or delete route folders just to satisfy replay pressure. The next safe canonicalization step is package wiring plus an executable browserless replay that consumes real generic-defense DSK aliases from ProtoKits. Until then, keep the canonical route as the base route and keep variants/backlog folded as metadata, not destructive filesystem deletion.
+## 2026-06-23 Cycle Report Main Push Planner canonicalization update
+
+The Signal Bastion replay gate has moved from blocked to proven for the Node replay path: the route-domain executable replay now imports real Core plus ProtoKits generic-defense DSK aliases through package wiring and keeps browser/renderer ownership excluded.
+
+Canonicalization implication:
+
+- Keep `signal-bastion` as the only canonical route with executable route-domain replay proof for now.
+- Do not use that proof to delete defense/survival/action variants yet. The remaining browser-host convenience facade seam should shrink first, while bridge/spec/executable/facade smokes stay green.
+- Do not add Signal Bastion V1/V2/V3 forks or route-local replay copies.
+- Keep the other canonical routes contract-backed but non-executable until their reusable ProtoKit boundaries exist.
+- Treat the 20-route target list as a portfolio lens. A route should join or remain canonical only when it adds reusable DSK pressure and a path to fixed-tick smoke/replay coverage.
