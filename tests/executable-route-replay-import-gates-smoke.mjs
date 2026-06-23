@@ -1,10 +1,11 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 
 const gatePath = "experiments/executable-route-replay-import-gates.json";
 const replayManifestPath = "experiments/canonical-route-replay-manifest.json";
 const laneContractsPath = "experiments/headless-lane-replay-contracts.json";
 const routeReplaySpecPath = "experiments/signal-bastion-route-domain-replay.json";
+const executableSmokePath = "tests/signal-bastion-executable-route-replay-smoke.mjs";
 
 const gateManifest = JSON.parse(readFileSync(gatePath, "utf8"));
 const replayManifest = JSON.parse(readFileSync(replayManifestPath, "utf8"));
@@ -25,8 +26,13 @@ for (const exclusion of replayManifest.browserOwnershipExcluded) {
 const gate = gateManifest.gates.find((entry) => entry.canonicalId === "signal-bastion");
 assert.ok(gate, "Signal Bastion should have an executable route replay import gate");
 assert.equal(gate.scenarioLane, "strategic-pressure-loop", "Signal Bastion gate should target the strategic pressure lane");
-assert.equal(gate.gateStatus, "blocked-by-package-wiring", "Signal Bastion executable replay should stay blocked until real package wiring exists");
+assert.equal(gate.gateStatus, "satisfied-by-package-wiring", "Signal Bastion executable replay gate should be satisfied by real package wiring");
 assert.equal(gate.currentRouteImportMode.file, "games/signal-bastion/src/boot.js", "gate should point at the route boot file");
+assert.ok(existsSync(executableSmokePath), "satisfied gate should point at an executable replay smoke file");
+assert.ok(
+  gate.executableReplayCoverage?.some((coverage) => coverage.test === executableSmokePath),
+  "gate should list executable replay coverage"
+);
 
 const routeReplay = replayManifest.canonicalRouteReplays.find((entry) => entry.canonicalId === gate.canonicalId);
 const lane = replayManifest.replayLanes.find((entry) => entry.id === gate.scenarioLane);
@@ -37,8 +43,9 @@ assert.ok(contract, "strategic-pressure-loop should still exist in the lane cont
 assert.equal(routeReplay.status, "protokit-covered", "Signal Bastion should remain ProtoKit-covered at the route replay layer");
 assert.equal(lane.coverageStatus, "protokit-covered", "strategic-pressure-loop should remain ProtoKit-covered");
 assert.equal(contract.executionStatus, "protokit-backed", "strategic-pressure-loop lane should remain ProtoKit-backed");
-assert.equal(routeReplaySpec.executionStatus, "spec-smoked-protokit-backed", "Signal Bastion spec should remain spec-smoked and ProtoKit-backed");
-assert.equal(routeReplaySpec.remainingGap.includes("browserless executable route replay"), true, "route spec should keep the executable replay gap explicit");
+assert.equal(routeReplaySpec.executionStatus, "executable-smoked-protokit-backed", "Signal Bastion spec should be executable-smoked and ProtoKit-backed");
+assert.equal(routeReplaySpec.sourceExecutableSmoke, executableSmokePath, "route spec should point at executable replay smoke");
+assert.equal(routeReplaySpec.remainingGap.includes("browser route"), true, "route spec should keep the browser import/local-JS reduction gap explicit");
 
 const dependencyNames = new Set([
   ...Object.keys(packageJson.dependencies ?? {}),
@@ -46,25 +53,28 @@ const dependencyNames = new Set([
   ...Object.keys(packageJson.peerDependencies ?? {}),
   ...Object.keys(packageJson.optionalDependencies ?? {})
 ]);
-const workspaceText = JSON.stringify(packageJson.workspaces ?? []);
+const dependencyText = JSON.stringify({
+  dependencies: packageJson.dependencies ?? {},
+  devDependencies: packageJson.devDependencies ?? {},
+  peerDependencies: packageJson.peerDependencies ?? {},
+  optionalDependencies: packageJson.optionalDependencies ?? {},
+  workspaces: packageJson.workspaces ?? []
+});
 
 for (const required of gate.requiredLocalPackageWiring) {
   assert.ok(required.repo?.startsWith("LuminaryLabs-"), `${required.packageName} should identify the source repo`);
   assert.ok(required.packageName, "required package wiring entries should name a package");
   assert.ok(required.expectedImport, `${required.packageName} should name the expected import surface`);
-  assert.equal(
-    dependencyNames.has(required.packageName) || workspaceText.includes(required.packageName),
-    false,
-    `gate says blocked, so ${required.packageName} should not already be wired into Experiments without updating this manifest`
-  );
+  assert.equal(dependencyNames.has(required.packageName), true, `${required.packageName} should now be wired into Experiments package metadata`);
+  assert.ok(dependencyText.includes(required.repo), `${required.packageName} dependency should point at ${required.repo}`);
 }
 
-assert.match(bootSource, /cdn\.jsdelivr\.net\/gh\/LuminaryLabs-Dev\/NexusRealtime@main\/src\/index\.js/, "Signal Bastion boot should still use the browser Core CDN import while the gate is blocked");
-assert.match(bootSource, /cdn\.jsdelivr\.net\/gh\/LuminaryLabs-Agents\/NexusRealtime-ProtoKits@0\.0\.1\/protokits\/generic-defense-aaa-kits\/index\.js/, "Signal Bastion boot should still use the browser ProtoKits defense CDN import while the gate is blocked");
-assert.match(bootSource, /cdn\.jsdelivr\.net\/gh\/LuminaryLabs-Agents\/NexusRealtime-ProtoKits@0\.0\.1\/protokits\/generic-defense-presentation-stack-kit\/index\.js/, "Signal Bastion boot should still use the browser ProtoKits presentation CDN import while the gate is blocked");
+assert.match(bootSource, /cdn\.jsdelivr\.net\/gh\/LuminaryLabs-Dev\/NexusRealtime@main\/src\/index\.js/, "Signal Bastion browser boot can still use the Core CDN import while Node replay uses package wiring");
+assert.match(bootSource, /cdn\.jsdelivr\.net\/gh\/LuminaryLabs-Agents\/NexusRealtime-ProtoKits@0\.0\.1\/protokits\/generic-defense-aaa-kits\/index\.js/, "Signal Bastion browser boot can still use the ProtoKits defense CDN import while Node replay uses package wiring");
+assert.match(bootSource, /cdn\.jsdelivr\.net\/gh\/LuminaryLabs-Agents\/NexusRealtime-ProtoKits@0\.0\.1\/protokits\/generic-defense-presentation-stack-kit\/index\.js/, "Signal Bastion browser boot can still use the ProtoKits presentation CDN import while Node replay uses package wiring");
 assert.match(bootSource, /import\(NEXUS_URL\)/, "route boot should load Core through the declared dynamic import URL");
 assert.match(bootSource, /import\(DEFENSE_KITS_URL\)/, "route boot should load defense kits through the declared dynamic import URL");
-assert.doesNotMatch(bootSource, /from ["']nexusrealtime["']|from ["']@luminarylabs\/nexusrealtime-protokits/, "route boot should not silently switch to package imports while the gate is blocked");
+assert.doesNotMatch(bootSource, /from ["']nexusrealtime["']|from ["']@luminarylabs\/nexusrealtime-protokits/, "route boot should not silently switch browser runtime mode as part of the Node replay gate");
 
 for (const forbidden of [
   "route-local generic-defense interpreter",
@@ -78,18 +88,18 @@ for (const forbidden of [
 
 for (const phrase of ["resources", "events", "methods", "snapshots", "descriptors"]) {
   assert.ok(
-    gate.nextMainBranchPatchPlan.some((entry) => entry.includes(phrase)) || routeReplaySpec.expectedAssertions[phrase]?.length > 0,
-    `gate or route spec should keep ${phrase} visible for the next executable replay`
+    gate.executableReplayCoverage.some((coverage) => coverage.coverage.includes(phrase)) || routeReplaySpec.expectedAssertions[phrase]?.length > 0,
+    `gate or route spec should keep ${phrase} visible for the executable replay`
   );
 }
 
 assert.ok(
-  gate.safeToUnblockWhen.some((entry) => entry.includes("workspace") || entry.includes("dependency")),
-  "gate should explain how package wiring can unblock the executable replay"
+  gate.satisfiedBy.some((entry) => entry.includes("nexusrealtime")) && gate.satisfiedBy.some((entry) => entry.includes("generic-defense-dsk-boundaries")),
+  "satisfied gate should document package wiring and real DSK alias imports"
 );
 assert.ok(
-  gate.pruningEffect.includes("fake local replay") && gate.pruningEffect.includes("route fork"),
-  "gate should protect canonical pruning from fake replays and route sprawl"
+  gate.pruningEffect.includes("fake local replays") && gate.pruningEffect.includes("route forks"),
+  "gate should still protect canonical pruning from fake replays and route sprawl"
 );
 
 console.log("Executable route replay import gate smoke passed.");
