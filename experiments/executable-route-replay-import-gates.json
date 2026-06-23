@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "policy": "Executable route-domain replay may be added only when Experiments can import Core and ProtoKits through stable local package or workspace wiring. Until then, keep the gap explicit and do not duplicate reusable kit simulation in Experiments.",
+  "policy": "Executable route-domain replay may run only when Experiments imports real Core and ProtoKits through stable package, workspace, or path wiring. The Signal Bastion strategic-pressure gate is now satisfied through package wiring and an executable smoke; future lanes must still avoid duplicating reusable kit simulation in Experiments.",
   "sourceReplayManifest": "experiments/canonical-route-replay-manifest.json",
   "sourceLaneContracts": "experiments/headless-lane-replay-contracts.json",
   "sourceRouteReplaySpec": "experiments/signal-bastion-route-domain-replay.json",
@@ -20,8 +20,8 @@
       "canonicalPath": "games/signal-bastion/",
       "scenarioLane": "strategic-pressure-loop",
       "higherLevelDomain": "Strategic pressure loop",
-      "gateStatus": "blocked-by-package-wiring",
-      "reason": "Signal Bastion is the strongest ProtoKit-backed replay lane, but the Experiments package currently has no stable local Core or ProtoKits dependency for a browserless Node replay. The route boot uses browser CDN dynamic imports, so adding a fake route-local replay would increase local experiment JavaScript and blur the generic-defense DSK boundary.",
+      "gateStatus": "satisfied-by-package-wiring",
+      "reason": "Signal Bastion is the strongest ProtoKit-backed replay lane. Experiments now declares local package wiring for Core `nexusrealtime` and ProtoKits `@luminarylabs/nexusrealtime-protokits`, and the executable smoke imports the real generic-defense DSK aliases instead of copying or re-implementing defense simulation under Experiments.",
       "currentRouteImportMode": {
         "file": "games/signal-bastion/src/boot.js",
         "mode": "browser-cdn-dynamic-import",
@@ -43,11 +43,17 @@
           "requiredFor": "generic-defense DSK alias import without the route owning simulation"
         }
       ],
-      "safeToUnblockWhen": [
-        "Experiments package.json has stable dependency, workspace, or path wiring for Core and ProtoKits.",
-        "The replay harness imports real Core and ProtoKit DSK aliases rather than duplicating generic-defense simulation under Experiments.",
-        "The harness advances the fixed tick plan from experiments/headless-lane-replay-contracts.json and asserts descriptor digest fields from experiments/signal-bastion-route-domain-replay.json.",
-        "Browser-only DOM, Canvas, WebGL, Three.js, pointer lock, browser audio, asset loading, performance.now, requestAnimationFrame, and route-local randomness remain outside the harness."
+      "satisfiedBy": [
+        "package.json devDependencies wire `nexusrealtime` to `github:LuminaryLabs-Dev/NexusRealtime#main`.",
+        "package.json devDependencies wire `@luminarylabs/nexusrealtime-protokits` to `github:LuminaryLabs-Agents/NexusRealtime-ProtoKits#main`.",
+        "tests/signal-bastion-executable-route-replay-smoke.mjs imports real Core plus `@luminarylabs/nexusrealtime-protokits/generic-defense-dsk-boundaries` and advances the checked fixed-tick plan."
+      ],
+      "executableReplayCoverage": [
+        {
+          "repo": "LuminaryLabs-Agents/NexusRealtime-Experiments",
+          "test": "tests/signal-bastion-executable-route-replay-smoke.mjs",
+          "coverage": "real Core plus ProtoKits generic-defense DSK aliases, Signal Bastion debug preset, fixed ticks, semantic route inputs, deterministic resource/snapshot/descriptor digest, and browser ownership exclusions"
+        }
       ],
       "forbiddenFallbacks": [
         "route-local generic-defense interpreter",
@@ -57,11 +63,11 @@
         "new V1/V2/V3 Signal Bastion route fork just to satisfy replay"
       ],
       "nextMainBranchPatchPlan": [
-        "Add package/workspace/path wiring for nexusrealtime and @luminarylabs/nexusrealtime-protokits, or replace this gate with a proven connector-safe import strategy.",
-        "Add tests/signal-bastion-executable-route-replay-smoke.mjs that imports Core plus generic-defense DSK aliases, runs the checked fixed-tick sequence, and validates resources, events, methods, snapshots, descriptors, and digest fields.",
-        "Only after that executable replay passes, consider folding Signal Bastion defense variants or pruning legacy route paths."
+        "Keep the executable replay in the full check suite while dependency install behavior settles; do not move it into deploy checks until package install latency and stability are known.",
+        "Migrate the browser Signal Bastion boot from the broad generic-defense compatibility facade toward the smallest proven generic-defense DSK aliases, while leaving Canvas/HUD/audio/assets in the route host.",
+        "Use the same package-wired executable replay pattern for the next route lane only when a real ProtoKit boundary exists; otherwise keep the lane contract-only and avoid route-local simulation copies."
       ],
-      "pruningEffect": "This gate prevents route-pruning pressure from creating a fake local replay or new route fork before the canonical Signal Bastion route can consume real ProtoKit-backed DSK boundaries in Node."
+      "pruningEffect": "This gate now permits a real Signal Bastion route-domain replay while continuing to block fake local replays, copied ProtoKit fixtures, browser-owned simulation shims, and route forks. Route pruning should still wait for browser host migration evidence before deleting compatibility paths."
     }
   ]
 }
