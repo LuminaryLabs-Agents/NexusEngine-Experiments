@@ -1,0 +1,258 @@
+{
+  "version": 1,
+  "sourceManifest": "experiments/domain-kit-cutover-manifest.json",
+  "sourcePruningMap": "experiments/canonical-route-pruning-map.json",
+  "policy": "one route-level replay contract per manifest canonical route; executable fixtures may be ProtoKit-backed or explicitly planned, but every lane must point at reusable DSK resources, events, methods, snapshots, descriptors, and renderer-free deterministic replay direction",
+  "promotionGate": "A route earns replay priority when its behavior is generic enough to become or validate a reusable domain communication boundary rather than route-local JavaScript.",
+  "browserOwnershipExcluded": [
+    "DOM",
+    "Canvas",
+    "WebGL",
+    "Three.js",
+    "pointer lock",
+    "browser audio",
+    "asset loading"
+  ],
+  "replayLanes": [
+    {
+      "id": "traversal-cargo-pressure",
+      "higherLevelDomain": "Delivery/extraction loop",
+      "reusableBoundaryCandidates": [
+        "route-checkpoint-kit",
+        "cargo-delivery-kit",
+        "generic-resource-loop-kit",
+        "generic-action-window-kit"
+      ],
+      "requiredReplayShape": "checkpoint/cargo/tether input sequence with route ledger, cargo state, pressure deltas, success/failure snapshots, and descriptor hashes",
+      "coverageStatus": "planned"
+    },
+    {
+      "id": "survey-pressure",
+      "higherLevelDomain": "Survey pressure loop",
+      "reusableBoundaryCandidates": [
+        "scan-survey-kit",
+        "zone-field-kit",
+        "timed-pressure-director-kit",
+        "hazard-director-kit",
+        "generic-affordance-descriptor-kit"
+      ],
+      "requiredReplayShape": "move/look/scan input sequence with scan progress, zone pressure, hazard events, objective state, and descriptor hashes",
+      "coverageStatus": "planned"
+    },
+    {
+      "id": "field-engineer-composition",
+      "higherLevelDomain": "Field engineering composition loop",
+      "reusableBoundaryCandidates": [
+        "objective-bridge-kit",
+        "resource-node-kit",
+        "build-placement-kit",
+        "completion-ledger-kit",
+        "generic-resource-loop-kit"
+      ],
+      "requiredReplayShape": "harvest/build/unlock sequence with resource-node ledger, structure validation, completion state, pressure wave, and descriptor snapshots",
+      "coverageStatus": "planned"
+    },
+    {
+      "id": "aerial-open-traversal",
+      "higherLevelDomain": "Aerial traversal loop",
+      "reusableBoundaryCandidates": [
+        "powered-aerial-flight-domain-kit",
+        "flight-corridor-domain-kit",
+        "aerial-camera-rig-domain-kit",
+        "route-checkpoint-kit",
+        "zone-field-kit"
+      ],
+      "requiredReplayShape": "pitch/bank/boost/checkpoint input sequence with position and velocity envelope, checkpoint ledger, camera descriptor, and terrain-window descriptors",
+      "coverageStatus": "planned"
+    },
+    {
+      "id": "survival-ecology",
+      "higherLevelDomain": "Survival ecology loop",
+      "reusableBoundaryCandidates": [
+        "agent-group-kit",
+        "hazard-director-kit",
+        "generic-resource-loop-kit",
+        "generic-pressure-loop-kit",
+        "generic-affordance-descriptor-kit"
+      ],
+      "requiredReplayShape": "pickup/gear/horde sequence with spawn cadence, resource ledger deltas, hazard pressure, health outcome, and HUD descriptor hashes",
+      "coverageStatus": "planned"
+    },
+    {
+      "id": "strategic-pressure-loop",
+      "higherLevelDomain": "Strategic pressure loop",
+      "reusableBoundaryCandidates": [
+        "generic-defense-dsk-boundaries",
+        "generic-defense-map-dsk",
+        "generic-defense-economy-wallet-dsk",
+        "generic-defense-build-placement-dsk",
+        "generic-defense-wave-agent-director-dsk",
+        "generic-defense-combat-resolver-dsk",
+        "generic-defense-render-descriptor-dsk"
+      ],
+      "requiredReplayShape": "build/upgrade/wave/combat sequence with economy ledger deltas, core health, wave outcome, and renderer-agnostic HUD/world descriptors",
+      "coverageStatus": "protokit-covered"
+    },
+    {
+      "id": "action-defense-extraction",
+      "higherLevelDomain": "Action defense extraction loop",
+      "reusableBoundaryCandidates": [
+        "action-input-kit",
+        "resource-pressure-kit",
+        "cargo-delivery-kit",
+        "route-checkpoint-kit",
+        "agent-group-kit",
+        "hazard-director-kit"
+      ],
+      "requiredReplayShape": "harvest/build/wave/core/extraction sequence with inventory ledger, portal or route state, wave pressure, and extraction result descriptors",
+      "coverageStatus": "planned"
+    }
+  ],
+  "canonicalRouteReplays": [
+    {
+      "canonicalId": "next-ledge",
+      "canonicalPath": "experiments/next-ledge/",
+      "scenarioLane": "traversal-cargo-pressure",
+      "status": "planned-fixture",
+      "hostRole": "bridge semantic input, tick route/checkpoint/resource DSKs, and render snapshots only",
+      "protoKitReplayCoverage": [],
+      "missingExecutableFixtures": [
+        "checkpoint/cargo/tether deterministic replay lane"
+      ],
+      "localJsReductionOpportunity": [
+        "move checkpoint enter/exit ledger into reusable route boundary",
+        "express cargo or tether state through resources and descriptors"
+      ]
+    },
+    {
+      "canonicalId": "fogline-relay",
+      "canonicalPath": "experiments/fogline-relay/",
+      "scenarioLane": "survey-pressure",
+      "status": "planned-fixture",
+      "hostRole": "bridge movement/look/scan input and render survey descriptors only",
+      "protoKitReplayCoverage": [
+        {
+          "repo": "LuminaryLabs-Agents/NexusRealtime-ProtoKits",
+          "test": "tests/generic-promotion-replay-smoke.test.mjs",
+          "fixture": "tests/fixtures/generic-promotion-replay-fixtures.mjs",
+          "coverage": "generic pressure and affordance replay primitives that survey-pressure routes can compose"
+        }
+      ],
+      "missingExecutableFixtures": [
+        "scan-zone-hazard route-level replay with objective descriptor hashes"
+      ],
+      "localJsReductionOpportunity": [
+        "move scan target registration and zone pressure ticks behind survey DSK boundaries",
+        "emit hazard and objective state as events/snapshots rather than route-local objects"
+      ]
+    },
+    {
+      "canonicalId": "nexus-frontier-signal-isles",
+      "canonicalPath": "experiments/nexus-frontier-signal-isles/",
+      "scenarioLane": "field-engineer-composition",
+      "status": "planned-fixture",
+      "hostRole": "compose existing kits, provide presets/config, and render descriptors without owning kit logic",
+      "protoKitReplayCoverage": [
+        {
+          "repo": "LuminaryLabs-Agents/NexusRealtime-ProtoKits",
+          "test": "tests/generic-promotion-replay-smoke.test.mjs",
+          "fixture": "tests/fixtures/generic-promotion-replay-fixtures.mjs",
+          "coverage": "resource and affordance primitives needed by field-engineer composition"
+        }
+      ],
+      "missingExecutableFixtures": [
+        "harvest/build/unlock replay mapped to resource-node, build-placement, objective, and pressure boundaries"
+      ],
+      "localJsReductionOpportunity": [
+        "move field-engineer composition presets into reusable kit config",
+        "replace route-owned objective bookkeeping with completion-ledger snapshots"
+      ]
+    },
+    {
+      "canonicalId": "sora-the-infinite",
+      "canonicalPath": "experiments/sora-the-infinite/",
+      "scenarioLane": "aerial-open-traversal",
+      "status": "planned-fixture",
+      "hostRole": "bridge flight input and render camera/terrain/checkpoint descriptors only",
+      "protoKitReplayCoverage": [],
+      "missingExecutableFixtures": [
+        "pitch/bank/boost/checkpoint deterministic replay lane"
+      ],
+      "localJsReductionOpportunity": [
+        "move flight envelope validation and checkpoint ledger into aerial traversal DSKs",
+        "emit camera and terrain-window descriptors from ProtoKits"
+      ]
+    },
+    {
+      "canonicalId": "zombie-orchard",
+      "canonicalPath": "experiments/zombie-orchard/",
+      "scenarioLane": "survival-ecology",
+      "status": "planned-fixture",
+      "hostRole": "bridge movement/combat/gear input and render survival descriptors only",
+      "protoKitReplayCoverage": [
+        {
+          "repo": "LuminaryLabs-Agents/NexusRealtime-ProtoKits",
+          "test": "tests/generic-promotion-replay-smoke.test.mjs",
+          "fixture": "tests/fixtures/generic-promotion-replay-fixtures.mjs",
+          "coverage": "generic resource, pressure, action-window, and affordance primitives that survival ecology can compose"
+        }
+      ],
+      "missingExecutableFixtures": [
+        "pickup/gear/horde deterministic replay lane"
+      ],
+      "localJsReductionOpportunity": [
+        "move pickup and gear ledgers into reusable resource/action boundaries",
+        "express horde spawn cadence and hazard pressure as headless events/snapshots"
+      ]
+    },
+    {
+      "canonicalId": "signal-bastion",
+      "canonicalPath": "games/signal-bastion/",
+      "scenarioLane": "strategic-pressure-loop",
+      "status": "protokit-covered",
+      "hostRole": "consume generic-defense descriptors and keep 2.5D presentation/browser ownership outside reusable kit logic",
+      "protoKitReplayCoverage": [
+        {
+          "repo": "LuminaryLabs-Agents/NexusRealtime-ProtoKits",
+          "test": "tests/generic-defense-dsk-boundaries-smoke.test.mjs",
+          "coverage": "seven named generic-defense DSK boundary aliases with resources, events, methods, snapshots, and descriptors"
+        },
+        {
+          "repo": "LuminaryLabs-Agents/NexusRealtime-ProtoKits",
+          "test": "tests/generic-defense-replay-smoke.test.mjs",
+          "fixture": "tests/fixtures/generic-defense-replay-fixtures.mjs",
+          "coverage": "build, upgrade, wave, combat, reward, vital breach, and renderer-agnostic descriptor replay"
+        }
+      ],
+      "missingExecutableFixtures": [
+        "route-level bridge replay asserting Signal Bastion consumes generic-defense descriptors without re-owning defense simulation"
+      ],
+      "localJsReductionOpportunity": [
+        "replace route imports of the broad composite with the smallest generic-defense DSK aliases where safe",
+        "keep cel renderer, HUD layout, audio, assets, and pointer/browser controls in the host"
+      ]
+    },
+    {
+      "canonicalId": "rogue-lite-hellscape-siege",
+      "canonicalPath": "games/rogue-lite-hellscape-siege/",
+      "scenarioLane": "action-defense-extraction",
+      "status": "planned-fixture",
+      "hostRole": "bridge action/build/extraction input and render descriptors while reusable ledgers/directors live in ProtoKits",
+      "protoKitReplayCoverage": [
+        {
+          "repo": "LuminaryLabs-Agents/NexusRealtime-ProtoKits",
+          "test": "tests/generic-promotion-replay-smoke.test.mjs",
+          "fixture": "tests/fixtures/generic-promotion-replay-fixtures.mjs",
+          "coverage": "generic resource, action-window, pressure, and affordance replay primitives for extraction-defense composition"
+        }
+      ],
+      "missingExecutableFixtures": [
+        "harvest/build/wave/core/extraction deterministic replay lane"
+      ],
+      "localJsReductionOpportunity": [
+        "move inventory/material ledger and harvest interaction into reusable boundaries",
+        "turn portal/extraction state into route-checkpoint/cargo snapshots"
+      ]
+    }
+  ]
+}
