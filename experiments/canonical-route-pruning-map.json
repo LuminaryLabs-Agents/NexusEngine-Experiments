@@ -1,0 +1,262 @@
+{
+  "version": 1,
+  "policy": "one pruning issue per manifest canonical route",
+  "sourceManifest": "experiments/domain-kit-cutover-manifest.json",
+  "decisionRule": "Keep seed/backlog and variant routes non-canonical until they prove reusable DSK pressure through resources, events, methods, snapshots, descriptors, smoke coverage, and deterministic replay direction.",
+  "canonicalRouteIssues": [
+    {
+      "canonicalId": "next-ledge",
+      "canonicalPath": "experiments/next-ledge/",
+      "scenarioLane": "traversal-cargo-pressure",
+      "variantsToFold": [
+        {
+          "id": "tideglass-salvage",
+          "route": "./experiments/tideglass-salvage/",
+          "reason": "Keep salvage/cargo pressure as seed-backlog until cargo, vehicle/contact, and pressure replay boundaries can be tested without a separate route museum entry."
+        },
+        {
+          "id": "skyrig-suture",
+          "route": "./experiments/skyrig-suture/",
+          "reason": "Fold tether-repair pressure into the traversal/cargo DSK backlog unless it creates a distinct reusable tether/contact boundary."
+        },
+        {
+          "id": "ember-rail",
+          "route": "./experiments/ember-rail/",
+          "reason": "Rail/lane traversal should become checkpoint, route-pressure, or vehicle/contact kit pressure before becoming canonical."
+        },
+        {
+          "id": "catacomb-postmaster",
+          "reason": "Courier delivery fantasy should fold into the delivery/extraction loop until cargo-ledger replay makes it uniquely reusable."
+        }
+      ],
+      "manifestDocsUpdates": [
+        "Keep `next-ledge` as the manifest-owned route-checkpoint/action-input canonical route.",
+        "Document cargo/salvage/tether variants as seed-backlog until delivery/extraction replay exists."
+      ],
+      "localJsToMoveIntoProtoKits": [
+        "checkpoint enter/exit ledger",
+        "cargo pickup/dropoff state",
+        "tether or vehicle contact descriptors",
+        "route pressure resource deltas"
+      ],
+      "smokeReplayTestsToPreserve": [
+        "traversal/cargo smoke lane",
+        "checkpoint/cargo/tether deterministic replay lane"
+      ],
+      "pruningHelpsAbout20Portfolio": true,
+      "portfolioEffect": "One canonical traversal route can pressure route/checkpoint/action-input boundaries while cargo variants wait for stronger delivery/extraction DSK proof."
+    },
+    {
+      "canonicalId": "fogline-relay",
+      "canonicalPath": "experiments/fogline-relay/",
+      "scenarioLane": "survey-pressure",
+      "variantsToFold": [
+        {
+          "id": "starwell-cartographer",
+          "route": "./experiments/starwell-cartographer/",
+          "reason": "Cartographer scan/beacon fantasy should fold into survey-pressure fixtures until it proves a reusable survey boundary beyond Fogline Relay."
+        },
+        {
+          "id": "lumen-reef-cartographer",
+          "reason": "Reef survey variance should stay seed-backlog unless underwater/resource pressure creates reusable DSK pressure."
+        },
+        {
+          "id": "gravemark-cartographer",
+          "reason": "Grave/landmark survey variance should contribute descriptors and replay expectations instead of a separate canonical route."
+        },
+        {
+          "id": "drone-swarm-survey",
+          "reason": "Drone survey pressure should wait for agent-group plus scan-zone replay before canonical promotion."
+        }
+      ],
+      "manifestDocsUpdates": [
+        "Keep `fogline-relay` as the survey-pressure canonical route.",
+        "Record cartographer/drone variants as survey-pressure backlog until scan-zone-hazard replay differentiates them."
+      ],
+      "localJsToMoveIntoProtoKits": [
+        "scan target registration",
+        "zone pressure tick progression",
+        "hazard escalation descriptors",
+        "survey objective snapshot hashing"
+      ],
+      "smokeReplayTestsToPreserve": [
+        "survey-pressure smoke lane",
+        "move/look/scan deterministic replay lane"
+      ],
+      "pruningHelpsAbout20Portfolio": true,
+      "portfolioEffect": "Fogline Relay can represent scan, zone, timed pressure, and hazard boundaries without multiplying cartographer route variants."
+    },
+    {
+      "canonicalId": "nexus-frontier-signal-isles",
+      "canonicalPath": "experiments/nexus-frontier-signal-isles/",
+      "scenarioLane": "field-engineer-composition",
+      "variantsToFold": [
+        {
+          "id": "high-fidelity-meadow",
+          "route": "./experiments/high-fidelity-meadow/",
+          "reason": "Meadow presentation and biome cutover should remain renderer/preset validation unless it proves a reusable field-engineer gameplay boundary."
+        },
+        {
+          "id": "living-agent-lab",
+          "route": "./experiments/living-agent-lab/",
+          "reason": "Agent lab behavior should stay a harness/backlog lane until agent memory and dialogue expose rendererless DSK resources/events/snapshots."
+        }
+      ],
+      "manifestDocsUpdates": [
+        "Keep Signal Isles as the broad kit-utilization showcase, not a sink for every field-sim variant.",
+        "Document presentation/agent variants as non-canonical until they own clear reusable DSK boundaries."
+      ],
+      "localJsToMoveIntoProtoKits": [
+        "field-engineer objective bridge descriptors",
+        "resource-node and build-placement composition presets",
+        "debug/replay scenario metadata for composed kit routes"
+      ],
+      "smokeReplayTestsToPreserve": [
+        "signal-isles data smoke",
+        "signal-isles replay smoke",
+        "field-engineer composition manifest smoke"
+      ],
+      "pruningHelpsAbout20Portfolio": true,
+      "portfolioEffect": "Signal Isles remains the one canonical composition showcase while presentation-only and agent-harness routes stay outside the canonical count."
+    },
+    {
+      "canonicalId": "sora-the-infinite",
+      "canonicalPath": "experiments/sora-the-infinite/",
+      "scenarioLane": "aerial-open-traversal",
+      "variantsToFold": [
+        {
+          "id": "the-open-above-harness",
+          "route": "./experiments/the-open-above-harness/",
+          "reason": "The harness should feed aerial traversal, terrain-window, and camera descriptor expectations into the base Sora canonical route before becoming separate."
+        },
+        {
+          "id": "the-open-above",
+          "reason": "Open-world flight variance should collapse into a higher-level aerial traversal domain above flight feel, terrain windows, and checkpoints."
+        },
+        {
+          "id": "downhill-prix",
+          "reason": "Race/checkpoint speed variance should stay backlog unless vehicle/contact physics creates a separate reusable route boundary."
+        }
+      ],
+      "manifestDocsUpdates": [
+        "Keep `sora-the-infinite` as the aerial traversal canonical route.",
+        "Fold Open Above harness findings into Sora route docs, camera descriptors, and replay expectations before adding another canonical flight route."
+      ],
+      "localJsToMoveIntoProtoKits": [
+        "flight input envelope validation",
+        "updraft and terrain-window descriptors",
+        "aerial checkpoint ledger",
+        "camera rig snapshot descriptors"
+      ],
+      "smokeReplayTestsToPreserve": [
+        "aerial traversal smoke lane",
+        "pitch/bank/boost/checkpoint deterministic replay lane"
+      ],
+      "pruningHelpsAbout20Portfolio": true,
+      "portfolioEffect": "One canonical aerial route keeps the portfolio from splitting into multiple flight-feel variants before the aerial traversal DSK is clear."
+    },
+    {
+      "canonicalId": "zombie-orchard",
+      "canonicalPath": "experiments/zombie-orchard/",
+      "scenarioLane": "survival-ecology",
+      "variantsToFold": [
+        {
+          "id": "hollow-warden",
+          "reason": "Warden survival pressure should feed horde/resource/hazard fixtures before becoming a separate canonical route."
+        },
+        {
+          "id": "beetle-siege",
+          "reason": "Beetle siege variance should fold into survival ecology unless it proves a distinct agent-ecology DSK."
+        },
+        {
+          "id": "crystal-cavern-rally",
+          "reason": "Cavern hazard/resource pressure should stay seed-backlog until survival ecology replay needs a separate terrain/resource route."
+        }
+      ],
+      "manifestDocsUpdates": [
+        "Keep `zombie-orchard` as the survival/horde canonical route.",
+        "Treat warden, beetle, and cavern variants as survival-ecology backlog until replay proves a separate reusable boundary."
+      ],
+      "localJsToMoveIntoProtoKits": [
+        "pickup and gear resource ledger",
+        "horde spawn cadence",
+        "hazard/agent pressure descriptors",
+        "survival round outcome snapshots"
+      ],
+      "smokeReplayTestsToPreserve": [
+        "defense/survival smoke lane",
+        "pickup/gear/horde deterministic replay lane"
+      ],
+      "pruningHelpsAbout20Portfolio": true,
+      "portfolioEffect": "Zombie Orchard keeps survival pressure visible while adjacent horde fantasies fold into reusable survival-ecology tests."
+    },
+    {
+      "canonicalId": "signal-bastion",
+      "canonicalPath": "games/signal-bastion/",
+      "scenarioLane": "strategic-pressure-loop",
+      "variantsToFold": [
+        {
+          "id": "prism-bastion-sealer",
+          "reason": "Bastion/sealing tower-defense variance should become defense map, economy, build-placement, wave/agent, combat, and descriptor DSK pressure first."
+        },
+        {
+          "id": "mech-bastion",
+          "reason": "Mech defense presentation should fold into strategic pressure unless unit-control/combat creates a separate reusable boundary."
+        },
+        {
+          "id": "factory-pulse",
+          "reason": "Factory defense/resource timing should stay backlog until the strategic pressure loop needs production/economy replay as a reusable boundary."
+        }
+      ],
+      "manifestDocsUpdates": [
+        "Keep `signal-bastion` as the strategic/tower-defense canonical route.",
+        "Point new defense variants at generic-defense DSK aliases instead of adding V1/V2/V3 route forks."
+      ],
+      "localJsToMoveIntoProtoKits": [
+        "defense map/path/vital resources",
+        "economy wallet methods/events",
+        "build placement and structure runtime",
+        "wave/agent director and combat resolver descriptors"
+      ],
+      "smokeReplayTestsToPreserve": [
+        "generic-defense DSK boundary smoke",
+        "generic-defense replay smoke",
+        "signal-bastion static smoke"
+      ],
+      "pruningHelpsAbout20Portfolio": true,
+      "portfolioEffect": "Signal Bastion anchors strategic pressure so defense variants become DSK alias pressure instead of extra canonical routes."
+    },
+    {
+      "canonicalId": "rogue-lite-hellscape-siege",
+      "canonicalPath": "games/rogue-lite-hellscape-siege/",
+      "scenarioLane": "action-defense-extraction",
+      "variantsToFold": [
+        {
+          "id": "dungeon-relay",
+          "reason": "Dungeon/action relay pressure should feed route-checkpoint, resource, hazard, and extraction DSK tests before separate promotion."
+        },
+        {
+          "id": "orbital-dockyard",
+          "reason": "Dockyard build/defense/cargo pressure should remain a future extraction/logistics candidate until replay distinguishes it from Hellscape Siege."
+        }
+      ],
+      "legacyPathsToRetire": ["games/rogue-lite-hellscape-siege-v2/"],
+      "manifestDocsUpdates": [
+        "Keep `rogue-lite-hellscape-siege` as the unified base route for action, harvesting, building, and wave defense.",
+        "Preserve the removed legacy V2 path note until tests prove the base route owns the folded behavior."
+      ],
+      "localJsToMoveIntoProtoKits": [
+        "inventory/material ledger",
+        "harvest/pickup interaction boundary",
+        "build blueprint validation",
+        "portal/extraction route state"
+      ],
+      "smokeReplayTestsToPreserve": [
+        "action-defense extraction smoke lane",
+        "harvest/build/wave/core deterministic replay lane"
+      ],
+      "pruningHelpsAbout20Portfolio": true,
+      "portfolioEffect": "The unified Hellscape route prevents V2 route sprawl while keeping action-defense-extraction pressure available for future reusable kits."
+    }
+  ]
+}
