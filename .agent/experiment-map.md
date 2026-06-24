@@ -53,3 +53,29 @@ Route pressure clusters:
 Refiner decision rule:
 
 Promote or preserve a route only if it validates at least one reusable domain boundary and has a path to headless fixed-tick smoke plus deterministic replay. Fold or demote routes that only add fantasy/renderer variance without new DSK pressure.
+
+## 2026-06-24 Twenty Experiment Seeder route-progress finding
+
+The canonical portfolio should stay conservative rather than forcing the 20-name target list into the manifest. The current manifest-owned set remains the right executable/hardening set until additional lanes prove reusable DSK consumption.
+
+New seeding opportunity:
+
+- `generic-route-progress-kit` now gives the traversal/cargo cluster a concrete atomic route/checkpoint/objective-progress boundary.
+- `generic-route-cargo-extraction-kit` now gives the traversal/cargo cluster a concrete composite above route progress, cargo/resource ledger, and pressure channels.
+- `next-ledge` should be the first canonical route candidate to consume these route DSKs because it already represents the manifest-owned traversal/checkpoint lane.
+
+Portfolio implications:
+
+- Seed/harden `next-ledge`; do not add Harbor Salvage, Cargo Chain, Sky Courier, Trainyard Switcher, Dungeon Relay, Floodplain Rescue, or similar checkpoint/cargo variants as filler canonical routes.
+- Keep those names as backlog/variant pressure for the higher-level delivery/extraction loop unless one proves a distinct reusable boundary beyond route progress, cargo/resource ledger, pressure channels, renderer-agnostic descriptors, and deterministic replay.
+- Do not claim local experiment JavaScript shrink yet. The completed ProtoKit work creates the opportunity; shrink is only true after a route consumes the new boundary and drops route-local checkpoint/cargo ledger code.
+
+Seeder decisions by current manifest route:
+
+- `next-ledge`: seed + harden as first `generic-route-progress-kit` consumer candidate; migrate only ordered checkpoint/progress ledger first, then evaluate `generic-route-cargo-extraction-kit` after the metadata/contract smoke is in place.
+- `fogline-relay`: harden as survey-pressure contract; keep cartographer/drone variants folded until scan/zone/hazard DSKs exist.
+- `nexus-frontier-signal-isles`: harden as field-engineer composition showcase; do not let it become a sink for unrelated route concepts.
+- `sora-the-infinite`: harden as aerial/open traversal contract; fold Open Above and racing variants until aerial traversal DSKs are clearer.
+- `zombie-orchard`: harden as survival ecology contract; fold horde/survival variants until agent/hazard/resource DSK replay exists.
+- `signal-bastion`: keep canonical and harden remaining browser convenience seams; it remains the only executable route-domain replay lane.
+- `rogue-lite-hellscape-siege`: harden unified action-defense-extraction base route; keep extraction/dungeon/dockyard variants folded until route/cargo/extraction DSK consumption is proven.
