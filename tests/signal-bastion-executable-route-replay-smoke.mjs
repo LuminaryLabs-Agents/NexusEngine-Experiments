@@ -5,6 +5,7 @@ import {
   createGenericDefenseDskBundle,
   listGenericDefenseDskBoundaries
 } from "@luminarylabs/nexusrealtime-protokits/generic-defense-dsk-boundaries";
+import { createGenericDefenseSessionCommandKit } from "@luminarylabs/nexusrealtime-protokits/generic-defense-session-command-kit";
 import { resolveSignalBastionPreset } from "../games/signal-bastion/presets/index.js";
 
 const specPath = "experiments/signal-bastion-route-domain-replay.json";
@@ -19,6 +20,7 @@ assert.equal(spec.canonicalId, "signal-bastion", "executable replay should targe
 assert.equal(spec.scenarioLane, "strategic-pressure-loop", "executable replay should target the strategic pressure lane");
 assert.equal(spec.executionStatus, "executable-smoked-protokit-backed", "route spec should mark the executable replay as ProtoKit-backed");
 assert.equal(spec.sourceExecutableSmoke, "tests/signal-bastion-executable-route-replay-smoke.mjs", "route spec should point at this executable smoke");
+assert.equal(spec.sessionCommandBoundary?.kit, "createGenericDefenseSessionCommandKit", "route spec should record the reusable session-command ProtoKit");
 
 const contract = laneContracts.contracts.find((entry) => entry.id === spec.scenarioLane);
 assert.ok(contract, "strategic pressure lane contract should exist");
@@ -43,9 +45,10 @@ function cloneArgs(args = []) {
 }
 
 function commandIdFor(input) {
-  const blueprint = input.args?.[1] ?? "command";
+  const blueprint = input.args?.[1] ?? input.args?.[0] ?? "command";
   return String(input.commandIdPattern ?? `${input.bridgedMethod}:<frame>`)
     .replace("<blueprint>", blueprint)
+    .replace("<structure>", String(input.args?.[0] ?? "structure"))
     .replace("<frame>", String(input.frame));
 }
 
@@ -136,7 +139,10 @@ function digestSnapshot(snapshot) {
 
 function createHarness() {
   const preset = resolveSignalBastionPreset("?preset=debug");
-  const kits = createGenericDefenseDskBundle(NexusRealtime, preset, boundaryIds);
+  const kits = [
+    ...createGenericDefenseDskBundle(NexusRealtime, preset, boundaryIds),
+    createGenericDefenseSessionCommandKit(NexusRealtime, preset.sessionCommands ?? {})
+  ];
   const engine = NexusRealtime.createRealtimeGame({ kits });
   engine.tick(0);
   return { engine, preset };
