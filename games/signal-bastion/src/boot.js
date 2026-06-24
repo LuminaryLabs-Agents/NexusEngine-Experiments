@@ -42,13 +42,23 @@ function getSignalBastionWavePreview(engine) {
   return snapshot.level?.waves?.[waveIndex] ?? null;
 }
 
+function getSignalBastionBudgetSnapshot(engine) {
+  const snapshot = getSignalBastionSessionFacade(engine)?.getSnapshot?.() ?? {};
+  const render = getSignalBastionRenderDescriptors(engine)?.getSnapshot?.() ?? snapshot.render ?? {};
+  const descriptors = Array.isArray(render.descriptors) ? render.descriptors : [];
+  return {
+    agents: Object.keys(snapshot.agents?.active ?? {}).length,
+    projectiles: Object.keys(snapshot.combat?.projectiles ?? {}).length,
+    descriptors: descriptors.length
+  };
+}
+
 function assertDefenseDskBridge(DefenseKits) {
   const requiredExports = [
     "createGenericDefenseDskBundle",
     "createGenericDefenseFoundationKit",
     "createGenericDefenseBuildKit",
     "createGenericDefenseWaveKit",
-    "createGenericDefenseScaleKit",
     "createGenericDefenseAuthoringQaKit"
   ];
   const missing = requiredExports.filter((name) => typeof DefenseKits[name] !== "function");
@@ -66,8 +76,7 @@ function createSignalBastionDefenseDskKits(NexusRealtime, DefenseKits, preset) {
     ),
     DefenseKits.createGenericDefenseFoundationKit(NexusRealtime, preset.foundation ?? {}),
     DefenseKits.createGenericDefenseBuildKit(NexusRealtime, preset.build ?? {}),
-    DefenseKits.createGenericDefenseWaveKit(NexusRealtime, preset.waves ?? {}),
-    DefenseKits.createGenericDefenseScaleKit(NexusRealtime, preset.scale ?? {})
+    DefenseKits.createGenericDefenseWaveKit(NexusRealtime, preset.waves ?? {})
   ];
 }
 
@@ -129,7 +138,7 @@ export async function bootSignalBastion(documentRef = document) {
       getState: () => getSignalBastionSessionFacade(engine)?.getSnapshot?.(),
       getPresentation: () => getSignalBastionPresentation(engine),
       getFoundation: () => engine.defenseFoundation?.getSnapshot?.(),
-      getScale: () => engine.defenseScale?.getBudgetSnapshot?.(),
+      getScale: () => getSignalBastionBudgetSnapshot(engine),
       getWavePreview: () => getSignalBastionWavePreview(engine),
       getRewards: () => preset.rewards ?? [],
       getCampaign: () => preset.campaign ?? null,
