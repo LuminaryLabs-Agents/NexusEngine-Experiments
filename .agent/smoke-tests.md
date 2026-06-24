@@ -131,3 +131,12 @@ Next smoke priority: evaluate whether `defenseBuild.setBlueprint`, `defenseBuild
 - `experiments/signal-bastion-route-domain-replay.json` records this as a local-JS/facade shrink for the strategic-pressure canonical route while keeping the remaining convenience-facade gap explicit.
 
 Next smoke priority: evaluate `defenseFoundation.getSnapshot`, `defenseScale.getBudgetSnapshot`, `defenseBuild.setBlueprint`, and `defenseBuild.sell` one at a time. Do not add a second executable route-domain smoke until another canonical route consumes a real reusable ProtoKit boundary.
+
+## 2026-06-24 Headless Tick Smoke Builder budget-seam closure
+
+- `games/signal-bastion/src/boot.js` now derives `GameHost.getScale()` through `getSignalBastionBudgetSnapshot(engine)`, using `engine.n.genericDefense.sessionFacade.getSnapshot()` for active agents/projectiles and `engine.n.genericDefense.renderDescriptors.getSnapshot()` for descriptor count.
+- The browser boot no longer installs `createGenericDefenseScaleKit`, so one more compatibility facade is removed from the Signal Bastion host while reusable simulation remains in ProtoKits.
+- `tests/signal-bastion-host-facade-guard-smoke.mjs` now requires the budget helper and forbids `engine.defenseScale?.getBudgetSnapshot?.(`, keeping the shrink guarded by static smoke while the executable route-domain replay remains the strategic-pressure source of truth.
+- `experiments/signal-bastion-route-domain-replay.json` records this as a local JavaScript/facade reduction and keeps the remaining gap narrowed to foundation plus build `setBlueprint`/`sell` compatibility seams.
+
+Next smoke priority: evaluate `defenseFoundation.getSnapshot`, `defenseBuild.setBlueprint`, and `defenseBuild.sell` one at a time; remove the installed wave compatibility facade only after proving no browser or debug host path still relies on it.
