@@ -17,9 +17,10 @@
       "scenarioLane": "traversal-cargo-pressure",
       "routeDecision": "seed-and-harden",
       "domainBoundariesValidated": [
-        "ordered checkpoint/objective progress",
-        "delivery/extraction loop",
-        "route/cargo/pressure snapshots",
+        "ordered checkpoint/objective progress through engine.n.genericRouteProgress",
+        "partial downstream route-progress DSK consumption",
+        "delivery/extraction loop candidate",
+        "route/cargo/pressure snapshots planned through generic-route-cargo-extraction-kit",
         "renderer-agnostic route-checkpoint descriptors"
       ],
       "protoKitsConsumedOrPlanned": [
@@ -33,18 +34,17 @@
         "scenario-qa-harness"
       ],
       "localJsShouldRemain": [
-        "browser collision and grapple input bridge",
+        "browser collision and grapple/tether input bridge",
         "route fiction and sector presets",
-        "camera and renderer snapshot presentation",
+        "tether physics, camera, and renderer snapshot presentation",
         "DOM, Canvas, WebGL, audio, and assets"
       ],
       "localJsShouldMoveToProtoKits": [
-        "checkpoint enter/exit ledger",
-        "cargo pickup/dropoff state",
-        "tether or delivery pressure bookkeeping",
-        "route-complete snapshots and descriptor hashing after DSK migration"
+        "remaining cargo pickup/dropoff state",
+        "cargo/resource ledger and delivery pressure bookkeeping",
+        "route-complete cargo/extraction snapshots and descriptor hashing after composite DSK migration"
       ],
-      "smokeReplayScenarioNeeded": "checkpoint/cargo/tether deterministic replay lane importing generic-route-progress-kit or generic-route-cargo-extraction-kit from ProtoKits; keep planned-fixture until the route consumes those DSKs",
+      "smokeReplayScenarioNeeded": "route-progress DSK consumption is partial; next smoke/replay should prove cargo/resource/pressure deterministic replay importing generic-route-cargo-extraction-kit from ProtoKits while keeping executable route-domain claim false until the route consumes the composite boundary",
       "seedBacklogToFold": [
         "Harbor Salvage",
         "Cargo Chain",
@@ -243,12 +243,14 @@
       "domainBoundariesValidated": [
         "strategic pressure loop",
         "generic-defense map/economy/build/wave/combat/session/render DSK aliases",
+        "session command namespace seam for setBlueprint and sell",
         "placement projector namespace seam",
         "renderer-agnostic descriptor bridge"
       ],
       "protoKitsConsumedOrPlanned": [
         "generic-defense-aaa-dsk-bridge",
         "generic-defense-dsk-boundaries",
+        "generic-defense-session-command-kit",
         "generic-defense-presentation-stack-kit",
         "generic-placement-projector-kit",
         "generic-range-ring-kit",
@@ -265,11 +267,10 @@
         "audio/assets and route-specific maps/waves presets"
       ],
       "localJsShouldMoveToProtoKits": [
-        "remaining foundation debug snapshot convenience seam",
-        "build setBlueprint/sell convenience seams where safe",
-        "any reusable defense descriptor formatting that is not renderer-specific"
+        "presentation bridge hardening when descriptor generation proves reusable",
+        "any reusable defense descriptor formatting that is not Canvas, HUD, or route-art specific"
       ],
-      "smokeReplayScenarioNeeded": "keep existing executable route-domain replay; next smoke should guard foundation seam shrink through engine.n.genericDefense session/render descriptors without adding a second executable lane",
+      "smokeReplayScenarioNeeded": "keep existing executable route-domain replay; next smoke should guard presentation bridge hardening and prevent broad defenseBuild, defenseWaves, foundation, scale, or route-local simulation facades from returning",
       "seedBacklogToFold": [
         "Mech Bastion",
         "Factory Pulse",
