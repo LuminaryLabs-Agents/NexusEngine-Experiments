@@ -16,7 +16,7 @@ export const OPEN_ABOVE_V2_CONFIG = Object.freeze({
   },
   quality: {
     pixelRatioMax: 1.65,
-    patchRadius: 2,
+    patchRadius: 4,
     nearSegments: 68,
     midSegments: 34,
     farSegments: 14,
@@ -52,8 +52,8 @@ export const OPEN_ABOVE_V2_CONFIG = Object.freeze({
     slopeRockMix: 3.2,
     normalStep: 4,
     snowLine: 180,
-    midDistance: 2400,
-    farDistance: 7000
+    midDistance: 1800,
+    farDistance: 2600
   },
   terrainHydrology: {
     riverCount: 3,
@@ -67,16 +67,16 @@ export const OPEN_ABOVE_V2_CONFIG = Object.freeze({
   },
   terrainHorizon: {
     nearRadius: 900,
-    midRadius: 2400,
-    farRadius: 7000,
+    midRadius: 1800,
+    farRadius: 2600,
     horizonRadius: 22000,
-    horizonBands: 3,
-    horizonSegments: 56,
-    ringThickness: 3800,
+    horizonBands: 4,
+    horizonSegments: 72,
+    ringThickness: 4200,
     heightCompressionFar: 0.42,
     heightCompressionHorizon: 0.16,
     silhouettePreservation: 0.78,
-    fogBlendStart: 4500,
+    fogBlendStart: 3800,
     fogBlendEnd: 18000
   },
   physics: {
