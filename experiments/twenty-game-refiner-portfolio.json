@@ -1,0 +1,330 @@
+{
+  "version": 1,
+  "sourceAgentMemory": ".agent/experiment-map.md",
+  "sourceManifest": "experiments/domain-kit-cutover-manifest.json",
+  "policy": "twenty-route target is an evaluation lens, not a brittle quota",
+  "weakGameRule": "Do not preserve weak games for their own sake; keep, expand, or seed only routes that validate DSK boundaries, reveal missing ProtoKits, validate composites, or stress deterministic gameplay.",
+  "decisionRule": "A route remains or becomes canonical only when it validates reusable domain pressure and has a credible path to headless fixed-tick smoke plus deterministic replay.",
+  "targetCountGuidance": {
+    "target": 20,
+    "brittleQuota": false,
+    "currentManifestCanonicalCount": 7
+  },
+  "dskSurfacesRequired": ["resources", "events", "methods", "snapshots", "descriptors"],
+  "higherLevelDomains": [
+    "survey-pressure",
+    "strategic-pressure-loop",
+    "survival-ecology",
+    "traversal-cargo-pressure",
+    "aerial-open-traversal",
+    "field-engineer-composition",
+    "action-defense-extraction",
+    "economy-social-workshop"
+  ],
+  "targetRoutes": [
+    {
+      "targetOrdinal": 1,
+      "targetName": "Fogline Relay",
+      "status": "canonical-cutover",
+      "canonicalRouteId": "fogline-relay",
+      "scenarioLane": "survey-pressure",
+      "routeDecision": "harden as the survey-pressure canonical proof instead of preserving parallel cartographer seeds as full games",
+      "reusableDomainPressure": ["scan-survey-kit", "zone-field-kit", "timed-pressure-director-kit", "hazard-director-kit"],
+      "dskSurfaces": ["resources", "events", "methods", "snapshots", "descriptors"],
+      "localJsPressure": "move scan progress, zone pressure, hazard escalation, and objective snapshots toward reusable survey DSKs",
+      "rendererBoundary": "browser view, fog rendering, and input remain host-owned presentation",
+      "smokeReplayGap": ["fixed-tick scan/zone/hazard replay", "descriptor hash for relay objective state"]
+    },
+    {
+      "targetOrdinal": 2,
+      "targetName": "Signal Bastion",
+      "status": "canonical-cutover",
+      "canonicalRouteId": "signal-bastion",
+      "scenarioLane": "strategic-pressure-loop",
+      "routeDecision": "harden as the strongest ProtoKit-backed strategic-pressure proof and keep variants folded until remaining facade seams shrink",
+      "reusableDomainPressure": ["generic-defense-dsk-boundaries", "generic-defense-aaa-dsk-bridge", "generic-defense-presentation-stack-kit"],
+      "dskSurfaces": ["resources", "events", "methods", "snapshots", "descriptors"],
+      "localJsPressure": "continue shrinking browser-host convenience facade calls toward engine.n.genericDefense session and descriptor aliases",
+      "rendererBoundary": "Canvas, DOM, frame timing, and visual projection remain route presentation only",
+      "smokeReplayGap": ["ProtoKits placement projector namespace preference", "browser host blueprint/sell/wave preview facade shrink"]
+    },
+    {
+      "targetOrdinal": 3,
+      "targetName": "Zombie Orchard",
+      "status": "canonical-cutover",
+      "canonicalRouteId": "zombie-orchard",
+      "scenarioLane": "survival-ecology",
+      "routeDecision": "harden as the survival ecology lane only after pickup, gear, horde, hazard, and health state are reusable",
+      "reusableDomainPressure": ["resource-pressure-kit", "agent-group-kit", "hazard-director-kit", "gear-pickup-domain-kit"],
+      "dskSurfaces": ["resources", "events", "methods", "snapshots", "descriptors"],
+      "localJsPressure": "move horde cadence, pickup ledger, gear state, and hazard outcome rules out of route-local code",
+      "rendererBoundary": "canvas orchard view and input affordances stay host-owned",
+      "smokeReplayGap": ["pickup/gear/horde fixed-tick replay", "health and hazard descriptor digest"]
+    },
+    {
+      "targetOrdinal": 4,
+      "targetName": "Next Ledge",
+      "status": "canonical-cutover",
+      "canonicalRouteId": "next-ledge",
+      "scenarioLane": "traversal-cargo-pressure",
+      "routeDecision": "harden as the compact traversal checkpoint/action-pressure proof before adding cargo-heavy variants",
+      "reusableDomainPressure": ["action-input-kit", "route-checkpoint-kit", "resource-pressure-kit", "camera-cinematic-maker-kit"],
+      "dskSurfaces": ["resources", "events", "methods", "snapshots", "descriptors"],
+      "localJsPressure": "move grapple/checkpoint/resource-pressure state toward reusable traversal DSKs while keeping renderer thin",
+      "rendererBoundary": "snapshot renderer and browser input bridge remain route presentation",
+      "smokeReplayGap": ["checkpoint enter/exit replay", "grapple input deterministic digest"]
+    },
+    {
+      "targetOrdinal": 5,
+      "targetName": "The Open Above",
+      "status": "fold-into-canonical",
+      "canonicalRouteId": "sora-the-infinite",
+      "scenarioLane": "aerial-open-traversal",
+      "routeDecision": "fold open-above harness pressure into the Sora canonical lane until a distinct aerial DSK boundary exists",
+      "reusableDomainPressure": ["flight-corridor-domain-kit", "powered-aerial-flight-domain-kit", "aerial-camera-rig-domain-kit", "route-checkpoint-kit"],
+      "dskSurfaces": ["resources", "events", "methods", "snapshots", "descriptors"],
+      "localJsPressure": "separate terrain/updraft/checkpoint/camera state from renderer and browser controls",
+      "rendererBoundary": "sky renderer, camera projection, and input feel stay host-owned",
+      "smokeReplayGap": ["pitch/bank/boost/checkpoint replay", "terrain-window and camera descriptor digest"]
+    },
+    {
+      "targetOrdinal": 6,
+      "targetName": "Downhill Prix",
+      "status": "seed-backlog",
+      "canonicalRouteId": null,
+      "scenarioLane": "traversal-cargo-pressure",
+      "routeDecision": "hold as a traversal variant until vehicle contact and route timing become reusable DSK pressure beyond Next Ledge",
+      "reusableDomainPressure": ["route-checkpoint-kit", "vehicle-contact-domain-kit", "timed-pressure-director-kit"],
+      "dskSurfaces": ["resources", "events", "methods", "snapshots", "descriptors"],
+      "localJsPressure": "avoid adding bespoke racing physics until contact and checkpoint ledgers are reusable",
+      "rendererBoundary": "camera shake, track visuals, and controls remain presentation",
+      "smokeReplayGap": ["vehicle contact envelope replay", "timed checkpoint outcome digest"]
+    },
+    {
+      "targetOrdinal": 7,
+      "targetName": "Harbor Salvage",
+      "status": "seed-backlog",
+      "canonicalRouteId": null,
+      "scenarioLane": "traversal-cargo-pressure",
+      "routeDecision": "hold as cargo/salvage pressure that should fold into a cargo-delivery lane before canonical promotion",
+      "reusableDomainPressure": ["cargo-delivery-kit", "resource-pressure-kit", "hazard-director-kit"],
+      "dskSurfaces": ["resources", "events", "methods", "snapshots", "descriptors"],
+      "localJsPressure": "move salvage inventory, delivery scoring, and hazard tide pressure to reusable ledgers",
+      "rendererBoundary": "harbor art, water effects, and pointer affordances stay host-owned",
+      "smokeReplayGap": ["cargo pickup/dropoff replay", "salvage ledger snapshot digest"]
+    },
+    {
+      "targetOrdinal": 8,
+      "targetName": "Cargo Chain",
+      "status": "seed-backlog",
+      "canonicalRouteId": null,
+      "scenarioLane": "traversal-cargo-pressure",
+      "routeDecision": "hold until cargo chain state creates reusable route/cargo/tether pressure instead of a one-off delivery skin",
+      "reusableDomainPressure": ["cargo-delivery-kit", "route-checkpoint-kit", "completion-ledger-kit"],
+      "dskSurfaces": ["resources", "events", "methods", "snapshots", "descriptors"],
+      "localJsPressure": "centralize cargo chain ledger, handoff windows, and completion scoring",
+      "rendererBoundary": "chain visuals and delivery UI stay route presentation",
+      "smokeReplayGap": ["multi-stop cargo replay", "handoff/order descriptor digest"]
+    },
+    {
+      "targetOrdinal": 9,
+      "targetName": "Sky Courier",
+      "status": "seed-backlog",
+      "canonicalRouteId": null,
+      "scenarioLane": "aerial-open-traversal",
+      "routeDecision": "hold until aerial traversal and cargo delivery combine into a higher-level courier DSK",
+      "reusableDomainPressure": ["powered-aerial-flight-domain-kit", "cargo-delivery-kit", "route-checkpoint-kit"],
+      "dskSurfaces": ["resources", "events", "methods", "snapshots", "descriptors"],
+      "localJsPressure": "avoid duplicating Sora flight state while adding delivery ledgers",
+      "rendererBoundary": "skybox, parcel visuals, and camera feel stay host-owned",
+      "smokeReplayGap": ["flight-plus-cargo replay", "delivery and checkpoint digest"]
+    },
+    {
+      "targetOrdinal": 10,
+      "targetName": "Orbital Dockyard",
+      "status": "seed-backlog",
+      "canonicalRouteId": null,
+      "scenarioLane": "field-engineer-composition",
+      "routeDecision": "hold until build, resource, lock, and docking descriptors are reusable enough to pressure a field-engineer composite",
+      "reusableDomainPressure": ["resource-node-kit", "build-placement-kit", "lock-group-kit", "completion-ledger-kit"],
+      "dskSurfaces": ["resources", "events", "methods", "snapshots", "descriptors"],
+      "localJsPressure": "move docking/build/resource loop out of local JS before canonicalizing",
+      "rendererBoundary": "orbital scene and dock animation stay host presentation",
+      "smokeReplayGap": ["harvest/build/unlock replay", "dock descriptor digest"]
+    },
+    {
+      "targetOrdinal": 11,
+      "targetName": "Shadow Museum",
+      "status": "seed-backlog",
+      "canonicalRouteId": null,
+      "scenarioLane": "survey-pressure",
+      "routeDecision": "hold as a stealth/survey variant unless it proves a reusable observation, patrol, or exhibit-state DSK",
+      "reusableDomainPressure": ["scan-survey-kit", "zone-field-kit", "agent-group-kit"],
+      "dskSurfaces": ["resources", "events", "methods", "snapshots", "descriptors"],
+      "localJsPressure": "avoid route-owned patrol and observation logic until reusable survey/patrol boundaries exist",
+      "rendererBoundary": "lighting, stealth visuals, and museum layout stay presentation",
+      "smokeReplayGap": ["scan/patrol detection replay", "observation descriptor digest"]
+    },
+    {
+      "targetOrdinal": 12,
+      "targetName": "Factory Pulse",
+      "status": "seed-backlog",
+      "canonicalRouteId": null,
+      "scenarioLane": "field-engineer-composition",
+      "routeDecision": "hold until timed production, resource pressure, and machine descriptors form a reusable factory pulse DSK",
+      "reusableDomainPressure": ["timed-pressure-director-kit", "resource-pressure-kit", "completion-ledger-kit"],
+      "dskSurfaces": ["resources", "events", "methods", "snapshots", "descriptors"],
+      "localJsPressure": "move production timing and ledger state into reusable headless kits",
+      "rendererBoundary": "factory animation and UI panels stay presentation",
+      "smokeReplayGap": ["production pulse replay", "machine/ledger descriptor digest"]
+    },
+    {
+      "targetOrdinal": 13,
+      "targetName": "Floodplain Rescue",
+      "status": "seed-backlog",
+      "canonicalRouteId": null,
+      "scenarioLane": "traversal-cargo-pressure",
+      "routeDecision": "hold until rescue/cargo plus hazard pressure creates reusable evacuation boundary state",
+      "reusableDomainPressure": ["cargo-delivery-kit", "hazard-director-kit", "route-checkpoint-kit"],
+      "dskSurfaces": ["resources", "events", "methods", "snapshots", "descriptors"],
+      "localJsPressure": "move rescue target state, flood hazard progression, and route outcomes into reusable ledgers",
+      "rendererBoundary": "water visuals and rescue presentation remain host-owned",
+      "smokeReplayGap": ["rescue pickup/dropoff replay", "hazard/flood descriptor digest"]
+    },
+    {
+      "targetOrdinal": 14,
+      "targetName": "Drone Swarm Survey",
+      "status": "seed-backlog",
+      "canonicalRouteId": null,
+      "scenarioLane": "survey-pressure",
+      "routeDecision": "hold until multi-agent scan coverage adds reusable swarm/survey pressure beyond Fogline Relay",
+      "reusableDomainPressure": ["scan-survey-kit", "agent-group-kit", "zone-field-kit"],
+      "dskSurfaces": ["resources", "events", "methods", "snapshots", "descriptors"],
+      "localJsPressure": "move drone assignment, scan coverage, and zone objective state to reusable DSKs",
+      "rendererBoundary": "drone visualization and camera composition remain presentation",
+      "smokeReplayGap": ["multi-agent survey replay", "coverage descriptor digest"]
+    },
+    {
+      "targetOrdinal": 15,
+      "targetName": "Trainyard Switcher",
+      "status": "seed-backlog",
+      "canonicalRouteId": null,
+      "scenarioLane": "traversal-cargo-pressure",
+      "routeDecision": "hold until switching, route ledger, and cargo flow become reusable traversal/cargo methods",
+      "reusableDomainPressure": ["route-checkpoint-kit", "cargo-delivery-kit", "lock-group-kit"],
+      "dskSurfaces": ["resources", "events", "methods", "snapshots", "descriptors"],
+      "localJsPressure": "avoid one-off rail switch state; model switches, cargo, and gates as reusable resources/events",
+      "rendererBoundary": "rail visuals and switch UI remain presentation",
+      "smokeReplayGap": ["switch route replay", "cargo/track descriptor digest"]
+    },
+    {
+      "targetOrdinal": 16,
+      "targetName": "Crystal Cavern Rally",
+      "status": "seed-backlog",
+      "canonicalRouteId": null,
+      "scenarioLane": "traversal-cargo-pressure",
+      "routeDecision": "hold as traversal/resource variant until cave hazards and checkpoint pressure are reusable",
+      "reusableDomainPressure": ["route-checkpoint-kit", "hazard-director-kit", "resource-pressure-kit"],
+      "dskSurfaces": ["resources", "events", "methods", "snapshots", "descriptors"],
+      "localJsPressure": "move cave hazard state and collectible pressure into reusable kits",
+      "rendererBoundary": "crystal visuals and rally camera remain presentation",
+      "smokeReplayGap": ["hazard checkpoint replay", "resource route descriptor digest"]
+    },
+    {
+      "targetOrdinal": 17,
+      "targetName": "Biodome Wrangler",
+      "status": "seed-backlog",
+      "canonicalRouteId": null,
+      "scenarioLane": "survival-ecology",
+      "routeDecision": "hold until creature/resource/hazard behavior forms reusable survival ecology pressure",
+      "reusableDomainPressure": ["agent-group-kit", "resource-pressure-kit", "hazard-director-kit"],
+      "dskSurfaces": ["resources", "events", "methods", "snapshots", "descriptors"],
+      "localJsPressure": "move creature state, wrangle actions, and biodome hazards into reusable DSK surfaces",
+      "rendererBoundary": "biodome visuals and animal presentation stay route-owned",
+      "smokeReplayGap": ["wrangle/hazard replay", "agent ecology descriptor digest"]
+    },
+    {
+      "targetOrdinal": 18,
+      "targetName": "Dungeon Relay",
+      "status": "seed-backlog",
+      "canonicalRouteId": null,
+      "scenarioLane": "action-defense-extraction",
+      "routeDecision": "hold until action input, defense pressure, and extraction endpoints reuse the hellscape lane instead of duplicating it",
+      "reusableDomainPressure": ["action-input-kit", "agent-group-kit", "route-checkpoint-kit", "resource-pressure-kit"],
+      "dskSurfaces": ["resources", "events", "methods", "snapshots", "descriptors"],
+      "localJsPressure": "avoid separate dungeon combat/extraction loops until the action-defense-extraction DSK is reusable",
+      "rendererBoundary": "dungeon visuals, camera, and effects stay presentation",
+      "smokeReplayGap": ["combat/extraction replay", "core/portal descriptor digest"]
+    },
+    {
+      "targetOrdinal": 19,
+      "targetName": "Mech Bastion",
+      "status": "fold-into-canonical",
+      "canonicalRouteId": "signal-bastion",
+      "scenarioLane": "strategic-pressure-loop",
+      "routeDecision": "fold into Signal Bastion unless mech-specific control adds reusable build/agent/combat pressure beyond generic defense",
+      "reusableDomainPressure": ["generic-defense-dsk-boundaries", "agent-group-kit", "combat-resolver-kit"],
+      "dskSurfaces": ["resources", "events", "methods", "snapshots", "descriptors"],
+      "localJsPressure": "do not create a mech-specific tower-defense interpreter in Experiments",
+      "rendererBoundary": "mech silhouettes and animation remain presentation if revived",
+      "smokeReplayGap": ["mech control replay only after generic combat resolver boundary exists"]
+    },
+    {
+      "targetOrdinal": 20,
+      "targetName": "Market Mayhem",
+      "status": "seed-backlog",
+      "canonicalRouteId": null,
+      "scenarioLane": "economy-social-workshop",
+      "routeDecision": "hold non-canonical until deterministic decision/economy/social DSK state exists",
+      "reusableDomainPressure": ["shop-inventory-domain-kit", "relationship-state-domain-kit", "quest-thread-domain-kit", "resource-pressure-kit"],
+      "dskSurfaces": ["resources", "events", "methods", "snapshots", "descriptors"],
+      "localJsPressure": "avoid bespoke market/court/broker state until choice windows, ledgers, and outcomes replay deterministically",
+      "rendererBoundary": "market UI, dialogue presentation, and browsing affordances stay host-owned",
+      "smokeReplayGap": ["deterministic choice window replay", "ledger/outcome descriptor digest"]
+    }
+  ],
+  "manifestCanonicalRouteCoverage": [
+    {
+      "canonicalId": "next-ledge",
+      "targetLens": "Next Ledge",
+      "scenarioLane": "traversal-cargo-pressure",
+      "portfolioDecision": "canonical target retained"
+    },
+    {
+      "canonicalId": "fogline-relay",
+      "targetLens": "Fogline Relay",
+      "scenarioLane": "survey-pressure",
+      "portfolioDecision": "canonical target retained"
+    },
+    {
+      "canonicalId": "nexus-frontier-signal-isles",
+      "targetLens": "field-engineer composition coverage outside the original twenty-name target",
+      "scenarioLane": "field-engineer-composition",
+      "portfolioDecision": "canonical only as a kit-utilization composite pressure route"
+    },
+    {
+      "canonicalId": "sora-the-infinite",
+      "targetLens": "The Open Above",
+      "scenarioLane": "aerial-open-traversal",
+      "portfolioDecision": "canonical aerial lane absorbs open-above harness pressure"
+    },
+    {
+      "canonicalId": "zombie-orchard",
+      "targetLens": "Zombie Orchard",
+      "scenarioLane": "survival-ecology",
+      "portfolioDecision": "canonical target retained but still contract-only"
+    },
+    {
+      "canonicalId": "signal-bastion",
+      "targetLens": "Signal Bastion plus folded Mech Bastion defense pressure",
+      "scenarioLane": "strategic-pressure-loop",
+      "portfolioDecision": "canonical target retained and executable route-domain proven"
+    },
+    {
+      "canonicalId": "rogue-lite-hellscape-siege",
+      "targetLens": "Dungeon Relay/action-defense-extraction pressure outside the original twenty-name target",
+      "scenarioLane": "action-defense-extraction",
+      "portfolioDecision": "canonical only as unified action-defense-extraction base route"
+    }
+  ]
+}
