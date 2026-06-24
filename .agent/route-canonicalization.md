@@ -49,3 +49,13 @@ Signal Bastion remains the canonical strategic-pressure route, but the browser h
 - Remaining convenience seams are explicit and guarded: `defenseBuild.setBlueprint`, `defenseBuild.sell`, `defenseWaves.previewNextWave`, `defenseFoundation.getSnapshot`, and `defenseScale.getBudgetSnapshot`.
 
 Canonicalization implication: this is local-JS reduction and boundary clarification, not a destructive route fold. Keep variant pruning metadata-only until Signal Bastion's browser host can either remove or justify each remaining convenience seam without breaking the strategic-pressure replay and static bridge guards.
+
+## 2026-06-24 Canonical Route Pruner placement namespace update
+
+The placement seam that previously sat between route-local browser input and the reusable presentation projector is now guarded as a namespaced DSK bridge:
+
+- ProtoKits owns the implementation proof through `tests/generic-defense-placement-projector-namespace-smoke.test.mjs`, where `createGenericPlacementProjectorKit().confirm()` prefers `engine.n.genericDefense.sessionFacade.build` while compatibility build facades are poisoned.
+- Experiments now records that source smoke in `experiments/signal-bastion-route-domain-replay.json` and checks it with `tests/signal-bastion-placement-namespace-contract-smoke.mjs`.
+- Signal Bastion's input host still calls `engine.placementProjector.confirm` from browser pointer input, but the route-side contract now forbids direct `engine.defenseBuild.build` or legacy `engine.genericDefense.build` as placement shortcuts.
+
+Canonicalization implication: `signal-bastion` remains the sole executable strategic-pressure canonical route, and this reduces one more reason to preserve defense variants as separate route forks. Do not delete or fold route folders yet; next pruning should continue through metadata, smoke guards, and one remaining browser convenience seam at a time.
