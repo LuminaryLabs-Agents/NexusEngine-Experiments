@@ -18,12 +18,13 @@
       "id": "traversal-cargo-pressure",
       "higherLevelDomain": "Delivery/extraction loop",
       "reusableBoundaryCandidates": [
-        "route-checkpoint-kit",
-        "cargo-delivery-kit",
+        "generic-route-progress-kit",
+        "generic-route-cargo-extraction-kit",
         "generic-resource-loop-kit",
+        "generic-pressure-loop-kit",
         "generic-action-window-kit"
       ],
-      "requiredReplayShape": "checkpoint/cargo/tether input sequence with route ledger, cargo state, pressure deltas, success/failure snapshots, and descriptor hashes",
+      "requiredReplayShape": "checkpoint/cargo/pressure input sequence with genericRouteCargoExtraction route ledger, cargo state, pressure deltas, success/failure snapshots, and descriptor hashes",
       "coverageStatus": "planned"
     },
     {
@@ -59,7 +60,7 @@
         "powered-aerial-flight-domain-kit",
         "flight-corridor-domain-kit",
         "aerial-camera-rig-domain-kit",
-        "route-checkpoint-kit",
+        "generic-route-progress-kit",
         "zone-field-kit"
       ],
       "requiredReplayShape": "pitch/bank/boost/checkpoint input sequence with position and velocity envelope, checkpoint ledger, camera descriptor, and terrain-window descriptors",
@@ -97,14 +98,15 @@
       "id": "action-defense-extraction",
       "higherLevelDomain": "Action defense extraction loop",
       "reusableBoundaryCandidates": [
-        "action-input-kit",
-        "resource-pressure-kit",
-        "cargo-delivery-kit",
-        "route-checkpoint-kit",
+        "generic-action-window-kit",
+        "generic-resource-loop-kit",
+        "generic-pressure-loop-kit",
+        "generic-route-cargo-extraction-kit",
+        "generic-route-progress-kit",
         "agent-group-kit",
         "hazard-director-kit"
       ],
-      "requiredReplayShape": "harvest/build/wave/core/extraction sequence with inventory ledger, portal or route state, wave pressure, and extraction result descriptors",
+      "requiredReplayShape": "harvest/build/wave/core/extraction sequence with inventory ledger, route/cargo extraction state, wave pressure, and extraction result descriptors",
       "coverageStatus": "planned"
     }
   ],
@@ -115,13 +117,24 @@
       "scenarioLane": "traversal-cargo-pressure",
       "status": "planned-fixture",
       "hostRole": "bridge semantic input, tick route/checkpoint/resource DSKs, and render snapshots only",
-      "protoKitReplayCoverage": [],
+      "protoKitReplayCoverage": [
+        {
+          "repo": "LuminaryLabs-Agents/NexusRealtime-ProtoKits",
+          "test": "tests/generic-route-progress-kit-smoke.test.mjs",
+          "coverage": "atomic route/checkpoint/objective-progress smoke for ordered checkpoint state, events, snapshots, and route-checkpoint descriptors"
+        },
+        {
+          "repo": "LuminaryLabs-Agents/NexusRealtime-ProtoKits",
+          "test": "tests/generic-route-cargo-extraction-kit-smoke.test.mjs",
+          "coverage": "composite delivery/extraction smoke over generic route progress, cargo/resource ledger, pressure channels, snapshots, and route/cargo/pressure descriptors"
+        }
+      ],
       "missingExecutableFixtures": [
-        "checkpoint/cargo/tether deterministic replay lane"
+        "checkpoint/cargo/tether deterministic replay lane that imports generic-route-progress-kit or generic-route-cargo-extraction-kit from ProtoKits"
       ],
       "localJsReductionOpportunity": [
-        "move checkpoint enter/exit ledger into reusable route boundary",
-        "express cargo or tether state through resources and descriptors"
+        "move checkpoint enter/exit ledger into generic-route-progress-kit or the route child of generic-route-cargo-extraction-kit",
+        "express cargo, tether, or pressure state through generic-route-cargo-extraction-kit resources and descriptors after a metadata/spec smoke is in place"
       ]
     },
     {
@@ -256,7 +269,7 @@
       ],
       "localJsReductionOpportunity": [
         "move inventory/material ledger and harvest interaction into reusable boundaries",
-        "turn portal/extraction state into route-checkpoint/cargo snapshots"
+        "turn portal/extraction state into route-progress/cargo-extraction snapshots"
       ]
     }
   ]
