@@ -72,7 +72,7 @@ Portfolio implications:
 
 Seeder decisions by current manifest route:
 
-- `next-ledge`: seed + harden as first `generic-route-progress-kit` consumer candidate; migrate only ordered checkpoint/progress ledger first, then evaluate `generic-route-cargo-extraction-kit` after the metadata/contract smoke is in place.
+- `next-ledge`: now consumes `generic-route-progress-kit` through `engine.n.genericRouteProgress` for the route/checkpoint ledger; next hardening should either prove a browserless route-progress smoke or migrate only cargo/resource/pressure into `generic-route-cargo-extraction-kit` without moving climb physics, collision, camera, browser input, or rendering into kits.
 - `fogline-relay`: harden as survey-pressure contract; keep cartographer/drone variants folded until scan/zone/hazard DSKs exist.
 - `nexus-frontier-signal-isles`: harden as field-engineer composition showcase; do not let it become a sink for unrelated route concepts.
 - `sora-the-infinite`: harden as aerial/open traversal contract; fold Open Above and racing variants until aerial traversal DSKs are clearer.
