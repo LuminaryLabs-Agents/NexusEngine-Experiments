@@ -44,7 +44,7 @@ assert.doesNotMatch(
 );
 assert.doesNotMatch(
   inputHost,
-  /engine\.genericDefense\??\.build\?*\.\(/,
+  /engine\.genericDefense(?:\?\.|\.)build/,
   "input host should not call the legacy genericDefense build facade directly"
 );
 assert.ok(
