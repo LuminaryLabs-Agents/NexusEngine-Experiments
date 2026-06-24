@@ -161,8 +161,8 @@ function runSignalBastionReplay() {
     frame += 1;
   }
 
-  const snapshot = engine.genericDefense.getSnapshot();
-  const renderSnapshot = engine.defenseRender.getSnapshot();
+  const snapshot = engine.n.genericDefense.sessionFacade.getSnapshot();
+  const renderSnapshot = engine.n.genericDefense.renderDescriptors.getSnapshot();
   assert.deepEqual(renderSnapshot, snapshot.render, "render descriptor DSK should mirror the generic defense render snapshot");
 
   return { engine, preset, snapshot, digest: digestSnapshot(snapshot) };
