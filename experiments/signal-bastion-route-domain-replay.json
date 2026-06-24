@@ -8,9 +8,10 @@
   "sourceBridgeSmoke": "tests/signal-bastion-replay-bridge-smoke.mjs",
   "sourceExecutableSmoke": "tests/signal-bastion-executable-route-replay-smoke.mjs",
   "sourcePlacementNamespaceSmoke": "LuminaryLabs-Agents/NexusRealtime-ProtoKits/tests/generic-defense-placement-projector-namespace-smoke.test.mjs",
+  "sourceSessionCommandSmoke": "LuminaryLabs-Agents/NexusRealtime-ProtoKits/tests/generic-defense-session-command-kit-smoke.test.mjs",
   "purpose": "Pin and execute the route-domain replay shape for the strongest current canonical route without moving reusable kit implementation into Experiments.",
   "executionStatus": "executable-smoked-protokit-backed",
-  "kitOwnership": "ProtoKits own generic-defense simulation and descriptor generation; Signal Bastion only bridges browser input into namespaced DSK semantic methods and renders snapshots/descriptors.",
+  "kitOwnership": "ProtoKits own generic-defense simulation, command helpers, and descriptor generation; Signal Bastion only bridges browser input into namespaced DSK semantic methods and renders snapshots/descriptors.",
   "reusableKitOwnershipExcluded": [
     "DOM",
     "Canvas",
@@ -87,7 +88,7 @@
       "surfaces": {
         "resources": ["genericDefense.session.state"],
         "events": ["genericDefense.reset", "genericDefense.select", "genericDefense.wave.start", "genericDefense.build.requested", "genericDefense.upgrade.requested", "genericDefense.command.rejected"],
-        "methods": ["n.genericDefense.sessionFacade.startWave", "n.genericDefense.sessionFacade.build", "n.genericDefense.sessionFacade.upgrade", "n.genericDefense.sessionFacade.select", "n.genericDefense.sessionFacade.cycleBlueprint", "n.genericDefense.sessionFacade.restart", "n.genericDefense.sessionFacade.getSnapshot"],
+        "methods": ["n.genericDefense.sessionFacade.startWave", "n.genericDefense.sessionFacade.build", "n.genericDefense.sessionFacade.upgrade", "n.genericDefense.sessionFacade.select", "n.genericDefense.sessionFacade.cycleBlueprint", "n.genericDefense.sessionFacade.restart", "n.genericDefense.sessionFacade.getSnapshot", "n.genericDefense.sessionFacade.setBlueprint", "n.genericDefense.sessionFacade.sell"],
         "snapshots": ["session", "level", "map", "economy", "structures", "agents", "combat", "render"],
         "descriptors": []
       }
@@ -104,7 +105,27 @@
       }
     }
   ],
+  "sessionCommandBoundary": {
+    "repo": "LuminaryLabs-Agents/NexusRealtime-ProtoKits",
+    "packageExport": "@luminarylabs/nexusrealtime-protokits/generic-defense-session-command-kit",
+    "kit": "createGenericDefenseSessionCommandKit",
+    "surfaces": {
+      "resources": ["genericDefense.session.state", "genericDefense.structure.state", "genericDefense.economy.state"],
+      "events": ["genericDefense.select", "genericDefense.economy.credit", "genericDefense.command.rejected"],
+      "methods": ["n.genericDefense.sessionFacade.setBlueprint", "n.genericDefense.sessionFacade.sell", "n.genericDefense.sessionCommands.setBlueprint", "n.genericDefense.sessionCommands.sell"],
+      "snapshots": ["session.blueprintId", "structures.structures", "economy.currency"],
+      "descriptors": []
+    }
+  },
   "semanticReplayInputs": [
+    {
+      "frame": 0,
+      "source": "route placement host",
+      "method": "n.genericDefense.sessionFacade.setBlueprint",
+      "bridgedMethod": "n.genericDefense.sessionFacade.setBlueprint",
+      "args": ["bolt"],
+      "commandIdPattern": "blueprint:<blueprint>:<frame>"
+    },
     {
       "frame": 0,
       "source": "route placement host",
@@ -136,12 +157,20 @@
       "bridgedMethod": "n.genericDefense.sessionFacade.getSnapshot",
       "args": [],
       "commandIdPattern": "snapshot:<frame>"
+    },
+    {
+      "frame": 31,
+      "source": "route keyboard host",
+      "method": "n.genericDefense.sessionFacade.sell",
+      "bridgedMethod": "n.genericDefense.sessionFacade.sell",
+      "args": ["<selected-structure-id>"],
+      "commandIdPattern": "sell:<structure>:<frame>"
     }
   ],
   "expectedAssertions": {
     "resources": ["genericDefense.map", "genericDefense.economy", "genericDefense.structures", "genericDefense.agents", "genericDefense.combat", "genericDefense.render"],
     "events": ["BuildRequested", "StructureBuilt", "EconomyDebit", "WaveStarted", "EnemyKilled", "WaveCompleted"],
-    "methods": ["n.genericDefense.sessionFacade.build", "n.genericDefense.sessionFacade.upgrade", "n.genericDefense.sessionFacade.startWave", "n.genericDefense.sessionFacade.getSnapshot", "n.genericDefense.renderDescriptors.getSnapshot"],
+    "methods": ["n.genericDefense.sessionFacade.setBlueprint", "n.genericDefense.sessionFacade.build", "n.genericDefense.sessionFacade.upgrade", "n.genericDefense.sessionFacade.startWave", "n.genericDefense.sessionFacade.sell", "n.genericDefense.sessionFacade.getSnapshot", "n.genericDefense.renderDescriptors.getSnapshot"],
     "snapshots": ["session.status", "economy.currency", "map.vital.health", "render.hud.status"],
     "descriptors": ["path", "vital", "build-slot", "structure", "effect"]
   },
@@ -170,17 +199,22 @@
       "repo": "LuminaryLabs-Agents/NexusRealtime-Experiments",
       "test": "tests/signal-bastion-executable-route-replay-smoke.mjs",
       "coverage": "imports real Core plus ProtoKits generic-defense DSK aliases, advances the Signal Bastion debug preset through fixed ticks, and compares deterministic descriptor/resource digests without browser ownership"
+    },
+    {
+      "repo": "LuminaryLabs-Agents/NexusRealtime-ProtoKits",
+      "test": "tests/generic-defense-session-command-kit-smoke.test.mjs",
+      "coverage": "proves blueprint selection and sell/refund commands through engine.n.genericDefense.sessionFacade/sessionCommands without DOM, Canvas, browser timing, or route-local simulation"
     }
   ],
   "localJsReductionSignal": [
     "Browser boot imports the ProtoKits generic-defense AAA DSK bridge and requests the seven named DSK aliases instead of composing the entire broad compatibility facade.",
-    "The browser host now reads snapshots and bridges build/upgrade/start/restart/select through engine.n.genericDefense.sessionFacade and render fallback through engine.n.genericDefense.renderDescriptors.",
+    "Browser boot now imports and installs the reusable generic-defense session command ProtoKit for blueprint selection and structure sell, so it no longer installs the broad generic-defense build or wave compatibility facades.",
+    "The browser host now reads snapshots and bridges build/upgrade/start/restart/select/setBlueprint/sell through engine.n.genericDefense.sessionFacade and render fallback through engine.n.genericDefense.renderDescriptors.",
     "The reusable ProtoKits placement projector now prefers engine.n.genericDefense.sessionFacade for placement snapshots and build confirmation, so the route's placementProjector.confirm bridge is a namespaced DSK bridge rather than a direct compatibility build call.",
-    "The browser GameHost wave preview now derives from engine.n.genericDefense.sessionFacade.getSnapshot() instead of engine.defenseWaves.previewNextWave(), removing one remaining wave convenience-facade call from the route host.",
+    "The browser GameHost wave preview now derives from engine.n.genericDefense.sessionFacade.getSnapshot() instead of engine.defenseWaves.previewNextWave(), removing the route host wave convenience-facade call.",
     "The browser GameHost scale/budget snapshot now derives from engine.n.genericDefense.sessionFacade.getSnapshot() and engine.n.genericDefense.renderDescriptors.getSnapshot(), so boot no longer installs or calls the generic-defense scale convenience facade.",
     "The browser GameHost foundation debug snapshot now derives from engine.n.genericDefense.sessionFacade.getSnapshot() map state, so boot no longer installs or calls the generic-defense foundation convenience facade.",
-    "The route still keeps small host convenience facades for build blueprint/sell APIs so existing browser UI affordances remain compatible while the DSK namespace migration settles.",
     "Keep route JavaScript limited to browser input bridging, canvas/HUD projection, assets, audio, and descriptor consumption."
   ],
-  "remainingGap": "The browser route now composes the seven generic-defense DSK aliases and routes the common snapshot, build, upgrade, wave, restart, selection, foundation debug snapshot, wave-preview, budget, and placement confirmation bridge calls through engine.n.genericDefense.sessionFacade/renderDescriptors. It still keeps minimal host convenience facades (`defenseBuild` for setBlueprint/sell and the installed wave compatibility facade) beside those DSK aliases so existing browser UI bridges keep working. Further local JavaScript shrink should replace remaining convenience-facade calls only after browser compatibility and descriptor consumption stay covered."
+  "remainingGap": "The generic-defense host convenience facades for build blueprint, sell, and wave preview are now closed for Signal Bastion. The remaining shrink gap is presentation bridge hardening: keep Canvas/HUD projection in the route, keep defensePresentationStack and renderer-only helpers descriptor based, and avoid adding route-local simulation while other canonical lanes wait for reusable ProtoKit boundaries."
 }
