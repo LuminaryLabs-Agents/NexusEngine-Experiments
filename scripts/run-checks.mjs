@@ -34,7 +34,9 @@ const fullCheckSuites = [
   "tests/tropical-island-scene-static-smoke.mjs",
   "tests/experiment-flat-routes-smoke.mjs",
   "tests/gallery-coverage-smoke.mjs",
-  "tests/contrast-token-smoke.mjs"
+  "tests/contrast-token-smoke.mjs",
+  "tests/gallery-cover-manifest.test.mjs",
+  "tests/cover-utils.test.mjs"
 ];
 
 const deployCheckSuites = [
@@ -52,7 +54,9 @@ const deployCheckSuites = [
   "tests/signal-bastion-host-facade-guard-smoke.mjs",
   "tests/experiment-flat-routes-smoke.mjs",
   "tests/gallery-coverage-smoke.mjs",
-  "tests/contrast-token-smoke.mjs"
+  "tests/contrast-token-smoke.mjs",
+  "tests/gallery-cover-manifest.test.mjs",
+  "tests/cover-utils.test.mjs"
 ];
 
 const suites = process.argv.includes("--deploy") ? deployCheckSuites : fullCheckSuites;
