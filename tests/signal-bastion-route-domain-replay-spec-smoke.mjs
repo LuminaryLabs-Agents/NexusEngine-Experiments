@@ -60,6 +60,10 @@ for (const boundary of spec.protokitBoundaries) {
   for (const surface of ["resources", "events", "methods", "snapshots", "descriptors"]) {
     assert.ok(Array.isArray(boundary.surfaces?.[surface]), `${boundary.id} should expose ${surface} surface metadata`);
   }
+  assert.ok(
+    boundary.surfaces.methods.some((method) => method.startsWith("n.genericDefense.") || method === "defensePresentationStack.getSnapshot"),
+    `${boundary.id} should expose a namespaced DSK method or presentation-stack descriptor bridge`
+  );
 }
 assert.ok(
   spec.protokitBoundaries.find((boundary) => boundary.id === "renderDescriptors")?.surfaces.descriptors.length > 0,
@@ -67,11 +71,12 @@ assert.ok(
 );
 
 const replayMethods = new Set(spec.semanticReplayInputs.flatMap((input) => [input.method, input.bridgedMethod].filter(Boolean)));
-for (const method of ["genericDefense.build", "genericDefense.upgrade", "genericDefense.startWave", "genericDefense.getSnapshot", "defensePresentationStack.getSnapshot"]) {
+for (const method of ["n.genericDefense.sessionFacade.build", "n.genericDefense.sessionFacade.upgrade", "n.genericDefense.sessionFacade.startWave", "n.genericDefense.sessionFacade.getSnapshot", "defensePresentationStack.getSnapshot"]) {
   assert.ok(replayMethods.has(method), `spec should include semantic replay method ${method}`);
 }
 assert.ok(spec.deterministicDigest.fields.includes("render.descriptors"), "spec digest should include renderer-agnostic descriptors");
 assert.ok(spec.remainingGap.includes("host convenience facades") && spec.remainingGap.includes("DSK aliases"), "spec should keep the remaining browser host/local-JS reduction gap explicit after DSK bridge migration");
+assert.ok(spec.localJsReductionSignal.some((entry) => entry.includes("engine.n.genericDefense.sessionFacade")), "spec should record the browser host namespace reduction");
 
 const boot = readFileSync("games/signal-bastion/src/boot.js", "utf8");
 const input = readFileSync("games/signal-bastion/src/input-host.js", "utf8");
@@ -84,10 +89,12 @@ assert.doesNotMatch(boot, /\bcreateGenericDefenseKits\s*\(/, "boot should not co
 assert.match(boot, /createGenericDefensePresentationStackKits/, "boot should still compose presentation descriptors from ProtoKits");
 assert.match(boot, /engine\.tick\(dt\)/, "boot should advance the route through runtime ticks");
 assert.match(boot, /engine\.defensePresentationStack\?\.getSnapshot\?\.\(\)/, "boot should surface descriptor snapshots");
+assert.match(boot, /getSignalBastionSessionFacade\(engine\)\?\.getSnapshot\?\.\(\)/, "boot should read namespaced DSK session snapshots");
 assert.match(input, /engine\.placementProjector\?\.confirm\?\.\(/, "input host should bridge build placement into semantic methods");
-assert.match(input, /engine\.defenseWaves\?\.startWave\?\.\(/, "input host should bridge wave start into semantic methods");
-assert.match(input, /engine\.defenseBuild\?\.upgrade\?\.\(/, "input host should bridge upgrades into semantic methods");
-assert.match(input, /engine\.genericDefense\.getSnapshot\(\)/, "input host should read domain snapshots");
+assert.match(input, /sessionFacade\(\)\?\.startWave\?\.\(/, "input host should bridge wave start through the namespaced DSK session facade");
+assert.match(input, /sessionFacade\(\)\?\.upgrade\?\.\(/, "input host should bridge upgrades through the namespaced DSK session facade");
+assert.match(input, /sessionFacade\(\)\?\.getSnapshot\?\.\(\)/, "input host should read domain snapshots through the namespaced DSK session facade");
+assert.doesNotMatch(input, /engine\.genericDefense\./, "input host should not call the broad genericDefense facade directly after namespace migration");
 assert.match(renderer, /function draw\(presentation/, "renderer should draw from presentation snapshots");
 assert.doesNotMatch(renderer, /createRealtimeGame|createGenericDefenseKits|engine\.tick|requestAnimationFrame|performance\.now/, "renderer should not own simulation or frame timing");
 
