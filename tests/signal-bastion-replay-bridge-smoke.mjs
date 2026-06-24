@@ -45,12 +45,14 @@ assert.match(index, /<canvas id="game"/, "Signal Bastion browser route owns canv
 assert.match(index, /statStrip/, "Signal Bastion browser route owns HUD presentation nodes");
 
 assert.match(boot, /generic-defense-aaa-dsk-bridge/, "boot should import the generic-defense DSK bridge instead of the broad compatibility facade");
+assert.match(boot, /generic-defense-session-command-kit/, "boot should import the reusable session-command ProtoKit instead of broad build/wave host facades");
 assert.match(boot, /SIGNAL_BASTION_DEFENSE_DSK_BOUNDARY_IDS/, "boot should make the requested DSK boundary IDs explicit");
 assert.match(boot, /createGenericDefenseDskBundle/, "boot should compose generic-defense simulation from named ProtoKit DSK aliases");
-assert.match(boot, /createGenericDefenseFoundationKit/, "boot should keep only the minimal AAA foundation host facade beside DSK aliases");
-assert.match(boot, /createGenericDefenseBuildKit/, "boot should keep only the minimal build host facade beside DSK aliases");
-assert.match(boot, /createGenericDefenseWaveKit/, "boot should keep only the minimal wave host facade beside DSK aliases");
-assert.match(boot, /createGenericDefenseScaleKit/, "boot should keep only the minimal scale host facade beside DSK aliases");
+assert.match(boot, /createGenericDefenseSessionCommandKit/, "boot should compose blueprint and sell commands from the reusable session-command ProtoKit");
+assert.doesNotMatch(boot, /createGenericDefenseFoundationKit/, "boot should not install the broad foundation host facade after namespace migration");
+assert.doesNotMatch(boot, /createGenericDefenseBuildKit/, "boot should not install the broad build host facade after session-command migration");
+assert.doesNotMatch(boot, /createGenericDefenseWaveKit/, "boot should not install the broad wave host facade after wave-preview migration");
+assert.doesNotMatch(boot, /createGenericDefenseScaleKit/, "boot should not install the broad scale host facade after budget snapshot migration");
 assert.doesNotMatch(boot, /\bcreateGenericDefenseKits\s*\(/, "boot should not import the entire broad generic-defense compatibility facade");
 assert.match(boot, /createGenericDefensePresentationStackKits/, "boot should compose descriptor presentation from ProtoKits");
 assert.match(boot, /engine\.tick\(0\)/, "boot should settle initial state through the runtime tick");
@@ -67,10 +69,13 @@ for (const boundary of ["map", "economyWallet", "buildPlacement", "waveAgentDire
 }
 
 assert.match(input, /engine\.placementProjector\?\.confirm\?\.\(/, "input host should bridge placement into semantic methods");
+assert.match(input, /sessionFacade\(\)\?\.setBlueprint\?\.\(/, "input host should bridge blueprint selection through the namespaced session command DSK");
+assert.match(input, /sessionFacade\(\)\?\.sell\?\.\(/, "input host should bridge sell through the namespaced session command DSK");
 assert.match(input, /sessionFacade\(\)\?\.startWave\?\.\(/, "input host should bridge wave input through the namespaced session DSK facade");
 assert.match(input, /sessionFacade\(\)\?\.upgrade\?\.\(/, "input host should bridge upgrade input through the namespaced session DSK facade");
 assert.match(input, /sessionFacade\(\)\?\.getSnapshot\?\.\(\)/, "input host should read namespaced DSK snapshots rather than own simulation state");
 assert.doesNotMatch(input, /engine\.defenseWaves\?\.startWave\?\.\(/, "input host should not start waves through the wave convenience facade once the session DSK namespace is available");
+assert.doesNotMatch(input, /engine\.defenseBuild\?\./, "input host should not use broad build compatibility calls after session-command migration");
 assert.doesNotMatch(input, /engine\.genericDefense\./, "input host should avoid direct broad genericDefense calls after the DSK namespace bridge");
 assert.match(input, /renderer\.findHit\(.*presentation\(\)/s, "input host should hit-test against descriptors or snapshots from the renderer boundary");
 assert.doesNotMatch(input, /createRealtimeGame|createGenericDefenseKits|requestAnimationFrame|performance\.now/, "input host should not own runtime creation or browser frame timing");
