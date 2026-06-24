@@ -46,22 +46,28 @@ assert.doesNotMatch(index, /Space wave/);
 
 const boot = readFileSync("games/signal-bastion/src/boot.js", "utf8");
 assert.match(boot, /generic-defense-aaa-dsk-bridge/);
+assert.match(boot, /generic-defense-session-command-kit/);
 assert.match(boot, /SIGNAL_BASTION_DEFENSE_DSK_BOUNDARY_IDS/);
 assert.match(boot, /createGenericDefenseDskBundle/);
+assert.match(boot, /createGenericDefenseSessionCommandKit/);
 assert.match(boot, /generic-defense-presentation-stack-kit/);
 assert.match(boot, /createGenericDefensePresentationStackKits/);
 assert.match(boot, /getPresentation/);
 assert.match(boot, /getSignalBastionSessionFacade/);
 assert.match(boot, /engine\.n\?\.genericDefense/);
 assert.doesNotMatch(boot, /\bcreateGenericDefenseKits\s*\(/);
+assert.doesNotMatch(boot, /createGenericDefenseBuildKit\(/);
+assert.doesNotMatch(boot, /createGenericDefenseWaveKit\(/);
 
 const input = readFileSync("games/signal-bastion/src/input-host.js", "utf8");
 assert.match(input, /placementProjector/);
 assert.match(input, /towerPanelEl/);
-assert.match(input, /defenseBuild/);
+assert.match(input, /sessionFacade\(\)\?\.setBlueprint/);
+assert.match(input, /sessionFacade\(\)\?\.sell/);
 assert.match(input, /sessionFacade\(\)\?\.startWave/);
 assert.match(input, /sessionFacade\(\)\?\.upgrade/);
 assert.match(input, /engine\.n\?\.genericDefense/);
+assert.doesNotMatch(input, /engine\.defenseBuild\?\./);
 assert.doesNotMatch(input, /engine\.defenseWaves\?\.startWave/);
 assert.doesNotMatch(input, /engine\.genericDefense\./);
 
