@@ -120,14 +120,17 @@ assert.ok(
 
 const nextLedgeReplay = replayByCanonicalId.get("next-ledge");
 assert.equal(nextLedgeReplay.status, "planned-fixture", "Next Ledge should remain planned until cargo/resource/pressure replay is executable");
-assert.ok(
-  nextLedgeReplay.protoKitReplayCoverage.some((coverage) => coverage.test === "tests/generic-route-progress-kit-smoke.test.mjs"),
-  "Next Ledge should point at the atomic route progress smoke"
-);
-assert.ok(
-  nextLedgeReplay.protoKitReplayCoverage.some((coverage) => coverage.test === "tests/generic-route-cargo-extraction-kit-smoke.test.mjs"),
-  "Next Ledge should point at the composite route/cargo/extraction smoke before cargo migration"
-);
+for (const requiredNextLedgeCoverage of [
+  "tests/generic-route-progress-kit-smoke.test.mjs",
+  "tests/generic-route-progress-replay-smoke.test.mjs",
+  "tests/generic-route-cargo-extraction-kit-smoke.test.mjs",
+  "tests/generic-route-cargo-extraction-replay-smoke.test.mjs"
+]) {
+  assert.ok(
+    nextLedgeReplay.protoKitReplayCoverage.some((coverage) => coverage.test === requiredNextLedgeCoverage),
+    `Next Ledge should point at ProtoKits coverage ${requiredNextLedgeCoverage}`
+  );
+}
 assert.ok(
   nextLedgeReplay.missingExecutableFixtures.some((gap) => gap.includes("cargo/resource/pressure")),
   "Next Ledge should keep the remaining cargo/resource/pressure executable fixture gap explicit"
