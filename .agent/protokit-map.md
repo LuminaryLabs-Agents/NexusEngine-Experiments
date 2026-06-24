@@ -46,3 +46,13 @@ Recommended manifest/test direction:
 - Update traversal/cargo metadata to name `generic-route-progress-kit` and `generic-route-cargo-extraction-kit` as concrete candidates, replacing older generic `route-checkpoint-kit` / `cargo-delivery-kit` language where the new generic DSKs are intended.
 - Add a metadata or contract smoke that keeps `next-ledge` as the first route-progress consumer candidate without claiming executable replay.
 - Migrate route-local JavaScript only after the metadata smoke is in place, starting with ordered checkpoint progress and leaving browser collision, movement, camera, renderer, route fiction, DOM, Canvas, WebGL, audio, and assets in the host.
+
+## 2026-06-24 Domain Merge Consolidator consumption-map update
+
+The traversal/cargo metadata consolidation is now pushed in Experiments:
+
+- `experiments/canonical-route-replay-manifest.json` replaces the stale `route-checkpoint-kit` / `cargo-delivery-kit` placeholders in the `traversal-cargo-pressure` lane with `generic-route-progress-kit` and `generic-route-cargo-extraction-kit`.
+- `next-ledge` now points at ProtoKits smoke coverage for `tests/generic-route-progress-kit-smoke.test.mjs` and `tests/generic-route-cargo-extraction-kit-smoke.test.mjs` while remaining `planned-fixture`.
+- `tests/canonical-route-replay-manifest-smoke.mjs` guards those candidate names and blocks regression back to the stale placeholders.
+
+Consumption is still not implemented. The next safe route-host patch is to import only the route-progress or route-cargo-extraction DSK boundary for `next-ledge`, migrate ordered checkpoint progress first, then measure local JavaScript reduction after the route drops duplicated ledger code.
