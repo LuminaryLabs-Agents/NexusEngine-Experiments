@@ -15,6 +15,7 @@ const normalize = (v = {}, fallback = { x: 0, y: 0, z: -1 }) => {
 };
 const mix = (a, b, t) => n(a) + (n(b) - n(a)) * clamp(t, 0, 1);
 const blend = (a = {}, b = {}, t = 0.5) => ({ x: mix(a.x, b.x, t), y: mix(a.y, b.y, t), z: mix(a.z, b.z, t) });
+const rgbMix = (a = [0, 0, 0], b = [1, 1, 1], t = 0.5) => [mix(a[0], b[0], t), mix(a[1], b[1], t), mix(a[2], b[2], t)];
 
 function fail(error) {
   errorPanel.hidden = false;
@@ -24,6 +25,12 @@ function fail(error) {
 
 function kitUrl(base, name) {
   return `${String(base).replace(/\/$/, "")}/${name}/index.js`;
+}
+
+function hexToRgb(hex, fallback = [0.74, 0.86, 0.93]) {
+  const raw = String(hex || "").replace("#", "");
+  if (raw.length !== 6) return fallback;
+  return [parseInt(raw.slice(0, 2), 16) / 255, parseInt(raw.slice(2, 4), 16) / 255, parseInt(raw.slice(4, 6), 16) / 255];
 }
 
 function forwardFromRotation(rotation = {}) {
@@ -45,120 +52,78 @@ function hasInput(input = {}) {
   return Math.abs(n(input.pitch)) > 0.05 || Math.abs(n(input.bank)) > 0.05 || Boolean(input.boost);
 }
 
-const TERRAIN_PALETTES = Object.freeze({
-  meadow: { low: [0.36, 0.50, 0.25], mid: [0.50, 0.63, 0.36], high: [0.64, 0.70, 0.48] },
-  forest: { low: [0.16, 0.32, 0.19], mid: [0.26, 0.43, 0.25], high: [0.42, 0.54, 0.35] },
-  rocky: { low: [0.33, 0.35, 0.32], mid: [0.47, 0.49, 0.44], high: [0.63, 0.64, 0.57] },
-  highland: { low: [0.38, 0.45, 0.34], mid: [0.53, 0.58, 0.45], high: [0.68, 0.68, 0.58] },
-  snow: { low: [0.74, 0.77, 0.72], mid: [0.84, 0.86, 0.80], high: [0.94, 0.95, 0.90] }
-});
+function createDomainTerrainSampler(engine, config) {
+  const skyRgb = hexToRgb(config.sky?.sky?.horizon, [0.78, 0.90, 0.96]);
+  const baseSampler = engine.baseTerrainSampler ?? engine.terrainSampler;
 
-const rgbMix = (a, b, t) => [mix(a[0], b[0], t), mix(a[1], b[1], t), mix(a[2], b[2], t)];
-const rgbScale = (rgb, s) => rgb.map((value) => clamp(value * s, 0, 1));
-
-function terrainVisualConfig(config) {
-  return {
-    enabled: true,
-    terraceStep: 14,
-    terraceStrength: 0.44,
-    ridgeHeight: 18,
-    ridgeScale: 0.011,
-    ridgeCrossScale: 0.007,
-    carveDepth: 24,
-    carveScale: 0.0042,
-    carveSharpness: 10,
-    strataStep: 18,
-    strataStrength: 0.09,
-    slopeRockMix: 2.6,
-    normalStep: 4,
-    ...config.terrainVisuals
-  };
-}
-
-function terrainRgb(biome, height, slope, x, z, visual) {
-  const highSnow = height > n(visual.snowLine, 136);
-  const palette = highSnow ? TERRAIN_PALETTES.snow : (TERRAIN_PALETTES[biome] ?? TERRAIN_PALETTES.forest);
-  const elevation = clamp((height + 120) / 280, 0, 1);
-  const base = elevation < 0.52
-    ? rgbMix(palette.low, palette.mid, elevation / 0.52)
-    : rgbMix(palette.mid, palette.high, (elevation - 0.52) / 0.48);
-  const bandIndex = Math.floor((height + 500) / n(visual.strataStep, 18));
-  const strata = bandIndex % 2 === 0 ? -n(visual.strataStrength, 0.09) : n(visual.strataStrength, 0.09) * 0.5;
-  const wash = Math.sin(x * 0.006 + z * 0.004 + height * 0.035) * 0.035;
-  const slopeRock = clamp(slope * n(visual.slopeRockMix, 2.6), 0, 0.72);
-  const rocky = rgbMix(base, TERRAIN_PALETTES.rocky.mid, slopeRock);
-  return rgbScale(rocky, 1 + strata + wash);
-}
-
-function createCarvedTerrainSampler(baseSampler, config) {
-  const visual = terrainVisualConfig(config);
-  const baseHeight = (x, z) => baseSampler.getHeight(x, z);
-  const baseBiome = (x, z) => baseSampler.getBiome?.(x, z) ?? "forest";
-
-  function rawCarvedHeight(x, z) {
-    const h = baseHeight(x, z);
-    const ridgeA = Math.sin(x * visual.ridgeScale + z * visual.ridgeCrossScale);
-    const ridgeB = Math.cos(x * visual.ridgeCrossScale * 0.72 - z * visual.ridgeScale * 0.82);
-    const ridge = (Math.abs(ridgeA * ridgeB) - 0.5) * visual.ridgeHeight;
-    const channel = Math.abs(Math.sin(x * visual.carveScale + z * visual.carveScale * 0.61));
-    const cut = Math.pow(1 - channel, visual.carveSharpness) * visual.carveDepth;
-    return h + ridge - cut;
+  function distanceFromCenter(x, z, center = null) {
+    if (!center) return 0;
+    return Math.hypot(n(x) - n(center.x), n(z) - n(center.z));
   }
 
-  function getHeight(x, z) {
-    const carved = rawCarvedHeight(x, z);
-    const step = Math.max(1, n(visual.terraceStep, 14));
-    const terraced = Math.round(carved / step) * step;
-    return mix(carved, terraced, n(visual.terraceStrength, 0.44));
+  function contextFor(x, z, options = {}) {
+    const center = options.center ?? options.origin ?? null;
+    const distance = options.distance ?? distanceFromCenter(x, z, center);
+    const band = options.band ?? engine.terrainHorizon?.sampleDistanceBand?.(distance) ?? "near";
+    const hydrology = options.hydrology ?? engine.terrainHydrology?.sampleAt?.(x, z) ?? null;
+    return { ...options, center, distance, band, hydrology };
   }
 
-  function getNormal(x, z) {
-    const step = Math.max(1, n(visual.normalStep, 4));
-    const hL = getHeight(x - step, z);
-    const hR = getHeight(x + step, z);
-    const hD = getHeight(x, z - step);
-    const hU = getHeight(x, z + step);
-    const nx = hL - hR;
-    const ny = step * 2;
-    const nz = hD - hU;
-    const len = Math.hypot(nx, ny, nz) || 1;
-    return { x: nx / len, y: ny / len, z: nz / len };
+  function sample(x = 0, z = 0, options = {}) {
+    const context = contextFor(x, z, options);
+    const shaped = engine.terrainShaping?.sampleAt?.(x, z, context) ?? {
+      x: n(x),
+      z: n(z),
+      height: baseSampler.getHeight(x, z),
+      normal: baseSampler.getNormal?.(x, z) ?? { x: 0, y: 1, z: 0 },
+      slope: 0,
+      biome: baseSampler.getBiome?.(x, z) ?? "forest",
+      color: [0.36, 0.52, 0.30],
+      hydrology: context.hydrology,
+      band: context.band
+    };
+    const compressedHeight = context.band === "far" || context.band === "horizon"
+      ? engine.terrainHorizon?.compressFarHeight?.(shaped.height, context.distance) ?? shaped.height
+      : shaped.height;
+    const fog = engine.terrainHorizon?.fogBlend?.(context.distance) ?? 0;
+    const riverTint = shaped.hydrology?.moisture ? [0.52, 0.70, 0.64] : shaped.color;
+    const wetColor = rgbMix(shaped.color, riverTint, clamp(n(shaped.hydrology?.moisture, 0) * 0.34, 0, 0.34));
+    const color = rgbMix(wetColor, skyRgb, clamp(fog * 0.78, 0, 0.82));
+    return { ...shaped, height: compressedHeight, color, distance: context.distance, band: context.band, fog };
   }
 
-  function getVisualSample(x, z) {
-    const height = getHeight(x, z);
-    const normal = getNormal(x, z);
-    const slope = clamp(1 - normal.y, 0, 1);
-    const biome = baseBiome(x, z);
-    return { height, normal, slope, biome, color: terrainRgb(biome, height, slope, x, z, visual) };
-  }
+  function getHeight(x, z) { return sample(x, z).height; }
+  function getNormal(x, z) { return sample(x, z).normal; }
+  function getBiome(x, z) { return sample(x, z).biome; }
 
   return {
     getState: () => baseSampler.getState?.(),
     getHeight,
     getNormal,
-    getBiome: baseBiome,
-    getVisualSample,
+    getBiome,
+    getVisualSample: sample,
     getPatchDescriptor(px, pz, patchSize = config.terrain.patchSize) {
       const cx = n(px) * patchSize;
       const cz = n(pz) * patchSize;
+      const sampleAtCenter = sample(cx, cz);
       return {
         id: `terrain-patch:${px},${pz}`,
         key: `${px},${pz}`,
         px,
         pz,
         patchSize,
-        center: { x: cx, z: cz, y: getHeight(cx, cz) },
-        biome: baseBiome(cx, cz),
-        seed: `${config.terrain.seed}:carved:${px}:${pz}`
+        center: { x: cx, z: cz, y: sampleAtCenter.height },
+        biome: sampleAtCenter.biome,
+        seed: `${config.terrain.seed}:domain:${px}:${pz}`
       };
     },
     snapshot: () => ({
       ...(baseSampler.snapshot?.() ?? baseSampler.getState?.() ?? {}),
-      visualDomain: {
-        id: "open-above-carved-terrain-domain",
-        purpose: "Additive carved, terraced, strata-colored terrain adapter for bird-flight readability.",
-        visual
+      domainStack: {
+        id: "open-above-domain-terrain-stack",
+        shaping: engine.terrainShaping?.snapshot?.(),
+        hydrology: engine.terrainHydrology?.snapshot?.(),
+        horizon: engine.terrainHorizon?.snapshot?.()
       }
     })
   };
@@ -211,7 +176,7 @@ function createBirdMesh(THREE, config, scale = 1) {
   return root;
 }
 
-function createTerrainGeometry(THREE, patch, sampler, segments) {
+function createTerrainGeometry(THREE, patch, sampler, segments, context = {}) {
   const size = n(patch.patchSize, CONFIG.terrain.patchSize);
   const count = (segments + 1) * (segments + 1);
   const positions = new Float32Array(count * 3);
@@ -226,7 +191,7 @@ function createTerrainGeometry(THREE, patch, sampler, segments) {
       const index = z * (segments + 1) + x;
       const wx = originX + x * step;
       const wz = originZ + z * step;
-      const sample = sampler.getVisualSample?.(wx, wz) ?? { height: sampler.getHeight(wx, wz), color: TERRAIN_PALETTES.forest.mid };
+      const sample = sampler.getVisualSample?.(wx, wz, context) ?? { height: sampler.getHeight(wx, wz), color: [0.36, 0.52, 0.30] };
       positions[index * 3] = wx;
       positions[index * 3 + 1] = sample.height;
       positions[index * 3 + 2] = wz;
@@ -246,6 +211,46 @@ function createTerrainGeometry(THREE, patch, sampler, segments) {
     }
   }
 
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+  geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+  geometry.setIndex(indices);
+  geometry.computeVertexNormals();
+  geometry.computeBoundingSphere();
+  return geometry;
+}
+
+function createHorizonRingGeometry(THREE, ring, sampler) {
+  const segments = Math.max(12, Math.floor(n(ring.segments, 56)));
+  const positions = new Float32Array((segments + 1) * 2 * 3);
+  const colors = new Float32Array((segments + 1) * 2 * 3);
+  const indices = [];
+  const center = ring.center ?? { x: 0, z: 0 };
+  for (let i = 0; i <= segments; i += 1) {
+    const angle = i / segments * Math.PI * 2;
+    const ca = Math.cos(angle);
+    const sa = Math.sin(angle);
+    for (let r = 0; r < 2; r += 1) {
+      const radius = r === 0 ? ring.innerRadius : ring.outerRadius;
+      const wx = n(center.x) + ca * radius;
+      const wz = n(center.z) + sa * radius;
+      const index = (i * 2 + r) * 3;
+      const sample = sampler.getVisualSample(wx, wz, { center, distance: radius, band: "horizon" });
+      positions[index] = wx;
+      positions[index + 1] = sample.height;
+      positions[index + 2] = wz;
+      colors[index] = sample.color[0];
+      colors[index + 1] = sample.color[1];
+      colors[index + 2] = sample.color[2];
+    }
+  }
+  for (let i = 0; i < segments; i += 1) {
+    const a = i * 2;
+    const b = a + 1;
+    const c = a + 2;
+    const d = a + 3;
+    indices.push(a, c, b, b, c, d);
+  }
   const geometry = new THREE.BufferGeometry();
   geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
   geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
@@ -315,13 +320,15 @@ function createHarnessRenderer(THREE, engine, config) {
 
   const cloudBands = createCloudBands(THREE);
   scene.add(cloudBands);
-  const terrainMat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.98, metalness: 0.01, flatShading: true });
+  const terrainMat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.98, metalness: 0.01, flatShading: false });
+  const horizonMat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 1, metalness: 0.01, transparent: true, opacity: 0.92, depthWrite: true });
   const treeMat = new THREE.MeshStandardMaterial({ color: 0x1f6531, roughness: 0.86 });
   const rockMat = new THREE.MeshStandardMaterial({ color: 0x747d78, roughness: 0.88 });
   const bird = createBirdMesh(THREE, config.actor, 1);
   scene.add(bird);
 
   const terrainMeshes = new Map();
+  const horizonMeshes = new Map();
   const scatterMeshes = new Map();
   const flockMeshes = new Map();
   const scratchMatrix = new THREE.Matrix4();
@@ -343,7 +350,7 @@ function createHarnessRenderer(THREE, engine, config) {
     const live = new Set();
     for (const patch of state.terrain.patches) {
       const segments = patchSegments(patch, state.body);
-      const renderKey = `${patch.key}:${segments}:carved-v1`;
+      const renderKey = `${patch.key}:${segments}:domain-terrain-v2`;
       live.add(patch.key);
       const previous = terrainMeshes.get(patch.key);
       if (!previous || previous.renderKey !== renderKey) {
@@ -351,7 +358,7 @@ function createHarnessRenderer(THREE, engine, config) {
           scene.remove(previous.mesh);
           previous.mesh.geometry.dispose();
         }
-        const mesh = new THREE.Mesh(createTerrainGeometry(THREE, patch, engine.terrainSampler, segments), terrainMat);
+        const mesh = new THREE.Mesh(createTerrainGeometry(THREE, patch, engine.terrainSampler, segments, { center: state.body.position }), terrainMat);
         mesh.receiveShadow = true;
         scene.add(mesh);
         terrainMeshes.set(patch.key, { renderKey, mesh });
@@ -362,6 +369,36 @@ function createHarnessRenderer(THREE, engine, config) {
         scene.remove(record.mesh);
         record.mesh.geometry.dispose();
         terrainMeshes.delete(key);
+      }
+    }
+  }
+
+  function syncHorizon(state) {
+    const live = new Set();
+    for (const ring of state.terrain.horizonRings ?? []) {
+      const snapX = Math.round(n(ring.center?.x) / 900);
+      const snapZ = Math.round(n(ring.center?.z) / 900);
+      const key = ring.id;
+      const renderKey = `${ring.id}:${snapX},${snapZ}:${ring.segments}:${ring.innerRadius}:${ring.outerRadius}`;
+      live.add(key);
+      const previous = horizonMeshes.get(key);
+      if (!previous || previous.renderKey !== renderKey) {
+        if (previous) {
+          scene.remove(previous.mesh);
+          previous.mesh.geometry.dispose();
+        }
+        const mesh = new THREE.Mesh(createHorizonRingGeometry(THREE, { ...ring, center: { x: snapX * 900, z: snapZ * 900 } }, engine.terrainSampler), horizonMat);
+        mesh.receiveShadow = false;
+        mesh.renderOrder = -20;
+        scene.add(mesh);
+        horizonMeshes.set(key, { renderKey, mesh });
+      }
+    }
+    for (const [key, record] of horizonMeshes) {
+      if (!live.has(key)) {
+        scene.remove(record.mesh);
+        record.mesh.geometry.dispose();
+        horizonMeshes.delete(key);
       }
     }
   }
@@ -430,6 +467,7 @@ function createHarnessRenderer(THREE, engine, config) {
 
   function draw(state) {
     if (!state?.body) return;
+    syncHorizon(state);
     syncTerrain(state);
     syncScatter(state.render.batches);
     syncFlock(state.flock.agents);
@@ -459,7 +497,7 @@ function createHarnessRenderer(THREE, engine, config) {
     sun.target.updateMatrixWorld();
     scene.fog = new THREE.FogExp2(state.sky.atmosphere.fogColor, state.sky.atmosphere.density);
 
-    hud.innerHTML = `<strong>${config.title}</strong><br>Speed ${Math.round(body.speed)} · Swoop ${Math.round(dive * 100)}% · Carve ${Math.round(carve * 100)}% · Clearance ${Math.round(body.clearance)} · Carved terrain`;
+    hud.innerHTML = `<strong>${config.title}</strong><br>Speed ${Math.round(body.speed)} · Swoop ${Math.round(dive * 100)}% · Clearance ${Math.round(body.clearance)} · Rivers ${state.terrain.rivers.length} · Horizon ${state.terrain.horizonRings.length}`;
     renderer.render(scene, camera);
   }
 
@@ -487,6 +525,8 @@ function composeState(engine, frame, elapsed, input, config) {
   const terrain = engine.terrainSampler;
   const groundHeight = terrain.getHeight(position.x, position.z);
   const patches = engine.worldPatch.listActive();
+  const horizonRings = engine.terrainHorizon?.buildHorizonRings?.(position) ?? [];
+  const rivers = engine.terrainHydrology?.listRivers?.(position) ?? [];
   const lookForward = cameraForward(motion, config);
   const velocityForward = normalize(motion.velocity, lookForward);
   const followForward = normalize(blend(lookForward, velocityForward, clamp(config.camera.followVelocityBias, 0, 1)), lookForward);
@@ -501,7 +541,7 @@ function composeState(engine, frame, elapsed, input, config) {
     elapsed,
     input: clone(input),
     body: { ...clone(motion), altitude: position.y, clearance, groundHeight },
-    terrain: { seed: config.terrain.seed, patchSize: config.terrain.patchSize, patchCount: patches.length, patches, visual: terrain.snapshot?.().visualDomain },
+    terrain: { seed: config.terrain.seed, patchSize: config.terrain.patchSize, patchCount: patches.length, patches, horizonRings, rivers, domainStack: terrain.snapshot?.().domainStack },
     sky: engine.skyAtmosphere.snapshot(),
     lighting: engine.lightingDescriptor.snapshot(),
     actor: engine.actorRender.snapshot(),
@@ -532,7 +572,10 @@ function composeState(engine, frame, elapsed, input, config) {
       cameraRelativeSkybox: true,
       compositionalHarness: true,
       birdFlightSimulator: true,
-      carvedTerrainDomain: Boolean(terrain.getVisualSample)
+      terrainShapingReady: Boolean(engine.terrainShaping),
+      terrainHydrologyReady: Boolean(engine.terrainHydrology),
+      terrainHorizonReady: Boolean(engine.terrainHorizon),
+      horizonRingsPresent: horizonRings.length > 0
     }
   };
 }
@@ -545,6 +588,9 @@ function buildKits(Nexus, kits, config) {
     kits.lighting.createLightingDescriptorKit(Nexus, config.lighting),
     kits.materials.createMaterialPaletteKit(Nexus, { materials: config.materials }),
     kits.terrain.createTerrainSamplerKit(Nexus, { seed: config.terrain.seed, terrain: config.terrain }),
+    kits.terrainHydrology.createTerrainHydrologyDomainKit(Nexus, { seed: `${config.seed}:hydrology`, hydrology: config.terrainHydrology }),
+    kits.terrainShaping.createTerrainShapingDomainKit(Nexus, { seed: `${config.seed}:shaping`, shaping: config.terrainShaping }),
+    kits.terrainHorizon.createTerrainHorizonLodKit(Nexus, { seed: `${config.seed}:horizon`, horizon: config.terrainHorizon }),
     kits.world.createWorldPatchKit(Nexus, { seed: config.seed, patchSize: config.terrain.patchSize, radius: config.quality.patchRadius }),
     kits.scatter.createScatterPlacementKit(Nexus, { seed: `${config.seed}:scatter`, rules: config.scatterRules }),
     kits.instanced.createInstancedRenderKit(Nexus, { lod: true }),
@@ -577,7 +623,7 @@ async function loadModules(config) {
     nexusUrl: params.get("nexus") || config.runtime.nexusUrl,
     protoKitBaseUrl: params.get("kitBase") || config.runtime.protoKitBaseUrl
   };
-  const [THREE, Nexus, data, performance, sky, lighting, materials, terrain, world, scatter, instanced, flight, actor, flock] = await Promise.all([
+  const [THREE, Nexus, data, performance, sky, lighting, materials, terrain, terrainHydrology, terrainShaping, terrainHorizon, world, scatter, instanced, flight, actor, flock] = await Promise.all([
     import(runtime.threeUrl),
     import(runtime.nexusUrl),
     import(kitUrl(runtime.protoKitBaseUrl, "data-registry-kit")),
@@ -586,6 +632,9 @@ async function loadModules(config) {
     import(kitUrl(runtime.protoKitBaseUrl, "lighting-descriptor-kit")),
     import(kitUrl(runtime.protoKitBaseUrl, "material-palette-kit")),
     import(kitUrl(runtime.protoKitBaseUrl, "terrain-sampler-kit")),
+    import(kitUrl(runtime.protoKitBaseUrl, "terrain-hydrology-domain-kit")),
+    import(kitUrl(runtime.protoKitBaseUrl, "terrain-shaping-domain-kit")),
+    import(kitUrl(runtime.protoKitBaseUrl, "terrain-horizon-lod-kit")),
     import(kitUrl(runtime.protoKitBaseUrl, "world-patch-kit")),
     import(kitUrl(runtime.protoKitBaseUrl, "scatter-placement-kit")),
     import(kitUrl(runtime.protoKitBaseUrl, "instanced-render-kit")),
@@ -593,14 +642,14 @@ async function loadModules(config) {
     import(kitUrl(runtime.protoKitBaseUrl, "actor-render-kit")),
     import(kitUrl(runtime.protoKitBaseUrl, "flock-agent-kit"))
   ]);
-  return { THREE, Nexus, kits: { data, performance, sky, lighting, materials, terrain, world, scatter, instanced, flight, actor, flock } };
+  return { THREE, Nexus, kits: { data, performance, sky, lighting, materials, terrain, terrainHydrology, terrainShaping, terrainHorizon, world, scatter, instanced, flight, actor, flock } };
 }
 
 async function boot() {
   const { THREE, Nexus, kits } = await loadModules(CONFIG);
   const engine = Nexus.createRealtimeGame({ kits: buildKits(Nexus, kits, CONFIG) });
   engine.baseTerrainSampler = engine.terrainSampler;
-  engine.terrainSampler = createCarvedTerrainSampler(engine.baseTerrainSampler, CONFIG);
+  engine.terrainSampler = createDomainTerrainSampler(engine, CONFIG);
   initializeFlight(engine, CONFIG);
   const view = createHarnessRenderer(THREE, engine, CONFIG);
   const keys = new Set();
@@ -679,6 +728,9 @@ async function boot() {
       flightMotion: engine.flightMotion?.snapshot?.(),
       terrainSampler: engine.terrainSampler?.snapshot?.(),
       baseTerrainSampler: engine.baseTerrainSampler?.snapshot?.(),
+      terrainShaping: engine.terrainShaping?.snapshot?.(),
+      terrainHydrology: engine.terrainHydrology?.snapshot?.(),
+      terrainHorizon: engine.terrainHorizon?.snapshot?.(),
       worldPatch: engine.worldPatch?.snapshot?.(),
       instancedRender: engine.instancedRender?.snapshot?.(),
       flockAgent: engine.flockAgent?.snapshot?.()
@@ -687,7 +739,7 @@ async function boot() {
     setInput(input = {}) { manualInput = input; return this.getState(); },
     tick(delta = CONFIG.simulation.fixedDt, input) { return clone(tick(delta, input ?? manualInput)); },
     render: () => clone(render()),
-    captureReady: () => Boolean(state?.validation?.booted && state?.validation?.carvedTerrainDomain),
+    captureReady: () => Boolean(state?.validation?.booted && state?.validation?.terrainShapingReady && state?.validation?.terrainHydrologyReady && state?.validation?.terrainHorizonReady),
     hideHudForCapture() { hud.hidden = true; return this.getState(); },
     showHudAfterCapture() { hud.hidden = false; return this.getState(); },
     setCoverCamera() { return this.getState(); },
