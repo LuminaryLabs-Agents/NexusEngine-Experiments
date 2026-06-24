@@ -1,0 +1,117 @@
+{
+  "version": 1,
+  "routeId": "next-ledge",
+  "canonicalPath": "experiments/next-ledge/",
+  "scenarioLane": "traversal-cargo-pressure",
+  "higherLevelDomain": "Delivery/extraction loop",
+  "status": "composite-consumption-planned",
+  "fullLaneExecutableClaim": false,
+  "sourceRouteProgressSpec": "experiments/next-ledge-route-progress-replay.json",
+  "sourceSession": "experiments/next-ledge/src/session.js",
+  "sourceManifest": "experiments/domain-kit-cutover-manifest.json",
+  "sourceReplayManifest": "experiments/canonical-route-replay-manifest.json",
+  "compositeBoundary": {
+    "kit": "generic-route-cargo-extraction-kit",
+    "namespace": "engine.n.genericRouteCargoExtraction",
+    "childNamespaces": [
+      "engine.n.genericRouteProgress",
+      "engine.n.genericResourceLoop",
+      "engine.n.genericPressureLoop"
+    ],
+    "resources": [
+      "genericRouteCargoExtraction.state",
+      "genericRouteCargoExtraction.routeProgress.state",
+      "genericRouteCargoExtraction.cargo.state",
+      "genericRouteCargoExtraction.pressure.state"
+    ],
+    "events": [
+      "genericRouteCargoExtraction.snapshot.updated",
+      "genericRouteCargoExtraction.cargo.changed",
+      "genericRouteCargoExtraction.pressure.changed",
+      "genericRouteCargoExtraction.completed",
+      "genericRouteCargoExtraction.rejected"
+    ],
+    "methods": [
+      "enterCheckpoint",
+      "completeCheckpoint",
+      "pickupCargo",
+      "deliverCargo",
+      "adjustPressure",
+      "recoverPressure",
+      "reset",
+      "getSnapshot",
+      "getDescriptors"
+    ],
+    "snapshots": [
+      "route",
+      "cargo",
+      "pressure",
+      "status",
+      "descriptors"
+    ],
+    "descriptors": [
+      "route-checkpoint",
+      "cargo-resource",
+      "extraction-pressure-channel"
+    ]
+  },
+  "phasePlan": [
+    {
+      "phase": "0-current-guard",
+      "objective": "Keep the existing route-progress DSK consumption executable through engine.n.genericRouteProgress while blocking a premature route-cargo executable claim.",
+      "mustRemainTrue": [
+        "Next Ledge imports createGenericRouteProgressKit",
+        "Next Ledge snapshots expose domain.routeProgress",
+        "Next Ledge does not import createGenericRouteCargoExtractionKit yet",
+        "canonical replay status remains planned-fixture for traversal-cargo-pressure"
+      ]
+    },
+    {
+      "phase": "1-composite-import-candidate",
+      "objective": "Replace the standalone route-progress kit with generic-route-cargo-extraction-kit only when a concrete cargo/resource/pressure ledger can be removed from host code rather than invented as route fiction.",
+      "requiredProof": [
+        "route checkpoints still flow through engine.n.genericRouteProgress",
+        "cargo/resource deltas flow through engine.n.genericResourceLoop via the composite facade",
+        "pressure deltas flow through engine.n.genericPressureLoop via the composite facade",
+        "domain snapshots expose routeProgress plus routeCargoExtraction without renderer or browser APIs"
+      ]
+    },
+    {
+      "phase": "2-executable-replay-candidate",
+      "objective": "Promote traversal-cargo-pressure from planned-fixture only after a browserless replay imports real Core plus ProtoKits, advances fixed ticks, and compares deterministic route/cargo/pressure descriptor digests.",
+      "requiredProof": [
+        "no route-local cargo/resource/pressure duplicate interpreter",
+        "no monolithic game-engine composite",
+        "no DOM, Canvas, WebGL, Three.js, pointer lock, browser audio, asset loading, wall-clock, RNG, or animation-frame dependency in reusable kit logic"
+      ]
+    }
+  ],
+  "routeHostRetains": [
+    "tether physics",
+    "grapple/collision sweep",
+    "camera and visual trail state",
+    "browser input bridge",
+    "route fiction and climb labels",
+    "renderer presentation",
+    "assets and audio"
+  ],
+  "browserOwnershipExcludedFromDsk": [
+    "DOM",
+    "Canvas",
+    "WebGL",
+    "Three.js",
+    "pointer lock",
+    "browser audio",
+    "asset loading"
+  ],
+  "foldedVariantPressure": [
+    "Harbor Salvage",
+    "Cargo Chain",
+    "Sky Courier",
+    "Trainyard Switcher",
+    "Dungeon Relay",
+    "Floodplain Rescue"
+  ],
+  "nextPatchGate": "Do not migrate source to createGenericRouteCargoExtractionKit until the patch removes or centralizes real cargo/resource/pressure bookkeeping and adds a route-level fixed-tick replay or spec smoke proving route/cargo/pressure descriptors together.",
+  "localJsReductionClaim": "none-yet-for-composite; this is guard/plan hardening only"
+}
