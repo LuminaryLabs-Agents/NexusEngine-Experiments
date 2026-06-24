@@ -2,12 +2,27 @@ export function createSignalBastionInputHost({ canvas, towerPanelEl, engine, ren
   let activeBlueprint = blueprints[0] ?? "bolt";
   let placing = false;
 
+  function genericDefenseNamespace() {
+    return engine.n?.genericDefense ?? {};
+  }
+
+  function sessionFacade() {
+    return genericDefenseNamespace().sessionFacade;
+  }
+
+  function renderDescriptors() {
+    return genericDefenseNamespace().renderDescriptors;
+  }
+
   function presentation() {
-    return engine.defensePresentationStack?.getSnapshot?.() ?? { rawSnapshot: engine.genericDefense.getSnapshot() };
+    return engine.defensePresentationStack?.getSnapshot?.() ?? {
+      rawSnapshot: sessionSnapshot(),
+      render: renderDescriptors()?.getSnapshot?.()
+    };
   }
 
   function sessionSnapshot() {
-    return engine.genericDefense.getSnapshot();
+    return sessionFacade()?.getSnapshot?.();
   }
 
   function beginPlacement(blueprintId = activeBlueprint) {
@@ -36,7 +51,7 @@ export function createSignalBastionInputHost({ canvas, towerPanelEl, engine, ren
       beginPlacement(activeBlueprint);
       engine.placementProjector?.moveTo?.(point);
     } else if (hit.kind === "structure") {
-      engine.genericDefense.select(hit.id, "structure", { message: "Structure selected." });
+      sessionFacade()?.select?.(hit.id, "structure", { message: "Structure selected." });
       engine.inkOutline?.setSelected?.(hit.id);
     }
   }
@@ -87,14 +102,14 @@ export function createSignalBastionInputHost({ canvas, towerPanelEl, engine, ren
     const key = event.key.toLowerCase();
     if (key === " " || key === "enter") {
       event.preventDefault();
-      engine.defenseWaves?.startWave?.({ commandId: `wave:${engine.clock.frame}` });
+      sessionFacade()?.startWave?.({ commandId: `wave:${engine.clock.frame}` });
     } else if (key === "escape") {
       cancelPlacement();
     } else if (key === "r") {
-      engine.genericDefense.restart({ commandId: `restart:${engine.clock.frame}` });
+      sessionFacade()?.restart?.({ commandId: `restart:${engine.clock.frame}` });
       cancelPlacement();
     } else if (key === "u") {
-      engine.defenseBuild?.upgrade?.(null, { commandId: `upgrade:${engine.clock.frame}` });
+      sessionFacade()?.upgrade?.(null, { commandId: `upgrade:${engine.clock.frame}` });
     } else if (key === "backspace") {
       const selected = sessionSnapshot()?.session;
       if (selected?.selectedKind === "structure") engine.defenseBuild?.sell?.(selected.selectedId, { commandId: `sell:${selected.selectedId}:${engine.clock.frame}` });
