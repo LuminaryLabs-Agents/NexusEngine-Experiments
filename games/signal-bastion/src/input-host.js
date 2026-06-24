@@ -25,11 +25,16 @@ export function createSignalBastionInputHost({ canvas, towerPanelEl, engine, ren
     return sessionFacade()?.getSnapshot?.();
   }
 
-  function beginPlacement(blueprintId = activeBlueprint) {
+  function selectBlueprint(blueprintId = activeBlueprint) {
     activeBlueprint = blueprintId;
-    placing = true;
-    engine.defenseBuild?.setBlueprint?.(activeBlueprint);
+    sessionFacade()?.setBlueprint?.(activeBlueprint, { commandId: `blueprint:${activeBlueprint}:${engine.clock.frame}` });
     engine.towerSelectionPanel?.setSelectedBlueprint?.(activeBlueprint);
+    return activeBlueprint;
+  }
+
+  function beginPlacement(blueprintId = activeBlueprint) {
+    selectBlueprint(blueprintId);
+    placing = true;
     engine.placementProjector?.begin?.(activeBlueprint);
   }
 
@@ -112,7 +117,7 @@ export function createSignalBastionInputHost({ canvas, towerPanelEl, engine, ren
       sessionFacade()?.upgrade?.(null, { commandId: `upgrade:${engine.clock.frame}` });
     } else if (key === "backspace") {
       const selected = sessionSnapshot()?.session;
-      if (selected?.selectedKind === "structure") engine.defenseBuild?.sell?.(selected.selectedId, { commandId: `sell:${selected.selectedId}:${engine.clock.frame}` });
+      if (selected?.selectedKind === "structure") sessionFacade()?.sell?.(selected.selectedId, { commandId: `sell:${selected.selectedId}:${engine.clock.frame}` });
     } else if (key === "tab" || key === "q" || key === "e") {
       event.preventDefault();
       cycleBlueprint(key === "q" ? -1 : 1);
