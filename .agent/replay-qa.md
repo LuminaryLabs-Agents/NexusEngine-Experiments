@@ -143,3 +143,14 @@ Replay QA implication:
 - `tests/headless-lane-replay-contracts-smoke.mjs` now fails if a route gains executable replay coverage but its higher-level lane contract does not mirror that coverage, or if stale `missingExecutableFixture` text remains on an executable lane.
 
 Next replay priority: shrink Signal Bastion browser convenience facades only where the executable replay, bridge smoke, spec smoke, and host-facade guard stay green. Keep all other lanes as contract-only until reusable ProtoKit boundaries exist.
+
+## 2026-06-24 Canonical Route Pruner placement namespace replay guard
+
+The ProtoKits placement projector namespace patch is now reflected in Experiments replay QA. `tests/signal-bastion-placement-namespace-contract-smoke.mjs` guards the Signal Bastion placement route-domain seam from the route side:
+
+- the route replay spec points at ProtoKits `tests/generic-defense-placement-projector-namespace-smoke.test.mjs` as the reusable source of truth;
+- `placementProjector.confirm` remains bridged to `n.genericDefense.sessionFacade.build`;
+- the input host does not directly call `engine.defenseBuild.build` or legacy `engine.genericDefense.build`;
+- remaining build convenience seams are explicitly limited to `setBlueprint` and `sell`.
+
+Replay QA implication: placement is now a namespaced DSK bridge rather than an unresolved compatibility build seam. This does not add a second executable lane and does not move kit implementation into Experiments. The next strategic-pressure shrink target should be one of the remaining browser convenience seams only if the Signal Bastion executable replay plus static route guards stay green.
