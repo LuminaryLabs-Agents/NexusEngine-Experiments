@@ -39,3 +39,13 @@ Canonicalization implication:
 - Do not add Signal Bastion V1/V2/V3 forks or route-local replay copies.
 - Keep the other canonical routes contract-backed but non-executable until their reusable ProtoKit boundaries exist.
 - Treat the 20-route target list as a portfolio lens. A route should join or remain canonical only when it adds reusable DSK pressure and a path to fixed-tick smoke/replay coverage.
+
+## 2026-06-23 Canonical Route Pruner DSK namespace update
+
+Signal Bastion remains the canonical strategic-pressure route, but the browser host now uses the ProtoKit-owned `engine.n.genericDefense` namespace for the migrated replay-facing seam instead of calling broad compatibility surfaces directly:
+
+- `engine.n.genericDefense.sessionFacade` backs snapshot reads, selection, upgrade, wave start, restart, and the executable route replay method paths.
+- `engine.n.genericDefense.renderDescriptors` backs renderer-agnostic raw descriptor fallback when the browser presentation stack is unavailable.
+- Remaining convenience seams are explicit and guarded: `defenseBuild.setBlueprint`, `defenseBuild.sell`, `defenseWaves.previewNextWave`, `defenseFoundation.getSnapshot`, and `defenseScale.getBudgetSnapshot`.
+
+Canonicalization implication: this is local-JS reduction and boundary clarification, not a destructive route fold. Keep variant pruning metadata-only until Signal Bastion's browser host can either remove or justify each remaining convenience seam without breaking the strategic-pressure replay and static bridge guards.
