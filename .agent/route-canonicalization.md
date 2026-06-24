@@ -69,3 +69,11 @@ Signal Bastion's GameHost wave preview now derives from the namespaced DSK sessi
 - `tests/signal-bastion-host-facade-guard-smoke.mjs` forbids reintroducing the wave preview convenience call and keeps the remaining convenience list limited to build blueprint/sell, foundation snapshot, and scale snapshot seams.
 
 Canonicalization implication: this is a small but real local route-host shrink for the strategic-pressure canonical route. It does not justify destructive route deletion or a second executable lane; it tightens the single strongest route while keeping reusable simulation and descriptor ownership in ProtoKits.
+
+## 2026-06-24 Cycle Report Main Push Planner foundation-seam finding
+
+The next exact canonical route shrink is now the Signal Bastion foundation debug seam. `GameHost.getFoundation()` still calls `engine.defenseFoundation.getSnapshot()` and browser boot still installs `createGenericDefenseFoundationKit`, while adjacent GameHost calls already derive state, wave preview, and budget from `engine.n.genericDefense.sessionFacade` / `engine.n.genericDefense.renderDescriptors`.
+
+A runtime patch was attempted to remove the foundation convenience kit and derive `getFoundation()` from the DSK session snapshot, but the GitHub connector safety layer blocked the code-file write before it reached GitHub. No route code changed in this cycle.
+
+Canonicalization implication: keep `signal-bastion` as the sole executable strategic-pressure route and make the foundation seam the next scoped main-branch patch before touching `defenseBuild.setBlueprint` or `defenseBuild.sell`. Do not delete route variants or add another executable lane as a substitute for this shrink.
