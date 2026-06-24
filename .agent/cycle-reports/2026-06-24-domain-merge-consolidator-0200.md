@@ -7,7 +7,7 @@ Pushed a non-destructive Experiments metadata/test consolidation for the travers
 - `experiments/canonical-route-replay-manifest.json` now maps `traversal-cargo-pressure` to the concrete reusable ProtoKit DSKs `generic-route-progress-kit` and `generic-route-cargo-extraction-kit` instead of the stale placeholder names `route-checkpoint-kit` and `cargo-delivery-kit`.
 - `next-ledge` now records ProtoKits smoke coverage for `tests/generic-route-progress-kit-smoke.test.mjs` and `tests/generic-route-cargo-extraction-kit-smoke.test.mjs`, while still remaining `planned-fixture` with an explicit missing executable route-domain replay.
 - `tests/canonical-route-replay-manifest-smoke.mjs` now guards the traversal/cargo candidate names and blocks regression back to the stale placeholders.
-- `.agent/cycle-state.md` and `.agent/protokit-map.md` now record this as metadata/test consolidation only, not route-host migration or local JavaScript shrink.
+- `.agent/cycle-state.md`, `.agent/protokit-map.md`, and the new `.agent/pruning-log.md` now record this as metadata/test consolidation only, not route-host migration or local JavaScript shrink.
 
 ## Long-form intent from `.agent/`
 
@@ -68,6 +68,7 @@ Pushed directly to `main` in `LuminaryLabs-Agents/NexusRealtime-Experiments`:
 3. `.agent/cycle-state.md`
 4. `.agent/protokit-map.md`
 5. `.agent/cycle-reports/2026-06-24-domain-merge-consolidator-0200.md`
+6. `.agent/pruning-log.md`
 
 ## Safest next main-branch patch plan
 
