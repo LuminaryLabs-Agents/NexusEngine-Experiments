@@ -7,6 +7,7 @@
   "sourceLaneContracts": "experiments/headless-lane-replay-contracts.json",
   "sourceBridgeSmoke": "tests/signal-bastion-replay-bridge-smoke.mjs",
   "sourceExecutableSmoke": "tests/signal-bastion-executable-route-replay-smoke.mjs",
+  "sourcePlacementNamespaceSmoke": "LuminaryLabs-Agents/NexusRealtime-ProtoKits/tests/generic-defense-placement-projector-namespace-smoke.test.mjs",
   "purpose": "Pin and execute the route-domain replay shape for the strongest current canonical route without moving reusable kit implementation into Experiments.",
   "executionStatus": "executable-smoked-protokit-backed",
   "kitOwnership": "ProtoKits own generic-defense simulation and descriptor generation; Signal Bastion only bridges browser input into namespaced DSK semantic methods and renders snapshots/descriptors.",
@@ -174,8 +175,9 @@
   "localJsReductionSignal": [
     "Browser boot imports the ProtoKits generic-defense AAA DSK bridge and requests the seven named DSK aliases instead of composing the entire broad compatibility facade.",
     "The browser host now reads snapshots and bridges build/upgrade/start/restart/select through engine.n.genericDefense.sessionFacade and render fallback through engine.n.genericDefense.renderDescriptors.",
+    "The reusable ProtoKits placement projector now prefers engine.n.genericDefense.sessionFacade for placement snapshots and build confirmation, so the route's placementProjector.confirm bridge is a namespaced DSK bridge rather than a direct compatibility build call.",
     "The route still keeps small host convenience facades for foundation, build blueprint/sell, wave preview, and scale APIs so existing browser UI affordances remain compatible while the DSK namespace migration settles.",
     "Keep route JavaScript limited to browser input bridging, canvas/HUD projection, assets, audio, and descriptor consumption."
   ],
-  "remainingGap": "The browser route now composes the seven generic-defense DSK aliases and routes the common snapshot, build, upgrade, wave, restart, and selection bridge calls through engine.n.genericDefense.sessionFacade. It still keeps minimal host convenience facades (`defenseFoundation`, `defenseBuild` for setBlueprint/sell, `defenseWaves` for preview, and `defenseScale`) beside those DSK aliases so existing browser UI bridges keep working. Further local JavaScript shrink should replace remaining convenience-facade calls only after browser compatibility and descriptor consumption stay covered."
+  "remainingGap": "The browser route now composes the seven generic-defense DSK aliases and routes the common snapshot, build, upgrade, wave, restart, selection, and placement confirmation bridge calls through engine.n.genericDefense.sessionFacade. It still keeps minimal host convenience facades (`defenseFoundation`, `defenseBuild` for setBlueprint/sell, `defenseWaves` for preview, and `defenseScale`) beside those DSK aliases so existing browser UI bridges keep working. Further local JavaScript shrink should replace remaining convenience-facade calls only after browser compatibility and descriptor consumption stay covered."
 }
