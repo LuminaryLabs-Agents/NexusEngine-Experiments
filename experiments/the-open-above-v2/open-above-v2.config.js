@@ -34,6 +34,22 @@ export const OPEN_ABOVE_V2_CONFIG = Object.freeze({
     baseHeight: -58,
     biomeSize: 640
   },
+  terrainVisuals: {
+    enabled: true,
+    terraceStep: 13,
+    terraceStrength: 0.5,
+    ridgeHeight: 22,
+    ridgeScale: 0.011,
+    ridgeCrossScale: 0.007,
+    carveDepth: 28,
+    carveScale: 0.0042,
+    carveSharpness: 11,
+    strataStep: 17,
+    strataStrength: 0.1,
+    slopeRockMix: 2.9,
+    normalStep: 4,
+    snowLine: 138
+  },
   physics: {
     controlMode: "assisted",
     controlResponseMode: "direct",
