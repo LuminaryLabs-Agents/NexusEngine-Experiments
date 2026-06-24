@@ -4,6 +4,7 @@ import { createSignalBastionInputHost } from "./input-host.js";
 
 const NEXUS_URL = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusRealtime@main/src/index.js";
 const DEFENSE_KITS_URL = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusRealtime-ProtoKits@main/protokits/generic-defense-aaa-dsk-bridge/index.js";
+const SESSION_COMMAND_KIT_URL = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusRealtime-ProtoKits@main/protokits/generic-defense-session-command-kit/index.js";
 const PRESENTATION_KITS_URL = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusRealtime-ProtoKits@main/protokits/generic-defense-presentation-stack-kit/index.js";
 
 const SIGNAL_BASTION_DEFENSE_DSK_BOUNDARY_IDS = Object.freeze([
@@ -67,8 +68,6 @@ function getSignalBastionBudgetSnapshot(engine) {
 function assertDefenseDskBridge(DefenseKits) {
   const requiredExports = [
     "createGenericDefenseDskBundle",
-    "createGenericDefenseBuildKit",
-    "createGenericDefenseWaveKit",
     "createGenericDefenseAuthoringQaKit"
   ];
   const missing = requiredExports.filter((name) => typeof DefenseKits[name] !== "function");
@@ -77,15 +76,20 @@ function assertDefenseDskBridge(DefenseKits) {
   }
 }
 
-function createSignalBastionDefenseDskKits(NexusRealtime, DefenseKits, preset) {
+function assertSessionCommandKit(SessionCommandKits) {
+  if (typeof SessionCommandKits.createGenericDefenseSessionCommandKit !== "function") {
+    throw new Error("Signal Bastion session command kit missing createGenericDefenseSessionCommandKit export");
+  }
+}
+
+function createSignalBastionDefenseDskKits(NexusRealtime, DefenseKits, SessionCommandKits, preset) {
   return [
     ...DefenseKits.createGenericDefenseDskBundle(
       NexusRealtime,
       preset,
       SIGNAL_BASTION_DEFENSE_DSK_BOUNDARY_IDS
     ),
-    DefenseKits.createGenericDefenseBuildKit(NexusRealtime, preset.build ?? {}),
-    DefenseKits.createGenericDefenseWaveKit(NexusRealtime, preset.waves ?? {})
+    SessionCommandKits.createGenericDefenseSessionCommandKit(NexusRealtime, preset.sessionCommands ?? {})
   ];
 }
 
@@ -100,19 +104,21 @@ export async function bootSignalBastion(documentRef = document) {
   const renderer = createSignalBastionCanvasRenderer({ canvas, statStripEl, towerPanelEl, contextPanelEl, errorPanel, errorText });
 
   try {
-    const [NexusRealtime, DefenseKits, PresentationKits] = await Promise.all([
+    const [NexusRealtime, DefenseKits, SessionCommandKits, PresentationKits] = await Promise.all([
       import(NEXUS_URL),
       import(DEFENSE_KITS_URL),
+      import(SESSION_COMMAND_KIT_URL),
       import(PRESENTATION_KITS_URL)
     ]);
     assertDefenseDskBridge(DefenseKits);
+    assertSessionCommandKit(SessionCommandKits);
     const validationKit = DefenseKits.createGenericDefenseAuthoringQaKit(NexusRealtime);
     const validation = validationKit.metadata ? { valid: true, errors: [] } : { valid: true, errors: [] };
     if (!validation.valid) throw new Error(validation.errors.join("\n"));
 
     const engine = NexusRealtime.createRealtimeGame({
       kits: [
-        ...createSignalBastionDefenseDskKits(NexusRealtime, DefenseKits, preset),
+        ...createSignalBastionDefenseDskKits(NexusRealtime, DefenseKits, SessionCommandKits, preset),
         ...PresentationKits.createGenericDefensePresentationStackKits(NexusRealtime, preset.presentationStack ?? {})
       ]
     });
