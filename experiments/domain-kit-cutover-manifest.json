@@ -8,8 +8,8 @@
       "kind": "experiment",
       "canonicalPath": "experiments/next-ledge/",
       "status": "existing",
-      "domainCutover": ["action-input-kit", "route-checkpoint-kit", "resource-pressure-kit", "camera-cinematic-maker-kit", "visual-fidelity-maker-kit", "scenario-qa-harness"],
-      "bridgeNeeded": "next-ledge-compatibility-bridge",
+      "domainCutover": ["action-input-kit", "generic-route-progress-kit", "generic-route-cargo-extraction-kit", "generic-resource-loop-kit", "generic-pressure-loop-kit", "camera-cinematic-maker-kit", "visual-fidelity-maker-kit", "scenario-qa-harness"],
+      "bridgeNeeded": "next-ledge-compatibility-bridge; route-progress/cargo-extraction consumption is planned, not executable yet",
       "featureParity": ["click/tap/Space grapple", "A/D swing", "R restart", "N sector advance", "snapshot renderer"]
     },
     {
