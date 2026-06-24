@@ -98,10 +98,7 @@ async function captureRoute(browser, route, config) {
   }
 }
 
-async function main() {
-  const config = coverCaptureConfig;
-  const routes = await loadRoutes();
-  const manifest = await loadExistingManifest(config.manifestPath);
+function applyManifestMeta(manifest, config) {
   manifest._meta = {
     purpose: "Generated route cover manifest consumed by the NexusRealtime gallery.",
     defaultCaptureTick: config.tickCount,
@@ -110,12 +107,25 @@ async function main() {
     quality: config.quality,
     fallbackPolicy: ["generated cover", "route-defined static cover", "quiet procedural placeholder", "text-only row"]
   };
+  return manifest;
+}
 
-  if (dryRun || updateManifestOnly) {
+async function main() {
+  const config = coverCaptureConfig;
+  const routes = await loadRoutes();
+  const manifest = applyManifestMeta(await loadExistingManifest(config.manifestPath), config);
+
+  if (dryRun) {
+    const existing = routes.filter((route) => manifest[normalizeRouteKey(route.route)]?.status === "ok").length;
+    console.log(`Cover dry-run: ${routes.length} routes discovered, ${existing} generated covers currently marked ok.`);
+    return;
+  }
+
+  if (updateManifestOnly) {
     for (const route of routes) {
       const key = normalizeRouteKey(route.route);
       manifest[key] ??= createManifestEntry(route.route, config, "pending", {
-        reason: dryRun ? "dry-run" : "manifest-only"
+        reason: "manifest-only"
       });
     }
     await writeManifest(config.manifestPath, manifest);
