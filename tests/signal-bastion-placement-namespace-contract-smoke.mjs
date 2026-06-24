@@ -13,6 +13,11 @@ assert.match(
   /generic-defense-placement-projector-namespace-smoke\.test\.mjs/,
   "spec should point at the ProtoKits placement-projector namespace smoke as the reusable source of truth"
 );
+assert.match(
+  spec.sourceSessionCommandSmoke ?? "",
+  /generic-defense-session-command-kit-smoke\.test\.mjs/,
+  "spec should point at the ProtoKits session-command smoke as the reusable source of truth for blueprint/sell commands"
+);
 
 const placementInput = spec.semanticReplayInputs.find((entry) => entry.method === "placementProjector.confirm");
 assert.ok(placementInput, "route-domain replay spec should include placementProjector.confirm as the placement bridge");
@@ -25,6 +30,14 @@ assert.ok(
   spec.expectedAssertions.methods.includes("n.genericDefense.sessionFacade.build"),
   "expected route replay methods should include the namespaced build method"
 );
+assert.ok(
+  spec.expectedAssertions.methods.includes("n.genericDefense.sessionFacade.setBlueprint"),
+  "expected route replay methods should include the reusable namespaced blueprint command"
+);
+assert.ok(
+  spec.expectedAssertions.methods.includes("n.genericDefense.sessionFacade.sell"),
+  "expected route replay methods should include the reusable namespaced sell command"
+);
 
 const reductionNotes = (spec.localJsReductionSignal ?? []).join("\n");
 assert.match(
@@ -32,10 +45,23 @@ assert.match(
   /placement projector.*engine\.n\.genericDefense\.sessionFacade/s,
   "local JS reduction notes should record that placement projection now resolves through the DSK namespace"
 );
+assert.match(
+  reductionNotes,
+  /session command ProtoKit/s,
+  "local JS reduction notes should record that blueprint and sell commands now come from a reusable ProtoKit"
+);
 
 assert.ok(
   inputHost.includes("engine.placementProjector?.confirm?.({ commandId: `place:${activeBlueprint}:${engine.clock.frame}` });"),
   "input host should keep browser placement as a semantic projector confirmation, not a direct build mutation"
+);
+assert.ok(
+  inputHost.includes("sessionFacade()?.setBlueprint?.(activeBlueprint"),
+  "setBlueprint should now route through the namespaced session command boundary"
+);
+assert.ok(
+  inputHost.includes("sessionFacade()?.sell?.(selected.selectedId"),
+  "sell should now route through the namespaced session command boundary"
 );
 assert.doesNotMatch(
   inputHost,
@@ -44,22 +70,34 @@ assert.doesNotMatch(
 );
 assert.doesNotMatch(
   inputHost,
+  /engine\.defenseBuild\?\.setBlueprint\?\.\(/,
+  "input host should not call the defenseBuild compatibility blueprint facade directly"
+);
+assert.doesNotMatch(
+  inputHost,
+  /engine\.defenseBuild\?\.sell\?\.\(/,
+  "input host should not call the defenseBuild compatibility sell facade directly"
+);
+assert.doesNotMatch(
+  inputHost,
   /engine\.genericDefense(?:\?\.|\.)build/,
   "input host should not call the legacy genericDefense build facade directly"
-);
-assert.ok(
-  inputHost.includes("engine.defenseBuild?.setBlueprint?.(activeBlueprint)"),
-  "setBlueprint remains an explicit browser convenience seam for UI affordance compatibility"
-);
-assert.ok(
-  inputHost.includes("engine.defenseBuild?.sell?.("),
-  "sell remains an explicit browser convenience seam until a namespaced sell bridge exists"
 );
 
 assert.match(
   hostFacadeGuard,
   /engine\.placementProjector\?\.confirm\?\.\(/,
   "host facade guard should continue treating placementProjector.confirm as the semantic bridge"
+);
+assert.match(
+  hostFacadeGuard,
+  /sessionFacade\(\)\?\.setBlueprint\?\.\(/,
+  "host facade guard should require the namespaced blueprint command bridge"
+);
+assert.match(
+  hostFacadeGuard,
+  /sessionFacade\(\)\?\.sell\?\.\(/,
+  "host facade guard should require the namespaced sell command bridge"
 );
 assert.doesNotMatch(
   hostFacadeGuard,
