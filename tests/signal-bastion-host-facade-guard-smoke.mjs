@@ -29,7 +29,6 @@ for (const boundaryId of expectedBoundaryIds) {
 
 const allowedDefenseFactories = new Set([
   "createGenericDefenseDskBundle",
-  "createGenericDefenseFoundationKit",
   "createGenericDefenseBuildKit",
   "createGenericDefenseWaveKit",
   "createGenericDefenseAuthoringQaKit"
@@ -76,6 +75,7 @@ for (const semanticHostMethod of [
   "sessionFacade()?.restart?.(",
   "sessionFacade()?.select?.(",
   "getSignalBastionSessionFacade(engine)?.getSnapshot?.()",
+  "getSignalBastionFoundationSnapshot(engine)",
   "getSignalBastionWavePreview(engine)",
   "getSignalBastionBudgetSnapshot(engine)",
   "engine.defensePresentationStack?.getSnapshot?.()"
@@ -88,15 +88,15 @@ for (const legacyBypass of [
   /engine\.defenseWaves\?\.startWave\?\.\(/,
   /engine\.defenseWaves\?\.previewNextWave\?\.\(/,
   /engine\.defenseBuild\?\.upgrade\?\.\(/,
-  /engine\.defenseScale\?\.getBudgetSnapshot\?\.\(/
+  /engine\.defenseScale\?\.getBudgetSnapshot\?\.\(/,
+  /engine\.defenseFoundation\?\.getSnapshot\?\.\(/
 ]) {
   assert.doesNotMatch(browserHostSources, legacyBypass, `browser host should route migrated calls through engine.n.genericDefense instead of ${legacyBypass}`);
 }
 
 for (const remainingConvenience of [
   "engine.defenseBuild?.setBlueprint?.(",
-  "engine.defenseBuild?.sell?.(",
-  "engine.defenseFoundation?.getSnapshot?.("
+  "engine.defenseBuild?.sell?.("
 ]) {
   assert.ok(browserHostSources.includes(remainingConvenience), `remaining convenience seam should stay explicit: ${remainingConvenience}`);
 }
