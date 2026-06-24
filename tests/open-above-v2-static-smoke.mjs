@@ -22,8 +22,17 @@ assert.match(config, /terrainHydrology:/, "V2 should configure terrain hydrology
 assert.match(config, /terrainHorizon:/, "V2 should configure terrain horizon LOD values.");
 assert.match(config, /materialPaint:/, "V2 should configure procedural material painting.");
 assert.match(config, /celShading:/, "V2 should configure cel terrain shading.");
+assert.match(config, /mode:\s*"bird-follow"/, "V2 should configure the bird-follow flight camera.");
+assert.match(config, /carveLookWeight:\s*0\.12/, "V2 camera should keep carve authority low.");
+assert.match(config, /positionLag:\s*0\.08/, "V2 camera should have persistent position lag.");
+assert.match(config, /targetLag:\s*0\.10/, "V2 camera should have persistent target lag.");
 assert.match(script, /function buildKits/, "V2 should expose a clear kit composition boundary.");
 assert.match(script, /createFlightMotionKit/, "V2 should compose generic flight motion directly.");
+assert.match(script, /createFlightCameraDomainKit/, "V2 should compose the flight camera domain directly.");
+assert.match(script, /engine\.flightCamera\?\.updateFromMotion/, "V2 should update persistent camera state from motion.");
+assert.match(script, /flightCameraReady:\s*Boolean/, "V2 validation should expose flight camera readiness.");
+assert.match(script, /trailingBirdCamera:/, "V2 validation should expose trailing bird camera mode.");
+assert.match(script, /camera\.position\.copy/, "V2 renderer should consume smoothed camera state directly.");
 assert.match(script, /createTerrainSamplerKit/, "V2 should compose generic terrain sampling directly.");
 assert.match(script, /createTerrainShapingDomainKit/, "V2 should compose terrain shaping directly.");
 assert.match(script, /createTerrainHydrologyDomainKit/, "V2 should compose terrain hydrology directly.");
