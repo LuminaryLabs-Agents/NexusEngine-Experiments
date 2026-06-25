@@ -6,6 +6,12 @@ Experiments should move toward about 20 strong canonical routes. The number is a
 
 Routes should validate reusable domain boundaries and higher-level domain combinations. Reusable kit implementation belongs in ProtoKits.
 
+## Route Decision Rule
+
+Route additions, destructive folds, canonical-route changes, and replay-lane claims require a ledger entry or cycle report before or with the change.
+
+This rule keeps route decisions inside `.agent/` memory so future agents can distinguish planned backlog pressure, metadata-only folds, guarded route-host shrink, and real executable replay claims.
+
 ## 2026-06-23 Canonical Route Pruner finding
 
 Added `experiments/canonical-route-pruning-map.json` as a test-visible companion to `experiments/domain-kit-cutover-manifest.json`.
