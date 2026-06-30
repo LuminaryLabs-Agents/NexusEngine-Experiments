@@ -1,10 +1,10 @@
 {
   "id": "the-cavalry-of-rome",
   "title": "The Cavalry of Rome",
-  "status": "visual-experiment-seed",
+  "status": "high-fidelity-visual-experiment-seed",
   "canonicalRouteClaim": false,
   "deterministicReplayClaim": false,
-  "designIntent": "DSK-composed WebGPU-first visual route: scan over a 3D Roman terrain map, hover large highlighted regions, click to trigger a cinematic dive, and reveal a low-poly battlefield tableau.",
+  "designIntent": "DSK-composed WebGPU-first fidelity route: scan over a larger pannable painterly Roman terrain map, hover oversized highlighted regions, click to trigger a cinematic dive, and reveal a primitive-built full-bodied battlefield tableau.",
   "liveEndpoint": "apps/the-cavalry-of-rome/",
   "existingDskStack": [
     "gamehost-standard-kit",
@@ -16,6 +16,13 @@
     "visual-fidelity-maker-kit",
     "scenario-qa-harness"
   ],
+  "fidelityFocus": {
+    "terrain": "painterly low-poly terrain with warm glaze colors, brush-stroke overlays, river ribbon, contour accents, and larger extents",
+    "mapNavigation": "large pannable region-selection surface with keyboard/drag pan and wheel zoom",
+    "regions": "oversized highlighted region meshes with glow, wobble borders, and DSK affordance descriptors",
+    "soldiers": "full-bodied primitive soldiers built from boxes/quads/triangles: legs, boots, torso, cuirass, arms, head, helmet, crest, shield, spear, cape, shadow",
+    "battlefield": "primitive formations, banners, field strokes, trampled center lane, atmospheric fog"
+  },
   "protectedExpressionGuardrails": [
     "Do not copy tabletop scenario layouts, card systems, dice faces, command sections, rule text, or unit-stat tables.",
     "Keep the route visual-first until the cinematic terrain and battlefield proof is stable.",
@@ -23,9 +30,10 @@
   ],
   "currentLocalSurfaces": [
     "Roman terrain art direction",
-    "region ellipse placement and labels",
-    "WebGPU terrain/overlay/low-poly soldier renderer",
-    "cinematic camera interpolation",
+    "painterly terrain mesh color and brush-stroke overlay generation",
+    "large pannable region ellipse placement and labels",
+    "WebGPU terrain/overlay/full-bodied primitive soldier renderer",
+    "cinematic camera interpolation and map pan/zoom controls",
     "Canvas fallback renderer"
   ],
   "rendererOwnership": {
@@ -48,9 +56,19 @@
       "reason": "Reusable visual terrain foundation for campaign-map routes."
     },
     {
+      "id": "painterly-terrain-material-kit",
+      "source": "brush-stroke overlays, river ribbons, contour accents, and color glaze passes",
+      "reason": "Reusable visual-material layer for painterly map surfaces."
+    },
+    {
       "id": "terrain-region-highlight-kit",
-      "source": "large region overlay generation and hover highlighting",
+      "source": "large region overlay generation, hover highlighting, and glowing border ribbons",
       "reason": "Reusable replacement for point-node strategy maps."
+    },
+    {
+      "id": "pannable-campaign-camera-kit",
+      "source": "keyboard/drag pan, wheel zoom, and map-centered camera focus",
+      "reason": "Reusable inspection control for large campaign-map surfaces."
     },
     {
       "id": "map-to-scene-camera-transition-kit",
@@ -59,8 +77,13 @@
     },
     {
       "id": "low-poly-formation-tableau-kit",
-      "source": "instanced low-poly soldier and banner layout generation",
+      "source": "formation layout, banner placement, shadow placement, and battlefield tableau staging",
       "reason": "Reusable army-tableau visualization without combat simulation."
+    },
+    {
+      "id": "primitive-soldier-construction-kit",
+      "source": "full-bodied soldier primitive composition from boxes/quads/triangles",
+      "reason": "Reusable character construction for low-poly army scenes."
     },
     {
       "id": "webgpu-visual-scene-adapter-kit",
@@ -82,5 +105,5 @@
     "enemy AI",
     "large JSON datasets"
   ],
-  "nextLedge": "Add a browser-backed route smoke for the live endpoint and then extract terrain-region highlight descriptors into a DOM-free proof seam."
+  "nextLedge": "Add a browser-backed route smoke for the live endpoint that pans the map, selects a highlighted region, reaches the battlefield tableau, and validates DSK-backed fidelity metadata."
 }
