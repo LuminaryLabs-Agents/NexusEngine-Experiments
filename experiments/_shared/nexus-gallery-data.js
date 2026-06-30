@@ -69,8 +69,8 @@ export const games = Object.freeze([
     kind: "experiment",
     visual: "strategy",
     playLabel: "Play experiment",
-    tags: [{ label: "WebGPU", tone: "gold" }, { label: "DSK Visual", tone: "green" }, { label: "Rome", tone: "blue" }],
-    description: "WebGPU-first DSK visual proof: scan a sculpted Roman terrain map, hover large land regions, dive cinematically, and reveal low-poly armies preparing for war."
+    tags: [{ label: "Painted Terrain", tone: "gold" }, { label: "Pannable Map", tone: "green" }, { label: "Full Soldiers", tone: "blue" }],
+    description: "High-fidelity DSK visual proof: pan across a painterly Roman terrain map, hover large regions, dive cinematically, and reveal primitive-built full-bodied armies preparing for war."
   },
   {
     id: "signal-bastion",
