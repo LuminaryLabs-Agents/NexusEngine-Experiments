@@ -69,8 +69,8 @@ export const games = Object.freeze([
     kind: "experiment",
     visual: "strategy",
     playLabel: "Play experiment",
-    tags: [{ label: "Rome", tone: "gold" }, { label: "Formation", tone: "green" }, { label: "Tactics", tone: "blue" }],
-    description: "Terrain campaign-map seed with click-to-move armies and original formation-command encounters built around morale, cohesion, fatigue, terrain pressure, and cavalry momentum."
+    tags: [{ label: "WebGPU", tone: "gold" }, { label: "DSK Visual", tone: "green" }, { label: "Rome", tone: "blue" }],
+    description: "WebGPU-first DSK visual proof: scan a sculpted Roman terrain map, hover large land regions, dive cinematically, and reveal low-poly armies preparing for war."
   },
   {
     id: "signal-bastion",
