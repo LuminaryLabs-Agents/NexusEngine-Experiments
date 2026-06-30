@@ -1,54 +1,58 @@
 # The Cavalry of Rome
 
-A NexusRealtime experiment seed for a Roman campaign-map tactics game.
+A NexusRealtime visual experiment for a Roman campaign-map cinematic route.
 
-The prototype direction is intentionally **not** a board-game adaptation. The strategic layer uses a terrain-styled world map where the player clicks linked locations to move a field army. When an army enters a hostile location, play shifts into a formation-command encounter built around morale, cohesion, fatigue, command posture, terrain pressure, and cavalry momentum.
+This slice intentionally drops campaign/combat business logic. It is a **DSK-composed visual proof**: a WebGPU-first 3D terrain scene with highlighted regions, a scanning camera, a cinematic dive, and a low-poly battlefield tableau where two armies prepare for war.
 
 ## Current slice
 
-- Campaign map with linked Roman-world locations.
-- Click-to-move army marker with travel progress.
-- Three troop classes: light, medium, and heavy.
-- Hostile locations that trigger tactical encounters.
-- Original tactical command loop: advance, hold, wheel, charge, skirmish, fall back, regroup.
-- Canvas renderer and HUD only; reusable domain-kit extraction remains future work.
+- WebGPU-first terrain renderer with Canvas fallback.
+- Large highlighted land regions instead of point nodes.
+- Pointer hover selects visual affordance regions.
+- Clicking a region triggers a cinematic world-map-to-battlefield zoom.
+- Battlefield reveal shows low-poly soldier formations, banners, and field atmosphere.
+- Existing DSKs provide route progress, input, affordance descriptors, zone fields, camera descriptors, visual fidelity proof, scenario QA, and GameHost contract state.
+
+## Existing DSKs used
+
+```txt
+gamehost-standard-kit
+action-input-kit
+generic-affordance-descriptor-kit
+generic-route-progress-kit
+zone-field-kit
+camera-cinematic-maker-kit
+visual-fidelity-maker-kit
+scenario-qa-harness
+```
+
+The renderer remains presentation-only. DSKs own descriptors, proof state, route phase, region affordances, and validation surfaces; the local route owns Roman art direction and WebGPU scene composition.
 
 ## Controls
 
 ```txt
-Campaign
-- Click a linked location to march there.
-- Click the current location or any other visible node to inspect it.
-
-Encounter
-- Click a Roman formation to select it.
-- Click a command button to issue an order.
-- Win by breaking enemy morale or force strength.
+Move pointer over a highlighted terrain region
+Click a region to start the cinematic dive
+R resets to the world-map scan
 ```
 
 ## Design boundary
 
-This experiment should stay clear of board-game-specific expression. Do not import or mirror card systems, hex counts, dice faces, named scenarios, board layouts, copied rules text, or unit-stat tables from any existing tabletop game.
+This route should stay clear of board-game-specific expression. Do not import or mirror card systems, hex counts, dice faces, named scenarios, board layouts, copied rules text, or unit-stat tables from any existing tabletop game.
 
-The battle model should evolve around formation intent, morale, cohesion, fatigue, terrain friction, command timing, troop-class doctrine, and cavalry momentum rather than copied board-game structures.
+The near-term target is cinematic visual quality, not strategy rules. Keep combat, troop stats, economy, movement graphs, and encounter resolution out until the visual route has a stable DSK-backed boundary.
 
-## Future ProtoKit pressure
-
-Likely reusable boundaries, once the slice proves worthwhile:
+## Custom logic that could become reusable later
 
 ```txt
-campaign-map-kit
-terrain-region-kit
-army-march-kit
-formation-command-kit
-morale-cohesion-kit
-encounter-director-kit
-battlefield-objective-kit
-fixed-tick-replay-harness
+campaign-terrain-visual-kit
+terrain-region-highlight-kit
+map-to-scene-camera-transition-kit
+low-poly-formation-tableau-kit
+webgpu-visual-scene-adapter-kit
+battlefield-atmosphere-descriptor-kit
 ```
-
-For now, this folder is a contained experiment seed. It does not claim canonical-route status, deterministic replay coverage, or reusable ProtoKit ownership.
 
 ## Next ledge
 
-Add a small headless smoke around the formation resolver before expanding campaign content. The first useful check should prove that identical command sequences produce identical encounter outcomes without Canvas or DOM dependencies.
+Add a small route smoke that asserts the live app endpoint references the Cavalry module, the route imports the DSK stack above, and `GameHost.getSnapshot()` exposes DSK-backed visual state after browser boot.
