@@ -13,13 +13,17 @@ const VISUAL_URL = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusRealtim
 const GAMEHOST_URL = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusRealtime-ProtoKits@main/protokits/gamehost-standard-kit/index.js";
 const SCENARIO_QA_URL = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusRealtime-ProtoKits@main/protokits/scenario-qa-harness/index.js";
 
+const MAP_EXTENTS = Object.freeze({ width: 36, depth: 25, halfWidth: 18, halfDepth: 12.5 });
+const PAINTERLY_TERRAIN_STYLE = "painterly-terrain-large-pannable-region-map";
+const FULL_BODY_PRIMITIVE_STYLE = "full-bodied-primitive-low-poly-soldiers";
+
 const REGIONS = Object.freeze([
-  { id: "latium", name: "Latium", center: [-1.8, 0, 1.1], radii: [1.45, 0.92], tone: [1.0, 0.78, 0.28, 0.25], shot: "latium-dive" },
-  { id: "etruria", name: "Etruria", center: [-2.2, 0, -1.25], radii: [1.55, 1.08], tone: [0.96, 0.64, 0.25, 0.22], shot: "etruria-dive" },
-  { id: "samnium", name: "Samnium", center: [0.82, 0, 0.58], radii: [1.42, 1.15], tone: [0.86, 0.72, 0.36, 0.22], shot: "samnium-dive" },
-  { id: "campania", name: "Campania", center: [-0.64, 0, 2.74], radii: [1.55, 0.88], tone: [1.0, 0.84, 0.36, 0.25], shot: "campania-dive" },
-  { id: "magna-graecia", name: "Magna Graecia", center: [2.28, 0, 2.32], radii: [1.68, 1.02], tone: [0.72, 0.88, 1.0, 0.22], shot: "magna-graecia-dive" },
-  { id: "cisalpine-approach", name: "Cisalpine Approach", center: [1.72, 0, -2.12], radii: [1.82, 0.95], tone: [0.64, 0.94, 0.64, 0.22], shot: "cisalpine-dive" }
+  { id: "latium", name: "Latium", center: [-7.5, 0, 2.8], radii: [4.4, 2.75], tone: [1.0, 0.75, 0.28, 0.25], shot: "latium-dive" },
+  { id: "etruria", name: "Etruria", center: [-9.3, 0, -4.4], radii: [4.9, 3.15], tone: [0.98, 0.56, 0.25, 0.22], shot: "etruria-dive" },
+  { id: "samnium", name: "Samnium", center: [1.9, 0, 0.8], radii: [4.6, 3.45], tone: [0.88, 0.74, 0.34, 0.22], shot: "samnium-dive" },
+  { id: "campania", name: "Campania", center: [-2.9, 0, 7.55], radii: [5.2, 2.75], tone: [1.0, 0.82, 0.34, 0.26], shot: "campania-dive" },
+  { id: "magna-graecia", name: "Magna Graecia", center: [9.3, 0, 6.25], radii: [5.65, 3.2], tone: [0.70, 0.88, 1.0, 0.22], shot: "magna-graecia-dive" },
+  { id: "cisalpine-approach", name: "Cisalpine Approach", center: [7.1, 0, -7.2], radii: [6.25, 2.95], tone: [0.63, 0.95, 0.62, 0.21], shot: "cisalpine-dive" }
 ]);
 
 const DSK_STACK = Object.freeze([
@@ -54,11 +58,17 @@ const state = {
   camera: null,
   rendererMode: "booting",
   dskStack: [...DSK_STACK],
+  mapPan: { x: -1.2, z: 0.8 },
+  mapZoom: 1,
+  drag: { active: false, panning: false, x: 0, y: 0 },
   visualContract: {
     businessLogic: "minimal",
-    primaryLoop: "scan-region-select-cinematic-dive",
+    primaryLoop: "large-pannable-painted-terrain-scan-region-dive",
     WebGPU: "preferred",
-    fallback: "canvas-2d"
+    fallback: "canvas-2d",
+    fidelityFocus: true,
+    painterlyTerrain: true,
+    fullBodyPrimitiveSoldiers: true
   }
 };
 
@@ -89,6 +99,20 @@ function cross(a, b) {
 function normalize(v) {
   const length = Math.hypot(v[0], v[1], v[2]) || 1;
   return [v[0] / length, v[1] / length, v[2] / length];
+}
+
+function rotateYaw(local, yaw) {
+  const c = Math.cos(yaw);
+  const s = Math.sin(yaw);
+  return [
+    local[0] * c - local[2] * s,
+    local[1],
+    local[0] * s + local[2] * c
+  ];
+}
+
+function add3(a, b) {
+  return [a[0] + b[0], a[1] + b[1], a[2] + b[2]];
 }
 
 function mat4Perspective(fovy, aspect, near, far) {
@@ -137,22 +161,43 @@ function transformPoint(matrix, point) {
   return [cx / cw, cy / cw, cz / cw];
 }
 
-function terrainHeight(x, z, kind = "world") {
-  const base = Math.sin(x * 1.08) * 0.18 + Math.cos(z * 1.23) * 0.17 + Math.sin((x + z) * 1.7) * 0.08;
-  if (kind === "battlefield") return base * 0.36 + Math.sin(x * 0.42) * 0.05 - Math.cos(z * 0.34) * 0.04;
-  return base + Math.exp(-((x + 1.8) ** 2 + (z - 0.4) ** 2) * 0.11) * 0.45;
+function hashNoise(x, z, salt = 0) {
+  const value = Math.sin(x * 12.9898 + z * 78.233 + salt * 37.719) * 43758.5453;
+  return value - Math.floor(value);
 }
 
-function terrainColor(x, z, y, kind = "world") {
+function terrainHeight(x, z, kind = "world") {
   if (kind === "battlefield") {
-    const shade = clamp(0.62 + y * 0.32 + Math.sin(x * 0.7) * 0.06, 0.35, 1);
-    return [0.20 * shade, 0.36 * shade, 0.16 * shade, 1];
+    const ridge = Math.exp(-((x - 1.8) ** 2) * 0.07) * 0.22;
+    const furrow = Math.sin(x * 0.54 + z * 0.3) * 0.06 + Math.cos(z * 0.42) * 0.05;
+    return ridge + furrow + Math.sin((x + z) * 0.9) * 0.035;
   }
-  const coast = Math.max(Math.abs(x) / 6.2, Math.abs(z) / 4.95);
-  if (coast > 0.93) return [0.08, 0.18, 0.23 + (coast - 0.93) * 0.85, 1];
-  if (y > 0.35) return [0.39, 0.34, 0.22, 1];
-  if (z > 2.15) return [0.32, 0.31, 0.18, 1];
-  return [0.18 + y * 0.08, 0.34 + y * 0.07, 0.18, 1];
+  const mountain = Math.exp(-((x - 6.8) ** 2 + (z + 7.1) ** 2) * 0.026) * 1.25;
+  const inland = Math.exp(-((x + 8.2) ** 2 + (z - 0.6) ** 2) * 0.022) * 0.72;
+  const base = Math.sin(x * 0.42) * 0.28 + Math.cos(z * 0.38) * 0.25 + Math.sin((x + z) * 0.62) * 0.16;
+  return base + mountain + inland + (hashNoise(Math.floor(x * 2), Math.floor(z * 2), 4) - 0.5) * 0.06;
+}
+
+function paintedTerrainColor(x, z, y, kind = "world") {
+  if (kind === "battlefield") {
+    const grass = clamp(0.54 + y * 0.38 + Math.sin(x * 0.35) * 0.06 + hashNoise(x * 1.5, z * 1.5, 8) * 0.08, 0.26, 1);
+    const trampled = Math.abs(z) < 0.72 ? 0.14 : 0;
+    return [
+      0.20 * grass + trampled,
+      0.34 * grass + trampled * 0.42,
+      0.14 * grass,
+      1
+    ];
+  }
+
+  const coast = Math.max(Math.abs(x) / MAP_EXTENTS.halfWidth, Math.abs(z) / MAP_EXTENTS.halfDepth);
+  const glaze = hashNoise(Math.floor(x * 0.9), Math.floor(z * 0.9), 2) * 0.11;
+  const warm = 0.72 + glaze;
+  if (coast > 0.94) return [0.06, 0.17, 0.23 + (coast - 0.94) * 1.8, 1];
+  if (y > 0.92) return [0.48 * warm, 0.40 * warm, 0.27 * warm, 1];
+  if (y > 0.46) return [0.38 * warm, 0.37 * warm, 0.22 * warm, 1];
+  if (z > 5.6) return [0.33 * warm, 0.32 * warm, 0.18 * warm, 1];
+  return [0.19 * warm + y * 0.035, 0.34 * warm + y * 0.04, 0.18 * warm, 1];
 }
 
 function pushVertex(vertices, position, color) {
@@ -170,18 +215,61 @@ function pushQuad(vertices, a, b, c, d, color) {
   pushTriangle(vertices, a, c, d, color);
 }
 
+function boxCorners(center, size, yaw = 0) {
+  const [sx, sy, sz] = [size[0] / 2, size[1] / 2, size[2] / 2];
+  return [
+    [-sx, -sy, -sz], [sx, -sy, -sz], [sx, sy, -sz], [-sx, sy, -sz],
+    [-sx, -sy, sz], [sx, -sy, sz], [sx, sy, sz], [-sx, sy, sz]
+  ].map((corner) => add3(center, rotateYaw(corner, yaw)));
+}
+
+function pushBox(vertices, center, size, color, yaw = 0, shade = 1) {
+  const c = boxCorners(center, size, yaw);
+  const face = (indices, factor) => {
+    const colorFace = [color[0] * factor, color[1] * factor, color[2] * factor, color[3]];
+    pushQuad(vertices, c[indices[0]], c[indices[1]], c[indices[2]], c[indices[3]], colorFace);
+  };
+  face([0, 1, 2, 3], shade * 0.82);
+  face([4, 7, 6, 5], shade * 1.04);
+  face([0, 4, 5, 1], shade * 0.92);
+  face([3, 2, 6, 7], shade * 1.12);
+  face([1, 5, 6, 2], shade * 0.98);
+  face([0, 3, 7, 4], shade * 0.88);
+}
+
+function pushRibbon(vertices, points, width, color) {
+  for (let i = 0; i < points.length - 1; i += 1) {
+    const a = points[i];
+    const b = points[i + 1];
+    const dx = b[0] - a[0];
+    const dz = b[2] - a[2];
+    const len = Math.hypot(dx, dz) || 1;
+    const nx = -dz / len * width;
+    const nz = dx / len * width;
+    pushQuad(
+      vertices,
+      [a[0] - nx, a[1], a[2] - nz],
+      [a[0] + nx, a[1], a[2] + nz],
+      [b[0] + nx, b[1], b[2] + nz],
+      [b[0] - nx, b[1], b[2] - nz],
+      color
+    );
+  }
+}
+
 function makeTerrainVertices(kind = "world") {
   const vertices = [];
-  const segments = kind === "world" ? 86 : 64;
-  const width = kind === "world" ? 13.2 : 15.2;
-  const depth = kind === "world" ? 10.2 : 9.4;
+  const segmentsX = kind === "world" ? 118 : 86;
+  const segmentsZ = kind === "world" ? 82 : 62;
+  const width = kind === "world" ? MAP_EXTENTS.width : 17.5;
+  const depth = kind === "world" ? MAP_EXTENTS.depth : 10.4;
   const x0 = -width / 2;
   const z0 = -depth / 2;
-  const dx = width / segments;
-  const dz = depth / segments;
+  const dx = width / segmentsX;
+  const dz = depth / segmentsZ;
 
-  for (let iz = 0; iz < segments; iz += 1) {
-    for (let ix = 0; ix < segments; ix += 1) {
+  for (let iz = 0; iz < segmentsZ; iz += 1) {
+    for (let ix = 0; ix < segmentsX; ix += 1) {
       const xA = x0 + ix * dx;
       const xB = xA + dx;
       const zA = z0 + iz * dz;
@@ -190,10 +278,69 @@ function makeTerrainVertices(kind = "world") {
       const b = [xB, terrainHeight(xB, zA, kind), zA];
       const c = [xB, terrainHeight(xB, zB, kind), zB];
       const d = [xA, terrainHeight(xA, zB, kind), zB];
-      const color = terrainColor((xA + xB) * 0.5, (zA + zB) * 0.5, (a[1] + b[1] + c[1] + d[1]) * 0.25, kind);
+      const y = (a[1] + b[1] + c[1] + d[1]) * 0.25;
+      const color = paintedTerrainColor((xA + xB) * 0.5, (zA + zB) * 0.5, y, kind);
       pushQuad(vertices, a, b, c, d, color);
     }
   }
+  return new Float32Array(vertices);
+}
+
+function makePainterlyStrokeVertices(kind = "world") {
+  const vertices = [];
+  const count = kind === "world" ? 380 : 155;
+  const width = kind === "world" ? MAP_EXTENTS.width : 17.5;
+  const depth = kind === "world" ? MAP_EXTENTS.depth : 10.4;
+
+  for (let i = 0; i < count; i += 1) {
+    const seed = i * 19.37;
+    const x = (hashNoise(seed, 2, 1) - 0.5) * width * 0.94;
+    const z = (hashNoise(seed, 7, 2) - 0.5) * depth * 0.92;
+    const y = terrainHeight(x, z, kind) + 0.04 + (i % 5) * 0.002;
+    const length = (kind === "world" ? 0.55 : 0.32) + hashNoise(seed, 11, 3) * (kind === "world" ? 1.2 : 0.65);
+    const brushWidth = (kind === "world" ? 0.025 : 0.018) + hashNoise(seed, 17, 5) * 0.04;
+    const angle = hashNoise(seed, 23, 6) * TAU;
+    const dx = Math.cos(angle) * length;
+    const dz = Math.sin(angle) * length;
+    const nx = -Math.sin(angle) * brushWidth;
+    const nz = Math.cos(angle) * brushWidth;
+    const glaze = hashNoise(seed, 29, 7);
+    const color = kind === "world"
+      ? [0.62 + glaze * 0.16, 0.49 + glaze * 0.15, 0.26 + glaze * 0.11, 0.10 + glaze * 0.08]
+      : [0.46 + glaze * 0.08, 0.56 + glaze * 0.09, 0.28 + glaze * 0.05, 0.10 + glaze * 0.07];
+    pushQuad(
+      vertices,
+      [x - dx * 0.5 - nx, y, z - dz * 0.5 - nz],
+      [x - dx * 0.5 + nx, y, z - dz * 0.5 + nz],
+      [x + dx * 0.5 + nx, y + 0.004, z + dz * 0.5 + nz],
+      [x + dx * 0.5 - nx, y + 0.004, z + dz * 0.5 - nz],
+      color
+    );
+  }
+
+  if (kind === "world") {
+    const river = [];
+    for (let i = 0; i < 72; i += 1) {
+      const t = i / 71;
+      const x = lerp(-14.8, 13.4, t);
+      const z = Math.sin(t * TAU * 1.18 + 0.7) * 2.4 + lerp(-4.5, 4.8, t);
+      river.push([x, terrainHeight(x, z, kind) + 0.055, z]);
+    }
+    pushRibbon(vertices, river, 0.16, [0.17, 0.36, 0.46, 0.32]);
+
+    for (let band = 0; band < 8; band += 1) {
+      const contour = [];
+      const z = -10.5 + band * 2.85;
+      for (let i = 0; i < 76; i += 1) {
+        const t = i / 75;
+        const x = lerp(-16.2, 16.2, t);
+        const waveZ = z + Math.sin(t * TAU * 1.5 + band) * 0.22;
+        contour.push([x, terrainHeight(x, waveZ, kind) + 0.065, waveZ]);
+      }
+      pushRibbon(vertices, contour, 0.018, [0.93, 0.74, 0.42, 0.16]);
+    }
+  }
+
   return new Float32Array(vertices);
 }
 
@@ -202,81 +349,132 @@ function makeRegionOverlayVertices(hoveredId, selectedId, time) {
   for (const region of REGIONS) {
     const isHot = region.id === hoveredId;
     const isSelected = region.id === selectedId;
-    const pulse = isHot ? 0.08 + Math.sin(time * 6) * 0.03 : 0;
+    const pulse = isHot ? 0.10 + Math.sin(time * 6) * 0.035 : 0;
     const color = [
-      clamp(region.tone[0] + (isHot || isSelected ? 0.18 : 0), 0, 1),
-      clamp(region.tone[1] + (isHot || isSelected ? 0.14 : 0), 0, 1),
-      clamp(region.tone[2] + (isHot || isSelected ? 0.08 : 0), 0, 1),
-      clamp(region.tone[3] + (isHot ? 0.22 : isSelected ? 0.18 : 0), 0.08, 0.58)
+      clamp(region.tone[0] + (isHot || isSelected ? 0.2 : 0), 0, 1),
+      clamp(region.tone[1] + (isHot || isSelected ? 0.17 : 0), 0, 1),
+      clamp(region.tone[2] + (isHot || isSelected ? 0.1 : 0), 0, 1),
+      clamp(region.tone[3] + (isHot ? 0.26 : isSelected ? 0.2 : 0), 0.08, 0.64)
     ];
     const [cx, , cz] = region.center;
     const [rx, rz] = region.radii;
-    const center = [cx, terrainHeight(cx, cz, "world") + 0.075 + pulse, cz];
-    const segments = 58;
+    const center = [cx, terrainHeight(cx, cz, "world") + 0.11 + pulse, cz];
+    const segments = 72;
     for (let i = 0; i < segments; i += 1) {
       const a0 = (i / segments) * TAU;
       const a1 = ((i + 1) / segments) * TAU;
-      const p0 = [cx + Math.cos(a0) * rx, terrainHeight(cx + Math.cos(a0) * rx, cz + Math.sin(a0) * rz, "world") + 0.08 + pulse, cz + Math.sin(a0) * rz];
-      const p1 = [cx + Math.cos(a1) * rx, terrainHeight(cx + Math.cos(a1) * rx, cz + Math.sin(a1) * rz, "world") + 0.08 + pulse, cz + Math.sin(a1) * rz];
+      const wobble0 = 1 + Math.sin(a0 * 5 + cx) * 0.035;
+      const wobble1 = 1 + Math.sin(a1 * 5 + cx) * 0.035;
+      const p0 = [cx + Math.cos(a0) * rx * wobble0, terrainHeight(cx + Math.cos(a0) * rx * wobble0, cz + Math.sin(a0) * rz * wobble0, "world") + 0.12 + pulse, cz + Math.sin(a0) * rz * wobble0];
+      const p1 = [cx + Math.cos(a1) * rx * wobble1, terrainHeight(cx + Math.cos(a1) * rx * wobble1, cz + Math.sin(a1) * rz * wobble1, "world") + 0.12 + pulse, cz + Math.sin(a1) * rz * wobble1];
       pushTriangle(vertices, center, p0, p1, color);
     }
+
+    const border = [];
+    for (let i = 0; i <= segments; i += 1) {
+      const a = (i / segments) * TAU;
+      const wobble = 1 + Math.sin(a * 5 + cx) * 0.035;
+      const x = cx + Math.cos(a) * rx * wobble;
+      const z = cz + Math.sin(a) * rz * wobble;
+      border.push([x, terrainHeight(x, z, "world") + 0.15 + pulse, z]);
+    }
+    pushRibbon(vertices, border, isHot ? 0.052 : 0.034, isHot ? [1, 0.92, 0.58, 0.82] : [0.95, 0.72, 0.32, 0.34]);
   }
   return new Float32Array(vertices);
 }
 
-function pushLowPolySoldier(vertices, x, z, side, jitter = 0) {
-  const ground = terrainHeight(x, z, "battlefield") + 0.04;
-  const roman = side === "rome";
-  const body = roman ? [0.55, 0.08, 0.05, 1] : [0.08, 0.12, 0.16, 1];
-  const metal = roman ? [0.82, 0.68, 0.42, 1] : [0.55, 0.58, 0.62, 1];
-  const shield = roman ? [0.72, 0.07, 0.04, 1] : [0.16, 0.24, 0.29, 1];
-  const s = 0.048 + (jitter % 3) * 0.003;
-  const h = 0.32 + (jitter % 5) * 0.01;
-  const facing = roman ? 1 : -1;
-  const baseA = [x - s, ground, z];
-  const baseB = [x + s, ground, z];
-  const baseC = [x, ground, z + s * facing];
-  const top = [x, ground + h, z + s * 0.24 * facing];
-  pushTriangle(vertices, baseA, baseB, top, body);
-  pushTriangle(vertices, baseB, baseC, top, body);
-  pushTriangle(vertices, baseC, baseA, top, body);
-  pushTriangle(vertices, [x - s * 0.9, ground + h, z], [x + s * 0.9, ground + h, z], [x, ground + h + 0.08, z], metal);
-  const sx = x + s * 1.5 * facing;
-  pushQuad(vertices, [sx, ground + 0.07, z - s], [sx, ground + 0.2, z - s], [sx, ground + 0.2, z + s], [sx, ground + 0.07, z + s], shield);
-  const spearX = x - s * 1.5 * facing;
-  pushQuad(vertices, [spearX, ground + 0.04, z], [spearX + 0.012 * facing, ground + 0.04, z], [spearX + 0.02 * facing, ground + 0.48, z + 0.03 * facing], [spearX, ground + 0.48, z + 0.03 * facing], metal);
+function pushShadow(vertices, x, z, yaw, scale = 1) {
+  const y = terrainHeight(x, z, "battlefield") + 0.018;
+  const dx = Math.cos(yaw) * 0.10 * scale;
+  const dz = Math.sin(yaw) * 0.10 * scale;
+  const nx = -Math.sin(yaw) * 0.18 * scale;
+  const nz = Math.cos(yaw) * 0.18 * scale;
+  pushQuad(vertices, [x - dx - nx, y, z - dz - nz], [x - dx + nx, y, z - dz + nz], [x + dx + nx, y, z + dz + nz], [x + dx - nx, y, z + dz - nz], [0.02, 0.018, 0.014, 0.34]);
 }
 
-function pushBanner(vertices, x, z, color, side) {
+function pushPrimitiveSoldier(vertices, x, z, side, jitter = 0, time = 0) {
+  const roman = side === "rome";
+  const yaw = roman ? 0 : Math.PI;
+  const sway = Math.sin(time * 1.4 + jitter * 0.17) * 0.012;
+  const ground = terrainHeight(x, z, "battlefield") + 0.02;
+  const body = roman ? [0.58, 0.08, 0.05, 1] : [0.10, 0.15, 0.18, 1];
+  const tunic = roman ? [0.72, 0.12, 0.07, 1] : [0.16, 0.24, 0.27, 1];
+  const leather = [0.30, 0.18, 0.11, 1];
+  const skin = roman ? [0.78, 0.58, 0.40, 1] : [0.64, 0.50, 0.36, 1];
+  const metal = roman ? [0.78, 0.66, 0.45, 1] : [0.54, 0.58, 0.58, 1];
+  const shield = roman ? [0.72, 0.05, 0.03, 1] : [0.13, 0.23, 0.28, 1];
+  const crest = roman ? [0.96, 0.48, 0.15, 1] : [0.22, 0.28, 0.31, 1];
+
+  pushShadow(vertices, x, z, yaw, 1.0);
+  pushBox(vertices, [x - 0.035, ground + 0.16, z - 0.032], [0.048, 0.25, 0.05], leather, yaw + sway, 0.9);
+  pushBox(vertices, [x + 0.035, ground + 0.16, z + 0.032], [0.048, 0.25, 0.05], leather, yaw - sway, 0.9);
+  pushBox(vertices, [x - 0.038, ground + 0.035, z - 0.035], [0.07, 0.045, 0.08], leather, yaw, 0.72);
+  pushBox(vertices, [x + 0.038, ground + 0.035, z + 0.035], [0.07, 0.045, 0.08], leather, yaw, 0.72);
+  pushBox(vertices, [x, ground + 0.33, z], [0.18, 0.23, 0.11], tunic, yaw, 1.0);
+  pushBox(vertices, [x, ground + 0.43, z], [0.19, 0.11, 0.12], metal, yaw, 0.96);
+  pushBox(vertices, [x, ground + 0.23, z], [0.20, 0.045, 0.13], leather, yaw, 0.84);
+  pushBox(vertices, [x - 0.135, ground + 0.36, z - 0.005], [0.045, 0.19, 0.045], skin, yaw + 0.18, 0.96);
+  pushBox(vertices, [x + 0.135, ground + 0.36, z + 0.005], [0.045, 0.19, 0.045], skin, yaw - 0.18, 0.96);
+  pushBox(vertices, [x, ground + 0.58, z], [0.12, 0.10, 0.11], skin, yaw, 1.04);
+  pushBox(vertices, [x, ground + 0.645, z], [0.15, 0.06, 0.13], metal, yaw, 1.08);
+  pushBox(vertices, [x, ground + 0.705, z], [0.035, 0.08, 0.18], crest, yaw, 1.0);
+
+  const forward = [Math.sin(yaw), 0, Math.cos(yaw)];
+  const right = [Math.cos(yaw), 0, -Math.sin(yaw)];
+  const shieldCenter = add3([x, ground + 0.38, z], [right[0] * 0.19 + forward[0] * 0.08, 0, right[2] * 0.19 + forward[2] * 0.08]);
+  pushBox(vertices, shieldCenter, roman ? [0.05, 0.30, 0.20] : [0.055, 0.26, 0.23], shield, yaw, 1.0);
+  pushBox(vertices, add3(shieldCenter, [forward[0] * 0.025, 0, forward[2] * 0.025]), [0.06, 0.055, 0.06], metal, yaw, 1.08);
+
+  const spearBase = add3([x, ground + 0.28, z], [right[0] * -0.19 + forward[0] * 0.05, 0, right[2] * -0.19 + forward[2] * 0.05]);
+  pushBox(vertices, [spearBase[0], spearBase[1] + 0.15, spearBase[2]], [0.026, 0.62, 0.026], [0.47, 0.34, 0.18, 1], yaw - 0.12, 0.95);
+  pushBox(vertices, [spearBase[0] + forward[0] * 0.03, spearBase[1] + 0.49, spearBase[2] + forward[2] * 0.03], [0.05, 0.10, 0.05], metal, yaw, 1.15);
+
+  if (roman) {
+    const capeA = [x - right[0] * 0.11 - forward[0] * 0.07, ground + 0.48, z - right[2] * 0.11 - forward[2] * 0.07];
+    const capeB = [x + right[0] * 0.11 - forward[0] * 0.07, ground + 0.48, z + right[2] * 0.11 - forward[2] * 0.07];
+    const capeC = [x + right[0] * 0.08 - forward[0] * 0.15, ground + 0.22, z + right[2] * 0.08 - forward[2] * 0.15];
+    const capeD = [x - right[0] * 0.08 - forward[0] * 0.15, ground + 0.22, z - right[2] * 0.08 - forward[2] * 0.15];
+    pushQuad(vertices, capeA, capeB, capeC, capeD, [0.42, 0.035, 0.025, 0.95]);
+  }
+}
+
+function pushBanner(vertices, x, z, color, side, time) {
   const ground = terrainHeight(x, z, "battlefield") + 0.04;
-  const facing = side === "rome" ? 1 : -1;
-  const pole = [0.72, 0.62, 0.42, 1];
-  pushQuad(vertices, [x, ground, z], [x + 0.024, ground, z], [x + 0.024, ground + 0.78, z], [x, ground + 0.78, z], pole);
-  pushTriangle(vertices, [x + 0.02, ground + 0.76, z], [x + facing * 0.48, ground + 0.64, z + 0.05 * facing], [x + 0.02, ground + 0.52, z], color);
+  const yaw = side === "rome" ? 0 : Math.PI;
+  const forward = [Math.sin(yaw), 0, Math.cos(yaw)];
+  const wave = Math.sin(time * 1.3 + x) * 0.08;
+  pushBox(vertices, [x, ground + 0.48, z], [0.035, 0.96, 0.035], [0.72, 0.62, 0.42, 1], yaw, 0.95);
+  const top = [x + forward[0] * 0.04, ground + 0.86, z + forward[2] * 0.04];
+  const outer = [x + 0.56 + wave, ground + 0.73, z + forward[2] * 0.16];
+  const lower = [x + forward[0] * 0.04, ground + 0.56, z + forward[2] * 0.04];
+  pushTriangle(vertices, top, outer, lower, color);
+  pushTriangle(vertices, top, [outer[0] + 0.12, outer[1] - 0.08, outer[2] + 0.03], lower, [color[0] * 0.8, color[1] * 0.8, color[2] * 0.8, color[3]]);
 }
 
 function makeBattlefieldActorVertices(time) {
   const vertices = [];
-  for (let row = 0; row < 10; row += 1) {
-    for (let col = 0; col < 18; col += 1) {
-      const sway = Math.sin(time * 1.7 + row * 0.8 + col * 0.3) * 0.018;
-      pushLowPolySoldier(vertices, -4.9 + col * 0.22 + sway, -2.2 + row * 0.18, "rome", row * 31 + col);
-      pushLowPolySoldier(vertices, -4.9 + col * 0.22 - sway, 2.2 - row * 0.18, "enemy", row * 17 + col);
+  for (let row = 0; row < 9; row += 1) {
+    for (let col = 0; col < 20; col += 1) {
+      const wave = Math.sin(time * 1.3 + row * 0.8 + col * 0.34) * 0.025;
+      pushPrimitiveSoldier(vertices, -5.65 + col * 0.25 + wave, -2.45 + row * 0.22, "rome", row * 31 + col, time);
+      pushPrimitiveSoldier(vertices, -5.65 + col * 0.25 - wave, 2.45 - row * 0.22, "enemy", row * 17 + col, time);
     }
   }
-  pushBanner(vertices, -5.28, -1.1, [0.74, 0.05, 0.03, 1], "rome");
-  pushBanner(vertices, -3.0, -1.32, [0.74, 0.05, 0.03, 1], "rome");
-  pushBanner(vertices, -5.18, 1.1, [0.08, 0.17, 0.22, 1], "enemy");
-  pushBanner(vertices, -3.1, 1.34, [0.08, 0.17, 0.22, 1], "enemy");
 
-  for (let i = 0; i < 22; i += 1) {
-    const x = -1.5 + Math.sin(i * 3.1) * 5.2;
-    const z = -0.2 + Math.cos(i * 1.9) * 2.9;
+  pushBanner(vertices, -6.2, -1.1, [0.74, 0.04, 0.02, 1], "rome", time);
+  pushBanner(vertices, -3.25, -1.45, [0.74, 0.04, 0.02, 1], "rome", time + 0.7);
+  pushBanner(vertices, -6.15, 1.1, [0.08, 0.16, 0.20, 1], "enemy", time);
+  pushBanner(vertices, -3.1, 1.48, [0.08, 0.16, 0.20, 1], "enemy", time + 0.8);
+
+  for (let i = 0; i < 34; i += 1) {
+    const x = -1.5 + Math.sin(i * 3.1) * 6.2;
+    const z = -0.15 + Math.cos(i * 1.9) * 3.3;
     const y = terrainHeight(x, z, "battlefield") + 0.025;
     const r = 0.035 + (i % 4) * 0.006;
     const color = i % 3 === 0 ? [0.38, 0.29, 0.18, 0.8] : [0.27, 0.34, 0.21, 0.75];
     pushTriangle(vertices, [x - r, y, z - r], [x + r, y, z - r], [x, y + 0.08, z + r], color);
   }
+
   return new Float32Array(vertices);
 }
 
@@ -284,32 +482,38 @@ function cameraForState() {
   const aspect = Math.max(0.1, canvas.width / Math.max(1, canvas.height));
   if (state.mode === "battlefield") {
     const t = state.time;
-    const eye = [-0.8 + Math.sin(t * 0.16) * 1.5, 2.35 + Math.sin(t * 0.21) * 0.16, -5.7 + Math.cos(t * 0.13) * 0.85];
-    const target = [-2.8 + Math.sin(t * 0.11) * 0.7, 0.48, 0.25];
-    return { eye, target, fov: 45 * Math.PI / 180, aspect };
+    const eye = [-1.2 + Math.sin(t * 0.16) * 1.9, 2.35 + Math.sin(t * 0.21) * 0.16, -6.2 + Math.cos(t * 0.13) * 0.95];
+    const target = [-3.15 + Math.sin(t * 0.11) * 0.85, 0.52, 0.25];
+    return { eye, target, fov: 43 * Math.PI / 180, aspect };
   }
 
   const selected = regionById(state.selectedRegionId);
-  const orbit = state.time * 0.075;
+  const orbit = state.time * 0.035;
   const hover = regionById(state.hoveredRegionId);
-  const focus = hover ? [hover.center[0] * 0.42, 0.22, hover.center[2] * 0.42] : [0, 0.1, 0];
-  const worldEye = [Math.sin(orbit) * 7.2, 5.25 + Math.sin(orbit * 1.7) * 0.25, Math.cos(orbit) * 6.4];
+  const pan = state.mapPan;
+  const focus = hover ? [
+    lerp(pan.x, hover.center[0], 0.33),
+    0.35,
+    lerp(pan.z, hover.center[2], 0.33)
+  ] : [pan.x, 0.24, pan.z];
+  const distance = lerp(16.8, 10.4, clamp((state.mapZoom - 0.7) / 0.9, 0, 1));
+  const worldEye = [focus[0] + Math.sin(orbit) * distance, 9.2 / state.mapZoom, focus[2] + Math.cos(orbit) * distance * 0.85];
   const worldTarget = focus;
-  if (state.mode !== "dive" || !selected) return { eye: worldEye, target: worldTarget, fov: 48 * Math.PI / 180, aspect };
+  if (state.mode !== "dive" || !selected) return { eye: worldEye, target: worldTarget, fov: 45 * Math.PI / 180, aspect };
 
   const t = ease(clamp(state.transition, 0, 1));
-  const diveEye = [selected.center[0] * 0.92, 1.18, selected.center[2] * 0.92 - 1.12];
-  const diveTarget = [selected.center[0] * 0.88, 0.12, selected.center[2] * 0.88];
+  const diveEye = [selected.center[0] * 0.96, 1.36, selected.center[2] * 0.96 - 1.34];
+  const diveTarget = [selected.center[0] * 0.92, 0.16, selected.center[2] * 0.92];
   return {
     eye: [lerp(worldEye[0], diveEye[0], t), lerp(worldEye[1], diveEye[1], t), lerp(worldEye[2], diveEye[2], t)],
     target: [lerp(worldTarget[0], diveTarget[0], t), lerp(worldTarget[1], diveTarget[1], t), lerp(worldTarget[2], diveTarget[2], t)],
-    fov: lerp(48, 34, t) * Math.PI / 180,
+    fov: lerp(45, 31, t) * Math.PI / 180,
     aspect
   };
 }
 
 function viewProjectionForCamera(camera) {
-  return mat4Multiply(mat4Perspective(camera.fov, camera.aspect, 0.05, 80), mat4LookAt(camera.eye, camera.target));
+  return mat4Multiply(mat4Perspective(camera.fov, camera.aspect, 0.05, 90), mat4LookAt(camera.eye, camera.target));
 }
 
 function normalizedPointer(event) {
@@ -327,11 +531,11 @@ function pickRegion() {
   let best = null;
   let bestScore = Number.POSITIVE_INFINITY;
   for (const region of REGIONS) {
-    const p = transformPoint(viewProjection, [region.center[0], terrainHeight(region.center[0], region.center[2], "world") + 0.15, region.center[2]]);
+    const p = transformPoint(viewProjection, [region.center[0], terrainHeight(region.center[0], region.center[2], "world") + 0.22, region.center[2]]);
     if (p[2] < -1 || p[2] > 1) continue;
     const dx = state.pointer.x - p[0];
     const dy = state.pointer.y - p[1];
-    const radius = 0.13 + (region.radii[0] + region.radii[1]) * 0.012;
+    const radius = 0.18 + (region.radii[0] + region.radii[1]) * 0.018;
     const score = Math.hypot(dx, dy);
     if (score < radius && score < bestScore) {
       best = region;
@@ -358,9 +562,9 @@ function selectRegion(regionId) {
     targetId: region.id,
     distance: 1.15,
     duration: 2.4,
-    fov: 34,
-    purpose: "map-to-battlefield-transition",
-    metadata: { regionName: region.name }
+    fov: 31,
+    purpose: "large-painted-map-to-battlefield-transition",
+    metadata: { regionName: region.name, fidelity: PAINTERLY_TERRAIN_STYLE }
   });
   logStatus(`Cinematic dive toward ${region.name}.`);
   return region;
@@ -379,10 +583,11 @@ function transitionToBattlefield() {
     targetId: "battlefield-tableau",
     distance: 4.8,
     duration: 6.5,
-    fov: 45,
-    purpose: "low-poly-army-reveal"
+    fov: 43,
+    purpose: "full-body-primitive-army-reveal",
+    metadata: { fidelity: FULL_BODY_PRIMITIVE_STYLE }
   });
-  logStatus("Battlefield tableau: two low-poly armies preparing for war.");
+  logStatus("Battlefield tableau: primitive-built full-bodied soldiers preparing for war.");
 }
 
 function logStatus(text) {
@@ -421,11 +626,11 @@ async function createDskEngine() {
         checkpoints: [
           {
             id: "scan-world",
-            label: "Scan Roman terrain",
+            label: "Pan painted Roman terrain",
             order: 0,
-            objective: "Sweep over a 3D terrain map and identify highlighted regions.",
+            objective: "Sweep over a large painterly 3D terrain map and identify highlighted regions.",
             position: { x: 0, y: 0, z: 0 },
-            tags: ["world-map", "visual"]
+            tags: ["world-map", "visual", "pannable", "painterly"]
           },
           {
             id: "region-dive",
@@ -433,15 +638,15 @@ async function createDskEngine() {
             order: 1,
             objective: "Cinematic zoom from the world terrain into the local landscape.",
             position: { x: 0, y: 0, z: 1 },
-            tags: ["transition", "camera"]
+            tags: ["transition", "camera", "fidelity"]
           },
           {
             id: "battlefield-tableau",
             label: "Battlefield tableau",
             order: 2,
-            objective: "Reveal low-poly formations preparing for war.",
+            objective: "Reveal primitive-built full-bodied formations preparing for war.",
             position: { x: 0, y: 0, z: 2 },
-            tags: ["battlefield", "tableau"]
+            tags: ["battlefield", "tableau", "full-body-soldiers"]
           }
         ]
       }
@@ -450,16 +655,16 @@ async function createDskEngine() {
       affordances: REGIONS.map((region, index) => ({
         id: region.id,
         label: region.name,
-        actionIds: ["hover", "activate"],
+        actionIds: ["hover", "activate", "pan"],
         targetId: region.id,
         priority: index,
         descriptor: {
-          icon: "region",
+          icon: "painted-region",
           glow: true,
           prompt: `Survey ${region.name}`,
           worldAnchorId: region.id,
           tone: "gold",
-          tags: ["roman-region", "terrain-region", "visual-target"]
+          tags: ["roman-region", "large-terrain-region", "visual-target", "pannable-map"]
         }
       }))
     }),
@@ -474,7 +679,8 @@ async function createDskEngine() {
         exposesRestart: true,
         exposesValidation: true,
         rendererPresentationOnly: true,
-        routeIsVisualProof: true
+        routeIsVisualProof: true,
+        fidelityFocused: true
       }
     }),
     ScenarioKit.createScenarioQaHarness(NexusRealtime, {
@@ -495,31 +701,36 @@ async function createDskEngine() {
       x: region.center[0],
       y: region.center[2],
       radius: Math.max(region.radii[0], region.radii[1]),
-      metadata: { kind: "roman-terrain-region", visualOnly: true }
+      metadata: { kind: "large-painted-roman-terrain-region", visualOnly: true }
     });
   }
   nextEngine.cavalryCamera?.composeSequence?.("world-map-to-battlefield", [
-    { id: "world-scan-orbit", mode: "orbit", distance: 7.2, duration: 6, targetId: "roman-terrain-map", purpose: "campaign-scan" },
+    { id: "pannable-painted-world-scan", mode: "orbit", distance: 13.5, duration: 8, targetId: "roman-terrain-map", purpose: "pannable-campaign-scan" },
     { id: "region-dive-zoom", mode: "reveal", distance: 1.2, duration: 2.4, targetId: "selected-region", purpose: "terrain-to-battlefield-dive" },
-    { id: "battlefield-tableau-flyover", mode: "flyover", distance: 4.8, duration: 6.5, targetId: "battlefield-tableau", purpose: "army-reveal" }
+    { id: "battlefield-tableau-flyover", mode: "flyover", distance: 4.8, duration: 6.5, targetId: "battlefield-tableau", purpose: "full-body-army-reveal" }
   ]);
   nextEngine.cavalryFidelity?.createReport?.({
-    reportId: "cavalry-visual-proof-report",
-    visual: { material: "low-poly-terrain-armies", materialId: "roman-cinematic-terrain", lighting: "sun-fog-battlefield" },
+    reportId: "cavalry-painted-terrain-fidelity-report",
+    visual: {
+      material: "painterly-terrain-and-full-body-primitive-soldiers",
+      materialId: "roman-painted-campaign-map",
+      lighting: "sun-fog-battlefield"
+    },
     lighting: true,
-    readabilityScore: 0.91,
-    budget: { ok: true, vertexBudget: "low-poly" }
+    readabilityScore: 0.94,
+    budget: { ok: true, vertexBudget: "painterly-low-poly-with-primitive-soldiers" }
   });
   nextEngine.cavalryScenarioQa?.registerScenario?.({
     id: "cavalry-visual-proof",
     checks: ["spawn", "inspect", "budgets", "descriptors"],
     expected: { variants: 1 },
-    metadata: { route: "apps/the-cavalry-of-rome", DSKs: DSK_STACK }
+    metadata: { route: "apps/the-cavalry-of-rome", DSKs: DSK_STACK, fidelity: PAINTERLY_TERRAIN_STYLE }
   });
   nextEngine.cavalryHostStandard?.registerProofPacket?.("cavalry-visual-proof", {
-    status: "visual-prototype",
+    status: "high-fidelity-visual-prototype",
     dskStack: DSK_STACK,
-    renderer: "webgpu-preferred"
+    renderer: "webgpu-preferred",
+    fidelity: [PAINTERLY_TERRAIN_STYLE, FULL_BODY_PRIMITIVE_STYLE]
   });
   nextEngine.tick(0);
   return nextEngine;
@@ -538,6 +749,8 @@ class WebGpuCavalryRenderer {
     this.depthTexture = null;
     this.worldTerrain = null;
     this.battleTerrain = null;
+    this.worldPaint = null;
+    this.battlePaint = null;
     this.overlayBuffer = null;
     this.actorBuffer = null;
     this.overlayVertexCount = 0;
@@ -558,12 +771,14 @@ class WebGpuCavalryRenderer {
     renderer.createPipeline();
     renderer.worldTerrain = renderer.createVertexBuffer(makeTerrainVertices("world"));
     renderer.battleTerrain = renderer.createVertexBuffer(makeTerrainVertices("battlefield"));
+    renderer.worldPaint = renderer.createVertexBuffer(makePainterlyStrokeVertices("world"));
+    renderer.battlePaint = renderer.createVertexBuffer(makePainterlyStrokeVertices("battlefield"));
     return renderer;
   }
 
   createPipeline() {
     const shader = this.device.createShaderModule({
-      label: "cavalry-low-poly-terrain-shader",
+      label: "cavalry-painterly-terrain-full-body-soldier-shader",
       code: `
         struct Uniforms {
           viewProj: mat4x4<f32>,
@@ -594,13 +809,15 @@ class WebGpuCavalryRenderer {
 
         @fragment
         fn fsMain(input: VertexOut) -> @location(0) vec4<f32> {
-          let horizon = clamp((input.world.y + 0.7) * 0.42, 0.0, 1.0);
-          let distanceFog = clamp(length(input.world.xz) / 8.8, 0.0, 1.0);
-          let warmFog = vec3<f32>(0.84, 0.70, 0.48);
-          let duskFog = vec3<f32>(0.16, 0.18, 0.20);
+          let horizon = clamp((input.world.y + 0.8) * 0.40, 0.0, 1.0);
+          let distanceFog = clamp(length(input.world.xz) / 18.5, 0.0, 1.0);
+          let warmFog = vec3<f32>(0.86, 0.72, 0.48);
+          let duskFog = vec3<f32>(0.15, 0.17, 0.18);
+          let paperGlaze = vec3<f32>(1.0, 0.90, 0.68);
           let fogColor = mix(warmFog, duskFog, uniforms.timeModeHoverFade.y * 0.55);
-          let lit = input.color.rgb * (0.78 + horizon * 0.28);
-          let rgb = mix(lit, fogColor, distanceFog * 0.32 + uniforms.timeModeHoverFade.w * 0.45);
+          let lit = input.color.rgb * (0.72 + horizon * 0.34);
+          let glazed = mix(lit, paperGlaze, 0.05 * (1.0 - uniforms.timeModeHoverFade.y));
+          let rgb = mix(glazed, fogColor, distanceFog * 0.30 + uniforms.timeModeHoverFade.w * 0.48);
           return vec4<f32>(rgb, input.color.a);
         }
       `
@@ -613,7 +830,7 @@ class WebGpuCavalryRenderer {
     });
 
     this.pipeline = this.device.createRenderPipeline({
-      label: "cavalry-low-poly-pipeline",
+      label: "cavalry-painterly-low-poly-pipeline",
       layout: "auto",
       vertex: {
         module: shader,
@@ -679,6 +896,12 @@ class WebGpuCavalryRenderer {
     }
   }
 
+  drawBuffer(pass, entry) {
+    if (!entry?.buffer || !entry.count) return;
+    pass.setVertexBuffer(0, entry.buffer);
+    pass.draw(entry.count);
+  }
+
   draw() {
     this.resize();
     const camera = cameraForState();
@@ -705,7 +928,7 @@ class WebGpuCavalryRenderer {
     const pass = encoder.beginRenderPass({
       colorAttachments: [{
         view: this.context.getCurrentTexture().createView(),
-        clearValue: state.mode === "battlefield" ? { r: 0.07, g: 0.055, b: 0.04, a: 1 } : { r: 0.035, g: 0.045, b: 0.04, a: 1 },
+        clearValue: state.mode === "battlefield" ? { r: 0.072, g: 0.058, b: 0.043, a: 1 } : { r: 0.055, g: 0.062, b: 0.047, a: 1 },
         loadOp: "clear",
         storeOp: "store"
       }],
@@ -719,18 +942,14 @@ class WebGpuCavalryRenderer {
 
     pass.setPipeline(this.pipeline);
     pass.setBindGroup(0, this.bindGroup);
-    const terrain = state.mode === "battlefield" ? this.battleTerrain : this.worldTerrain;
-    pass.setVertexBuffer(0, terrain.buffer);
-    pass.draw(terrain.count);
-
-    if (state.mode !== "battlefield" && this.overlayBuffer?.buffer && this.overlayVertexCount > 0) {
-      pass.setVertexBuffer(0, this.overlayBuffer.buffer);
-      pass.draw(this.overlayVertexCount);
-    }
-
-    if (state.mode === "battlefield" && this.actorBuffer?.buffer && this.actorVertexCount > 0) {
-      pass.setVertexBuffer(0, this.actorBuffer.buffer);
-      pass.draw(this.actorVertexCount);
+    if (state.mode === "battlefield") {
+      this.drawBuffer(pass, this.battleTerrain);
+      this.drawBuffer(pass, this.battlePaint);
+      this.drawBuffer(pass, this.actorBuffer);
+    } else {
+      this.drawBuffer(pass, this.worldTerrain);
+      this.drawBuffer(pass, this.worldPaint);
+      this.drawBuffer(pass, this.overlayBuffer);
     }
 
     pass.end();
@@ -761,36 +980,40 @@ class CanvasFallbackRenderer {
     const w = this.canvas.width;
     const h = this.canvas.height;
     const grd = ctx.createLinearGradient(0, 0, w, h);
-    grd.addColorStop(0, state.mode === "battlefield" ? "#24170f" : "#1c2c21");
-    grd.addColorStop(0.55, state.mode === "battlefield" ? "#4b3a1e" : "#5a4728");
+    grd.addColorStop(0, state.mode === "battlefield" ? "#24170f" : "#223421");
+    grd.addColorStop(0.55, state.mode === "battlefield" ? "#4b3a1e" : "#756238");
     grd.addColorStop(1, "#060706");
     ctx.fillStyle = grd;
     ctx.fillRect(0, 0, w, h);
 
     if (state.mode !== "battlefield") {
-      ctx.globalAlpha = 0.3;
-      for (let i = 0; i < 56; i += 1) {
+      ctx.save();
+      ctx.translate(w * 0.5 - state.mapPan.x * 18, h * 0.5 - state.mapPan.z * 18);
+      ctx.scale(state.mapZoom, state.mapZoom);
+      ctx.globalAlpha = 0.34;
+      for (let i = 0; i < 150; i += 1) {
         ctx.beginPath();
-        ctx.ellipse(((i * 89) % 1000) / 1000 * w, ((i * 53) % 1000) / 1000 * h, 90 + (i % 5) * 32, 32 + (i % 6) * 18, i, 0, TAU);
-        ctx.fillStyle = i % 4 === 0 ? "#2a5540" : "#8b7441";
+        ctx.ellipse(((i * 89) % 1200) - 600, ((i * 53) % 850) - 425, 112 + (i % 5) * 36, 22 + (i % 6) * 12, i * 0.7, 0, TAU);
+        ctx.fillStyle = i % 4 === 0 ? "#4f6d3e" : i % 5 === 0 ? "#345d65" : "#a48144";
         ctx.fill();
       }
       ctx.globalAlpha = 1;
       for (const region of REGIONS) {
-        const x = w * (0.5 + region.center[0] / 10);
-        const y = h * (0.52 + region.center[2] / 8.5);
+        const x = region.center[0] * 32;
+        const y = region.center[2] * 32;
         const hot = state.hoveredRegionId === region.id;
         ctx.beginPath();
-        ctx.ellipse(x, y, region.radii[0] * w * 0.055, region.radii[1] * h * 0.07, 0, 0, TAU);
-        ctx.fillStyle = hot ? "rgba(255,215,117,.54)" : "rgba(224,171,72,.24)";
+        ctx.ellipse(x, y, region.radii[0] * 31, region.radii[1] * 31, 0, 0, TAU);
+        ctx.fillStyle = hot ? "rgba(255,215,117,.58)" : "rgba(224,171,72,.24)";
         ctx.fill();
-        ctx.lineWidth = hot ? 4 : 2;
+        ctx.lineWidth = hot ? 5 : 2.5;
         ctx.strokeStyle = hot ? "#fff0b8" : "#d8b66b";
         ctx.stroke();
         ctx.fillStyle = "#fff6e3";
-        ctx.font = `${hot ? 18 : 14}px system-ui, sans-serif`;
-        ctx.fillText(region.name, x + 12, y);
+        ctx.font = `${hot ? 22 : 17}px system-ui, sans-serif`;
+        ctx.fillText(region.name, x + 16, y);
       }
+      ctx.restore();
     } else {
       ctx.fillStyle = "rgba(255,246,227,.88)";
       ctx.font = "18px system-ui, sans-serif";
@@ -798,16 +1021,29 @@ class CanvasFallbackRenderer {
       for (let side = 0; side < 2; side += 1) {
         ctx.fillStyle = side === 0 ? "#b63b24" : "#293944";
         const y = side === 0 ? h * 0.62 : h * 0.34;
-        for (let row = 0; row < 8; row += 1) {
-          for (let col = 0; col < 18; col += 1) {
+        for (let row = 0; row < 9; row += 1) {
+          for (let col = 0; col < 20; col += 1) {
+            const x = w * 0.16 + col * 20;
+            const sy = y + row * 10;
+            ctx.fillRect(x - 3, sy + 5, 6, 10);
+            ctx.fillRect(x - 6, sy - 4, 12, 10);
             ctx.beginPath();
-            ctx.arc(w * 0.2 + col * 18, y + row * 9, 4, 0, TAU);
+            ctx.arc(x, sy - 9, 5, 0, TAU);
             ctx.fill();
           }
         }
       }
     }
   }
+}
+
+function updateMapPan(dt) {
+  if (state.mode !== "world") return;
+  const intent = engine?.actionInput?.getIntent?.();
+  const axis = intent?.axis ?? { horizontal: 0, vertical: 0 };
+  const speed = 6.2 / state.mapZoom;
+  state.mapPan.x = clamp(state.mapPan.x + Number(axis.horizontal ?? axis.x ?? 0) * speed * dt, -11.6, 11.6);
+  state.mapPan.z = clamp(state.mapPan.z - Number(axis.vertical ?? axis.y ?? 0) * speed * dt, -7.9, 7.9);
 }
 
 function updateHud() {
@@ -817,16 +1053,17 @@ function updateHud() {
   const active = route?.activeId ? `Route: ${route.activeId}` : "Route: visual proof booting";
   const rendererLabel = state.rendererMode === "webgpu" ? "WebGPU" : state.rendererMode === "canvas-fallback" ? "Canvas fallback" : "Renderer booting";
   statusEl.textContent = state.mode === "world"
-    ? `${rendererLabel} · scan the terrain regions`
+    ? `${rendererLabel} · painted pannable terrain · WASD/drag pan · wheel zoom`
     : state.mode === "dive"
       ? `${rendererLabel} · cinematic zoom ${Math.round(state.transition * 100)}%`
-      : `${rendererLabel} · battlefield tableau`;
+      : `${rendererLabel} · full-bodied primitive soldier tableau`;
 
   readoutEl.textContent = [
-    region ? `Region: ${region.name}` : "Region: hover a highlighted landmass",
+    region ? `Region: ${region.name}` : "Region: hover a large highlighted landmass",
+    `Pan ${state.mapPan.x.toFixed(1)}, ${state.mapPan.z.toFixed(1)} · zoom ${state.mapZoom.toFixed(2)}x`,
     active,
     `DSKs: ${DSK_STACK.length}`,
-    fidelity?.ok === false ? "Fidelity: warning" : "Fidelity: visual proof"
+    fidelity?.ok === false ? "Fidelity: warning" : "Fidelity: painterly"
   ].join(" · ");
 }
 
@@ -838,6 +1075,8 @@ function snapshot() {
     hoveredRegionId: state.hoveredRegionId,
     transition: state.transition,
     rendererMode: state.rendererMode,
+    mapPan: copy(state.mapPan),
+    mapZoom: state.mapZoom,
     dskReady,
     dskStack: [...DSK_STACK],
     visualContract: copy(state.visualContract),
@@ -852,7 +1091,16 @@ function snapshot() {
 
 function installInput() {
   canvas.addEventListener("pointermove", (event) => {
-    state.pointer = { ...normalizedPointer(event), active: true };
+    const next = normalizedPointer(event);
+    if (state.drag.active && state.drag.panning && state.mode === "world") {
+      const dx = event.clientX - state.drag.x;
+      const dy = event.clientY - state.drag.y;
+      state.mapPan.x = clamp(state.mapPan.x - dx * 0.018 / state.mapZoom, -11.6, 11.6);
+      state.mapPan.z = clamp(state.mapPan.z - dy * 0.018 / state.mapZoom, -7.9, 7.9);
+      state.drag.x = event.clientX;
+      state.drag.y = event.clientY;
+    }
+    state.pointer = { ...next, active: true };
     const region = pickRegion();
     const nextId = region?.id ?? null;
     if (nextId !== state.hoveredRegionId) {
@@ -865,17 +1113,32 @@ function installInput() {
     }
   });
 
+  canvas.addEventListener("pointerdown", (event) => {
+    state.drag = { active: true, panning: !state.hoveredRegionId, x: event.clientX, y: event.clientY };
+  });
+
+  canvas.addEventListener("pointerup", () => {
+    if (state.mode === "world" && !state.drag.panning) {
+      const region = regionById(state.hoveredRegionId) ?? pickRegion();
+      if (region) selectRegion(region.id);
+    }
+    state.drag.active = false;
+    state.drag.panning = false;
+  });
+
   canvas.addEventListener("pointerleave", () => {
     state.pointer.active = false;
     state.hoveredRegionId = null;
+    state.drag.active = false;
+    state.drag.panning = false;
     engine?.actionInput?.hover?.(null, { source: "cavalry-region-hover-clear" });
   });
 
-  canvas.addEventListener("pointerdown", () => {
+  canvas.addEventListener("wheel", (event) => {
     if (state.mode !== "world") return;
-    const region = regionById(state.hoveredRegionId) ?? pickRegion();
-    if (region) selectRegion(region.id);
-  });
+    event.preventDefault();
+    state.mapZoom = clamp(state.mapZoom - Math.sign(event.deltaY) * 0.08, 0.68, 1.72);
+  }, { passive: false });
 
   window.addEventListener("keydown", (event) => {
     const key = event.key.toLowerCase();
@@ -907,6 +1170,7 @@ function frame(now) {
   const dt = Math.min(0.05, (now - last) / 1000 || 1 / 60);
   last = now;
   state.time += dt;
+  updateMapPan(dt);
 
   if (state.mode === "dive") {
     state.transition = clamp(state.transition + dt * 0.38, 0, 1);
@@ -921,7 +1185,7 @@ function frame(now) {
 
 async function boot() {
   commandBar.hidden = true;
-  logStatus("Loading DSK-composed visual route…");
+  logStatus("Loading high-fidelity DSK visual route…");
   engine = await createDskEngine();
   dskReady = true;
   renderer = await createRenderer();
@@ -953,12 +1217,14 @@ async function boot() {
       state.hoveredRegionId = null;
       state.transition = 0;
       state.transitionCompleted = false;
+      state.mapPan = { x: -1.2, z: 0.8 };
+      state.mapZoom = 1;
       engine?.genericRouteProgress?.reset?.({ reason: "visual-restart" });
       return snapshot();
     }
   };
 
-  logStatus("WebGPU-first terrain route ready.");
+  logStatus("Painted WebGPU terrain route ready.");
   requestAnimationFrame(frame);
 }
 
