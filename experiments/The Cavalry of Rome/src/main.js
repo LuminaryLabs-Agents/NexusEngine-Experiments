@@ -666,7 +666,7 @@ class WebGpuCavalryRenderer {
     const ratio = Math.max(1, Math.min(2, devicePixelRatio || 1));
     const w = Math.max(1, Math.floor(this.canvas.clientWidth * ratio));
     const h = Math.max(1, Math.floor(this.canvas.clientHeight * ratio));
-    if (this.canvas.width !== w || this.canvas.height !== h) {
+    if (this.canvas.width !== w || this.canvas.height !== h || !this.depthTexture) {
       this.canvas.width = w;
       this.canvas.height = h;
       this.depthTexture?.destroy?.();
@@ -691,10 +691,12 @@ class WebGpuCavalryRenderer {
 
     if (state.mode !== "battlefield") {
       const overlay = makeRegionOverlayVertices(state.hoveredRegionId, state.selectedRegionId, state.time);
+      this.overlayBuffer?.buffer?.destroy?.();
       this.overlayBuffer = this.createVertexBuffer(overlay);
       this.overlayVertexCount = this.overlayBuffer.count;
     } else if (Math.floor(state.time * 12) !== this.lastActorFrame) {
       this.lastActorFrame = Math.floor(state.time * 12);
+      this.actorBuffer?.buffer?.destroy?.();
       this.actorBuffer = this.createVertexBuffer(makeBattlefieldActorVertices(state.time));
       this.actorVertexCount = this.actorBuffer.count;
     }
