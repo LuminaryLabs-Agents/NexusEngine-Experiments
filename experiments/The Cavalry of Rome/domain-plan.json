@@ -1,22 +1,24 @@
 {
   "id": "the-cavalry-of-rome",
   "title": "The Cavalry of Rome",
-  "status": "hex-battlefield-gameplay-seed",
+  "status": "tactical-maneuver-gameplay-seed",
   "canonicalRouteClaim": false,
   "deterministicReplayClaim": false,
-  "designIntent": "DSK-composed WebGPU-first fidelity route with no in-game UI DOM or loading overlay UI: scan over a larger pannable realistic Roman terrain map, hover oversized highlighted regions, click to trigger a cinematic dive, then enter a fixed-aligned Rome-perspective hex battlefield with aggregated troop-class units, terrain tiles, and terrain-grounded battlefield features.",
+  "designIntent": "DSK-composed WebGPU/WebGL-first fidelity route with no in-game UI DOM or loading overlay UI: scan over a larger pannable realistic Roman terrain map, enter a Rome-perspective WebGL2-shaded hex battlefield, and use seven scene-native maneuvers with action points, dice rolls, movement highlights, terrain movement rules, and mini low-poly squad units.",
   "liveEndpoint": "apps/the-cavalry-of-rome/",
   "activeModules": [
     "experiments/The Cavalry of Rome/src/main-realistic.js",
     "experiments/The Cavalry of Rome/src/vegetation-pass.js",
-    "experiments/The Cavalry of Rome/src/hex-battlefield-pass.js"
+    "experiments/The Cavalry of Rome/src/hex-battlefield-pass.js",
+    "experiments/The Cavalry of Rome/src/hex-squad-visual-pass.js",
+    "experiments/The Cavalry of Rome/src/hex-gameplay-pass.js"
   ],
-  "standingIterationRule": "Every future gameplay iteration should improve visual fidelity as a secondary goal and should not regress terrain density, vegetation descriptors, lighting mood, region readability, soldier fidelity, hex readability, or cinematic composition.",
+  "standingIterationRule": "Every future gameplay iteration should improve visual fidelity as a secondary goal and should not regress terrain density, vegetation descriptors, lighting mood, region readability, soldier fidelity, hex readability, maneuver feedback, or cinematic composition.",
   "currentGameplayStep": {
-    "id": "rome-perspective-hex-battlefield",
+    "id": "seven-maneuver-tactical-loop",
     "status": "implemented-as-scene-native-overlay",
-    "intent": "After region selection, cover the old freeform battlefield with a no-UI hex battlefield viewed from above and behind Rome, using aligned terrain hexes and aggregated troop pieces.",
-    "implementation": "hex-battlefield-pass.js creates an 11x9 Rome-perspective hex grid, grass/water/hill/fence tiles, aggregated light/medium/heavy units, class body colors, army band colors, direct hex hover, and Rome-only unit hover/selection. The hex math now uses fixed pointy-offset spacing with a single radius and y-scale so hexes no longer drift in alignment or size by row. The old screen-space vegetation drawing is disabled to stop sky-floating plants and reduce panning/selection jank."
+    "intent": "Add the first playable tactical rules layer without reintroducing UI: action points, maneuver selection, dice rolls, movement highlights, terrain restrictions, and Rome-only unit control.",
+    "implementation": "hex-gameplay-pass.js adds Advance Left/Center/Right, Line Brigade, Heavy Brigade, Berserk, and Scout. It rolls 2d6 action points every three turns, uses crypto-backed d6 rolls for advance unit counts, renders shaded WebGL dice on the board, highlights eligible units and reachable hexes, blocks water, ends the maneuver after landing on hills/fences, allows light troops to move up to two spaces, allows Scout to move three spaces, allows Berserk to move two spaces then attack an adjacent enemy, and exposes GameHost tactical gameplay snapshots. It also supersedes older high-noon unit shadows with individual angled soldier shadows."
   },
   "existingDskStack": [
     "gamehost-standard-kit",
@@ -28,6 +30,15 @@
     "visual-fidelity-maker-kit",
     "scenario-qa-harness"
   ],
+  "maneuvers": {
+    "advanceLeft": { "cost": 1, "effect": "Roll 1d6 and move that many eligible Rome units from the left third." },
+    "advanceCenter": { "cost": 1, "effect": "Roll 1d6 and move that many eligible Rome units from the center third." },
+    "advanceRight": { "cost": 1, "effect": "Roll 1d6 and move that many eligible Rome units from the right third." },
+    "lineBrigade": { "cost": 2, "effect": "Move a connected adjacent group of Rome units." },
+    "heavyBrigade": { "cost": 3, "effect": "Move all Rome heavy units." },
+    "berserk": { "cost": 4, "effect": "Move one Rome unit up to two spaces and attack an adjacent enemy." },
+    "scout": { "cost": 4, "effect": "Move one Rome unit up to three spaces." }
+  },
   "fidelityFocus": {
     "terrain": "realistic low-poly terrain with domain warping, FBM/ridged noise, blended biome colors, moisture/slope/river masks, and non-repeating landforms",
     "mapNavigation": "large pannable region-selection surface with keyboard/drag pan and wheel zoom",
@@ -35,10 +46,14 @@
     "hexBattlefield": {
       "camera": "above and behind Rome, looking across the whole tactical field",
       "grid": "11x9 fixed pointy-offset hex board with consistent radius/y-scale covering the old freeform battlefield",
+      "renderer": "WebGL2 shader pass for tile interiors plus Canvas2D overlays for units, movement highlights, and tactical effects",
+      "materials": "procedural FBM terrain color, rim lighting, bevel shading, water shimmer, hill contouring, grass striations, and fence rail/post detail",
       "terrain": "grass, water, hill, and fence hexes with movement/defense metadata",
-      "units": "aggregated troop markers representing groups of soldiers rather than individual bodies",
+      "units": "mini low-poly soldier squads representing aggregated troop groups, with no circular bases or unit rings",
       "selection": "only Rome-side units are hover-highlighted and selectable",
-      "colors": "light troops green, medium troops blue, heavy troops red; army ownership appears as a colored band",
+      "movement": "scene-native reachable-hex highlights, water impassable, hill/fence landing ends the maneuver",
+      "dice": "WebGL2 shaded dice for 1d6 advance rolls and 2d6 action point rolls",
+      "colors": "light troops green, medium troops blue, heavy troops red; army ownership appears as a colored military band",
       "romeBand": "red",
       "enemyBands": "region-based gold, white, purple, or black bands"
     },
@@ -49,14 +64,10 @@
       "grass": "deterministic grass descriptor field is retained as metadata for future terrain-anchored instancing",
       "screenSpaceRendering": "disabled because it was visually floating in the sky and caused panning/selection jank",
       "battlefieldGrounding": "tile features draw directly on the hex playfield so they cannot detach from terrain",
-      "reeds": "river and moisture-driven reed descriptors retained for future grounded rendering",
-      "shrubs": "slope/moisture-aware shrub and scrub descriptors retained for future grounded rendering",
-      "trees": "biome-aware primitive grove descriptors retained for future grounded rendering",
-      "flowersAndRocks": "small wildflower and rock descriptors retained for future grounded rendering",
       "boundary": "local procedural vegetation descriptor DSK candidate owns placements; no screen-space overlay is rendered until true terrain-anchored WebGPU instancing exists"
     },
-    "soldiers": "full-bodied primitive soldiers remain in the underlying cinematic renderer, but tactical hex mode uses aggregated unit markers with small soldier clusters for readability",
-    "battlefield": "aligned hex grid, terrain tiles, aggregated troop pieces, region terrain variation, and no visible UI"
+    "soldiers": "tactical hex mode uses mini low-poly soldier squads with individual angled shadows, body class colors, military bands, shields, spears, helmets, and selection pennants",
+    "battlefield": "aligned WebGL2-shaded hex grid, terrain tiles, scene-native highlights, shaded dice, aggregated squad pieces, region terrain variation, and no visible UI"
   },
   "protectedExpressionGuardrails": [
     "Do not copy tabletop scenario layouts, card systems, dice faces, command sections, rule text, or unit-stat tables.",
@@ -68,18 +79,22 @@
     "realistic terrain mesh color and brush-stroke overlay generation",
     "large pannable region ellipse placement and labels",
     "procedural vegetation descriptor generation without screen-space presentation",
-    "Rome-perspective aligned hex battlefield overlay",
+    "Rome-perspective aligned WebGL2 hex battlefield overlay",
     "hex terrain descriptor generation",
-    "aggregated troop unit formation and rendering",
-    "WebGPU terrain/overlay/full-bodied primitive soldier renderer",
+    "hex terrain WebGL2 material shader",
+    "mini squad tactical unit renderer",
+    "seven-maneuver tactical gameplay state machine",
+    "WebGL2 board dice renderer",
+    "reachable hex and attack target highlighter",
     "cinematic camera interpolation and map pan/zoom controls",
-    "Canvas fallback renderer",
     "non-DOM runtime sink shim for status/readout compatibility"
   ],
   "rendererOwnership": {
     "webgpu": "presentation-only",
-    "hexBattlefieldOverlay": "scene-native tactical presentation and first gameplay interaction layer",
-    "canvasFallback": "presentation-only",
+    "hexBattlefieldWebGl": "scene-native tactical tile-material renderer",
+    "hexGameplayOverlay": "scene-native movement/highlight/squad renderer and first playable interaction layer",
+    "hexDiceWebGl": "scene-native WebGL2 dice renderer",
+    "hexCanvasFallback": "fallback if WebGL2 is unavailable",
     "vegetationOverlay": "disabled until terrain-anchored instancing exists",
     "visibleUi": "none",
     "uiDom": "none",
@@ -93,101 +108,31 @@
       "scenario QA state",
       "GameHost proof contract",
       "procedural vegetation descriptor snapshot via local DSK candidate",
-      "hex battlefield snapshot via local DSK candidate"
+      "hex battlefield snapshot via local DSK candidate",
+      "tactical gameplay snapshot via local DSK candidate"
     ]
   },
   "futureProtoKitCandidatesFromCustomLogic": [
-    {
-      "id": "hex-battlefield-grid-kit",
-      "source": "createHexBattlefield, terrainForHex, projectHex, fixed pointy-offset layout, and hex terrain metadata",
-      "reason": "Reusable no-UI tactical grid layer for region-to-battlefield strategy routes."
-    },
-    {
-      "id": "hex-terrain-descriptor-kit",
-      "source": "grass/water/hill/fence terrain descriptors with movement and defense metadata",
-      "reason": "Reusable tactical terrain descriptor boundary independent of renderer."
-    },
-    {
-      "id": "tactical-army-formation-kit",
-      "source": "createBattleUnits and Rome/enemy deployment layout",
-      "reason": "Reusable army deployment and roster compression layer for hex battles."
-    },
-    {
-      "id": "troop-class-visual-kit",
-      "source": "class colors and army band colors for aggregated troop units",
-      "reason": "Reusable visual identity rules for light/medium/heavy tactical units."
-    },
-    {
-      "id": "terrain-anchored-vegetation-kit",
-      "source": "hex battlefield tile features and screen-space vegetation suppression during tactical play",
-      "reason": "Reusable guarantee that tactical vegetation is drawn in terrain space rather than detached screen space."
-    },
-    {
-      "id": "campaign-terrain-visual-kit",
-      "source": "procedural terrain mesh and terrain color logic",
-      "reason": "Reusable visual terrain foundation for campaign-map routes."
-    },
-    {
-      "id": "painterly-terrain-material-kit",
-      "source": "brush-stroke overlays, river ribbons, contour accents, and color glaze passes",
-      "reason": "Reusable visual-material layer for painterly map surfaces."
-    },
-    {
-      "id": "terrain-region-highlight-kit",
-      "source": "large region overlay generation, hover highlighting, and glowing border ribbons",
-      "reason": "Reusable replacement for point-node strategy maps."
-    },
-    {
-      "id": "pannable-campaign-camera-kit",
-      "source": "keyboard/drag pan, wheel zoom, and map-centered camera focus",
-      "reason": "Reusable inspection control for large campaign-map surfaces."
-    },
-    {
-      "id": "procedural-vegetation-field-kit",
-      "source": "deterministic grass, reed, shrub, tree, flower, and rock descriptor generation from biome, slope, moisture, river, and terrain noise fields",
-      "reason": "Reusable renderer-neutral vegetation population layer for high-fidelity terrain routes."
-    },
-    {
-      "id": "biome-vegetation-descriptor-kit",
-      "source": "vegetationDensityForSample and biomeForSample descriptor rules",
-      "reason": "Reusable mapping from terrain conditions to plant families and density budgets."
-    },
-    {
-      "id": "wind-sway-visual-descriptor-kit",
-      "source": "windResponse metadata and visual-only vegetation sway",
-      "reason": "Reusable wind animation descriptor layer independent of gameplay physics."
-    },
-    {
-      "id": "map-to-scene-camera-transition-kit",
-      "source": "world-map scan camera and cinematic dive interpolation",
-      "reason": "Reusable select-region-to-local-scene transition."
-    },
-    {
-      "id": "low-poly-formation-tableau-kit",
-      "source": "formation layout, banner placement, shadow placement, and battlefield tableau staging",
-      "reason": "Reusable army-tableau visualization without combat simulation."
-    },
-    {
-      "id": "primitive-soldier-construction-kit",
-      "source": "full-bodied soldier primitive composition from boxes/quads/triangles",
-      "reason": "Reusable character construction for low-poly army scenes."
-    },
-    {
-      "id": "webgpu-visual-scene-adapter-kit",
-      "source": "WebGPU presentation adapter, terrain buffers, depth setup, and fallback seam",
-      "reason": "Reusable renderer adapter if more routes adopt WebGPU-first visuals."
-    },
-    {
-      "id": "battlefield-atmosphere-descriptor-kit",
-      "source": "field fog, formation mood, banners, vegetation foreground, and pre-battle atmosphere descriptors",
-      "reason": "Reusable ambience layer for non-combat battlefield reveals."
-    }
+    { "id": "hex-battlefield-grid-kit", "source": "createHexBattlefield, terrainForHex, projectHex, fixed pointy-offset layout, and hex terrain metadata", "reason": "Reusable no-UI tactical grid layer for region-to-battlefield strategy routes." },
+    { "id": "hex-webgl-material-shader-kit", "source": "WebGL2 shader for procedural hex interiors, rim lighting, water shimmer, hill contours, grass strokes, and fence detail", "reason": "Reusable high-fidelity tile material renderer for tactical boards." },
+    { "id": "hex-maneuver-gameplay-kit", "source": "seven maneuver definitions, AP costs, section-based advance logic, brigade grouping, scout/berserk rules, and terrain movement restrictions", "reason": "Reusable scene-native maneuver layer for tactical board games without visible UI." },
+    { "id": "webgl-board-dice-kit", "source": "crypto-backed dice rolls and WebGL2 shaded dice renderer", "reason": "Reusable board-native dice feedback layer." },
+    { "id": "hex-terrain-descriptor-kit", "source": "grass/water/hill/fence terrain descriptors with movement and defense metadata", "reason": "Reusable tactical terrain descriptor boundary independent of renderer." },
+    { "id": "hex-squad-visual-kit", "source": "mini low-poly squad rendering with class colors, army bands, and directional soldier shadows", "reason": "Reusable tactical unit renderer for aggregated squad pieces." },
+    { "id": "tactical-army-formation-kit", "source": "createBattleUnits and Rome/enemy deployment layout", "reason": "Reusable army deployment and roster compression layer for hex battles." },
+    { "id": "troop-class-visual-kit", "source": "class colors and army band colors for aggregated troop units", "reason": "Reusable visual identity rules for light/medium/heavy tactical units." },
+    { "id": "terrain-anchored-vegetation-kit", "source": "hex battlefield tile features and screen-space vegetation suppression during tactical play", "reason": "Reusable guarantee that tactical vegetation is drawn in terrain space rather than detached screen space." },
+    { "id": "campaign-terrain-visual-kit", "source": "procedural terrain mesh and terrain color logic", "reason": "Reusable visual terrain foundation for campaign-map routes." },
+    { "id": "painterly-terrain-material-kit", "source": "brush-stroke overlays, river ribbons, contour accents, and color glaze passes", "reason": "Reusable visual-material layer for painterly map surfaces." },
+    { "id": "terrain-region-highlight-kit", "source": "large region overlay generation, hover highlighting, and glowing border ribbons", "reason": "Reusable replacement for point-node strategy maps." },
+    { "id": "pannable-campaign-camera-kit", "source": "keyboard/drag pan, wheel zoom, and map-centered camera focus", "reason": "Reusable inspection control for large campaign-map surfaces." },
+    { "id": "procedural-vegetation-field-kit", "source": "deterministic grass, reed, shrub, tree, flower, and rock descriptor generation from biome, slope, moisture, river, and terrain noise fields", "reason": "Reusable renderer-neutral vegetation population layer for high-fidelity terrain routes." },
+    { "id": "map-to-scene-camera-transition-kit", "source": "world-map scan camera and cinematic dive interpolation", "reason": "Reusable select-region-to-local-scene transition." }
   ],
   "intentionallyOmitted": [
-    "combat resolution",
-    "troop stats beyond visual class and basic terrain metadata",
+    "full combat resolution",
+    "unit stat tables beyond visual class and terrain metadata",
     "campaign economy",
-    "movement graph pathfinding",
     "enemy AI turns",
     "large JSON datasets",
     "vegetation harvesting",
@@ -202,5 +147,5 @@
     "hidden commandBar DOM",
     "shared page-loader UI"
   ],
-  "nextLedge": "Add scene-native unit movement on the aligned hex board with terrain movement costs, preserving no UI DOM and improving battlefield visual fidelity."
+  "nextLedge": "Add enemy turn behavior and fuller combat resolution after validating scene-native unit movement, terrain costs, AP cadence, and dice feedback in browser."
 }
