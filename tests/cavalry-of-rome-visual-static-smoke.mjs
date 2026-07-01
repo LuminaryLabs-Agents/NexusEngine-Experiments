@@ -53,6 +53,11 @@ assert.ok(vegetation.includes("grass"), "vegetation pass should include grass de
 assert.ok(vegetation.includes("tree"), "vegetation pass should include tree descriptors");
 assert.ok(vegetation.includes("reed"), "vegetation pass should include river reed descriptors");
 assert.ok(vegetation.includes("windResponse"), "vegetation pass should include visual-only wind response metadata");
+assert.ok(vegetation.includes("VEGETATION_PRESENTATION"), "vegetation pass should expose presentation mode");
+assert.ok(vegetation.includes("metadata-only-until-terrain-anchored-instancing"), "vegetation should remain metadata-only until terrain anchoring is real");
+assert.ok(vegetation.includes("disabledScreenSpaceRendering"), "vegetation pass should disable screen-space drawing to prevent sky floating");
+assert.ok(!vegetation.includes("requestAnimationFrame(drawVegetationFrame)"), "vegetation pass should not continuously draw a screen-space overlay");
+assert.ok(!vegetation.includes("cavalry-procedural-vegetation-overlay"), "vegetation pass should not create the old floating overlay canvas");
 
 assert.ok(hexBattlefield.includes("createHexBattlefield"), "hex pass should create a battlefield grid");
 assert.ok(hexBattlefield.includes("HEX_GRID"), "hex pass should define grid size");
@@ -64,7 +69,11 @@ assert.ok(hexBattlefield.includes("CLASS_COLORS"), "hex pass should define troop
 assert.ok(hexBattlefield.includes("BAND_COLORS"), "hex pass should define army band colors");
 assert.ok(hexBattlefield.includes("UNIT_COUNTS"), "hex pass should define aggregated unit counts");
 assert.ok(hexBattlefield.includes("CavalryHexBattlefieldActive"), "hex pass should expose active state for overlay grounding");
-assert.ok(hexBattlefield.includes('vegetation.style.display = active ? "none" : "block"'), "hex pass should disable screen-space vegetation in hex battle to prevent floating");
+assert.ok(hexBattlefield.includes("fixed-pointy-offset"), "hex pass should expose fixed aligned grid math");
+assert.ok(hexBattlefield.includes("SQRT3"), "hex pass should use regular pointy hex spacing");
+assert.ok(hexBattlefield.includes("HEX_Y_SCALE"), "hex pass should use a consistent y-scale instead of per-row size drift");
+assert.ok(hexBattlefield.includes("unit?.army === \"rome\" ? unit.id : null"), "hex pass should only hover/select Rome-side units");
+assert.ok(hexBattlefield.includes("selectableArmy: \"rome\""), "hex pass should expose Rome as the selectable army");
 assert.ok(hexBattlefield.includes("getHexBattlefieldSnapshot"), "hex pass should expose a GameHost battlefield snapshot");
 assert.ok(hexBattlefield.includes("rome-perspective-hex-battlefield-no-ui"), "hex pass should document the Rome-perspective no-UI view");
 
