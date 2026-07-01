@@ -17,8 +17,9 @@ This slice intentionally drops campaign/combat business logic. It is a **DSK-com
 - Clicking a region triggers a cinematic world-map-to-battlefield zoom.
 - Battlefield reveal shows fuller primitive-built soldiers: legs, boots, torso, cuirass, arms, head, helmet, crest, shield, spear, capes, banners, and shadows.
 - Existing DSKs provide route progress, input, affordance descriptors, zone fields, camera descriptors, visual fidelity proof, scenario QA, and GameHost contract state.
-- All in-game UI DOM has been removed from the presentation. The live and experiment pages now contain only the canvas app root plus script modules.
+- All in-game UI DOM has been removed from the presentation. The live and experiment pages now contain only the canvas app root plus non-visual scripts.
 - A non-DOM `CavalryUiSinkShim` supplies status/readout/command sinks for current runtime compatibility without adding HUD/footer/command elements back to the DOM.
+- The shared route page loader is intentionally not attached for this route so no loading UI appears over the game.
 
 ## Active modules
 
@@ -53,7 +54,7 @@ Mouse wheel zooms the map
 R resets to the world-map scan
 ```
 
-These controls are intentionally undocumented on screen during play. The current game presentation is canvas-only with no HUD, footer, command bar, labels, panels, or hidden UI DOM.
+These controls are intentionally undocumented on screen during play. The current game presentation is canvas-only with no HUD, footer, command bar, labels, panels, hidden UI DOM, or shared loading overlay.
 
 ## Fidelity rule
 
@@ -64,6 +65,7 @@ Every future gameplay iteration should also improve visual fidelity as a seconda
 ```txt
 remove visible UI
 remove hidden UI DOM
+remove shared loading overlay UI
 keep canvas-only presentation
 preserve DSK/GameHost debug surfaces through non-DOM sinks
 ```
@@ -110,4 +112,4 @@ battlefield-atmosphere-descriptor-kit
 
 ## Next ledge
 
-Add a browser-backed route smoke that opens the live endpoint, verifies there is no HUD/footer/command DOM, pans the map, validates `proceduralVegetation` counts from `GameHost.getSnapshot()`, selects a large region, waits for the battlefield tableau, and verifies the vegetation overlay remains presentation-only.
+Add a browser-backed route smoke that opens the live endpoint, verifies there is no HUD/footer/command DOM and no shared loader overlay, pans the map, validates `proceduralVegetation` counts from `GameHost.getSnapshot()`, selects a large region, waits for the battlefield tableau, and verifies the vegetation overlay remains presentation-only.
