@@ -2,7 +2,7 @@
 
 A NexusRealtime visual experiment for a Roman campaign-map cinematic route.
 
-This slice now has the first no-UI tactical gameplay loop. It remains a **DSK-composed high-fidelity visual proof**: a WebGPU-first realistic campaign terrain, a no-UI Rome-perspective WebGL2 hex battlefield, mini low-poly squad units, scene-native maneuver highlights, and WebGL-shaded dice rolls on the board.
+This slice now has the first tactical gameplay loop. It remains a **DSK-composed high-fidelity visual proof**: a WebGPU-first realistic campaign terrain, a Rome-perspective WebGL2 hex battlefield, mini low-poly squad units, scene-native maneuver highlights, WebGL-shaded dice rolls on the board, and a native bottom action-card UI for tactical commands.
 
 ## Current slice
 
@@ -14,9 +14,10 @@ This slice now has the first no-UI tactical gameplay loop. It remains a **DSK-co
 - Pointer hover selects visual affordance regions.
 - Drag/WASD pans the main region-selection map; wheel zooms the map.
 - Clicking a region triggers a cinematic world-map-to-battlefield zoom.
-- The battlefield is an 11x9 no-UI hex grid viewed from above and behind Rome.
+- The battlefield is an 11x9 hex grid viewed from above and behind Rome.
 - Hex interiors use a WebGL2 material shader with procedural FBM, rim/bevel shading, water shimmer, hill contouring, grass striations, and fence rail/post detail.
-- Tactical gameplay now includes seven maneuvers: Advance Left, Advance Center, Advance Right, Line Brigade, Heavy Brigade, Berserk, and Scout.
+- Tactical gameplay includes seven maneuvers: Advance Left, Advance Center, Advance Right, Line Brigade, Heavy Brigade, Berserk, and Scout.
+- A bottom native card UI appears during hex battle with all available maneuver cards and an action point counter.
 - Action points are rolled with 2d6 every three turns. Advance maneuvers cost 1 AP, Line Brigade costs 2 AP, Heavy Brigade costs 3 AP, and Berserk/Scout cost 4 AP.
 - Advance maneuvers roll 1d6 and allow that many eligible units to move.
 - Movement is scene-native: select a Rome unit, then click a highlighted reachable hex.
@@ -27,7 +28,7 @@ This slice now has the first no-UI tactical gameplay loop. It remains a **DSK-co
 - Light troops are green, medium troops are blue, and heavy troops are red. Army ownership is shown only through military bands and small pennants.
 - Circular unit bases and selection rings have been removed. Selection uses squad lift, brightness, individual angled shadows, leader pennants, and hex highlighting.
 - Only Rome-side units are selectable. Enemy pieces remain visible but cannot be selected.
-- All in-game UI DOM has been removed from the presentation. The live and experiment pages now contain only the canvas app root plus non-visual scripts.
+- Old HUD/footer/commandBar DOM remains removed. The action UI is a dedicated battlefield-only bottom card bar, not the previous debug HUD.
 
 ## Active modules
 
@@ -37,6 +38,7 @@ src/vegetation-pass.js
 src/hex-battlefield-pass.js
 src/hex-squad-visual-pass.js
 src/hex-gameplay-pass.js
+src/hex-action-ui-pass.js
 ```
 
 ## Existing DSKs used
@@ -52,7 +54,7 @@ visual-fidelity-maker-kit
 scenario-qa-harness
 ```
 
-There is no dedicated procedural vegetation, hex battlefield, or maneuver gameplay ProtoKit in the currently searched ProtoKits repo, so these systems remain local as renderer-neutral DSK candidates. The visual and gameplay surfaces expose snapshots through `GameHost` and remain documented for future extraction.
+There is no dedicated procedural vegetation, hex battlefield, maneuver gameplay, or action-card UI ProtoKit in the currently searched ProtoKits repo, so these systems remain local as renderer-neutral DSK candidates. The visual and gameplay surfaces expose snapshots through `GameHost` and remain documented for future extraction.
 
 ## Controls
 
@@ -66,6 +68,7 @@ Mouse wheel zooms the map
 R resets to the world-map scan
 
 Hex battlefield:
+Click a maneuver card at the bottom of the screen
 1 = Advance Left
 2 = Advance Center
 3 = Advance Right
@@ -78,8 +81,6 @@ Click a highlighted hex to move selected unit
 Click a highlighted enemy after Berserk movement to attack
 Escape clears current selection
 ```
-
-These controls are intentionally undocumented on screen during play. The current game presentation is canvas-only with no HUD, footer, command bar, labels, panels, hidden UI DOM, or shared loading overlay.
 
 ## Maneuver costs
 
@@ -94,17 +95,15 @@ Action points: roll 2d6 every three turns
 
 ## Fidelity rule
 
-Every future gameplay iteration should also improve visual fidelity as a secondary goal. Do not regress terrain density, vegetation descriptors, lighting mood, region readability, soldier fidelity, hex readability, dice feedback, maneuver highlights, or cinematic composition while adding mechanics.
+Every future gameplay iteration should also improve visual fidelity as a secondary goal. Do not regress terrain density, vegetation descriptors, lighting mood, region readability, soldier fidelity, hex readability, dice feedback, maneuver highlights, action-card polish, or cinematic composition while adding mechanics.
 
 ## Gameplay state
 
 Completed:
 
 ```txt
-remove visible UI
-remove hidden UI DOM
-remove shared loading overlay UI
-keep canvas-only presentation
+remove legacy HUD/footer/command UI
+keep canvas-first presentation
 preserve DSK/GameHost debug surfaces through non-DOM sinks
 add Rome-perspective hex battlefield after region selection
 fix hex alignment using fixed pointy-offset spacing
@@ -118,6 +117,7 @@ add 1d6 advance rolls with shaded WebGL dice
 add movement highlights and Rome-only selection
 add water/hill/fence movement restrictions
 add basic Berserk attack target handling
+add native bottom card action UI with AP counter
 ```
 
 ## Troop color language
@@ -144,6 +144,7 @@ scene-native movement highlights
 WebGL2 shaded board dice
 mini low-poly soldier squads without token rings
 individual angled soldier shadows
+native bottom card action UI
 atmospheric battlefield reveal
 ```
 
@@ -163,6 +164,7 @@ hex-terrain-descriptor-kit
 hex-webgl-material-shader-kit
 hex-squad-visual-kit
 hex-maneuver-gameplay-kit
+hex-action-card-ui-kit
 webgl-board-dice-kit
 tactical-army-formation-kit
 troop-class-visual-kit
@@ -183,4 +185,4 @@ battlefield-atmosphere-descriptor-kit
 
 ## Next ledge
 
-Validate the maneuver loop in a browser, then add enemy turn behavior and fuller combat resolution while preserving no UI and improving the battlefield visuals in the same iteration.
+Validate the maneuver loop and bottom action cards in a browser, then add enemy turn behavior and fuller combat resolution while preserving the card UI polish and improving battlefield visuals in the same iteration.
