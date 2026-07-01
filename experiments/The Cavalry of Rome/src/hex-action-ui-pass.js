@@ -1,6 +1,7 @@
 const ACTION_UI_STYLE = "bottom-native-card-action-bar";
 
 const ACTIONS = Object.freeze([
+  { id: "rollAp", label: "Roll AP", cost: 0, hotkey: "0", kind: "Dice", detail: "2d6 in place" },
   { id: "advanceLeft", label: "Advance Left", cost: 1, hotkey: "1", kind: "Advance", detail: "Left third · 1d6 units" },
   { id: "advanceCenter", label: "Advance Center", cost: 1, hotkey: "2", kind: "Advance", detail: "Center third · 1d6 units" },
   { id: "advanceRight", label: "Advance Right", cost: 1, hotkey: "3", kind: "Advance", detail: "Right third · 1d6 units" },
@@ -78,7 +79,7 @@ function ensureUi() {
     .cavalry-actions {
       flex: 1 1 auto;
       display: grid;
-      grid-template-columns: repeat(7, minmax(98px, 1fr));
+      grid-template-columns: repeat(8, minmax(96px, 1fr));
       gap: 9px;
       min-width: 0;
     }
@@ -118,6 +119,12 @@ function ensureUi() {
     .cavalry-action-card[data-active="true"] {
       border-color: rgba(255, 218, 116, .90);
       box-shadow: 0 18px 58px rgba(0,0,0,.42), 0 0 0 2px rgba(255, 205, 82, .18), inset 0 1px 0 rgba(255,255,255,.10);
+    }
+    .cavalry-action-card[data-action-id="rollAp"] {
+      border-color: rgba(128, 203, 255, .30);
+      background:
+        linear-gradient(145deg, rgba(28, 37, 54, .90), rgba(15, 16, 20, .82)),
+        radial-gradient(circle at 18% 0%, rgba(130, 203, 255, .22), transparent 50%);
     }
     .cavalry-action-card:disabled {
       cursor: not-allowed;
@@ -162,10 +169,10 @@ function ensureUi() {
       background: radial-gradient(circle at 30% 30%, #fff0ad, #d99427 62%, #5f2b0a);
       box-shadow: 0 0 12px rgba(255, 204, 78, .42);
     }
-    @media (max-width: 980px) {
+    @media (max-width: 1100px) {
       #cavalry-action-ui { gap: 8px; }
       .cavalry-ap-card { flex-basis: 118px; }
-      .cavalry-actions { overflow-x: auto; grid-template-columns: repeat(7, minmax(120px, 120px)); padding-bottom: 2px; }
+      .cavalry-actions { overflow-x: auto; grid-template-columns: repeat(8, minmax(120px, 120px)); padding-bottom: 2px; }
       .cavalry-action-card { min-height: 88px; }
     }
     @media (max-width: 640px) {
@@ -202,7 +209,7 @@ function ensureUi() {
       <span class="cavalry-card-kicker">${action.kind}</span>
       <span class="cavalry-card-title">${action.label}</span>
       <span class="cavalry-card-detail">${action.detail}</span>
-      <span class="cavalry-card-cost">${action.cost} AP</span>
+      <span class="cavalry-card-cost">${action.cost ? `${action.cost} AP` : "ROLL"}</span>
     `;
     button.addEventListener("click", () => startAction(action.id));
     actionGrid.append(button);
@@ -216,8 +223,10 @@ function tacticalSnapshot() {
 }
 
 function startAction(actionId) {
-  const result = globalThis.GameHost?.startManeuver?.(actionId);
-  if (result === false) {
+  const result = actionId === "rollAp"
+    ? globalThis.GameHost?.rollActionPointsInPlace?.()
+    : globalThis.GameHost?.startManeuver?.(actionId);
+  if (result === false || result == null) {
     const card = cards.get(actionId);
     card?.animate?.([
       { transform: "translateX(0)" },
@@ -255,7 +264,7 @@ function render() {
       const card = cards.get(action.id);
       const active = snapshot?.activeManeuver === action.id;
       card.dataset.active = active ? "true" : "false";
-      card.disabled = Boolean(snapshot?.activeManeuver && !active) || ap < action.cost;
+      card.disabled = action.id === "rollAp" ? Boolean(snapshot?.activeManeuver) : Boolean(snapshot?.activeManeuver && !active) || ap < action.cost;
       card.setAttribute("aria-pressed", active ? "true" : "false");
     }
   }
