@@ -55,17 +55,7 @@ function createHexBattlefield(regionId = "latium") {
   for (let row = 0; row < HEX_GRID.rows; row += 1) {
     for (let col = 0; col < HEX_GRID.cols; col += 1) {
       const terrainType = terrainForHex(col, row, regionId);
-      tiles.push({
-        id: `h-${col}-${row}`,
-        q: col,
-        r: row,
-        col,
-        row,
-        terrainType,
-        height: terrainType === TERRAIN_TYPES.hill ? 1 : 0,
-        visualVariant: hashNoise(col, row, 77),
-        ...tileStats(terrainType)
-      });
+      tiles.push({ id: `h-${col}-${row}`, q: col, r: row, col, row, terrainType, height: terrainType === TERRAIN_TYPES.hill ? 1 : 0, visualVariant: hashNoise(col, row, 77), ...tileStats(terrainType) });
     }
   }
   return { id: `hex-battlefield-${regionId}`, regionId, cols: HEX_GRID.cols, rows: HEX_GRID.rows, tiles, units: createBattleUnits(regionId) };
@@ -128,8 +118,15 @@ function ensureCanvases() {
   unitCtx = unitCanvas.getContext("2d");
   unitCanvas.addEventListener("pointermove", onPointerMove);
   unitCanvas.addEventListener("pointerdown", onPointerDown);
-  gl = glCanvas.getContext("webgl2", { antialias: true, alpha: false, depth: false, stencil: false, premultipliedAlpha: false });
-  if (gl) initWebGl();
+  try {
+    gl = glCanvas.getContext("webgl2", { antialias: true, alpha: false, depth: false, stencil: false, premultipliedAlpha: false });
+    if (gl) initWebGl();
+  } catch (error) {
+    console.warn("Cavalry hex WebGL2 shader unavailable; falling back to Canvas2D tiles.", error);
+    gl = null;
+    glProgram = null;
+    glBuffer = null;
+  }
 }
 
 function compileShader(type, source) {
@@ -153,7 +150,6 @@ function initWebGl() {
     in float a_hot;
     uniform vec2 u_resolution;
     out vec2 v_local;
-    out vec2 v_centerLocal;
     out float v_terrain;
     out float v_variant;
     out float v_hot;
@@ -162,7 +158,6 @@ function initWebGl() {
       vec2 clip = zeroToOne * 2.0 - 1.0;
       gl_Position = vec4(clip.x, -clip.y, 0.0, 1.0);
       v_local = a_local;
-      v_centerLocal = (a_position - a_center) / max(u_resolution.y, 1.0);
       v_terrain = a_terrain;
       v_variant = a_variant;
       v_hot = a_hot;
@@ -171,7 +166,6 @@ function initWebGl() {
   const fragment = compileShader(gl.FRAGMENT_SHADER, `#version 300 es
     precision highp float;
     in vec2 v_local;
-    in vec2 v_centerLocal;
     in float v_terrain;
     in float v_variant;
     in float v_hot;
@@ -185,11 +179,7 @@ function initWebGl() {
       vec2 i = floor(p);
       vec2 f = fract(p);
       vec2 u = f * f * (3.0 - 2.0 * f);
-      float a = hash(i);
-      float b = hash(i + vec2(1.0, 0.0));
-      float c = hash(i + vec2(0.0, 1.0));
-      float d = hash(i + vec2(1.0, 1.0));
-      return mix(mix(a, b, u.x), mix(c, d, u.x), u.y);
+      return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), u.x), mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), u.x), u.y);
     }
 
     float fbm(vec2 p) {
@@ -213,22 +203,16 @@ function initWebGl() {
     }
 
     vec3 terrainBase(float terrain, vec2 uv, float n) {
-      if (terrain < 0.5) {
-        return mix(vec3(0.13, 0.30, 0.15), vec3(0.28, 0.50, 0.22), uv.y * 0.45 + n * 0.34);
-      }
-      if (terrain < 1.5) {
-        return mix(vec3(0.07, 0.21, 0.27), vec3(0.22, 0.48, 0.55), uv.y * 0.32 + n * 0.26);
-      }
-      if (terrain < 2.5) {
-        return mix(vec3(0.27, 0.27, 0.16), vec3(0.58, 0.53, 0.31), uv.y * 0.42 + n * 0.28);
-      }
+      if (terrain < 0.5) return mix(vec3(0.13, 0.30, 0.15), vec3(0.28, 0.50, 0.22), uv.y * 0.45 + n * 0.34);
+      if (terrain < 1.5) return mix(vec3(0.07, 0.21, 0.27), vec3(0.22, 0.48, 0.55), uv.y * 0.32 + n * 0.26);
+      if (terrain < 2.5) return mix(vec3(0.27, 0.27, 0.16), vec3(0.58, 0.53, 0.31), uv.y * 0.42 + n * 0.28);
       return mix(vec3(0.15, 0.30, 0.14), vec3(0.34, 0.47, 0.24), uv.y * 0.40 + n * 0.30);
     }
 
     void main() {
       vec2 p = v_local;
       float edge = hexEdge(p);
-      float interior = smoothstep(1.04, 0.96, edge);
+      float interior = 1.0 - smoothstep(0.96, 1.04, edge);
       float rim = smoothstep(0.78, 1.02, edge);
       float bevel = smoothstep(0.62, 1.02, edge) * 0.22;
       vec2 uv = p * 0.5 + 0.5;
@@ -255,7 +239,7 @@ function initWebGl() {
         color = mix(color, vec3(0.33, 0.31, 0.24), rock * 0.28);
       } else {
         float rail = lineMask(p.y + p.x * 0.10, 0.030);
-        float post = lineMask(fract((p.x + 0.53) * 4.8) - 0.5, 0.09) * smoothstep(0.34, 0.08, abs(p.y + p.x * 0.10));
+        float post = lineMask(fract((p.x + 0.53) * 4.8) - 0.5, 0.09) * (1.0 - smoothstep(0.08, 0.34, abs(p.y + p.x * 0.10)));
         color += vec3(0.25, 0.13, 0.05) * rail * 0.65;
         color += vec3(0.30, 0.16, 0.07) * post * 0.55;
         color = mix(color, vec3(0.11, 0.25, 0.12), fine * 0.16);
@@ -391,7 +375,9 @@ function draw2DTileFallback(tile, size) {
   const p = projectHex(tile.col, tile.row, size);
   const palette = tilePalette(tile);
   const gradient = unitCtx.createLinearGradient(p.x - p.r * 0.6, p.y - p.r * p.yScale, p.x + p.r * 0.45, p.y + p.r * p.yScale);
-  gradient.addColorStop(0, palette.top); gradient.addColorStop(0.56, palette.mid); gradient.addColorStop(1, palette.low);
+  gradient.addColorStop(0, palette.top);
+  gradient.addColorStop(0.56, palette.mid);
+  gradient.addColorStop(1, palette.low);
   hexPath(unitCtx, p.x, p.y, p.r * 0.985, p.yScale);
   unitCtx.fillStyle = gradient;
   unitCtx.fill();
@@ -404,7 +390,9 @@ function drawFallbackTiles(field, size) {
   for (const tile of field.tiles) draw2DTileFallback(tile, size);
 }
 
-function unitAt(col, row) { return battlefield?.units.find((unit) => unit.col === col && unit.row === row) ?? null; }
+function unitAt(col, row) {
+  return battlefield?.units.find((unit) => unit.col === col && unit.row === row) ?? null;
+}
 
 function drawUnit(unit, size) {
   const p = projectHex(unit.col, unit.row, size);
