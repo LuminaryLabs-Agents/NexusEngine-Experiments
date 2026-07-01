@@ -2,7 +2,7 @@
 
 A NexusRealtime visual experiment for a Roman campaign-map cinematic route.
 
-This slice intentionally drops campaign/combat resolution while adding the first tactical gameplay surface. It is a **DSK-composed high-fidelity visual proof**: a WebGPU-first realistic 3D terrain scene with large pannable highlighted regions, procedural vegetation descriptors, a cinematic dive, and a no-UI Rome-perspective hex battlefield.
+This slice now has the first no-UI tactical gameplay loop. It remains a **DSK-composed high-fidelity visual proof**: a WebGPU-first realistic campaign terrain, a no-UI Rome-perspective WebGL2 hex battlefield, mini low-poly squad units, scene-native maneuver highlights, and WebGL-shaded dice rolls on the board.
 
 ## Current slice
 
@@ -14,20 +14,20 @@ This slice intentionally drops campaign/combat resolution while adding the first
 - Pointer hover selects visual affordance regions.
 - Drag/WASD pans the main region-selection map; wheel zooms the map.
 - Clicking a region triggers a cinematic world-map-to-battlefield zoom.
-- The battlefield is now an 11x9 no-UI hex grid viewed from above and behind Rome.
+- The battlefield is an 11x9 no-UI hex grid viewed from above and behind Rome.
 - Hex interiors use a WebGL2 material shader with procedural FBM, rim/bevel shading, water shimmer, hill contouring, grass striations, and fence rail/post detail.
-- If WebGL2 is unavailable, the hex board falls back to a simpler Canvas2D tile renderer.
-- Hex alignment uses fixed pointy-offset math with a single radius and y-scale, so hexes do not drift in size or spacing by row.
-- Hex terrain includes grass, water, hills, and fences with movement/defense metadata.
-- Tactical units are now mini squads of low-poly soldiers instead of circular tokens.
+- Tactical gameplay now includes seven maneuvers: Advance Left, Advance Center, Advance Right, Line Brigade, Heavy Brigade, Berserk, and Scout.
+- Action points are rolled with 2d6 every three turns. Advance maneuvers cost 1 AP, Line Brigade costs 2 AP, Heavy Brigade costs 3 AP, and Berserk/Scout cost 4 AP.
+- Advance maneuvers roll 1d6 and allow that many eligible units to move.
+- Movement is scene-native: select a Rome unit, then click a highlighted reachable hex.
+- Water is impassable. Hills and fences are legal landing spaces but end the maneuver when entered.
+- Light troops can move up to two spaces during normal movement; Scout moves one unit up to three spaces; Berserk moves one unit up to two spaces and can attack an adjacent enemy.
+- The board rolls use a WebGL2 shaded dice pass with crypto-backed d6 randomization when available.
+- Tactical units are mini squads of low-poly soldiers instead of circular tokens.
 - Light troops are green, medium troops are blue, and heavy troops are red. Army ownership is shown only through military bands and small pennants.
-- Rome uses a red army band; enemies use region-based bands.
-- Circular unit bases and selection rings have been removed. Selection uses squad lift, brightness, grounded non-ring shadows, leader pennants, and hex highlighting.
+- Circular unit bases and selection rings have been removed. Selection uses squad lift, brightness, individual angled shadows, leader pennants, and hex highlighting.
 - Only Rome-side units are selectable. Enemy pieces remain visible but cannot be selected.
-- Tactical vegetation and tile features are drawn directly in the hex field; the old screen-space vegetation overlay is disabled so plants cannot detach from the ground.
 - All in-game UI DOM has been removed from the presentation. The live and experiment pages now contain only the canvas app root plus non-visual scripts.
-- A non-DOM `CavalryUiSinkShim` supplies status/readout/command sinks for current runtime compatibility without adding HUD/footer/command elements back to the DOM.
-- The shared route page loader is intentionally not attached for this route so no loading UI appears over the game.
 
 ## Active modules
 
@@ -36,6 +36,7 @@ src/main-realistic.js
 src/vegetation-pass.js
 src/hex-battlefield-pass.js
 src/hex-squad-visual-pass.js
+src/hex-gameplay-pass.js
 ```
 
 ## Existing DSKs used
@@ -51,7 +52,7 @@ visual-fidelity-maker-kit
 scenario-qa-harness
 ```
 
-There is no dedicated procedural vegetation or hex battlefield ProtoKit in the currently searched ProtoKits repo, so this route keeps those systems local as renderer-neutral DSK candidates. The visual surfaces expose snapshots through `GameHost` and remain documented for future extraction.
+There is no dedicated procedural vegetation, hex battlefield, or maneuver gameplay ProtoKit in the currently searched ProtoKits repo, so these systems remain local as renderer-neutral DSK candidates. The visual and gameplay surfaces expose snapshots through `GameHost` and remain documented for future extraction.
 
 ## Controls
 
@@ -65,16 +66,35 @@ Mouse wheel zooms the map
 R resets to the world-map scan
 
 Hex battlefield:
-Move pointer over a hex or Rome unit to highlight it
+1 = Advance Left
+2 = Advance Center
+3 = Advance Right
+4 = Line Brigade
+5 = Heavy Brigade
+6 = Berserk
+7 = Scout
 Click a Rome unit to select it
-Enemy units are not selectable
+Click a highlighted hex to move selected unit
+Click a highlighted enemy after Berserk movement to attack
+Escape clears current selection
 ```
 
 These controls are intentionally undocumented on screen during play. The current game presentation is canvas-only with no HUD, footer, command bar, labels, panels, hidden UI DOM, or shared loading overlay.
 
+## Maneuver costs
+
+```txt
+Advance Left / Center / Right: 1 AP, roll 1d6 units
+Line Brigade: 2 AP, move a connected adjacent group
+Heavy Brigade: 3 AP, move all Rome heavy units
+Berserk: 4 AP, move one unit up to two spaces and attack
+Scout: 4 AP, move one unit up to three spaces
+Action points: roll 2d6 every three turns
+```
+
 ## Fidelity rule
 
-Every future gameplay iteration should also improve visual fidelity as a secondary goal. Do not regress terrain density, vegetation descriptors, lighting mood, region readability, soldier fidelity, hex readability, or cinematic composition while adding mechanics.
+Every future gameplay iteration should also improve visual fidelity as a secondary goal. Do not regress terrain density, vegetation descriptors, lighting mood, region readability, soldier fidelity, hex readability, dice feedback, maneuver highlights, or cinematic composition while adding mechanics.
 
 ## Gameplay state
 
@@ -91,14 +111,14 @@ fix hex alignment using fixed pointy-offset spacing
 add WebGL2 procedural terrain materials inside hexes
 replace circular unit tokens with mini low-poly soldier squads
 remove circular unit bases and selection rings
-compress battlefield soldiers into 22 aggregated units
-add water/hill/fence/grass terrain tiles
-limit selection to Rome-side units
-stop screen-space vegetation rendering that floated in the sky
-prevent floating vegetation during hex battle
+add individual angled soldier shadows
+add seven tactical maneuvers
+add 2d6 action point cadence
+add 1d6 advance rolls with shaded WebGL dice
+add movement highlights and Rome-only selection
+add water/hill/fence movement restrictions
+add basic Berserk attack target handling
 ```
-
-Next gameplay steps should add interaction through the scene itself rather than through panels, buttons, labels, or HUD widgets.
 
 ## Troop color language
 
@@ -112,7 +132,7 @@ Enemy band: varies by selected region
 
 ## Fidelity focus
 
-The current fidelity push is visual, not systemic:
+The current fidelity push is visual and tactical:
 
 ```txt
 realistic non-repeating terrain
@@ -120,12 +140,14 @@ large readable regions
 pannable terrain inspection
 procedural vegetation descriptors without floating screen-space rendering
 WebGL2-shaded hex interiors
-terrain-anchored visual features on tactical hexes
+scene-native movement highlights
+WebGL2 shaded board dice
 mini low-poly soldier squads without token rings
+individual angled soldier shadows
 atmospheric battlefield reveal
 ```
 
-No combat resolution, campaign economy, AI turns, harvesting, collision, or full movement pathfinding should be added until the hex playfield is stable.
+Full combat resolution, campaign economy, AI turns, harvesting, collision, and complete pathfinding polish should wait until this maneuver loop is validated in browser.
 
 ## Design boundary
 
@@ -140,6 +162,8 @@ hex-battlefield-grid-kit
 hex-terrain-descriptor-kit
 hex-webgl-material-shader-kit
 hex-squad-visual-kit
+hex-maneuver-gameplay-kit
+webgl-board-dice-kit
 tactical-army-formation-kit
 troop-class-visual-kit
 terrain-anchored-vegetation-kit
@@ -159,4 +183,4 @@ battlefield-atmosphere-descriptor-kit
 
 ## Next ledge
 
-Add scene-native unit movement on the hex board with terrain movement costs and no visible UI, while improving battlefield visual fidelity in the same iteration. Before that, add a browser-backed Playwright smoke in an environment with Playwright installed and network access.
+Validate the maneuver loop in a browser, then add enemy turn behavior and fuller combat resolution while preserving no UI and improving the battlefield visuals in the same iteration.
