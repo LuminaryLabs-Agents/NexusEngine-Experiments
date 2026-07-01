@@ -1,5 +1,5 @@
 const HEX_STYLE = "rome-perspective-hex-battlefield-no-ui";
-const HEX_VISUAL_DETAIL_STYLE = "layered-painted-hex-interiors-rimlit-terrain-features";
+const HEX_VISUAL_DETAIL_STYLE = "webgl2-shaded-layered-hex-interiors";
 const HEX_GRID = Object.freeze({ cols: 11, rows: 9 });
 const CLASS_COLORS = Object.freeze({ light: "#3fad4f", medium: "#2f70d1", heavy: "#b93026" });
 const BAND_COLORS = Object.freeze({ rome: "#c8231f", etruscan: "#d6aa3c", samnite: "#f0e6cf", greek: "#7a54bd", gallic: "#111318" });
@@ -8,6 +8,7 @@ const UNIT_COUNTS = Object.freeze({ rome: { light: 5, medium: 4, heavy: 3 }, ene
 const TAU = Math.PI * 2;
 const SQRT3 = Math.sqrt(3);
 const HEX_Y_SCALE = 0.72;
+const VERTEX_STRIDE = 9;
 
 const clamp = (value, min, max) => Math.max(min, Math.min(max, Number.isFinite(Number(value)) ? Number(value) : min));
 const lerp = (a, b, t) => a + (b - a) * t;
@@ -43,10 +44,10 @@ function terrainForHex(col, row, regionId = "") {
 }
 
 function tileStats(type) {
-  if (type === TERRAIN_TYPES.water) return { movementCost: 3, defense: 0, blocksCharge: true, label: "water" };
-  if (type === TERRAIN_TYPES.hill) return { movementCost: 2, defense: 1, blocksCharge: false, label: "hill" };
-  if (type === TERRAIN_TYPES.fence) return { movementCost: 2, defense: 1, blocksCharge: true, label: "fence" };
-  return { movementCost: 1, defense: 0, blocksCharge: false, label: "grass" };
+  if (type === TERRAIN_TYPES.water) return { movementCost: 3, defense: 0, blocksCharge: true, label: "water", terrainId: 1 };
+  if (type === TERRAIN_TYPES.hill) return { movementCost: 2, defense: 1, blocksCharge: false, label: "hill", terrainId: 2 };
+  if (type === TERRAIN_TYPES.fence) return { movementCost: 2, defense: 1, blocksCharge: true, label: "fence", terrainId: 3 };
+  return { movementCost: 1, defense: 0, blocksCharge: false, label: "grass", terrainId: 0 };
 }
 
 function createHexBattlefield(regionId = "latium") {
@@ -103,32 +104,189 @@ function createBattleUnits(regionId) {
   ];
 }
 
-let canvas = null;
-let ctx = null;
+let glCanvas = null;
+let unitCanvas = null;
+let unitCtx = null;
+let gl = null;
+let glProgram = null;
+let glBuffer = null;
 let battlefield = null;
 let selectedUnitId = null;
 let hoveredHexId = null;
 let hoveredUnitId = null;
 let lastRegionId = null;
 
-function ensureCanvas() {
-  if (canvas) return canvas;
-  canvas = document.createElement("canvas");
-  canvas.id = "cavalry-hex-battlefield-canvas";
-  Object.assign(canvas.style, { position: "fixed", inset: "0", width: "100%", height: "100%", zIndex: "4", pointerEvents: "none", display: "none", background: "#11130d" });
-  document.querySelector("#app")?.append(canvas);
-  ctx = canvas.getContext("2d");
-  canvas.addEventListener("pointermove", onPointerMove);
-  canvas.addEventListener("pointerdown", onPointerDown);
-  return canvas;
+function ensureCanvases() {
+  if (glCanvas && unitCanvas) return;
+  glCanvas = document.createElement("canvas");
+  glCanvas.id = "cavalry-hex-webgl-canvas";
+  Object.assign(glCanvas.style, { position: "fixed", inset: "0", width: "100%", height: "100%", zIndex: "4", pointerEvents: "none", display: "none", background: "#11130d" });
+  unitCanvas = document.createElement("canvas");
+  unitCanvas.id = "cavalry-hex-unit-canvas";
+  Object.assign(unitCanvas.style, { position: "fixed", inset: "0", width: "100%", height: "100%", zIndex: "5", pointerEvents: "none", display: "none" });
+  document.querySelector("#app")?.append(glCanvas, unitCanvas);
+  unitCtx = unitCanvas.getContext("2d");
+  unitCanvas.addEventListener("pointermove", onPointerMove);
+  unitCanvas.addEventListener("pointerdown", onPointerDown);
+  gl = glCanvas.getContext("webgl2", { antialias: true, alpha: false, depth: false, stencil: false, premultipliedAlpha: false });
+  if (gl) initWebGl();
+}
+
+function compileShader(type, source) {
+  const shader = gl.createShader(type);
+  gl.shaderSource(shader, source);
+  gl.compileShader(shader);
+  if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+    throw new Error(gl.getShaderInfoLog(shader) || "Hex shader compile failed");
+  }
+  return shader;
+}
+
+function initWebGl() {
+  const vertex = compileShader(gl.VERTEX_SHADER, `#version 300 es
+    precision highp float;
+    in vec2 a_position;
+    in vec2 a_center;
+    in vec2 a_local;
+    in float a_terrain;
+    in float a_variant;
+    in float a_hot;
+    uniform vec2 u_resolution;
+    out vec2 v_local;
+    out vec2 v_centerLocal;
+    out float v_terrain;
+    out float v_variant;
+    out float v_hot;
+    void main() {
+      vec2 zeroToOne = a_position / u_resolution;
+      vec2 clip = zeroToOne * 2.0 - 1.0;
+      gl_Position = vec4(clip.x, -clip.y, 0.0, 1.0);
+      v_local = a_local;
+      v_centerLocal = (a_position - a_center) / max(u_resolution.y, 1.0);
+      v_terrain = a_terrain;
+      v_variant = a_variant;
+      v_hot = a_hot;
+    }
+  `);
+  const fragment = compileShader(gl.FRAGMENT_SHADER, `#version 300 es
+    precision highp float;
+    in vec2 v_local;
+    in vec2 v_centerLocal;
+    in float v_terrain;
+    in float v_variant;
+    in float v_hot;
+    out vec4 outColor;
+
+    float hash(vec2 p) {
+      return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
+    }
+
+    float noise(vec2 p) {
+      vec2 i = floor(p);
+      vec2 f = fract(p);
+      vec2 u = f * f * (3.0 - 2.0 * f);
+      float a = hash(i);
+      float b = hash(i + vec2(1.0, 0.0));
+      float c = hash(i + vec2(0.0, 1.0));
+      float d = hash(i + vec2(1.0, 1.0));
+      return mix(mix(a, b, u.x), mix(c, d, u.x), u.y);
+    }
+
+    float fbm(vec2 p) {
+      float v = 0.0;
+      float a = 0.5;
+      for (int i = 0; i < 5; i++) {
+        v += noise(p) * a;
+        p *= 2.03;
+        a *= 0.52;
+      }
+      return v;
+    }
+
+    float hexEdge(vec2 p) {
+      vec2 q = abs(p);
+      return max(q.y, q.x * 0.866025 + q.y * 0.5);
+    }
+
+    float lineMask(float value, float width) {
+      return 1.0 - smoothstep(width, width * 1.7, abs(value));
+    }
+
+    vec3 terrainBase(float terrain, vec2 uv, float n) {
+      if (terrain < 0.5) {
+        return mix(vec3(0.13, 0.30, 0.15), vec3(0.28, 0.50, 0.22), uv.y * 0.45 + n * 0.34);
+      }
+      if (terrain < 1.5) {
+        return mix(vec3(0.07, 0.21, 0.27), vec3(0.22, 0.48, 0.55), uv.y * 0.32 + n * 0.26);
+      }
+      if (terrain < 2.5) {
+        return mix(vec3(0.27, 0.27, 0.16), vec3(0.58, 0.53, 0.31), uv.y * 0.42 + n * 0.28);
+      }
+      return mix(vec3(0.15, 0.30, 0.14), vec3(0.34, 0.47, 0.24), uv.y * 0.40 + n * 0.30);
+    }
+
+    void main() {
+      vec2 p = v_local;
+      float edge = hexEdge(p);
+      float interior = smoothstep(1.04, 0.96, edge);
+      float rim = smoothstep(0.78, 1.02, edge);
+      float bevel = smoothstep(0.62, 1.02, edge) * 0.22;
+      vec2 uv = p * 0.5 + 0.5;
+      float n = fbm(p * 5.5 + v_variant * 19.7);
+      float fine = fbm(p * 18.0 + v_variant * 41.3);
+      vec3 color = terrainBase(v_terrain, uv, n);
+
+      if (v_terrain < 0.5) {
+        float blades = smoothstep(0.68, 0.98, noise(p * vec2(32.0, 18.0) + v_variant));
+        float strokes = lineMask(sin((p.x * 10.0 + p.y * 5.0 + v_variant * 6.28)), 0.16);
+        color += vec3(0.08, 0.15, 0.03) * blades * 0.25;
+        color += vec3(0.10, 0.16, 0.04) * strokes * 0.16;
+        color = mix(color, vec3(0.08, 0.22, 0.10), fine * 0.20);
+      } else if (v_terrain < 1.5) {
+        float ripple = sin((p.y + v_variant) * 31.0 + sin(p.x * 9.0) * 2.5) * 0.5 + 0.5;
+        float glint = smoothstep(0.72, 0.96, ripple) * smoothstep(-0.25, 0.65, p.y);
+        color += vec3(0.14, 0.30, 0.30) * glint * 0.45;
+        color = mix(color, vec3(0.03, 0.14, 0.20), rim * 0.28);
+      } else if (v_terrain < 2.5) {
+        float contour1 = lineMask(length(p * vec2(1.0, 1.35)) - 0.25, 0.025);
+        float contour2 = lineMask(length(p * vec2(1.05, 1.2)) - 0.48, 0.023);
+        float rock = smoothstep(0.68, 0.92, noise(p * 13.0 + v_variant * 3.0));
+        color += vec3(0.20, 0.17, 0.10) * (contour1 + contour2) * 0.18;
+        color = mix(color, vec3(0.33, 0.31, 0.24), rock * 0.28);
+      } else {
+        float rail = lineMask(p.y + p.x * 0.10, 0.030);
+        float post = lineMask(fract((p.x + 0.53) * 4.8) - 0.5, 0.09) * smoothstep(0.34, 0.08, abs(p.y + p.x * 0.10));
+        color += vec3(0.25, 0.13, 0.05) * rail * 0.65;
+        color += vec3(0.30, 0.16, 0.07) * post * 0.55;
+        color = mix(color, vec3(0.11, 0.25, 0.12), fine * 0.16);
+      }
+
+      vec3 light = vec3(0.18, 0.14, 0.08) * (1.0 - uv.y) + vec3(0.12, 0.10, 0.06) * (1.0 - uv.x);
+      color += light;
+      color *= 1.0 - bevel;
+      color = mix(color, vec3(0.98, 0.82, 0.42), v_hot * smoothstep(0.72, 1.02, edge) * 0.42);
+      color = mix(color, vec3(0.02, 0.025, 0.018), rim * 0.16);
+      outColor = vec4(color, interior);
+    }
+  `);
+  glProgram = gl.createProgram();
+  gl.attachShader(glProgram, vertex);
+  gl.attachShader(glProgram, fragment);
+  gl.linkProgram(glProgram);
+  if (!gl.getProgramParameter(glProgram, gl.LINK_STATUS)) {
+    throw new Error(gl.getProgramInfoLog(glProgram) || "Hex shader link failed");
+  }
+  glBuffer = gl.createBuffer();
 }
 
 function resize() {
-  ensureCanvas();
+  ensureCanvases();
   const ratio = Math.max(1, Math.min(2, devicePixelRatio || 1));
-  const w = Math.max(1, Math.floor(canvas.clientWidth * ratio));
-  const h = Math.max(1, Math.floor(canvas.clientHeight * ratio));
-  if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
+  const w = Math.max(1, Math.floor(unitCanvas.clientWidth * ratio));
+  const h = Math.max(1, Math.floor(unitCanvas.clientHeight * ratio));
+  for (const canvas of [glCanvas, unitCanvas]) {
+    if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
+  }
   return { w, h, ratio };
 }
 
@@ -152,23 +310,63 @@ function boardMetrics(size) {
   const r = Math.min(rByW, rByH);
   const boardW = SQRT3 * r * (HEX_GRID.cols + 0.5);
   const boardH = HEX_Y_SCALE * r * (1.5 * (HEX_GRID.rows - 1) + 2);
-  return {
-    r,
-    originX: (size.w - boardW) * 0.5 + SQRT3 * r * 0.5,
-    originY: size.h * 0.06 + Math.max(0, usableH - boardH) * 0.08,
-    yScale: HEX_Y_SCALE
-  };
+  return { r, originX: (size.w - boardW) * 0.5 + SQRT3 * r * 0.5, originY: size.h * 0.06 + Math.max(0, usableH - boardH) * 0.08, yScale: HEX_Y_SCALE };
 }
 
 function projectHex(col, row, size) {
   const metrics = boardMetrics(size);
-  return {
-    x: metrics.originX + SQRT3 * metrics.r * (col + (row % 2 ? 0.5 : 0)),
-    y: metrics.originY + metrics.yScale * metrics.r * (1 + row * 1.5),
-    r: metrics.r,
-    yScale: metrics.yScale,
-    perspective: 1
-  };
+  return { x: metrics.originX + SQRT3 * metrics.r * (col + (row % 2 ? 0.5 : 0)), y: metrics.originY + metrics.yScale * metrics.r * (1 + row * 1.5), r: metrics.r, yScale: metrics.yScale, perspective: 1 };
+}
+
+function hexVertexLocal(i) {
+  const angle = Math.PI / 6 + i * TAU / 6;
+  return { x: Math.cos(angle), y: Math.sin(angle) };
+}
+
+function pushGlVertex(vertices, px, py, cx, cy, lx, ly, terrain, variant, hot) {
+  vertices.push(px, py, cx, cy, lx, ly, terrain, variant, hot);
+}
+
+function appendHexTriangles(vertices, tile, p) {
+  const hot = hoveredHexId === tile.id ? 1 : 0;
+  const terrain = tile.terrainId;
+  const variant = tile.visualVariant;
+  for (let i = 0; i < 6; i += 1) {
+    const a = hexVertexLocal(i);
+    const b = hexVertexLocal((i + 1) % 6);
+    pushGlVertex(vertices, p.x, p.y, p.x, p.y, 0, 0, terrain, variant, hot);
+    pushGlVertex(vertices, p.x + a.x * p.r, p.y + a.y * p.r * p.yScale, p.x, p.y, a.x, a.y, terrain, variant, hot);
+    pushGlVertex(vertices, p.x + b.x * p.r, p.y + b.y * p.r * p.yScale, p.x, p.y, b.x, b.y, terrain, variant, hot);
+  }
+}
+
+function renderHexTilesWebGl(field, size) {
+  if (!gl || !glProgram) return false;
+  const vertices = [];
+  for (const tile of field.tiles) appendHexTriangles(vertices, tile, projectHex(tile.col, tile.row, size));
+  const data = new Float32Array(vertices);
+  gl.viewport(0, 0, size.w, size.h);
+  gl.clearColor(0.065, 0.085, 0.055, 1);
+  gl.clear(gl.COLOR_BUFFER_BIT);
+  gl.useProgram(glProgram);
+  gl.bindBuffer(gl.ARRAY_BUFFER, glBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, data, gl.DYNAMIC_DRAW);
+  const stride = VERTEX_STRIDE * 4;
+  const attrs = [
+    ["a_position", 2, 0], ["a_center", 2, 2], ["a_local", 2, 4], ["a_terrain", 1, 6], ["a_variant", 1, 7], ["a_hot", 1, 8]
+  ];
+  for (const [name, sizeAttr, offset] of attrs) {
+    const location = gl.getAttribLocation(glProgram, name);
+    if (location < 0) continue;
+    gl.enableVertexAttribArray(location);
+    gl.vertexAttribPointer(location, sizeAttr, gl.FLOAT, false, stride, offset * 4);
+  }
+  const resolution = gl.getUniformLocation(glProgram, "u_resolution");
+  gl.uniform2f(resolution, size.w, size.h);
+  gl.enable(gl.BLEND);
+  gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+  gl.drawArrays(gl.TRIANGLES, 0, data.length / VERTEX_STRIDE);
+  return true;
 }
 
 function hexPath(ctx, x, y, r, yScale = HEX_Y_SCALE) {
@@ -183,218 +381,30 @@ function hexPath(ctx, x, y, r, yScale = HEX_Y_SCALE) {
 }
 
 function tilePalette(tile) {
-  if (tile.terrainType === TERRAIN_TYPES.water) return { top: "#2d6573", mid: "#234f5d", low: "#163443", accent: "rgba(150,212,218,.58)", shadow: "rgba(0,24,34,.28)" };
-  if (tile.terrainType === TERRAIN_TYPES.hill) return { top: "#8a824e", mid: "#67633a", low: "#46492b", accent: "rgba(231,211,139,.42)", shadow: "rgba(34,26,14,.26)" };
-  if (tile.terrainType === TERRAIN_TYPES.fence) return { top: "#526f39", mid: "#3d5c31", low: "#2b4328", accent: "rgba(158,111,59,.74)", shadow: "rgba(24,19,10,.28)" };
-  return { top: "#3e7738", mid: "#2e5e31", low: "#203f25", accent: "rgba(139,172,82,.46)", shadow: "rgba(12,30,14,.22)" };
+  if (tile.terrainType === TERRAIN_TYPES.water) return { top: "#2d6573", mid: "#234f5d", low: "#163443" };
+  if (tile.terrainType === TERRAIN_TYPES.hill) return { top: "#8a824e", mid: "#67633a", low: "#46492b" };
+  if (tile.terrainType === TERRAIN_TYPES.fence) return { top: "#526f39", mid: "#3d5c31", low: "#2b4328" };
+  return { top: "#3e7738", mid: "#2e5e31", low: "#203f25" };
 }
 
-function drawHexRimLighting(p, tile, hot) {
-  hexPath(ctx, p.x, p.y + p.r * p.yScale * 0.06, p.r * 0.988, p.yScale);
-  ctx.strokeStyle = "rgba(0,0,0,.34)";
-  ctx.lineWidth = Math.max(2, p.r * 0.040);
-  ctx.stroke();
-  hexPath(ctx, p.x, p.y, p.r * 0.972, p.yScale);
-  ctx.strokeStyle = hot ? "rgba(255,236,164,.92)" : tile.terrainType === TERRAIN_TYPES.water ? "rgba(154,209,210,.36)" : "rgba(238,218,148,.30)";
-  ctx.lineWidth = hot ? Math.max(2.5, p.r * 0.050) : Math.max(1.2, p.r * 0.024);
-  ctx.stroke();
-  hexPath(ctx, p.x, p.y - p.r * p.yScale * 0.012, p.r * 0.90, p.yScale);
-  ctx.strokeStyle = "rgba(255,244,190,.10)";
-  ctx.lineWidth = Math.max(1, p.r * 0.018);
-  ctx.stroke();
-}
-
-function drawTileBase(tile, p, hot) {
-  const palette = tilePalette(tile);
-  const gradient = ctx.createLinearGradient(p.x - p.r * 0.6, p.y - p.r * p.yScale, p.x + p.r * 0.45, p.y + p.r * p.yScale);
-  gradient.addColorStop(0, palette.top);
-  gradient.addColorStop(0.56, palette.mid);
-  gradient.addColorStop(1, palette.low);
-  hexPath(ctx, p.x, p.y, p.r * 0.985, p.yScale);
-  ctx.fillStyle = gradient;
-  ctx.fill();
-  ctx.save();
-  hexPath(ctx, p.x, p.y, p.r * 0.93, p.yScale);
-  ctx.clip();
-  drawTileMaterialDetail(tile, p, palette);
-  ctx.restore();
-  drawHexRimLighting(p, tile, hot);
-}
-
-function drawTileMaterialDetail(tile, p, palette) {
-  const seed = tile.col * 41 + tile.row * 97 + tile.visualVariant * 1000;
-  if (tile.terrainType === TERRAIN_TYPES.water) {
-    drawWaterMaterial(tile, p, palette, seed);
-    return;
-  }
-  if (tile.terrainType === TERRAIN_TYPES.hill) {
-    drawHillMaterial(tile, p, palette, seed);
-    return;
-  }
-  if (tile.terrainType === TERRAIN_TYPES.fence) {
-    drawGrassMaterial(tile, p, palette, seed, 0.8);
-    drawFenceFeature(p, tile);
-    return;
-  }
-  drawGrassMaterial(tile, p, palette, seed, 1);
-}
-
-function materialPoint(p, seed, i, radiusScale = 0.78) {
-  const a = hashNoise(seed, i, 17) * TAU;
-  const d = Math.sqrt(hashNoise(seed, i, 23)) * p.r * radiusScale;
-  return { x: p.x + Math.cos(a) * d, y: p.y + Math.sin(a) * d * p.yScale, a, d };
-}
-
-function drawGrassMaterial(tile, p, palette, seed, density = 1) {
-  ctx.save();
-  ctx.globalAlpha = 0.58;
-  const tuftCount = Math.floor(12 * density);
-  for (let i = 0; i < tuftCount; i += 1) {
-    const pt = materialPoint(p, seed, i, 0.72);
-    const length = p.r * (0.06 + hashNoise(seed, i, 31) * 0.085);
-    const angle = pt.a + 0.8 + hashNoise(seed, i, 43) * 0.7;
-    ctx.strokeStyle = i % 4 === 0 ? "rgba(157,185,85,.44)" : "rgba(96,143,65,.42)";
-    ctx.lineWidth = Math.max(0.7, p.r * 0.010);
-    ctx.beginPath();
-    ctx.moveTo(pt.x, pt.y);
-    ctx.quadraticCurveTo(pt.x + Math.cos(angle) * length * 0.45, pt.y - length * p.yScale * 0.4, pt.x + Math.cos(angle) * length, pt.y - length * p.yScale);
-    ctx.stroke();
-  }
-  ctx.globalAlpha = 0.30;
-  for (let i = 0; i < 5; i += 1) {
-    const pt = materialPoint(p, seed + 17, i, 0.60);
-    ctx.fillStyle = i % 2 ? "rgba(84,126,58,.34)" : "rgba(57,98,50,.34)";
-    ctx.beginPath();
-    ctx.ellipse(pt.x, pt.y, p.r * (0.09 + hashNoise(seed, i, 61) * 0.11), p.r * p.yScale * 0.026, pt.a, 0, TAU);
-    ctx.fill();
-  }
-  ctx.restore();
-}
-
-function drawWaterMaterial(tile, p, palette, seed) {
-  ctx.save();
-  const pool = ctx.createRadialGradient(p.x - p.r * 0.20, p.y - p.r * p.yScale * 0.16, p.r * 0.08, p.x, p.y, p.r * 0.88);
-  pool.addColorStop(0, "rgba(97,157,165,.44)");
-  pool.addColorStop(0.7, "rgba(35,78,91,.24)");
-  pool.addColorStop(1, "rgba(9,27,38,.38)");
-  hexPath(ctx, p.x, p.y, p.r * 0.87, p.yScale);
-  ctx.fillStyle = pool;
-  ctx.fill();
-  ctx.strokeStyle = "rgba(164,222,222,.42)";
-  ctx.lineWidth = Math.max(1.0, p.r * 0.018);
-  for (let i = 0; i < 5; i += 1) {
-    const y = p.y + (i - 2) * p.r * p.yScale * 0.16;
-    ctx.beginPath();
-    ctx.ellipse(p.x + (hashNoise(seed, i, 71) - 0.5) * p.r * 0.22, y, p.r * (0.26 + i * 0.035), p.r * p.yScale * 0.036, hashNoise(seed, i, 73) * 0.18, 0, TAU);
-    ctx.stroke();
-  }
-  ctx.strokeStyle = "rgba(210,232,205,.18)";
-  ctx.lineWidth = Math.max(1.2, p.r * 0.020);
-  hexPath(ctx, p.x, p.y, p.r * 0.76, p.yScale);
-  ctx.stroke();
-  ctx.restore();
-}
-
-function drawHillMaterial(tile, p, palette, seed) {
-  ctx.save();
-  for (let i = 0; i < 4; i += 1) {
-    ctx.fillStyle = i % 2 ? "rgba(109,101,55,.34)" : "rgba(153,139,77,.28)";
-    ctx.beginPath();
-    ctx.ellipse(p.x + (i - 1.5) * p.r * 0.08, p.y - i * p.r * p.yScale * 0.035, p.r * (0.50 - i * 0.055), p.r * p.yScale * (0.18 - i * 0.018), -0.18, 0, TAU);
-    ctx.fill();
-    ctx.strokeStyle = "rgba(228,207,135,.20)";
-    ctx.lineWidth = Math.max(0.9, p.r * 0.012);
-    ctx.stroke();
-  }
-  for (let i = 0; i < 8; i += 1) {
-    const pt = materialPoint(p, seed + 33, i, 0.66);
-    ctx.fillStyle = "rgba(68,65,47,.38)";
-    ctx.beginPath();
-    ctx.ellipse(pt.x, pt.y, p.r * (0.018 + hashNoise(seed, i, 81) * 0.022), p.r * p.yScale * 0.014, pt.a, 0, TAU);
-    ctx.fill();
-  }
-  ctx.restore();
-}
-
-function drawTile(tile, size) {
+function draw2DTileFallback(tile, size) {
   const p = projectHex(tile.col, tile.row, size);
-  const hot = hoveredHexId === tile.id;
-  drawTileBase(tile, p, hot);
-  if (tile.terrainType === TERRAIN_TYPES.hill) drawHillFeature(p, tile);
-  if (tile.terrainType === TERRAIN_TYPES.water) drawWaterFeature(p, tile);
-  if (tile.terrainType === TERRAIN_TYPES.fence) drawFenceFeature(p, tile, true);
-  if (tile.terrainType === TERRAIN_TYPES.grass) drawGrassFeature(p, tile);
+  const palette = tilePalette(tile);
+  const gradient = unitCtx.createLinearGradient(p.x - p.r * 0.6, p.y - p.r * p.yScale, p.x + p.r * 0.45, p.y + p.r * p.yScale);
+  gradient.addColorStop(0, palette.top); gradient.addColorStop(0.56, palette.mid); gradient.addColorStop(1, palette.low);
+  hexPath(unitCtx, p.x, p.y, p.r * 0.985, p.yScale);
+  unitCtx.fillStyle = gradient;
+  unitCtx.fill();
+  unitCtx.strokeStyle = hoveredHexId === tile.id ? "rgba(255,236,164,.92)" : "rgba(238,218,148,.30)";
+  unitCtx.lineWidth = hoveredHexId === tile.id ? Math.max(2.5, p.r * 0.050) : Math.max(1.2, p.r * 0.024);
+  unitCtx.stroke();
 }
 
-function drawGrassFeature(p, tile) {
-  ctx.save();
-  ctx.globalAlpha = 0.38;
-  ctx.strokeStyle = "rgba(146,173,82,.60)";
-  ctx.lineWidth = Math.max(0.8, p.r * 0.010);
-  for (let i = 0; i < 5; i += 1) {
-    const a = hashNoise(tile.col + i, tile.row, 23) * TAU;
-    const radius = p.r * (0.16 + hashNoise(tile.row, tile.col + i, 24) * 0.32);
-    const x = p.x + Math.cos(a) * radius;
-    const y = p.y + Math.sin(a) * radius * p.yScale;
-    ctx.beginPath();
-    ctx.moveTo(x, y);
-    ctx.lineTo(x + Math.cos(a + 0.9) * p.r * 0.050, y - p.r * p.yScale * 0.13);
-    ctx.stroke();
-  }
-  ctx.restore();
+function drawFallbackTiles(field, size) {
+  for (const tile of field.tiles) draw2DTileFallback(tile, size);
 }
 
-function drawWaterFeature(p) {
-  ctx.save();
-  ctx.globalAlpha = 0.42;
-  ctx.strokeStyle = "rgba(174,224,225,.58)";
-  ctx.lineWidth = Math.max(1, p.r * 0.018);
-  for (let i = 0; i < 2; i += 1) {
-    ctx.beginPath();
-    ctx.ellipse(p.x, p.y + (i - 0.5) * p.r * p.yScale * 0.24, p.r * 0.52, p.r * p.yScale * 0.045, 0.1 * i, 0, TAU);
-    ctx.stroke();
-  }
-  ctx.restore();
-}
-
-function drawHillFeature(p) {
-  ctx.save();
-  ctx.globalAlpha = 0.46;
-  ctx.strokeStyle = "rgba(54,46,25,.30)";
-  ctx.lineWidth = Math.max(2, p.r * 0.030);
-  ctx.beginPath();
-  ctx.ellipse(p.x, p.y + p.r * p.yScale * 0.18, p.r * 0.54, p.r * p.yScale * 0.16, -0.12, 0, TAU);
-  ctx.stroke();
-  ctx.restore();
-}
-
-function drawFenceFeature(p, tile, detailOnly = false) {
-  ctx.save();
-  ctx.shadowColor = "rgba(0,0,0,.32)";
-  ctx.shadowBlur = p.r * 0.035;
-  ctx.strokeStyle = "rgba(144,94,45,.88)";
-  ctx.lineWidth = Math.max(2.2, p.r * 0.030);
-  const tilt = hashNoise(tile?.col ?? 0, tile?.row ?? 0, 91) > 0.5 ? 0.10 : -0.10;
-  const y0 = p.y + p.r * p.yScale * (detailOnly ? 0.02 : 0.04);
-  ctx.beginPath();
-  ctx.moveTo(p.x - p.r * 0.50, y0 + p.r * p.yScale * tilt);
-  ctx.lineTo(p.x + p.r * 0.50, y0 - p.r * p.yScale * tilt);
-  ctx.stroke();
-  ctx.strokeStyle = "rgba(96,58,31,.88)";
-  ctx.lineWidth = Math.max(1.6, p.r * 0.022);
-  for (let i = -2; i <= 2; i += 1) {
-    const x = p.x + i * p.r * 0.22;
-    ctx.beginPath();
-    ctx.moveTo(x, p.y - p.r * p.yScale * 0.20);
-    ctx.lineTo(x + p.r * 0.020, p.y + p.r * p.yScale * 0.15);
-    ctx.stroke();
-  }
-  ctx.restore();
-}
-
-function unitAt(col, row) {
-  return battlefield?.units.find((unit) => unit.col === col && unit.row === row) ?? null;
-}
+function unitAt(col, row) { return battlefield?.units.find((unit) => unit.col === col && unit.row === row) ?? null; }
 
 function drawUnit(unit, size) {
   const p = projectHex(unit.col, unit.row, size);
@@ -402,22 +412,22 @@ function drawUnit(unit, size) {
   const selected = selectable && selectedUnitId === unit.id;
   const hovered = selectable && hoveredUnitId === unit.id;
   const baseR = p.r * 0.42;
-  ctx.save();
-  ctx.shadowColor = "rgba(0,0,0,.55)";
-  ctx.shadowBlur = p.r * 0.18;
-  ctx.fillStyle = "rgba(13,11,8,.58)";
-  ctx.beginPath();
-  ctx.ellipse(p.x, p.y + baseR * 0.42 * p.yScale, baseR * 1.08, baseR * 0.42 * p.yScale, 0, 0, TAU);
-  ctx.fill();
+  unitCtx.save();
+  unitCtx.shadowColor = "rgba(0,0,0,.55)";
+  unitCtx.shadowBlur = p.r * 0.18;
+  unitCtx.fillStyle = "rgba(13,11,8,.58)";
+  unitCtx.beginPath();
+  unitCtx.ellipse(p.x, p.y + baseR * 0.42 * p.yScale, baseR * 1.08, baseR * 0.42 * p.yScale, 0, 0, TAU);
+  unitCtx.fill();
 
-  ctx.shadowBlur = 0;
-  ctx.fillStyle = selected ? "rgba(255,235,155,.62)" : hovered ? "rgba(255,235,155,.34)" : "rgba(30,23,16,.82)";
-  ctx.beginPath();
-  ctx.ellipse(p.x, p.y + baseR * 0.20 * p.yScale, baseR * 0.98, baseR * 0.46 * p.yScale, 0, 0, TAU);
-  ctx.fill();
-  ctx.strokeStyle = "rgba(255,225,145,.20)";
-  ctx.lineWidth = Math.max(1, p.r * 0.018);
-  ctx.stroke();
+  unitCtx.shadowBlur = 0;
+  unitCtx.fillStyle = selected ? "rgba(255,235,155,.62)" : hovered ? "rgba(255,235,155,.34)" : "rgba(30,23,16,.82)";
+  unitCtx.beginPath();
+  unitCtx.ellipse(p.x, p.y + baseR * 0.20 * p.yScale, baseR * 0.98, baseR * 0.46 * p.yScale, 0, 0, TAU);
+  unitCtx.fill();
+  unitCtx.strokeStyle = "rgba(255,225,145,.20)";
+  unitCtx.lineWidth = Math.max(1, p.r * 0.018);
+  unitCtx.stroke();
 
   const cluster = unit.troopType === "heavy" ? 5 : unit.troopType === "medium" ? 4 : 3;
   for (let i = 0; i < cluster; i += 1) {
@@ -427,80 +437,69 @@ function drawUnit(unit, size) {
     drawMiniSoldier(soldierX, soldierY, baseR * (unit.troopType === "heavy" ? 0.42 : 0.36), unit, p.yScale);
   }
 
-  ctx.lineWidth = Math.max(3, p.r * 0.055);
-  ctx.strokeStyle = unit.bandColor;
-  ctx.beginPath();
-  ctx.ellipse(p.x, p.y + baseR * 0.20 * p.yScale, baseR * 0.98, baseR * 0.46 * p.yScale, 0, 0, TAU);
-  ctx.stroke();
+  unitCtx.lineWidth = Math.max(3, p.r * 0.055);
+  unitCtx.strokeStyle = unit.bandColor;
+  unitCtx.beginPath();
+  unitCtx.ellipse(p.x, p.y + baseR * 0.20 * p.yScale, baseR * 0.98, baseR * 0.46 * p.yScale, 0, 0, TAU);
+  unitCtx.stroke();
   if (unit.army === "rome" && unit.troopType === "heavy") {
-    ctx.strokeStyle = "#6e0d0c";
-    ctx.lineWidth = Math.max(1, p.r * 0.025);
-    ctx.stroke();
+    unitCtx.strokeStyle = "#6e0d0c";
+    unitCtx.lineWidth = Math.max(1, p.r * 0.025);
+    unitCtx.stroke();
   }
-  ctx.restore();
+  unitCtx.restore();
 }
 
 function drawMiniSoldier(x, y, s, unit, yScale) {
-  ctx.fillStyle = unit.bodyColor;
-  ctx.beginPath();
-  ctx.roundRect(x - s * 0.30, y - s * 0.18 * yScale, s * 0.60, s * 0.70 * yScale, s * 0.12);
-  ctx.fill();
-  ctx.fillStyle = unit.bandColor;
-  ctx.fillRect(x - s * 0.31, y + s * 0.02 * yScale, s * 0.62, s * 0.12 * yScale);
-  ctx.fillStyle = "#d2b38a";
-  ctx.beginPath();
-  ctx.arc(x, y - s * 0.30 * yScale, s * 0.20, 0, TAU);
-  ctx.fill();
-  ctx.fillStyle = unit.troopType === "heavy" ? "#c7b073" : "#6b6d6d";
-  ctx.beginPath();
-  ctx.ellipse(x, y - s * 0.42 * yScale, s * 0.24, s * 0.12 * yScale, 0, 0, TAU);
-  ctx.fill();
+  unitCtx.fillStyle = unit.bodyColor;
+  unitCtx.beginPath();
+  unitCtx.roundRect(x - s * 0.30, y - s * 0.18 * yScale, s * 0.60, s * 0.70 * yScale, s * 0.12);
+  unitCtx.fill();
+  unitCtx.fillStyle = unit.bandColor;
+  unitCtx.fillRect(x - s * 0.31, y + s * 0.02 * yScale, s * 0.62, s * 0.12 * yScale);
+  unitCtx.fillStyle = "#d2b38a";
+  unitCtx.beginPath();
+  unitCtx.arc(x, y - s * 0.30 * yScale, s * 0.20, 0, TAU);
+  unitCtx.fill();
+  unitCtx.fillStyle = unit.troopType === "heavy" ? "#c7b073" : "#6b6d6d";
+  unitCtx.beginPath();
+  unitCtx.ellipse(x, y - s * 0.42 * yScale, s * 0.24, s * 0.12 * yScale, 0, 0, TAU);
+  unitCtx.fill();
 }
 
-function drawBackground(size) {
-  const gradient = ctx.createLinearGradient(0, 0, 0, size.h);
-  gradient.addColorStop(0, "#172018");
-  gradient.addColorStop(0.48, "#303d25");
-  gradient.addColorStop(1, "#17110b");
-  ctx.fillStyle = gradient;
-  ctx.fillRect(0, 0, size.w, size.h);
-  ctx.globalAlpha = 0.18;
-  for (let i = 0; i < 80; i += 1) {
-    const x = hashNoise(i, 2, 19) * size.w;
-    const y = hashNoise(i, 4, 23) * size.h;
-    const r = size.w * (0.02 + hashNoise(i, 7, 29) * 0.08);
-    ctx.fillStyle = i % 5 === 0 ? "#182f2f" : "#566331";
-    ctx.beginPath();
-    ctx.ellipse(x, y, r, r * 0.22, hashNoise(i, 9, 31) * TAU, 0, TAU);
-    ctx.fill();
+function drawUnitsAndFallback(field, size, didUseWebGl) {
+  unitCtx.clearRect(0, 0, size.w, size.h);
+  if (!didUseWebGl) {
+    unitCtx.fillStyle = "#11130d";
+    unitCtx.fillRect(0, 0, size.w, size.h);
+    drawFallbackTiles(field, size);
   }
-  ctx.globalAlpha = 1;
+  field.units.sort((a, b) => a.row - b.row || a.col - b.col).forEach((unit) => drawUnit(unit, size));
+  unitCtx.save();
+  unitCtx.globalAlpha = 0.20;
+  unitCtx.fillStyle = "#6a1713";
+  unitCtx.beginPath();
+  unitCtx.moveTo(size.w * 0.18, size.h * 0.95);
+  unitCtx.lineTo(size.w * 0.82, size.h * 0.95);
+  unitCtx.lineTo(size.w * 0.64, size.h * 0.88);
+  unitCtx.lineTo(size.w * 0.36, size.h * 0.88);
+  unitCtx.closePath();
+  unitCtx.fill();
+  unitCtx.restore();
 }
 
 function drawBattlefield(snapshot) {
   const size = resize();
   const field = battlefieldForSnapshot(snapshot);
-  drawBackground(size);
-  field.tiles.sort((a, b) => a.row - b.row).forEach((tile) => drawTile(tile, size));
-  field.units.sort((a, b) => a.row - b.row || a.col - b.col).forEach((unit) => drawUnit(unit, size));
-  ctx.save();
-  ctx.globalAlpha = 0.24;
-  ctx.fillStyle = "#6a1713";
-  ctx.beginPath();
-  ctx.moveTo(size.w * 0.18, size.h * 0.95);
-  ctx.lineTo(size.w * 0.82, size.h * 0.95);
-  ctx.lineTo(size.w * 0.64, size.h * 0.88);
-  ctx.lineTo(size.w * 0.36, size.h * 0.88);
-  ctx.closePath();
-  ctx.fill();
-  ctx.restore();
+  const didUseWebGl = renderHexTilesWebGl(field, size);
+  drawUnitsAndFallback(field, size, didUseWebGl);
 }
 
 function nearestHex(clientX, clientY) {
-  const rect = canvas.getBoundingClientRect();
-  const size = { w: canvas.width, h: canvas.height };
-  const x = (clientX - rect.left) * (canvas.width / Math.max(1, rect.width));
-  const y = (clientY - rect.top) * (canvas.height / Math.max(1, rect.height));
+  const rect = unitCanvas.getBoundingClientRect();
+  const size = { w: unitCanvas.width, h: unitCanvas.height };
+  const x = (clientX - rect.left) * (unitCanvas.width / Math.max(1, rect.width));
+  const y = (clientY - rect.top) * (unitCanvas.height / Math.max(1, rect.height));
   let best = null;
   let bestD = Infinity;
   for (const tile of battlefield?.tiles ?? []) {
@@ -537,6 +536,7 @@ function patchGameHost() {
         id: battlefield.id,
         style: HEX_STYLE,
         visualDetailStyle: HEX_VISUAL_DETAIL_STYLE,
+        renderer: gl ? "webgl2-shaded-tiles" : "canvas2d-fallback-tiles",
         grid: { cols: battlefield.cols, rows: battlefield.rows, alignment: "fixed-pointy-offset", yScale: HEX_Y_SCALE },
         terrainTypes: Object.keys(TERRAIN_TYPES),
         unitCounts: UNIT_COUNTS,
@@ -548,18 +548,19 @@ function patchGameHost() {
       } : null
     };
   };
-  host.getHexBattlefieldSnapshot = () => battlefield ? { ...battlefield, selectedUnitId, hoveredHexId, hoveredUnitId, selectableArmy: "rome", visualDetailStyle: HEX_VISUAL_DETAIL_STYLE } : null;
+  host.getHexBattlefieldSnapshot = () => battlefield ? { ...battlefield, selectedUnitId, hoveredHexId, hoveredUnitId, selectableArmy: "rome", visualDetailStyle: HEX_VISUAL_DETAIL_STYLE, renderer: gl ? "webgl2-shaded-tiles" : "canvas2d-fallback-tiles" } : null;
   host.__cavalryHexPatched = true;
   return true;
 }
 
 function frame() {
-  ensureCanvas();
+  ensureCanvases();
   const snapshot = globalThis.GameHost?.getSnapshot?.() ?? {};
   const active = snapshot.mode === "battlefield";
   window.CavalryHexBattlefieldActive = active;
-  canvas.style.display = active ? "block" : "none";
-  canvas.style.pointerEvents = active ? "auto" : "none";
+  glCanvas.style.display = active ? "block" : "none";
+  unitCanvas.style.display = active ? "block" : "none";
+  unitCanvas.style.pointerEvents = active ? "auto" : "none";
   if (active) drawBattlefield(snapshot);
   requestAnimationFrame(frame);
 }
@@ -569,7 +570,7 @@ function boot() {
   const patchTimer = setInterval(() => {
     if (patchGameHost()) clearInterval(patchTimer);
   }, 100);
-  ensureCanvas();
+  ensureCanvases();
   requestAnimationFrame(frame);
 }
 
