@@ -1,8 +1,9 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
-const main = readFileSync("experiments/The Cavalry of Rome/src/main.js", "utf8");
+const main = readFileSync("experiments/The Cavalry of Rome/src/main-realistic.js", "utf8");
 const endpoint = readFileSync("apps/the-cavalry-of-rome/index.html", "utf8");
+const experimentEntry = readFileSync("experiments/The Cavalry of Rome/index.html", "utf8");
 const gallery = readFileSync("experiments/_shared/nexus-gallery-data.js", "utf8");
 const plan = JSON.parse(readFileSync("experiments/The Cavalry of Rome/domain-plan.json", "utf8"));
 
@@ -26,17 +27,23 @@ assert.ok(main.includes("navigator.gpu"), "Cavalry should attempt a WebGPU rende
 assert.ok(main.includes("CanvasFallbackRenderer"), "Cavalry should keep a Canvas fallback");
 assert.ok(main.includes("makeRegionOverlayVertices"), "Cavalry should use highlighted region overlays instead of point nodes");
 assert.ok(main.includes("makePainterlyStrokeVertices"), "Cavalry should add painterly brush/contour overlays");
-assert.ok(main.includes("PAINTERLY_TERRAIN_STYLE"), "Cavalry should expose painterly terrain fidelity metadata");
+assert.ok(main.includes("valueNoise2D"), "Cavalry should use non-repeating value noise");
+assert.ok(main.includes("fbmNoise"), "Cavalry should use multi-octave FBM terrain noise");
+assert.ok(main.includes("ridgedNoise"), "Cavalry should use ridged terrain noise");
+assert.ok(main.includes("domainWarp"), "Cavalry should domain-warp terrain samples");
+assert.ok(main.includes("biomeColorBlend"), "Cavalry should blend biome colors naturally");
+assert.ok(main.includes("REALISTIC_TERRAIN_STYLE"), "Cavalry should expose realistic terrain fidelity metadata");
+assert.ok(main.includes("nonRepeatingLandforms"), "Cavalry should expose non-repeating landform metadata");
 assert.ok(main.includes("MAP_EXTENTS"), "Cavalry should define a larger map extent");
 assert.ok(main.includes("mapPan"), "Cavalry should expose pan state");
 assert.ok(main.includes("wheel"), "Cavalry should support wheel zoom for the map");
 assert.ok(main.includes("pushPrimitiveSoldier"), "Cavalry should build primitive full-bodied soldiers");
 assert.ok(main.includes("pushBox"), "Cavalry soldiers should be constructed from reusable primitive body parts");
 assert.ok(main.includes("FULL_BODY_PRIMITIVE_STYLE"), "Cavalry should expose full-body primitive soldier fidelity metadata");
-assert.ok(main.includes("low-poly"), "Cavalry should preserve low-poly battlefield visual descriptors");
 
-assert.ok(endpoint.includes("../../experiments/The%20Cavalry%20of%20Rome/src/main.js"), "live endpoint should load the Cavalry experiment module");
+assert.ok(endpoint.includes("../../experiments/The%20Cavalry%20of%20Rome/src/main-realistic.js"), "live endpoint should load the realistic Cavalry module");
 assert.ok(endpoint.includes("Live NexusRealtime endpoint for The Cavalry of Rome"), "live endpoint should identify the route");
+assert.ok(experimentEntry.includes("./src/main-realistic.js"), "experiment entry should load the realistic Cavalry module");
 assert.ok(gallery.includes('id: "the-cavalry-of-rome"'), "gallery should expose Cavalry by id");
 assert.ok(gallery.includes('route: "./apps/the-cavalry-of-rome/"'), "gallery should point to the live app endpoint");
 
