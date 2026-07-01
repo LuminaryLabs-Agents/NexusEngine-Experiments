@@ -55,16 +55,19 @@ assert.ok(vegetation.includes("windResponse"), "vegetation pass should include v
 
 assert.ok(endpoint.includes("../../experiments/The%20Cavalry%20of%20Rome/src/main-realistic.js"), "live endpoint should load the realistic Cavalry module");
 assert.ok(endpoint.includes("../../experiments/The%20Cavalry%20of%20Rome/src/vegetation-pass.js"), "live endpoint should load the procedural vegetation pass");
-assert.ok(endpoint.includes("#hud,#footer,#commandBar{display:none!important"), "live endpoint should hide all current in-game UI hooks");
-assert.ok(endpoint.includes('id="hud" aria-hidden="true" hidden'), "live endpoint HUD should be hidden and aria-hidden");
-assert.ok(endpoint.includes('<footer id="footer" aria-hidden="true" hidden></footer>'), "live endpoint footer should be hidden and empty");
+assert.ok(endpoint.includes("CavalryUiSinkShim"), "live endpoint should provide non-DOM status sinks for runtime compatibility");
+assert.ok(!endpoint.includes('id="hud"'), "live endpoint should not contain HUD DOM");
+assert.ok(!endpoint.includes('id="footer"'), "live endpoint should not contain footer DOM");
+assert.ok(!endpoint.includes('id="commandBar"'), "live endpoint should not contain command bar DOM");
+assert.ok(!endpoint.includes("#hud,#footer,#commandBar"), "live endpoint should not hide UI with CSS because UI DOM should be removed");
 assert.ok(!endpoint.includes("Procedural vegetation pass: WASD/drag pan"), "live endpoint should not show visible instruction footer text");
 assert.ok(endpoint.includes("Live NexusRealtime endpoint for The Cavalry of Rome"), "live endpoint should identify the route");
 assert.ok(experimentEntry.includes("./src/main-realistic.js"), "experiment entry should load the realistic Cavalry module");
 assert.ok(experimentEntry.includes("./src/vegetation-pass.js"), "experiment entry should load the procedural vegetation pass");
-assert.ok(experimentEntry.includes("#hud,#footer,#commandBar{display:none!important"), "experiment entry should hide all current in-game UI hooks");
-assert.ok(experimentEntry.includes('id="hud" aria-hidden="true" hidden'), "experiment HUD should be hidden and aria-hidden");
-assert.ok(experimentEntry.includes('<footer id="footer" aria-hidden="true" hidden></footer>'), "experiment footer should be hidden and empty");
+assert.ok(experimentEntry.includes("CavalryUiSinkShim"), "experiment entry should provide non-DOM status sinks for runtime compatibility");
+assert.ok(!experimentEntry.includes('id="hud"'), "experiment entry should not contain HUD DOM");
+assert.ok(!experimentEntry.includes('id="footer"'), "experiment entry should not contain footer DOM");
+assert.ok(!experimentEntry.includes('id="commandBar"'), "experiment entry should not contain command bar DOM");
 assert.ok(gallery.includes('id: "the-cavalry-of-rome"'), "gallery should expose Cavalry by id");
 assert.ok(gallery.includes('route: "./apps/the-cavalry-of-rome/"'), "gallery should point to the live app endpoint");
 
@@ -74,6 +77,7 @@ assert.equal(plan.fidelityFocus.mapNavigation.includes("pannable"), true, "domai
 assert.equal(plan.fidelityFocus.soldiers.includes("full-bodied primitive soldiers"), true, "domain plan should record full-bodied primitive soldiers");
 assert.ok(plan.fidelityFocus.proceduralVegetation, "domain plan should record procedural vegetation fidelity");
 assert.ok(plan.intentionallyOmitted.includes("combat rules"), "combat should remain intentionally omitted");
+assert.ok(plan.intentionallyOmitted.includes("visible HUD"), "visible HUD should remain intentionally omitted");
 assert.ok(plan.futureProtoKitCandidatesFromCustomLogic.some((entry) => entry.id === "painterly-terrain-material-kit"), "painterly terrain material should be mapped to a future DSK candidate");
 assert.ok(plan.futureProtoKitCandidatesFromCustomLogic.some((entry) => entry.id === "primitive-soldier-construction-kit"), "primitive soldier construction should be mapped to a future DSK candidate");
 assert.ok(plan.futureProtoKitCandidatesFromCustomLogic.some((entry) => entry.id === "procedural-vegetation-field-kit"), "procedural vegetation should be mapped to a future DSK candidate");
