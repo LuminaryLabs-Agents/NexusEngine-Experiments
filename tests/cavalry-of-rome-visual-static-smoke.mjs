@@ -55,9 +55,16 @@ assert.ok(vegetation.includes("windResponse"), "vegetation pass should include v
 
 assert.ok(endpoint.includes("../../experiments/The%20Cavalry%20of%20Rome/src/main-realistic.js"), "live endpoint should load the realistic Cavalry module");
 assert.ok(endpoint.includes("../../experiments/The%20Cavalry%20of%20Rome/src/vegetation-pass.js"), "live endpoint should load the procedural vegetation pass");
+assert.ok(endpoint.includes("#hud,#footer,#commandBar{display:none!important"), "live endpoint should hide all current in-game UI hooks");
+assert.ok(endpoint.includes('id="hud" aria-hidden="true" hidden'), "live endpoint HUD should be hidden and aria-hidden");
+assert.ok(endpoint.includes('<footer id="footer" aria-hidden="true" hidden></footer>'), "live endpoint footer should be hidden and empty");
+assert.ok(!endpoint.includes("Procedural vegetation pass: WASD/drag pan"), "live endpoint should not show visible instruction footer text");
 assert.ok(endpoint.includes("Live NexusRealtime endpoint for The Cavalry of Rome"), "live endpoint should identify the route");
 assert.ok(experimentEntry.includes("./src/main-realistic.js"), "experiment entry should load the realistic Cavalry module");
 assert.ok(experimentEntry.includes("./src/vegetation-pass.js"), "experiment entry should load the procedural vegetation pass");
+assert.ok(experimentEntry.includes("#hud,#footer,#commandBar{display:none!important"), "experiment entry should hide all current in-game UI hooks");
+assert.ok(experimentEntry.includes('id="hud" aria-hidden="true" hidden'), "experiment HUD should be hidden and aria-hidden");
+assert.ok(experimentEntry.includes('<footer id="footer" aria-hidden="true" hidden></footer>'), "experiment footer should be hidden and empty");
 assert.ok(gallery.includes('id: "the-cavalry-of-rome"'), "gallery should expose Cavalry by id");
 assert.ok(gallery.includes('route: "./apps/the-cavalry-of-rome/"'), "gallery should point to the live app endpoint");
 
