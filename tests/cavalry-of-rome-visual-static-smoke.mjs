@@ -60,6 +60,8 @@ assert.ok(!endpoint.includes('id="hud"'), "live endpoint should not contain HUD 
 assert.ok(!endpoint.includes('id="footer"'), "live endpoint should not contain footer DOM");
 assert.ok(!endpoint.includes('id="commandBar"'), "live endpoint should not contain command bar DOM");
 assert.ok(!endpoint.includes("#hud,#footer,#commandBar"), "live endpoint should not hide UI with CSS because UI DOM should be removed");
+assert.ok(!endpoint.includes("attachNexusRealtimePageLoader"), "live endpoint should not attach shared page-loader UI");
+assert.ok(!endpoint.includes("nexus-realtime-page-loader.js"), "live endpoint should not import shared page-loader UI");
 assert.ok(!endpoint.includes("Procedural vegetation pass: WASD/drag pan"), "live endpoint should not show visible instruction footer text");
 assert.ok(endpoint.includes("Live NexusRealtime endpoint for The Cavalry of Rome"), "live endpoint should identify the route");
 assert.ok(experimentEntry.includes("./src/main-realistic.js"), "experiment entry should load the realistic Cavalry module");
@@ -68,6 +70,8 @@ assert.ok(experimentEntry.includes("CavalryUiSinkShim"), "experiment entry shoul
 assert.ok(!experimentEntry.includes('id="hud"'), "experiment entry should not contain HUD DOM");
 assert.ok(!experimentEntry.includes('id="footer"'), "experiment entry should not contain footer DOM");
 assert.ok(!experimentEntry.includes('id="commandBar"'), "experiment entry should not contain command bar DOM");
+assert.ok(!experimentEntry.includes("attachNexusRealtimePageLoader"), "experiment entry should not attach shared page-loader UI");
+assert.ok(!experimentEntry.includes("nexus-realtime-page-loader.js"), "experiment entry should not import shared page-loader UI");
 assert.ok(gallery.includes('id: "the-cavalry-of-rome"'), "gallery should expose Cavalry by id");
 assert.ok(gallery.includes('route: "./apps/the-cavalry-of-rome/"'), "gallery should point to the live app endpoint");
 
@@ -78,6 +82,7 @@ assert.equal(plan.fidelityFocus.soldiers.includes("full-bodied primitive soldier
 assert.ok(plan.fidelityFocus.proceduralVegetation, "domain plan should record procedural vegetation fidelity");
 assert.ok(plan.intentionallyOmitted.includes("combat rules"), "combat should remain intentionally omitted");
 assert.ok(plan.intentionallyOmitted.includes("visible HUD"), "visible HUD should remain intentionally omitted");
+assert.ok(plan.intentionallyOmitted.includes("hidden HUD DOM"), "hidden HUD DOM should remain intentionally omitted");
 assert.ok(plan.futureProtoKitCandidatesFromCustomLogic.some((entry) => entry.id === "painterly-terrain-material-kit"), "painterly terrain material should be mapped to a future DSK candidate");
 assert.ok(plan.futureProtoKitCandidatesFromCustomLogic.some((entry) => entry.id === "primitive-soldier-construction-kit"), "primitive soldier construction should be mapped to a future DSK candidate");
 assert.ok(plan.futureProtoKitCandidatesFromCustomLogic.some((entry) => entry.id === "procedural-vegetation-field-kit"), "procedural vegetation should be mapped to a future DSK candidate");
