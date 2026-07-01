@@ -15,7 +15,9 @@ This slice intentionally drops campaign/combat resolution while adding the first
 - Drag/WASD pans the main region-selection map; wheel zooms the map.
 - Clicking a region triggers a cinematic world-map-to-battlefield zoom.
 - The battlefield is now an 11x9 no-UI hex grid viewed from above and behind Rome.
-- Hex alignment now uses fixed pointy-offset math with a single radius and y-scale, so hexes no longer drift in size or spacing by row.
+- Hex interiors now use a WebGL2 material shader with procedural FBM, rim/bevel shading, water shimmer, hill contouring, grass striations, and fence rail/post detail.
+- If WebGL2 is unavailable, the hex board falls back to a simpler Canvas2D tile renderer.
+- Hex alignment uses fixed pointy-offset math with a single radius and y-scale, so hexes do not drift in size or spacing by row.
 - Hex terrain includes grass, water, hills, and fences with movement/defense metadata.
 - Tactical units are aggregated troop markers, not individual soldier swarms.
 - Light troops are green, medium troops are blue, and heavy troops are red. Army ownership is shown as a band color.
@@ -84,6 +86,7 @@ keep canvas-only presentation
 preserve DSK/GameHost debug surfaces through non-DOM sinks
 add Rome-perspective hex battlefield after region selection
 fix hex alignment using fixed pointy-offset spacing
+add WebGL2 procedural terrain materials inside hexes
 compress battlefield soldiers into 22 aggregated units
 add water/hill/fence/grass terrain tiles
 limit selection to Rome-side units
@@ -112,6 +115,7 @@ realistic non-repeating terrain
 large readable regions
 pannable terrain inspection
 procedural vegetation descriptors without floating screen-space rendering
+WebGL2-shaded hex interiors
 terrain-anchored visual features on tactical hexes
 aggregated troop markers with soldier clusters
 atmospheric battlefield reveal
@@ -130,6 +134,7 @@ The near-term target is cinematic visual quality and scene-native gameplay found
 ```txt
 hex-battlefield-grid-kit
 hex-terrain-descriptor-kit
+hex-webgl-material-shader-kit
 tactical-army-formation-kit
 troop-class-visual-kit
 terrain-anchored-vegetation-kit
