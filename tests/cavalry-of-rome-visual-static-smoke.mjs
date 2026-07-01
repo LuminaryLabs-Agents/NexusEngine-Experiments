@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 
 const main = readFileSync("experiments/The Cavalry of Rome/src/main-realistic.js", "utf8");
 const vegetation = readFileSync("experiments/The Cavalry of Rome/src/vegetation-pass.js", "utf8");
+const hexBattlefield = readFileSync("experiments/The Cavalry of Rome/src/hex-battlefield-pass.js", "utf8");
 const endpoint = readFileSync("apps/the-cavalry-of-rome/index.html", "utf8");
 const experimentEntry = readFileSync("experiments/The Cavalry of Rome/index.html", "utf8");
 const gallery = readFileSync("experiments/_shared/nexus-gallery-data.js", "utf8");
@@ -53,8 +54,23 @@ assert.ok(vegetation.includes("tree"), "vegetation pass should include tree desc
 assert.ok(vegetation.includes("reed"), "vegetation pass should include river reed descriptors");
 assert.ok(vegetation.includes("windResponse"), "vegetation pass should include visual-only wind response metadata");
 
+assert.ok(hexBattlefield.includes("createHexBattlefield"), "hex pass should create a battlefield grid");
+assert.ok(hexBattlefield.includes("HEX_GRID"), "hex pass should define grid size");
+assert.ok(hexBattlefield.includes("TERRAIN_TYPES"), "hex pass should define terrain types");
+assert.ok(hexBattlefield.includes("water"), "hex pass should include water tiles");
+assert.ok(hexBattlefield.includes("hill"), "hex pass should include hill tiles");
+assert.ok(hexBattlefield.includes("fence"), "hex pass should include fence tiles");
+assert.ok(hexBattlefield.includes("CLASS_COLORS"), "hex pass should define troop class colors");
+assert.ok(hexBattlefield.includes("BAND_COLORS"), "hex pass should define army band colors");
+assert.ok(hexBattlefield.includes("UNIT_COUNTS"), "hex pass should define aggregated unit counts");
+assert.ok(hexBattlefield.includes("CavalryHexBattlefieldActive"), "hex pass should expose active state for overlay grounding");
+assert.ok(hexBattlefield.includes('vegetation.style.display = active ? "none" : "block"'), "hex pass should disable screen-space vegetation in hex battle to prevent floating");
+assert.ok(hexBattlefield.includes("getHexBattlefieldSnapshot"), "hex pass should expose a GameHost battlefield snapshot");
+assert.ok(hexBattlefield.includes("rome-perspective-hex-battlefield-no-ui"), "hex pass should document the Rome-perspective no-UI view");
+
 assert.ok(endpoint.includes("../../experiments/The%20Cavalry%20of%20Rome/src/main-realistic.js"), "live endpoint should load the realistic Cavalry module");
 assert.ok(endpoint.includes("../../experiments/The%20Cavalry%20of%20Rome/src/vegetation-pass.js"), "live endpoint should load the procedural vegetation pass");
+assert.ok(endpoint.includes("../../experiments/The%20Cavalry%20of%20Rome/src/hex-battlefield-pass.js"), "live endpoint should load the hex battlefield pass");
 assert.ok(endpoint.includes("CavalryUiSinkShim"), "live endpoint should provide non-DOM status sinks for runtime compatibility");
 assert.ok(!endpoint.includes('id="hud"'), "live endpoint should not contain HUD DOM");
 assert.ok(!endpoint.includes('id="footer"'), "live endpoint should not contain footer DOM");
@@ -66,6 +82,7 @@ assert.ok(!endpoint.includes("Procedural vegetation pass: WASD/drag pan"), "live
 assert.ok(endpoint.includes("Live NexusRealtime endpoint for The Cavalry of Rome"), "live endpoint should identify the route");
 assert.ok(experimentEntry.includes("./src/main-realistic.js"), "experiment entry should load the realistic Cavalry module");
 assert.ok(experimentEntry.includes("./src/vegetation-pass.js"), "experiment entry should load the procedural vegetation pass");
+assert.ok(experimentEntry.includes("./src/hex-battlefield-pass.js"), "experiment entry should load the hex battlefield pass");
 assert.ok(experimentEntry.includes("CavalryUiSinkShim"), "experiment entry should provide non-DOM status sinks for runtime compatibility");
 assert.ok(!experimentEntry.includes('id="hud"'), "experiment entry should not contain HUD DOM");
 assert.ok(!experimentEntry.includes('id="footer"'), "experiment entry should not contain footer DOM");
