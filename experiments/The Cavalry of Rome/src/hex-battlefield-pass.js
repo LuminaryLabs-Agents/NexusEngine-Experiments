@@ -5,6 +5,8 @@ const BAND_COLORS = Object.freeze({ rome: "#c8231f", etruscan: "#d6aa3c", samnit
 const TERRAIN_TYPES = Object.freeze({ grass: "grass", water: "water", hill: "hill", fence: "fence" });
 const UNIT_COUNTS = Object.freeze({ rome: { light: 5, medium: 4, heavy: 3 }, enemy: { light: 4, medium: 4, heavy: 2 } });
 const TAU = Math.PI * 2;
+const SQRT3 = Math.sqrt(3);
+const HEX_Y_SCALE = 0.72;
 
 const clamp = (value, min, max) => Math.max(min, Math.min(max, Number.isFinite(Number(value)) ? Number(value) : min));
 const lerp = (a, b, t) => a + (b - a) * t;
@@ -141,24 +143,39 @@ function battlefieldForSnapshot(snapshot = {}) {
   return battlefield;
 }
 
-function projectHex(col, row, size) {
-  const t = row / Math.max(1, HEX_GRID.rows - 1);
-  const perspective = lerp(0.64, 1.28, smoothstep(0, 1, t));
-  const base = Math.min(size.w / 15.0, size.h / 11.2);
-  const hexR = base * perspective;
-  const centerX = size.w * 0.5;
-  const centerY = size.h * 0.145;
-  const x = centerX + (col - (HEX_GRID.cols - 1) / 2 + (row % 2 ? 0.5 : 0)) * base * 1.42 * perspective;
-  const y = centerY + row * base * 0.76 * perspective + row * base * 0.145;
-  return { x, y, r: hexR, perspective };
+function boardMetrics(size) {
+  const usableW = size.w * 0.88;
+  const usableH = size.h * 0.80;
+  const rByW = usableW / (SQRT3 * (HEX_GRID.cols + 0.5));
+  const rByH = usableH / (HEX_Y_SCALE * (1.5 * (HEX_GRID.rows - 1) + 2));
+  const r = Math.min(rByW, rByH);
+  const boardW = SQRT3 * r * (HEX_GRID.cols + 0.5);
+  const boardH = HEX_Y_SCALE * r * (1.5 * (HEX_GRID.rows - 1) + 2);
+  return {
+    r,
+    originX: (size.w - boardW) * 0.5 + SQRT3 * r * 0.5,
+    originY: size.h * 0.06 + Math.max(0, usableH - boardH) * 0.08,
+    yScale: HEX_Y_SCALE
+  };
 }
 
-function hexPath(ctx, x, y, r) {
+function projectHex(col, row, size) {
+  const metrics = boardMetrics(size);
+  return {
+    x: metrics.originX + SQRT3 * metrics.r * (col + (row % 2 ? 0.5 : 0)),
+    y: metrics.originY + metrics.yScale * metrics.r * (1 + row * 1.5),
+    r: metrics.r,
+    yScale: metrics.yScale,
+    perspective: 1
+  };
+}
+
+function hexPath(ctx, x, y, r, yScale = HEX_Y_SCALE) {
   ctx.beginPath();
   for (let i = 0; i < 6; i += 1) {
     const angle = Math.PI / 6 + i * TAU / 6;
     const px = x + Math.cos(angle) * r;
-    const py = y + Math.sin(angle) * r * 0.82;
+    const py = y + Math.sin(angle) * r * yScale;
     if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
   }
   ctx.closePath();
@@ -175,10 +192,10 @@ function drawTile(tile, size) {
   const p = projectHex(tile.col, tile.row, size);
   const hot = hoveredHexId === tile.id;
   const [a, b] = tileColor(tile);
-  const gradient = ctx.createLinearGradient(p.x, p.y - p.r, p.x, p.y + p.r);
+  const gradient = ctx.createLinearGradient(p.x, p.y - p.r * p.yScale, p.x, p.y + p.r * p.yScale);
   gradient.addColorStop(0, a);
   gradient.addColorStop(1, b);
-  hexPath(ctx, p.x, p.y, p.r * 0.97);
+  hexPath(ctx, p.x, p.y, p.r * 0.985, p.yScale);
   ctx.fillStyle = gradient;
   ctx.fill();
   ctx.lineWidth = hot ? Math.max(2, p.r * 0.035) : Math.max(1, p.r * 0.018);
@@ -200,53 +217,53 @@ function drawGrassFeature(p, tile) {
     const a = hashNoise(tile.col + i, tile.row, 23) * TAU;
     const radius = p.r * (0.12 + hashNoise(tile.row, tile.col + i, 24) * 0.42);
     const x = p.x + Math.cos(a) * radius;
-    const y = p.y + Math.sin(a) * radius * 0.62;
+    const y = p.y + Math.sin(a) * radius * p.yScale;
     ctx.beginPath();
     ctx.moveTo(x, y);
-    ctx.lineTo(x + Math.cos(a + 0.9) * p.r * 0.055, y - p.r * 0.12);
+    ctx.lineTo(x + Math.cos(a + 0.9) * p.r * 0.055, y - p.r * p.yScale * 0.16);
     ctx.stroke();
   }
   ctx.restore();
 }
 
-function drawWaterFeature(p, tile) {
+function drawWaterFeature(p) {
   ctx.save();
   ctx.globalAlpha = 0.55;
   ctx.strokeStyle = "rgba(126,190,200,.58)";
   ctx.lineWidth = Math.max(1, p.r * 0.025);
   for (let i = 0; i < 3; i += 1) {
     ctx.beginPath();
-    ctx.ellipse(p.x, p.y + (i - 1) * p.r * 0.18, p.r * 0.48, p.r * 0.06, 0.1 * i, 0, TAU);
+    ctx.ellipse(p.x, p.y + (i - 1) * p.r * p.yScale * 0.18, p.r * 0.48, p.r * p.yScale * 0.06, 0.1 * i, 0, TAU);
     ctx.stroke();
   }
   ctx.restore();
 }
 
-function drawHillFeature(p, tile) {
+function drawHillFeature(p) {
   ctx.save();
   ctx.globalAlpha = 0.62;
   ctx.fillStyle = "rgba(140,128,76,.58)";
   ctx.beginPath();
-  ctx.ellipse(p.x - p.r * 0.12, p.y - p.r * 0.05, p.r * 0.38, p.r * 0.16, -0.2, 0, TAU);
+  ctx.ellipse(p.x - p.r * 0.12, p.y - p.r * p.yScale * 0.05, p.r * 0.38, p.r * p.yScale * 0.16, -0.2, 0, TAU);
   ctx.fill();
   ctx.strokeStyle = "rgba(226,205,139,.35)";
   ctx.stroke();
   ctx.restore();
 }
 
-function drawFenceFeature(p, tile) {
+function drawFenceFeature(p) {
   ctx.save();
   ctx.strokeStyle = "rgba(132,90,48,.86)";
   ctx.lineWidth = Math.max(2, p.r * 0.035);
   ctx.beginPath();
-  ctx.moveTo(p.x - p.r * 0.48, p.y + p.r * 0.04);
-  ctx.lineTo(p.x + p.r * 0.48, p.y - p.r * 0.08);
+  ctx.moveTo(p.x - p.r * 0.48, p.y + p.r * p.yScale * 0.04);
+  ctx.lineTo(p.x + p.r * 0.48, p.y - p.r * p.yScale * 0.08);
   ctx.stroke();
   for (let i = -2; i <= 2; i += 1) {
     ctx.beginPath();
     const x = p.x + i * p.r * 0.22;
-    ctx.moveTo(x, p.y - p.r * 0.20);
-    ctx.lineTo(x, p.y + p.r * 0.13);
+    ctx.moveTo(x, p.y - p.r * p.yScale * 0.20);
+    ctx.lineTo(x, p.y + p.r * p.yScale * 0.13);
     ctx.stroke();
   }
   ctx.restore();
@@ -258,35 +275,36 @@ function unitAt(col, row) {
 
 function drawUnit(unit, size) {
   const p = projectHex(unit.col, unit.row, size);
-  const selected = selectedUnitId === unit.id;
-  const hovered = hoveredUnitId === unit.id;
-  const baseR = p.r * 0.45;
+  const selectable = unit.army === "rome";
+  const selected = selectable && selectedUnitId === unit.id;
+  const hovered = selectable && hoveredUnitId === unit.id;
+  const baseR = p.r * 0.42;
   ctx.save();
   ctx.shadowColor = "rgba(0,0,0,.55)";
   ctx.shadowBlur = p.r * 0.18;
   ctx.fillStyle = "rgba(13,11,8,.58)";
   ctx.beginPath();
-  ctx.ellipse(p.x, p.y + baseR * 0.42, baseR * 1.08, baseR * 0.42, 0, 0, TAU);
+  ctx.ellipse(p.x, p.y + baseR * 0.42 * p.yScale, baseR * 1.08, baseR * 0.42 * p.yScale, 0, 0, TAU);
   ctx.fill();
 
   ctx.shadowBlur = 0;
   ctx.fillStyle = selected ? "rgba(255,235,155,.62)" : hovered ? "rgba(255,235,155,.34)" : "rgba(30,23,16,.82)";
   ctx.beginPath();
-  ctx.ellipse(p.x, p.y + baseR * 0.22, baseR * 0.98, baseR * 0.46, 0, 0, TAU);
+  ctx.ellipse(p.x, p.y + baseR * 0.20 * p.yScale, baseR * 0.98, baseR * 0.46 * p.yScale, 0, 0, TAU);
   ctx.fill();
 
   const cluster = unit.troopType === "heavy" ? 5 : unit.troopType === "medium" ? 4 : 3;
   for (let i = 0; i < cluster; i += 1) {
     const offset = (i - (cluster - 1) / 2) * baseR * 0.28;
     const soldierX = p.x + offset;
-    const soldierY = p.y - baseR * 0.16 + Math.abs(i - 2) * baseR * 0.04;
-    drawMiniSoldier(soldierX, soldierY, baseR * (unit.troopType === "heavy" ? 0.42 : 0.36), unit);
+    const soldierY = p.y - baseR * 0.18 * p.yScale + Math.abs(i - 2) * baseR * 0.04 * p.yScale;
+    drawMiniSoldier(soldierX, soldierY, baseR * (unit.troopType === "heavy" ? 0.42 : 0.36), unit, p.yScale);
   }
 
   ctx.lineWidth = Math.max(3, p.r * 0.055);
   ctx.strokeStyle = unit.bandColor;
   ctx.beginPath();
-  ctx.ellipse(p.x, p.y + baseR * 0.20, baseR * 0.98, baseR * 0.46, 0, 0, TAU);
+  ctx.ellipse(p.x, p.y + baseR * 0.20 * p.yScale, baseR * 0.98, baseR * 0.46 * p.yScale, 0, 0, TAU);
   ctx.stroke();
   if (unit.army === "rome" && unit.troopType === "heavy") {
     ctx.strokeStyle = "#6e0d0c";
@@ -296,20 +314,20 @@ function drawUnit(unit, size) {
   ctx.restore();
 }
 
-function drawMiniSoldier(x, y, s, unit) {
+function drawMiniSoldier(x, y, s, unit, yScale) {
   ctx.fillStyle = unit.bodyColor;
   ctx.beginPath();
-  ctx.roundRect(x - s * 0.30, y - s * 0.18, s * 0.60, s * 0.70, s * 0.12);
+  ctx.roundRect(x - s * 0.30, y - s * 0.18 * yScale, s * 0.60, s * 0.70 * yScale, s * 0.12);
   ctx.fill();
   ctx.fillStyle = unit.bandColor;
-  ctx.fillRect(x - s * 0.31, y + s * 0.02, s * 0.62, s * 0.12);
+  ctx.fillRect(x - s * 0.31, y + s * 0.02 * yScale, s * 0.62, s * 0.12 * yScale);
   ctx.fillStyle = "#d2b38a";
   ctx.beginPath();
-  ctx.arc(x, y - s * 0.30, s * 0.20, 0, TAU);
+  ctx.arc(x, y - s * 0.30 * yScale, s * 0.20, 0, TAU);
   ctx.fill();
   ctx.fillStyle = unit.troopType === "heavy" ? "#c7b073" : "#6b6d6d";
   ctx.beginPath();
-  ctx.ellipse(x, y - s * 0.42, s * 0.24, s * 0.12, 0, 0, TAU);
+  ctx.ellipse(x, y - s * 0.42 * yScale, s * 0.24, s * 0.12 * yScale, 0, 0, TAU);
   ctx.fill();
 }
 
@@ -320,7 +338,7 @@ function drawBackground(size) {
   gradient.addColorStop(1, "#17110b");
   ctx.fillStyle = gradient;
   ctx.fillRect(0, 0, size.w, size.h);
-  ctx.globalAlpha = 0.22;
+  ctx.globalAlpha = 0.18;
   for (let i = 0; i < 80; i += 1) {
     const x = hashNoise(i, 2, 19) * size.w;
     const y = hashNoise(i, 4, 23) * size.h;
@@ -361,24 +379,24 @@ function nearestHex(clientX, clientY) {
   let bestD = Infinity;
   for (const tile of battlefield?.tiles ?? []) {
     const p = projectHex(tile.col, tile.row, size);
-    const d = Math.hypot(x - p.x, y - p.y) / Math.max(1, p.r);
+    const d = Math.hypot((x - p.x), (y - p.y) / p.yScale) / Math.max(1, p.r);
     if (d < bestD) { best = tile; bestD = d; }
   }
-  return bestD < 0.82 ? best : null;
+  return bestD < 0.94 ? best : null;
 }
 
 function onPointerMove(event) {
   const tile = nearestHex(event.clientX, event.clientY);
   hoveredHexId = tile?.id ?? null;
   const unit = tile ? unitAt(tile.col, tile.row) : null;
-  hoveredUnitId = unit?.id ?? null;
+  hoveredUnitId = unit?.army === "rome" ? unit.id : null;
 }
 
 function onPointerDown(event) {
   const tile = nearestHex(event.clientX, event.clientY);
   if (!tile) return;
   const unit = unitAt(tile.col, tile.row);
-  selectedUnitId = unit?.id ?? null;
+  selectedUnitId = unit?.army === "rome" ? unit.id : null;
 }
 
 function patchGameHost() {
@@ -392,17 +410,18 @@ function patchGameHost() {
       tacticalHex: battlefield ? {
         id: battlefield.id,
         style: HEX_STYLE,
-        grid: { cols: battlefield.cols, rows: battlefield.rows },
+        grid: { cols: battlefield.cols, rows: battlefield.rows, alignment: "fixed-pointy-offset", yScale: HEX_Y_SCALE },
         terrainTypes: Object.keys(TERRAIN_TYPES),
         unitCounts: UNIT_COUNTS,
         selectedUnitId,
         hoveredHexId,
         hoveredUnitId,
+        selectableArmy: "rome",
         active: snapshot.mode === "battlefield"
       } : null
     };
   };
-  host.getHexBattlefieldSnapshot = () => battlefield ? { ...battlefield, selectedUnitId, hoveredHexId, hoveredUnitId } : null;
+  host.getHexBattlefieldSnapshot = () => battlefield ? { ...battlefield, selectedUnitId, hoveredHexId, hoveredUnitId, selectableArmy: "rome" } : null;
   host.__cavalryHexPatched = true;
   return true;
 }
