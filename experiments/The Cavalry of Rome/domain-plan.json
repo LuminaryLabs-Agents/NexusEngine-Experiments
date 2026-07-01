@@ -4,8 +4,12 @@
   "status": "high-fidelity-visual-experiment-seed",
   "canonicalRouteClaim": false,
   "deterministicReplayClaim": false,
-  "designIntent": "DSK-composed WebGPU-first fidelity route: scan over a larger pannable painterly Roman terrain map, hover oversized highlighted regions, click to trigger a cinematic dive, and reveal a primitive-built full-bodied battlefield tableau.",
+  "designIntent": "DSK-composed WebGPU-first fidelity route: scan over a larger pannable realistic Roman terrain map, hover oversized highlighted regions, click to trigger a cinematic dive, and reveal a primitive-built full-bodied battlefield tableau with a procedural vegetation population pass.",
   "liveEndpoint": "apps/the-cavalry-of-rome/",
+  "activeModules": [
+    "experiments/The Cavalry of Rome/src/main-realistic.js",
+    "experiments/The Cavalry of Rome/src/vegetation-pass.js"
+  ],
   "existingDskStack": [
     "gamehost-standard-kit",
     "action-input-kit",
@@ -17,11 +21,19 @@
     "scenario-qa-harness"
   ],
   "fidelityFocus": {
-    "terrain": "painterly low-poly terrain with warm glaze colors, brush-stroke overlays, river ribbon, contour accents, and larger extents",
+    "terrain": "realistic low-poly terrain with domain warping, FBM/ridged noise, blended biome colors, moisture/slope/river masks, and non-repeating landforms",
     "mapNavigation": "large pannable region-selection surface with keyboard/drag pan and wheel zoom",
     "regions": "oversized highlighted region meshes with glow, wobble borders, and DSK affordance descriptors",
+    "proceduralVegetation": {
+      "grass": "dense deterministic grass descriptor field with wind response",
+      "reeds": "river and moisture-driven reed clusters",
+      "shrubs": "slope/moisture-aware shrub and scrub patches",
+      "trees": "biome-aware primitive groves and tree clusters",
+      "flowersAndRocks": "small wildflower and rock breakup details",
+      "boundary": "local procedural vegetation descriptor DSK candidate owns placements; overlay renderer only presents descriptors"
+    },
     "soldiers": "full-bodied primitive soldiers built from boxes/quads/triangles: legs, boots, torso, cuirass, arms, head, helmet, crest, shield, spear, cape, shadow",
-    "battlefield": "primitive formations, banners, field strokes, trampled center lane, atmospheric fog"
+    "battlefield": "primitive formations, banners, vegetation foreground, field strokes, trampled center lane, atmospheric fog"
   },
   "protectedExpressionGuardrails": [
     "Do not copy tabletop scenario layouts, card systems, dice faces, command sections, rule text, or unit-stat tables.",
@@ -30,8 +42,9 @@
   ],
   "currentLocalSurfaces": [
     "Roman terrain art direction",
-    "painterly terrain mesh color and brush-stroke overlay generation",
+    "realistic terrain mesh color and brush-stroke overlay generation",
     "large pannable region ellipse placement and labels",
+    "procedural vegetation descriptor generation and overlay presentation",
     "WebGPU terrain/overlay/full-bodied primitive soldier renderer",
     "cinematic camera interpolation and map pan/zoom controls",
     "Canvas fallback renderer"
@@ -39,6 +52,7 @@
   "rendererOwnership": {
     "webgpu": "presentation-only",
     "canvasFallback": "presentation-only",
+    "vegetationOverlay": "presentation-only",
     "dskOwned": [
       "route progress descriptors",
       "region affordance descriptors",
@@ -46,7 +60,8 @@
       "camera cinematic descriptors",
       "visual fidelity report",
       "scenario QA state",
-      "GameHost proof contract"
+      "GameHost proof contract",
+      "procedural vegetation descriptor snapshot via local DSK candidate"
     ]
   },
   "futureProtoKitCandidatesFromCustomLogic": [
@@ -71,6 +86,21 @@
       "reason": "Reusable inspection control for large campaign-map surfaces."
     },
     {
+      "id": "procedural-vegetation-field-kit",
+      "source": "deterministic grass, reed, shrub, tree, flower, and rock descriptor generation from biome, slope, moisture, river, and terrain noise fields",
+      "reason": "Reusable renderer-neutral vegetation population layer for high-fidelity terrain routes."
+    },
+    {
+      "id": "biome-vegetation-descriptor-kit",
+      "source": "vegetationDensityForSample and biomeForSample descriptor rules",
+      "reason": "Reusable mapping from terrain conditions to plant families and density budgets."
+    },
+    {
+      "id": "wind-sway-visual-descriptor-kit",
+      "source": "windResponse metadata and visual-only vegetation sway",
+      "reason": "Reusable wind animation descriptor layer independent of gameplay physics."
+    },
+    {
       "id": "map-to-scene-camera-transition-kit",
       "source": "world-map scan camera and cinematic dive interpolation",
       "reason": "Reusable select-region-to-local-scene transition."
@@ -92,7 +122,7 @@
     },
     {
       "id": "battlefield-atmosphere-descriptor-kit",
-      "source": "field fog, formation mood, banners, and pre-battle atmosphere descriptors",
+      "source": "field fog, formation mood, banners, vegetation foreground, and pre-battle atmosphere descriptors",
       "reason": "Reusable ambience layer for non-combat battlefield reveals."
     }
   ],
@@ -103,7 +133,10 @@
     "movement graph",
     "encounter resolution",
     "enemy AI",
-    "large JSON datasets"
+    "large JSON datasets",
+    "vegetation harvesting",
+    "tree collision",
+    "fire spread"
   ],
-  "nextLedge": "Add a browser-backed route smoke for the live endpoint that pans the map, selects a highlighted region, reaches the battlefield tableau, and validates DSK-backed fidelity metadata."
+  "nextLedge": "Add a browser-backed route smoke for the live endpoint that pans the map, validates proceduralVegetation counts from GameHost.getSnapshot(), selects a highlighted region, reaches the battlefield tableau, and confirms the overlay remains presentation-only."
 }
