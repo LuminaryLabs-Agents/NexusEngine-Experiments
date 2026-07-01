@@ -1,4 +1,5 @@
 const HEX_STYLE = "rome-perspective-hex-battlefield-no-ui";
+const HEX_VISUAL_DETAIL_STYLE = "layered-painted-hex-interiors-rimlit-terrain-features";
 const HEX_GRID = Object.freeze({ cols: 11, rows: 9 });
 const CLASS_COLORS = Object.freeze({ light: "#3fad4f", medium: "#2f70d1", heavy: "#b93026" });
 const BAND_COLORS = Object.freeze({ rome: "#c8231f", etruscan: "#d6aa3c", samnite: "#f0e6cf", greek: "#7a54bd", gallic: "#111318" });
@@ -181,46 +182,163 @@ function hexPath(ctx, x, y, r, yScale = HEX_Y_SCALE) {
   ctx.closePath();
 }
 
-function tileColor(tile) {
-  if (tile.terrainType === TERRAIN_TYPES.water) return ["#264f5d", "#183845"];
-  if (tile.terrainType === TERRAIN_TYPES.hill) return ["#6d673c", "#4e4e2d"];
-  if (tile.terrainType === TERRAIN_TYPES.fence) return ["#4c6d35", "#38562c"];
-  return ["#355f2f", "#254a29"];
+function tilePalette(tile) {
+  if (tile.terrainType === TERRAIN_TYPES.water) return { top: "#2d6573", mid: "#234f5d", low: "#163443", accent: "rgba(150,212,218,.58)", shadow: "rgba(0,24,34,.28)" };
+  if (tile.terrainType === TERRAIN_TYPES.hill) return { top: "#8a824e", mid: "#67633a", low: "#46492b", accent: "rgba(231,211,139,.42)", shadow: "rgba(34,26,14,.26)" };
+  if (tile.terrainType === TERRAIN_TYPES.fence) return { top: "#526f39", mid: "#3d5c31", low: "#2b4328", accent: "rgba(158,111,59,.74)", shadow: "rgba(24,19,10,.28)" };
+  return { top: "#3e7738", mid: "#2e5e31", low: "#203f25", accent: "rgba(139,172,82,.46)", shadow: "rgba(12,30,14,.22)" };
+}
+
+function drawHexRimLighting(p, tile, hot) {
+  hexPath(ctx, p.x, p.y + p.r * p.yScale * 0.06, p.r * 0.988, p.yScale);
+  ctx.strokeStyle = "rgba(0,0,0,.34)";
+  ctx.lineWidth = Math.max(2, p.r * 0.040);
+  ctx.stroke();
+  hexPath(ctx, p.x, p.y, p.r * 0.972, p.yScale);
+  ctx.strokeStyle = hot ? "rgba(255,236,164,.92)" : tile.terrainType === TERRAIN_TYPES.water ? "rgba(154,209,210,.36)" : "rgba(238,218,148,.30)";
+  ctx.lineWidth = hot ? Math.max(2.5, p.r * 0.050) : Math.max(1.2, p.r * 0.024);
+  ctx.stroke();
+  hexPath(ctx, p.x, p.y - p.r * p.yScale * 0.012, p.r * 0.90, p.yScale);
+  ctx.strokeStyle = "rgba(255,244,190,.10)";
+  ctx.lineWidth = Math.max(1, p.r * 0.018);
+  ctx.stroke();
+}
+
+function drawTileBase(tile, p, hot) {
+  const palette = tilePalette(tile);
+  const gradient = ctx.createLinearGradient(p.x - p.r * 0.6, p.y - p.r * p.yScale, p.x + p.r * 0.45, p.y + p.r * p.yScale);
+  gradient.addColorStop(0, palette.top);
+  gradient.addColorStop(0.56, palette.mid);
+  gradient.addColorStop(1, palette.low);
+  hexPath(ctx, p.x, p.y, p.r * 0.985, p.yScale);
+  ctx.fillStyle = gradient;
+  ctx.fill();
+  ctx.save();
+  hexPath(ctx, p.x, p.y, p.r * 0.93, p.yScale);
+  ctx.clip();
+  drawTileMaterialDetail(tile, p, palette);
+  ctx.restore();
+  drawHexRimLighting(p, tile, hot);
+}
+
+function drawTileMaterialDetail(tile, p, palette) {
+  const seed = tile.col * 41 + tile.row * 97 + tile.visualVariant * 1000;
+  if (tile.terrainType === TERRAIN_TYPES.water) {
+    drawWaterMaterial(tile, p, palette, seed);
+    return;
+  }
+  if (tile.terrainType === TERRAIN_TYPES.hill) {
+    drawHillMaterial(tile, p, palette, seed);
+    return;
+  }
+  if (tile.terrainType === TERRAIN_TYPES.fence) {
+    drawGrassMaterial(tile, p, palette, seed, 0.8);
+    drawFenceFeature(p, tile);
+    return;
+  }
+  drawGrassMaterial(tile, p, palette, seed, 1);
+}
+
+function materialPoint(p, seed, i, radiusScale = 0.78) {
+  const a = hashNoise(seed, i, 17) * TAU;
+  const d = Math.sqrt(hashNoise(seed, i, 23)) * p.r * radiusScale;
+  return { x: p.x + Math.cos(a) * d, y: p.y + Math.sin(a) * d * p.yScale, a, d };
+}
+
+function drawGrassMaterial(tile, p, palette, seed, density = 1) {
+  ctx.save();
+  ctx.globalAlpha = 0.58;
+  const tuftCount = Math.floor(12 * density);
+  for (let i = 0; i < tuftCount; i += 1) {
+    const pt = materialPoint(p, seed, i, 0.72);
+    const length = p.r * (0.06 + hashNoise(seed, i, 31) * 0.085);
+    const angle = pt.a + 0.8 + hashNoise(seed, i, 43) * 0.7;
+    ctx.strokeStyle = i % 4 === 0 ? "rgba(157,185,85,.44)" : "rgba(96,143,65,.42)";
+    ctx.lineWidth = Math.max(0.7, p.r * 0.010);
+    ctx.beginPath();
+    ctx.moveTo(pt.x, pt.y);
+    ctx.quadraticCurveTo(pt.x + Math.cos(angle) * length * 0.45, pt.y - length * p.yScale * 0.4, pt.x + Math.cos(angle) * length, pt.y - length * p.yScale);
+    ctx.stroke();
+  }
+  ctx.globalAlpha = 0.30;
+  for (let i = 0; i < 5; i += 1) {
+    const pt = materialPoint(p, seed + 17, i, 0.60);
+    ctx.fillStyle = i % 2 ? "rgba(84,126,58,.34)" : "rgba(57,98,50,.34)";
+    ctx.beginPath();
+    ctx.ellipse(pt.x, pt.y, p.r * (0.09 + hashNoise(seed, i, 61) * 0.11), p.r * p.yScale * 0.026, pt.a, 0, TAU);
+    ctx.fill();
+  }
+  ctx.restore();
+}
+
+function drawWaterMaterial(tile, p, palette, seed) {
+  ctx.save();
+  const pool = ctx.createRadialGradient(p.x - p.r * 0.20, p.y - p.r * p.yScale * 0.16, p.r * 0.08, p.x, p.y, p.r * 0.88);
+  pool.addColorStop(0, "rgba(97,157,165,.44)");
+  pool.addColorStop(0.7, "rgba(35,78,91,.24)");
+  pool.addColorStop(1, "rgba(9,27,38,.38)");
+  hexPath(ctx, p.x, p.y, p.r * 0.87, p.yScale);
+  ctx.fillStyle = pool;
+  ctx.fill();
+  ctx.strokeStyle = "rgba(164,222,222,.42)";
+  ctx.lineWidth = Math.max(1.0, p.r * 0.018);
+  for (let i = 0; i < 5; i += 1) {
+    const y = p.y + (i - 2) * p.r * p.yScale * 0.16;
+    ctx.beginPath();
+    ctx.ellipse(p.x + (hashNoise(seed, i, 71) - 0.5) * p.r * 0.22, y, p.r * (0.26 + i * 0.035), p.r * p.yScale * 0.036, hashNoise(seed, i, 73) * 0.18, 0, TAU);
+    ctx.stroke();
+  }
+  ctx.strokeStyle = "rgba(210,232,205,.18)";
+  ctx.lineWidth = Math.max(1.2, p.r * 0.020);
+  hexPath(ctx, p.x, p.y, p.r * 0.76, p.yScale);
+  ctx.stroke();
+  ctx.restore();
+}
+
+function drawHillMaterial(tile, p, palette, seed) {
+  ctx.save();
+  for (let i = 0; i < 4; i += 1) {
+    ctx.fillStyle = i % 2 ? "rgba(109,101,55,.34)" : "rgba(153,139,77,.28)";
+    ctx.beginPath();
+    ctx.ellipse(p.x + (i - 1.5) * p.r * 0.08, p.y - i * p.r * p.yScale * 0.035, p.r * (0.50 - i * 0.055), p.r * p.yScale * (0.18 - i * 0.018), -0.18, 0, TAU);
+    ctx.fill();
+    ctx.strokeStyle = "rgba(228,207,135,.20)";
+    ctx.lineWidth = Math.max(0.9, p.r * 0.012);
+    ctx.stroke();
+  }
+  for (let i = 0; i < 8; i += 1) {
+    const pt = materialPoint(p, seed + 33, i, 0.66);
+    ctx.fillStyle = "rgba(68,65,47,.38)";
+    ctx.beginPath();
+    ctx.ellipse(pt.x, pt.y, p.r * (0.018 + hashNoise(seed, i, 81) * 0.022), p.r * p.yScale * 0.014, pt.a, 0, TAU);
+    ctx.fill();
+  }
+  ctx.restore();
 }
 
 function drawTile(tile, size) {
   const p = projectHex(tile.col, tile.row, size);
   const hot = hoveredHexId === tile.id;
-  const [a, b] = tileColor(tile);
-  const gradient = ctx.createLinearGradient(p.x, p.y - p.r * p.yScale, p.x, p.y + p.r * p.yScale);
-  gradient.addColorStop(0, a);
-  gradient.addColorStop(1, b);
-  hexPath(ctx, p.x, p.y, p.r * 0.985, p.yScale);
-  ctx.fillStyle = gradient;
-  ctx.fill();
-  ctx.lineWidth = hot ? Math.max(2, p.r * 0.035) : Math.max(1, p.r * 0.018);
-  ctx.strokeStyle = hot ? "rgba(255,236,164,.86)" : "rgba(236,216,148,.22)";
-  ctx.stroke();
-
+  drawTileBase(tile, p, hot);
   if (tile.terrainType === TERRAIN_TYPES.hill) drawHillFeature(p, tile);
   if (tile.terrainType === TERRAIN_TYPES.water) drawWaterFeature(p, tile);
-  if (tile.terrainType === TERRAIN_TYPES.fence) drawFenceFeature(p, tile);
+  if (tile.terrainType === TERRAIN_TYPES.fence) drawFenceFeature(p, tile, true);
   if (tile.terrainType === TERRAIN_TYPES.grass) drawGrassFeature(p, tile);
 }
 
 function drawGrassFeature(p, tile) {
   ctx.save();
-  ctx.globalAlpha = 0.42;
-  ctx.strokeStyle = "rgba(115,146,69,.72)";
-  ctx.lineWidth = Math.max(0.7, p.r * 0.012);
-  for (let i = 0; i < 7; i += 1) {
+  ctx.globalAlpha = 0.38;
+  ctx.strokeStyle = "rgba(146,173,82,.60)";
+  ctx.lineWidth = Math.max(0.8, p.r * 0.010);
+  for (let i = 0; i < 5; i += 1) {
     const a = hashNoise(tile.col + i, tile.row, 23) * TAU;
-    const radius = p.r * (0.12 + hashNoise(tile.row, tile.col + i, 24) * 0.42);
+    const radius = p.r * (0.16 + hashNoise(tile.row, tile.col + i, 24) * 0.32);
     const x = p.x + Math.cos(a) * radius;
     const y = p.y + Math.sin(a) * radius * p.yScale;
     ctx.beginPath();
     ctx.moveTo(x, y);
-    ctx.lineTo(x + Math.cos(a + 0.9) * p.r * 0.055, y - p.r * p.yScale * 0.16);
+    ctx.lineTo(x + Math.cos(a + 0.9) * p.r * 0.050, y - p.r * p.yScale * 0.13);
     ctx.stroke();
   }
   ctx.restore();
@@ -228,12 +346,12 @@ function drawGrassFeature(p, tile) {
 
 function drawWaterFeature(p) {
   ctx.save();
-  ctx.globalAlpha = 0.55;
-  ctx.strokeStyle = "rgba(126,190,200,.58)";
-  ctx.lineWidth = Math.max(1, p.r * 0.025);
-  for (let i = 0; i < 3; i += 1) {
+  ctx.globalAlpha = 0.42;
+  ctx.strokeStyle = "rgba(174,224,225,.58)";
+  ctx.lineWidth = Math.max(1, p.r * 0.018);
+  for (let i = 0; i < 2; i += 1) {
     ctx.beginPath();
-    ctx.ellipse(p.x, p.y + (i - 1) * p.r * p.yScale * 0.18, p.r * 0.48, p.r * p.yScale * 0.06, 0.1 * i, 0, TAU);
+    ctx.ellipse(p.x, p.y + (i - 0.5) * p.r * p.yScale * 0.24, p.r * 0.52, p.r * p.yScale * 0.045, 0.1 * i, 0, TAU);
     ctx.stroke();
   }
   ctx.restore();
@@ -241,29 +359,34 @@ function drawWaterFeature(p) {
 
 function drawHillFeature(p) {
   ctx.save();
-  ctx.globalAlpha = 0.62;
-  ctx.fillStyle = "rgba(140,128,76,.58)";
+  ctx.globalAlpha = 0.46;
+  ctx.strokeStyle = "rgba(54,46,25,.30)";
+  ctx.lineWidth = Math.max(2, p.r * 0.030);
   ctx.beginPath();
-  ctx.ellipse(p.x - p.r * 0.12, p.y - p.r * p.yScale * 0.05, p.r * 0.38, p.r * p.yScale * 0.16, -0.2, 0, TAU);
-  ctx.fill();
-  ctx.strokeStyle = "rgba(226,205,139,.35)";
+  ctx.ellipse(p.x, p.y + p.r * p.yScale * 0.18, p.r * 0.54, p.r * p.yScale * 0.16, -0.12, 0, TAU);
   ctx.stroke();
   ctx.restore();
 }
 
-function drawFenceFeature(p) {
+function drawFenceFeature(p, tile, detailOnly = false) {
   ctx.save();
-  ctx.strokeStyle = "rgba(132,90,48,.86)";
-  ctx.lineWidth = Math.max(2, p.r * 0.035);
+  ctx.shadowColor = "rgba(0,0,0,.32)";
+  ctx.shadowBlur = p.r * 0.035;
+  ctx.strokeStyle = "rgba(144,94,45,.88)";
+  ctx.lineWidth = Math.max(2.2, p.r * 0.030);
+  const tilt = hashNoise(tile?.col ?? 0, tile?.row ?? 0, 91) > 0.5 ? 0.10 : -0.10;
+  const y0 = p.y + p.r * p.yScale * (detailOnly ? 0.02 : 0.04);
   ctx.beginPath();
-  ctx.moveTo(p.x - p.r * 0.48, p.y + p.r * p.yScale * 0.04);
-  ctx.lineTo(p.x + p.r * 0.48, p.y - p.r * p.yScale * 0.08);
+  ctx.moveTo(p.x - p.r * 0.50, y0 + p.r * p.yScale * tilt);
+  ctx.lineTo(p.x + p.r * 0.50, y0 - p.r * p.yScale * tilt);
   ctx.stroke();
+  ctx.strokeStyle = "rgba(96,58,31,.88)";
+  ctx.lineWidth = Math.max(1.6, p.r * 0.022);
   for (let i = -2; i <= 2; i += 1) {
-    ctx.beginPath();
     const x = p.x + i * p.r * 0.22;
+    ctx.beginPath();
     ctx.moveTo(x, p.y - p.r * p.yScale * 0.20);
-    ctx.lineTo(x, p.y + p.r * p.yScale * 0.13);
+    ctx.lineTo(x + p.r * 0.020, p.y + p.r * p.yScale * 0.15);
     ctx.stroke();
   }
   ctx.restore();
@@ -292,6 +415,9 @@ function drawUnit(unit, size) {
   ctx.beginPath();
   ctx.ellipse(p.x, p.y + baseR * 0.20 * p.yScale, baseR * 0.98, baseR * 0.46 * p.yScale, 0, 0, TAU);
   ctx.fill();
+  ctx.strokeStyle = "rgba(255,225,145,.20)";
+  ctx.lineWidth = Math.max(1, p.r * 0.018);
+  ctx.stroke();
 
   const cluster = unit.troopType === "heavy" ? 5 : unit.troopType === "medium" ? 4 : 3;
   for (let i = 0; i < cluster; i += 1) {
@@ -333,8 +459,8 @@ function drawMiniSoldier(x, y, s, unit, yScale) {
 
 function drawBackground(size) {
   const gradient = ctx.createLinearGradient(0, 0, 0, size.h);
-  gradient.addColorStop(0, "#192018");
-  gradient.addColorStop(0.48, "#354125");
+  gradient.addColorStop(0, "#172018");
+  gradient.addColorStop(0.48, "#303d25");
   gradient.addColorStop(1, "#17110b");
   ctx.fillStyle = gradient;
   ctx.fillRect(0, 0, size.w, size.h);
@@ -410,6 +536,7 @@ function patchGameHost() {
       tacticalHex: battlefield ? {
         id: battlefield.id,
         style: HEX_STYLE,
+        visualDetailStyle: HEX_VISUAL_DETAIL_STYLE,
         grid: { cols: battlefield.cols, rows: battlefield.rows, alignment: "fixed-pointy-offset", yScale: HEX_Y_SCALE },
         terrainTypes: Object.keys(TERRAIN_TYPES),
         unitCounts: UNIT_COUNTS,
@@ -421,7 +548,7 @@ function patchGameHost() {
       } : null
     };
   };
-  host.getHexBattlefieldSnapshot = () => battlefield ? { ...battlefield, selectedUnitId, hoveredHexId, hoveredUnitId, selectableArmy: "rome" } : null;
+  host.getHexBattlefieldSnapshot = () => battlefield ? { ...battlefield, selectedUnitId, hoveredHexId, hoveredUnitId, selectableArmy: "rome", visualDetailStyle: HEX_VISUAL_DETAIL_STYLE } : null;
   host.__cavalryHexPatched = true;
   return true;
 }
@@ -433,14 +560,12 @@ function frame() {
   window.CavalryHexBattlefieldActive = active;
   canvas.style.display = active ? "block" : "none";
   canvas.style.pointerEvents = active ? "auto" : "none";
-  const vegetation = document.querySelector("#cavalry-procedural-vegetation-overlay");
-  if (vegetation) vegetation.style.display = active ? "none" : "block";
   if (active) drawBattlefield(snapshot);
   requestAnimationFrame(frame);
 }
 
 function boot() {
-  window.CavalryHexBattlefield = { createHexBattlefield, createBattleUnits, terrainForHex, style: HEX_STYLE, unitCounts: UNIT_COUNTS };
+  window.CavalryHexBattlefield = { createHexBattlefield, createBattleUnits, terrainForHex, style: HEX_STYLE, visualDetailStyle: HEX_VISUAL_DETAIL_STYLE, unitCounts: UNIT_COUNTS };
   const patchTimer = setInterval(() => {
     if (patchGameHost()) clearInterval(patchTimer);
   }, 100);
