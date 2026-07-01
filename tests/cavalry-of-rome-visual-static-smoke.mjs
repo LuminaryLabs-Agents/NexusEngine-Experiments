@@ -5,6 +5,7 @@ const main = readFileSync("experiments/The Cavalry of Rome/src/main-realistic.js
 const vegetation = readFileSync("experiments/The Cavalry of Rome/src/vegetation-pass.js", "utf8");
 const hexBattlefield = readFileSync("experiments/The Cavalry of Rome/src/hex-battlefield-pass.js", "utf8");
 const squadVisuals = readFileSync("experiments/The Cavalry of Rome/src/hex-squad-visual-pass.js", "utf8");
+const gameplay = readFileSync("experiments/The Cavalry of Rome/src/hex-gameplay-pass.js", "utf8");
 const endpoint = readFileSync("apps/the-cavalry-of-rome/index.html", "utf8");
 const experimentEntry = readFileSync("experiments/The Cavalry of Rome/index.html", "utf8");
 const gallery = readFileSync("experiments/_shared/nexus-gallery-data.js", "utf8");
@@ -99,10 +100,36 @@ assert.ok(squadVisuals.includes("old.style.opacity = \"0\""), "squad pass should
 assert.ok(squadVisuals.includes("unit?.army === \"rome\" ? unit.id : null"), "squad pass should keep Rome-only selection");
 assert.ok(!squadVisuals.includes("unitCtx.ellipse"), "squad pass should not draw circular token ellipses");
 
+assert.ok(gameplay.includes("scene-native-maneuver-logic-webgl-dice"), "gameplay pass should document scene-native maneuver logic");
+assert.ok(gameplay.includes("MANEUVERS"), "gameplay pass should define maneuvers");
+for (const maneuver of ["advanceLeft", "advanceCenter", "advanceRight", "lineBrigade", "heavyBrigade", "berserk", "scout"]) {
+  assert.ok(gameplay.includes(maneuver), `gameplay pass should include ${maneuver}`);
+}
+assert.ok(gameplay.includes("cost: 1"), "advance maneuvers should cost 1 AP");
+assert.ok(gameplay.includes("cost: 2"), "line brigade should cost 2 AP");
+assert.ok(gameplay.includes("cost: 3"), "heavy brigade should cost 3 AP");
+assert.ok(gameplay.includes("cost: 4"), "berserk/scout should cost 4 AP");
+assert.ok(gameplay.includes("rollActionPoints"), "gameplay pass should roll AP every three turns");
+assert.ok(gameplay.includes("rollDie"), "gameplay pass should roll dice");
+assert.ok(gameplay.includes("crypto.getRandomValues"), "dice rolls should use crypto randomness when available");
+assert.ok(gameplay.includes("#version 300 es"), "dice pass should use WebGL2 GLSL shaders");
+assert.ok(gameplay.includes("roundedBox"), "dice shader should render a shaded die body");
+assert.ok(gameplay.includes("facePips"), "dice shader should render pip faces");
+assert.ok(gameplay.includes("isWater"), "gameplay pass should treat water as impassable");
+assert.ok(gameplay.includes("isStopTerrain"), "gameplay pass should end movement on hills/fences");
+assert.ok(gameplay.includes("reachableHexes"), "gameplay pass should calculate reachable hexes");
+assert.ok(gameplay.includes("connectedLineGroup"), "line brigade should use connected adjacent unit groups");
+assert.ok(gameplay.includes("adjacentEnemies"), "berserk should support adjacent attack targets");
+assert.ok(gameplay.includes("drawDirectionalShadow"), "gameplay squads should use angled individual shadows");
+assert.ok(gameplay.includes("hideSupersededLayers"), "gameplay pass should hide older high-noon unit layers");
+assert.ok(gameplay.includes("startManeuver"), "GameHost should expose maneuver start logic");
+assert.ok(gameplay.includes("getTacticalGameplaySnapshot"), "GameHost should expose gameplay state");
+
 assert.ok(endpoint.includes("../../experiments/The%20Cavalry%20of%20Rome/src/main-realistic.js"), "live endpoint should load the realistic Cavalry module");
 assert.ok(endpoint.includes("../../experiments/The%20Cavalry%20of%20Rome/src/vegetation-pass.js"), "live endpoint should load the procedural vegetation pass");
 assert.ok(endpoint.includes("../../experiments/The%20Cavalry%20of%20Rome/src/hex-battlefield-pass.js"), "live endpoint should load the hex battlefield pass");
 assert.ok(endpoint.includes("../../experiments/The%20Cavalry%20of%20Rome/src/hex-squad-visual-pass.js"), "live endpoint should load the mini squad visual pass");
+assert.ok(endpoint.includes("../../experiments/The%20Cavalry%20of%20Rome/src/hex-gameplay-pass.js"), "live endpoint should load the tactical gameplay pass");
 assert.ok(endpoint.includes("CavalryUiSinkShim"), "live endpoint should provide non-DOM status sinks for runtime compatibility");
 assert.ok(!endpoint.includes('id="hud"'), "live endpoint should not contain HUD DOM");
 assert.ok(!endpoint.includes('id="footer"'), "live endpoint should not contain footer DOM");
@@ -116,6 +143,7 @@ assert.ok(experimentEntry.includes("./src/main-realistic.js"), "experiment entry
 assert.ok(experimentEntry.includes("./src/vegetation-pass.js"), "experiment entry should load the procedural vegetation pass");
 assert.ok(experimentEntry.includes("./src/hex-battlefield-pass.js"), "experiment entry should load the hex battlefield pass");
 assert.ok(experimentEntry.includes("./src/hex-squad-visual-pass.js"), "experiment entry should load the mini squad visual pass");
+assert.ok(experimentEntry.includes("./src/hex-gameplay-pass.js"), "experiment entry should load the tactical gameplay pass");
 assert.ok(experimentEntry.includes("CavalryUiSinkShim"), "experiment entry should provide non-DOM status sinks for runtime compatibility");
 assert.ok(!experimentEntry.includes('id="hud"'), "experiment entry should not contain HUD DOM");
 assert.ok(!experimentEntry.includes('id="footer"'), "experiment entry should not contain footer DOM");
