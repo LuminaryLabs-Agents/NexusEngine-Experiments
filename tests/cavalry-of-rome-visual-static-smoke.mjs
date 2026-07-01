@@ -4,6 +4,7 @@ import { readFileSync } from "node:fs";
 const main = readFileSync("experiments/The Cavalry of Rome/src/main-realistic.js", "utf8");
 const vegetation = readFileSync("experiments/The Cavalry of Rome/src/vegetation-pass.js", "utf8");
 const hexBattlefield = readFileSync("experiments/The Cavalry of Rome/src/hex-battlefield-pass.js", "utf8");
+const squadVisuals = readFileSync("experiments/The Cavalry of Rome/src/hex-squad-visual-pass.js", "utf8");
 const endpoint = readFileSync("apps/the-cavalry-of-rome/index.html", "utf8");
 const experimentEntry = readFileSync("experiments/The Cavalry of Rome/index.html", "utf8");
 const gallery = readFileSync("experiments/_shared/nexus-gallery-data.js", "utf8");
@@ -88,9 +89,20 @@ assert.ok(hexBattlefield.includes("contour"), "hex shader should include hill co
 assert.ok(hexBattlefield.includes("rail"), "hex shader should include fence rail detail");
 assert.ok(hexBattlefield.includes("canvas2d-fallback-tiles"), "hex pass should fall back to Canvas2D if WebGL2 is unavailable");
 
+assert.ok(squadVisuals.includes("low-poly-mini-squads-no-token-rings"), "squad pass should document no-token mini squads");
+assert.ok(squadVisuals.includes("squadLayout"), "squad pass should define class-specific squad layouts");
+assert.ok(squadVisuals.includes("drawSquadShadow"), "squad pass should draw grounded non-ring shadows");
+assert.ok(squadVisuals.includes("drawLowPolySoldier"), "squad pass should draw primitive low-poly soldiers");
+assert.ok(squadVisuals.includes("drawSelectionPennant"), "squad pass should use a pennant instead of a ring for selection feedback");
+assert.ok(squadVisuals.includes("tokenRingsRemoved: true"), "squad pass should expose token ring removal metadata");
+assert.ok(squadVisuals.includes("old.style.opacity = \"0\""), "squad pass should hide the old token unit canvas");
+assert.ok(squadVisuals.includes("unit?.army === \"rome\" ? unit.id : null"), "squad pass should keep Rome-only selection");
+assert.ok(!squadVisuals.includes("unitCtx.ellipse"), "squad pass should not draw circular token ellipses");
+
 assert.ok(endpoint.includes("../../experiments/The%20Cavalry%20of%20Rome/src/main-realistic.js"), "live endpoint should load the realistic Cavalry module");
 assert.ok(endpoint.includes("../../experiments/The%20Cavalry%20of%20Rome/src/vegetation-pass.js"), "live endpoint should load the procedural vegetation pass");
 assert.ok(endpoint.includes("../../experiments/The%20Cavalry%20of%20Rome/src/hex-battlefield-pass.js"), "live endpoint should load the hex battlefield pass");
+assert.ok(endpoint.includes("../../experiments/The%20Cavalry%20of%20Rome/src/hex-squad-visual-pass.js"), "live endpoint should load the mini squad visual pass");
 assert.ok(endpoint.includes("CavalryUiSinkShim"), "live endpoint should provide non-DOM status sinks for runtime compatibility");
 assert.ok(!endpoint.includes('id="hud"'), "live endpoint should not contain HUD DOM");
 assert.ok(!endpoint.includes('id="footer"'), "live endpoint should not contain footer DOM");
@@ -103,6 +115,7 @@ assert.ok(endpoint.includes("Live NexusRealtime endpoint for The Cavalry of Rome
 assert.ok(experimentEntry.includes("./src/main-realistic.js"), "experiment entry should load the realistic Cavalry module");
 assert.ok(experimentEntry.includes("./src/vegetation-pass.js"), "experiment entry should load the procedural vegetation pass");
 assert.ok(experimentEntry.includes("./src/hex-battlefield-pass.js"), "experiment entry should load the hex battlefield pass");
+assert.ok(experimentEntry.includes("./src/hex-squad-visual-pass.js"), "experiment entry should load the mini squad visual pass");
 assert.ok(experimentEntry.includes("CavalryUiSinkShim"), "experiment entry should provide non-DOM status sinks for runtime compatibility");
 assert.ok(!experimentEntry.includes('id="hud"'), "experiment entry should not contain HUD DOM");
 assert.ok(!experimentEntry.includes('id="footer"'), "experiment entry should not contain footer DOM");
