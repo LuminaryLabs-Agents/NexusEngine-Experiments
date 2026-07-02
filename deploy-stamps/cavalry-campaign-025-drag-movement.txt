@@ -1,0 +1,2 @@
+Cavalry campaign 025 deployment trigger.
+World movement is now drag-and-drop: drag visible Rome troop stacks to adjacent territories. One player world action per turn. Enemy drops resolve engagement.
