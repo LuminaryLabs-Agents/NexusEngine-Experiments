@@ -1,0 +1,2 @@
+Cavalry campaign 017 route wrapper deploy trigger.
+Commit should serve apps/the-cavalry-of-rome/index.html as the campaign loader.
