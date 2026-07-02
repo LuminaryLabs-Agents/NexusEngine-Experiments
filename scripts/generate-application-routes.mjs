@@ -3,6 +3,11 @@ import { join } from "node:path";
 import { aaaBatchGames } from "../experiments/aaa-batch/host/game-registry.js";
 
 const root = process.cwd();
+const MANUAL_APP_ROUTE_IDS = new Set([
+  "the-cavalry-of-rome",
+  "the-cavalry-of-rome-arena-polish-014",
+  "the-cavalry-of-rome-campaign-015"
+]);
 
 function titleFor(app) {
   return `${app.title} — NexusRealtime`;
@@ -51,10 +56,17 @@ function htmlFor(app) {
 `;
 }
 
+let generated = 0;
+let preserved = 0;
 for (const app of aaaBatchGames) {
   const dir = join(root, "apps", app.id);
   if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+  if (MANUAL_APP_ROUTE_IDS.has(app.id)) {
+    preserved += 1;
+    continue;
+  }
   writeFileSync(join(dir, "index.html"), htmlFor(app));
+  generated += 1;
 }
 
-console.log(`Generated ${aaaBatchGames.length} promoted application route wrappers.`);
+console.log(`Generated ${generated} promoted application route wrappers. Preserved ${preserved} manual app route wrappers.`);
