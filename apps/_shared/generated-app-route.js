@@ -1,6 +1,7 @@
 import { startAaaBatchRoute } from "../../experiments/aaa-batch/host/batch-host.js";
 
 const STYLE_ID = "generated-route-contrast-style";
+const CAVALRY_CAMPAIGN_VERSION = "campaign-017";
 
 function injectGeneratedRouteContrastStyles(documentRef = document) {
   if (documentRef.getElementById(STYLE_ID)) return;
@@ -95,8 +96,79 @@ function injectGeneratedRouteContrastStyles(documentRef = document) {
   documentRef.head.append(style);
 }
 
+function ensureCavalryGeneratedHost() {
+  let app = document.querySelector("#app");
+  if (!app) {
+    app = document.createElement("main");
+    app.id = "app";
+    document.body.append(app);
+  }
+  let game = document.querySelector("#game");
+  if (!game) {
+    game = document.createElement("canvas");
+    game.id = "game";
+    game.setAttribute("role", "application");
+    app.prepend(game);
+  }
+  let commandBar = document.querySelector("#commandBar");
+  if (!commandBar) {
+    commandBar = document.createElement("div");
+    commandBar.id = "commandBar";
+    commandBar.hidden = true;
+    app.append(commandBar);
+  }
+  let stamp = document.querySelector("#buildStamp");
+  if (!stamp) {
+    stamp = document.createElement("div");
+    stamp.id = "buildStamp";
+    Object.assign(stamp.style, {
+      position: "fixed",
+      right: "12px",
+      bottom: "12px",
+      zIndex: "120",
+      color: "rgba(255,239,190,.62)",
+      font: "800 10px/1.2 Inter,system-ui,sans-serif",
+      letterSpacing: ".08em",
+      textTransform: "uppercase",
+      pointerEvents: "none",
+      textShadow: "0 2px 8px #000"
+    });
+    document.body.append(stamp);
+  }
+  stamp.textContent = CAVALRY_CAMPAIGN_VERSION;
+  globalThis.selectedUnitId = globalThis.selectedUnitId ?? null;
+  globalThis.CavalryExpectedBuild = CAVALRY_CAMPAIGN_VERSION;
+}
+
+async function startCavalryCampaignRoute() {
+  ensureCavalryGeneratedHost();
+  const suffix = `?v=${CAVALRY_CAMPAIGN_VERSION}`;
+  await import(`../../experiments/The%20Cavalry%20of%20Rome/src/main-realistic.js${suffix}`);
+  await import(`../../experiments/The%20Cavalry%20of%20Rome/src/vegetation-pass.js${suffix}`);
+  await import(`../../experiments/The%20Cavalry%20of%20Rome/src/universal-animation-library-pass.js${suffix}`);
+  await import(`../../experiments/The%20Cavalry%20of%20Rome/src/hex-battlefield-pass.js${suffix}`);
+  await import(`../../experiments/The%20Cavalry%20of%20Rome/src/hex-squad-visual-pass.js${suffix}`);
+  await import(`../../experiments/The%20Cavalry%20of%20Rome/src/hex-gameplay-pass.js${suffix}`);
+  await import(`../../experiments/The%20Cavalry%20of%20Rome/src/hex-action-ui-pass.js${suffix}`);
+  await import(`../../experiments/The%20Cavalry%20of%20Rome/src/hex-combat-controller-pass.js${suffix}`);
+  await import(`../../experiments/The%20Cavalry%20of%20Rome/src/cavalry-arena-polish-pass.js${suffix}`);
+  await import(`../../experiments/The%20Cavalry%20of%20Rome/src/cavalry-campaign-map-pass.js${suffix}`);
+}
+
 export function startGeneratedApplicationRoute(slug = document.body?.dataset?.appId) {
   injectGeneratedRouteContrastStyles();
   if (!slug) throw new Error("Missing generated application slug.");
+  if (slug === "the-cavalry-of-rome") {
+    startCavalryCampaignRoute().catch((error) => {
+      const err = document.querySelector("#err");
+      if (err) {
+        err.hidden = false;
+        err.textContent = String(error?.stack ?? error?.message ?? error);
+      } else {
+        throw error;
+      }
+    });
+    return;
+  }
   startAaaBatchRoute(slug);
 }
