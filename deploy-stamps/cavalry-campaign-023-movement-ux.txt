@@ -1,0 +1,2 @@
+Cavalry campaign 023 deployment trigger.
+Adds intuitive world-map movement planner, target halos, source/target labels, presets, and confirm engagement flow.
