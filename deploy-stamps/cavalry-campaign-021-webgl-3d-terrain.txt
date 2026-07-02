@@ -1,0 +1,2 @@
+Cavalry campaign 021 deployment trigger.
+Live route now loads true WebGL 3D terrain scene with projected territory overlay.
