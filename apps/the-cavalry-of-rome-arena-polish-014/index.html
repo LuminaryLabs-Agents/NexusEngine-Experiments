@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <title>The Cavalry of Rome — Arena Polish 014</title>
+  <style>
+    :root{color-scheme:dark;background:#070503}
+    *{box-sizing:border-box}
+    html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#070503;color:#fff6e3;font-family:Inter,ui-sans-serif,system-ui,sans-serif}
+    #app,#game{position:fixed;inset:0;width:100%;height:100%}
+    #game{display:block;cursor:crosshair;touch-action:none}
+    #buildStamp{position:fixed;right:12px;bottom:12px;z-index:120;color:rgba(255,239,190,.62);font:800 10px/1.2 Inter,system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;pointer-events:none;text-shadow:0 2px 8px #000}
+  </style>
+</head>
+<body>
+  <main id="app"><canvas id="game" role="application" aria-label="The Cavalry of Rome battlefield canvas"></canvas></main>
+  <div id="buildStamp">arena-polish-014</div>
+  <script>
+    var selectedUnitId = null;
+    window.CavalryExpectedBuild = "arena-polish-014";
+    (() => {
+      const sinks = new Map([["#status",{textContent:""}],["#readout",{textContent:""}],["#commandBar",{hidden:true,textContent:""}]]);
+      const originalQuery = Document.prototype.querySelector;
+      Document.prototype.querySelector = function(selector){ return sinks.get(selector) || originalQuery.call(this, selector); };
+      window.CavalryUiSinkShim = { version:"0.2.0", visibleUi:false, selectors:[...sinks.keys()] };
+    })();
+  </script>
+  <script type="module" src="../../../experiments/The%20Cavalry%20of%20Rome/src/main-realistic.js?v=arena-polish-014"></script>
+  <script type="module" src="../../../experiments/The%20Cavalry%20of%20Rome/src/vegetation-pass.js?v=arena-polish-014"></script>
+  <script type="module" src="../../../experiments/The%20Cavalry%20of%20Rome/src/universal-animation-library-pass.js?v=arena-polish-014"></script>
+  <script type="module" src="../../../experiments/The%20Cavalry%20of%20Rome/src/hex-battlefield-pass.js?v=arena-polish-014"></script>
+  <script type="module" src="../../../experiments/The%20Cavalry%20of%20Rome/src/hex-squad-visual-pass.js?v=arena-polish-014"></script>
+  <script type="module" src="../../../experiments/The%20Cavalry%20of%20Rome/src/hex-gameplay-pass.js?v=arena-polish-014"></script>
+  <script type="module" src="../../../experiments/The%20Cavalry%20of%20Rome/src/hex-action-ui-pass.js?v=arena-polish-014"></script>
+  <script type="module" src="../../../experiments/The%20Cavalry%20of%20Rome/src/hex-combat-controller-pass.js?v=arena-polish-014"></script>
+  <script type="module" src="../../../experiments/The%20Cavalry%20of%20Rome/src/cavalry-arena-polish-pass.js?v=arena-polish-014"></script>
+</body>
+</html>
