@@ -1,0 +1,2 @@
+Cavalry campaign 018 direct route deployment trigger.
+The live app route now imports only the campaign map pass.
