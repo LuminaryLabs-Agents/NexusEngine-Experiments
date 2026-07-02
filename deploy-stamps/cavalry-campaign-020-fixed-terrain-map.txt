@@ -1,0 +1,2 @@
+Cavalry campaign 020 deployment trigger.
+Live route now loads fixed pannable terrain map pass with Voronoi territory overlay.
