@@ -1,0 +1,2 @@
+Cavalry campaign 026 deployment trigger.
+Fixed stuck grab state with pointer release/reset handlers and added explicit End World Turn control.
