@@ -1,0 +1,6 @@
+Cavalry campaign 017 deploy trigger.
+
+Expected live route:
+/apps/the-cavalry-of-rome/
+
+Manual route preservation and generated Cavalry campaign routing are active.
