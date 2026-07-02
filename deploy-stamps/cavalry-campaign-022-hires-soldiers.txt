@@ -1,0 +1,2 @@
+Cavalry campaign 022 deployment trigger.
+Zoom-aware terrain LOD and low-poly soldier formations are active.
