@@ -1,0 +1,2 @@
+Cavalry campaign 031 deployment trigger.
+Clicking a Rome territory selects all troops in that space for a stack move. Dragging individual colored circles reorders one troop to adjacent spaces.
