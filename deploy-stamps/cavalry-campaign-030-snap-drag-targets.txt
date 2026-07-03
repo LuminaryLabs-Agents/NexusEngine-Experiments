@@ -1,0 +1,2 @@
+Cavalry campaign 030 deployment trigger.
+Fixes drag snap behavior by choosing release targets only from the selected troop source's adjacent territory list, with polygon hit testing and generous nearest-neighbor fallback.
