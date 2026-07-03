@@ -1,0 +1,2 @@
+Cavalry campaign 028 deployment trigger.
+Adds a reliable world action command dock with End World Turn, Reset Input, Restart Map, and Concede buttons using capture-phase pointer/click handling.
