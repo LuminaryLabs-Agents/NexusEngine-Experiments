@@ -1,0 +1,2 @@
+Cavalry campaign 029 deployment trigger.
+Fixes adjacent target selection and renders every individual troop as a static green/blue/red circle on the 3D campaign map.
