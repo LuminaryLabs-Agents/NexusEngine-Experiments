@@ -1,4 +1,4 @@
-const STYLE = "cavalry-campaign-space-select-031";
+const STYLE = "cavalry-campaign-space-select-engagement-032";
 const TAU = Math.PI * 2;
 const COLORS = { l: "#39d36a", m: "#4f80ff", h: "#d94135" };
 const NAMES = { l: "Light", m: "Medium", h: "Heavy" };
@@ -6,7 +6,6 @@ const hash = (x, y, s = 0) => { const v = Math.sin(x * 127.1 + y * 311.7 + s * 7
 const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, Number.isFinite(Number(v)) ? Number(v) : a));
 const lerp = (a, b, t) => a + (b - a) * t;
 const total = (t = {}) => (t.l || 0) + (t.m || 0) + (t.h || 0);
-const strength = (t = {}) => (t.l || 0) + (t.m || 0) * 2 + (t.h || 0) * 3;
 const label = (t = {}) => `${t.l || 0}/${t.m || 0}/${t.h || 0}`;
 const add = (a, b) => { a.l = (a.l || 0) + (b.l || 0); a.m = (a.m || 0) + (b.m || 0); a.h = (a.h || 0) + (b.h || 0); };
 const sub = (a, b) => { a.l = Math.max(0, (a.l || 0) - (b.l || 0)); a.m = Math.max(0, (a.m || 0) - (b.m || 0)); a.h = Math.max(0, (a.h || 0) - (b.h || 0)); };
@@ -33,10 +32,27 @@ function ownerStroke(owner) { if (!owner) return "rgba(255,255,255,.8)"; if (own
 function typeDraft(type, n = 1) { return { l: type === "l" ? n : 0, m: type === "m" ? n : 0, h: type === "h" ? n : 0 }; }
 function canMoveUnit(cell, type) { return cell?.owner === "player" && (cell.troops[type] || 0) > 0 && total(cell.troops) > 1 && (game()?.actions || 0) > 0; }
 function canMoveStack(cell) { return cell?.owner === "player" && total(cell.troops) > 0 && (game()?.actions || 0) > 0; }
-function applyLoss(t, amount) { const out = { ...t }; let loss = Math.ceil(amount); while (loss > 0 && out.l > 0) { out.l--; loss -= 1; } while (loss > 0 && out.m > 0) { out.m--; loss -= 2; } while (loss > 0 && out.h > 0) { out.h--; loss -= 3; } return out; }
 function log(s, text) { s.log = s.log || []; s.log.unshift(text); s.log = s.log.slice(0, 7); }
 function enforceOneAction(s) { if (!s?.preset) return; s.preset.actions = 1; if (s !== lastGame) { lastGame = s; s.actions = Math.min(1, s.actions ?? 1); } if ((s.actions ?? 1) > 1) s.actions = 1; }
-function resolveDraft(source, target, draft, description) { const s = game(); if (!s || !source || !target || !source.neighbors.includes(target.id) || total(draft) <= 0 || s.actions <= 0) return false; sub(source.troops, draft); if (!target.owner || target.owner === "player") { const neutral = !target.owner; target.owner = "player"; add(target.troops, draft); log(s, `Rome ${neutral ? "occupied" : "reinforced"} ${target.id} with ${description}.`); } else { const atk = strength(draft), def = strength(target.troops); if (atk > def) { target.owner = "player"; target.troops = applyLoss(draft, def * .55); if (total(target.troops) <= 0) target.troops = { l: 1, m: 0, h: 0 }; log(s, `Rome captured ${target.id} with ${description}.`); } else { target.troops = applyLoss(target.troops, atk * .7); log(s, `Rome engaged ${target.id} with ${description}. Defender L/M/H ${label(target.troops)}.`); } } s.actions = 0; s.from = null; s.to = null; s.draft = { l: 0, m: 0, h: 0 }; selected = null; return true; }
+function resolveDraft(source, target, draft, description) {
+  const s = game();
+  if (!s || !source || !target || !source.neighbors.includes(target.id) || total(draft) <= 0 || s.actions <= 0) return false;
+  if (target.owner && target.owner !== "player") {
+    const launched = globalThis.CavalryHexEngagement?.launch?.({ source, target, draft, description });
+    if (launched) { selected = null; return true; }
+  }
+  sub(source.troops, draft);
+  const neutral = !target.owner;
+  target.owner = "player";
+  add(target.troops, draft);
+  log(s, `Rome ${neutral ? "occupied" : "reinforced"} ${target.id} with ${description}.`);
+  s.actions = 0;
+  s.from = null;
+  s.to = null;
+  s.draft = { l: 0, m: 0, h: 0 };
+  selected = null;
+  return true;
+}
 function moveOne(source, target, type) { return resolveDraft(source, target, typeDraft(type, 1), `1 ${NAMES[type]}`); }
 function moveStack(source, target) { return resolveDraft(source, target, { ...source.troops }, `all troops L/M/H ${label(source.troops)}`); }
 function resetPointer() { pointer = null; if (canvas) { canvas.dataset.drag = "false"; canvas.style.cursor = "default"; } }
