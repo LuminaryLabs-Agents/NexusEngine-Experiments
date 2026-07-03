@@ -1,0 +1,2 @@
+Cavalry campaign 027 deployment trigger.
+Unit movement now uses visible independent green light, blue medium, and red heavy circles. Dragging a colored group to an adjacent territory moves that group and resolves enemy engagements.
