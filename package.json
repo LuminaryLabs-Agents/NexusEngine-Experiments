@@ -1,12 +1,12 @@
 {
-  "name": "@luminarylabs/nexusrealtime-experiments",
+  "name": "@luminarylabs/nexusengine-experiments",
   "version": "0.0.2",
   "type": "module",
   "private": true,
-  "description": "NexusRealtime browser experiments composed from kits.",
+  "description": "Nexus Engine browser experiments composed from kits.",
   "devDependencies": {
     "@luminarylabs/nexusrealtime-protokits": "github:LuminaryLabs-Agents/NexusRealtime-ProtoKits#main",
-    "nexusrealtime": "github:LuminaryLabs-Dev/NexusRealtime#main",
+    "nexusrealtime": "github:LuminaryLabs-Dev/NexusEngine#main",
     "playwright": "^1.56.0"
   },
   "scripts": {
