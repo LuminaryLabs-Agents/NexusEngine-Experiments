@@ -1,6 +1,6 @@
 export const galleryConfig = Object.freeze({
   title: "Experiments",
-  subtitle: "NexusRealtime playable routes",
+  subtitle: "Nexus Engine playable routes",
   repoUrl: "https://github.com/LuminaryLabs-Agents/NexusRealtime-Experiments",
   hint: "Browse the 11 collective experiment cards. Older removed routes live under deprecated/."
 });
