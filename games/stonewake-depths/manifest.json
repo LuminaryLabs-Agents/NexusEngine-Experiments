@@ -5,14 +5,29 @@
   "kind": "game",
   "visual": "stonewake",
   "playLabel": "Play game",
-  "tags": ["cave survival", "acoustic stealth", "physical puzzle"],
+  "tags": ["cave survival", "acoustic stealth", "physical puzzle", "reactive particles"],
   "kitStack": [
     "acoustic-signal-domain-kit",
     "weighted-trigger-domain-kit",
     "condition-gate-domain-kit",
     "physics-body-lite-domain-kit",
     "projectile-lite-domain-kit",
-    "sensory-agent-domain-kit"
+    "sensory-agent-domain-kit",
+    "reactive-particle-field-kit",
+    "gpu-spark-burst-kit",
+    "gpu-dust-cloud-kit",
+    "gpu-water-mist-kit",
+    "gpu-bubble-column-kit",
+    "gpu-rune-spark-kit",
+    "gpu-sound-wave-particle-kit",
+    "gpu-lantern-mote-kit",
+    "gpu-impact-chip-kit",
+    "gpu-creature-alert-pulse-kit",
+    "gpu-door-awakening-kit",
+    "gpu-water-surface-shimmer-kit",
+    "gpu-shadow-flicker-kit",
+    "gpu-ambient-cave-dust-kit",
+    "gpu-foam-line-kit"
   ],
-  "description": "High-fidelity canvas cave puzzle-survival slice where acoustic signals, weighted triggers, condition gates, lightweight physics, projectiles, and sensory agents work together."
+  "description": "High-fidelity canvas cave platformer slice where acoustic stealth, weighted triggers, condition gates, lightweight physics, projectiles, sensory agents, brighter readable routes, and reactive shader-style particles work together."
 }
