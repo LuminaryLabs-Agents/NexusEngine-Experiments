@@ -1,8 +1,10 @@
 const canvas = document.querySelector("#game");
 const hud = document.querySelector("#hud");
 const err = document.querySelector("#error");
+
 const SEA_FLOOR_Y = -96;
-const CLOUD_COUNT = 6;
+const CLOUD_COUNT = 4;
+const ISLAND_RADIUS_METERS = 100;
 
 function fail(error) {
   err.hidden = false;
@@ -12,71 +14,22 @@ function fail(error) {
 
 const cdn = "https://cdn.jsdelivr.net/";
 const THREE = await import(cdn + "npm/three@0.160.0/build/three.module.js");
-const kitBase = cdn + "gh/LuminaryLabs-Agents/NexusRealtime-ProtoKits@main/protokits/";
-
-async function loadDomains() {
-  try {
-    const island = await import(kitBase + "ocean-island-landform-domain/index.js");
-    const clouds = await import(kitBase + "mattatz-clouds-domain/index.js");
-    return { island, clouds, source: "domain" };
-  } catch (error) {
-    console.warn("Cozy Island domain import fallback", error);
-    return { island: null, clouds: null, source: "fallback" };
-  }
-}
-
-function fallbackHeight(x, z) {
-  const a = Math.atan2(z, x);
-  const coast = 1 + Math.sin(a * 5) * 0.1 + Math.cos(a * 9) * 0.05;
-  const d = Math.hypot(x, z) / (155 * coast);
-  const n = Math.max(0, 1 - d);
-  return Math.pow(n, 0.72) * 42 + Math.sin(x * 0.045) * Math.sin(z * 0.034) * 3 * n;
-}
-
-function fallbackMasks(x, z) {
-  const h = fallbackHeight(x, z);
-  const d = Math.hypot(x, z);
-  return { height: h, water: d > 165 ? 1 : 0, beach: d > 130 && d <= 165 ? 1 : 0, grass: d <= 130 && h < 32 ? 1 : 0, rock: h >= 32 ? 1 : 0, cliff: h > 38 ? 1 : 0, wetSand: d > 153 && d <= 168 ? 1 : 0, foam: Math.max(0, 1 - Math.abs(d - 165) / 14) };
-}
-
-function fallbackIslandContract() {
-  const resolution = 129;
-  const extent = 300;
-  const samples = [];
-  for (let zi = 0; zi < resolution; zi++) for (let xi = 0; xi < resolution; xi++) {
-    const x = (xi / (resolution - 1) * 2 - 1) * extent;
-    const z = (zi / (resolution - 1) * 2 - 1) * extent;
-    const masks = fallbackMasks(x, z);
-    samples.push({ x, y: masks.height, z, masks });
-  }
-  const shoreline = Array.from({ length: 128 }, (_, i) => {
-    const a = i / 128 * Math.PI * 2;
-    const r = 165 * (1 + Math.sin(a * 5) * 0.1 + Math.cos(a * 9) * 0.05);
-    return { x: Math.cos(a) * r, y: 0.04, z: Math.sin(a) * r };
-  });
-  const objectIds = ["palm", "palm", "bush", "rock", "boulder", "driftwood", "reef"];
-  const objects = Array.from({ length: 40 }, (_, i) => {
-    const id = objectIds[i % objectIds.length];
-    const a = i * 2.399;
-    const r = id === "reef" ? 205 : id === "driftwood" ? 156 : 38 + (i * 29 % 92);
-    const x = Math.cos(a) * r;
-    const z = Math.sin(a) * r;
-    return { objectId: id, position: { x, y: fallbackHeight(x, z), z }, rotation: a, scale: 0.48 + (i % 7) * 0.11 };
-  });
-  return { heightfield: { resolution, samples }, shoreline, objects };
-}
+const proto = cdn + "gh/LuminaryLabs-Agents/NexusRealtime-ProtoKits@main/protokits/";
+const landformDomain = await import(proto + "ocean-island-landform-domain/index.js");
+const foliageDomain = await import(proto + "island-foliage-domain/index.js");
+const cloudDomain = await import(proto + "mattatz-clouds-domain/index.js");
 
 function materialFor(m) {
-  const color = m.wetSand ? 0xcaa46b : m.beach ? 0xe7ca91 : m.cliff || m.rock ? 0x817d6d : 0x4f8d4d;
+  const color = m.wetSand ? 0xcaa46b : m.beach ? 0xe7ca91 : m.cliff || m.rock ? 0x817d6d : m.path ? 0xb89564 : 0x4f8d4d;
   return new THREE.Color(color);
 }
 
-function makeTerrain(contract) {
-  const r = contract.heightfield.resolution;
+function makeTerrain(heightfield) {
+  const r = heightfield.resolution;
   const pos = [];
   const colors = [];
   const idx = [];
-  for (const s of contract.heightfield.samples) {
+  for (const s of heightfield.samples) {
     pos.push(s.x, s.y, s.z);
     const c = materialFor(s.masks || {});
     colors.push(c.r, c.g, c.b);
@@ -90,35 +43,28 @@ function makeTerrain(contract) {
   g.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
   g.setIndex(idx);
   g.computeVertexNormals();
-  const mesh = new THREE.Mesh(g, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.92, metalness: 0.015 }));
-  mesh.receiveShadow = true;
-  mesh.castShadow = true;
-  return mesh;
+  return new THREE.Mesh(g, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.92, metalness: 0.015 }));
 }
 
-function makeSeaFloor(size = 3600, y = SEA_FLOOR_Y) {
-  const g = new THREE.PlaneGeometry(size, size, 36, 36).rotateX(-Math.PI / 2);
+function makeSeaFloor(size = 3600) {
+  const g = new THREE.PlaneGeometry(size, size, 34, 34).rotateX(-Math.PI / 2);
   const p = g.attributes.position;
   for (let i = 0; i < p.count; i++) {
     const x = p.getX(i);
     const z = p.getZ(i);
     const ripple = Math.sin(x * 0.006) * Math.cos(z * 0.005) * 3 + Math.sin((x + z) * 0.002) * 5;
-    p.setY(i, y + ripple);
+    p.setY(i, SEA_FLOOR_Y + ripple);
   }
   g.computeVertexNormals();
-  const mesh = new THREE.Mesh(g, new THREE.MeshStandardMaterial({ color: 0x286b72, roughness: 0.96, metalness: 0.0 }));
-  mesh.receiveShadow = true;
-  return mesh;
+  return new THREE.Mesh(g, new THREE.MeshStandardMaterial({ color: 0x286b72, roughness: 0.96 }));
 }
 
-function makeIslandFormation(shoreline, floorY = SEA_FLOOR_Y) {
-  const rings = [1, 1.16, 1.42, 1.78, 2.08];
-  const depths = [0.02, -24, -58, floorY - 8, floorY - 24];
+function makeIslandFormation(shoreline) {
+  const rings = [1, 1.18, 1.48, 1.86, 2.18];
+  const depths = [0.02, -24, -58, SEA_FLOOR_Y - 8, SEA_FLOOR_Y - 24];
   const pos = [];
   const idx = [];
-  for (let r = 0; r < rings.length; r++) {
-    for (const p of shoreline) pos.push(p.x * rings[r], depths[r], p.z * rings[r]);
-  }
+  for (let r = 0; r < rings.length; r++) for (const p of shoreline) pos.push(p.x * rings[r], depths[r], p.z * rings[r]);
   const n = shoreline.length;
   for (let r = 0; r < rings.length - 1; r++) {
     const a0 = r * n;
@@ -132,51 +78,125 @@ function makeIslandFormation(shoreline, floorY = SEA_FLOOR_Y) {
   g.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
   g.setIndex(idx);
   g.computeVertexNormals();
-  const mesh = new THREE.Mesh(g, new THREE.MeshStandardMaterial({ color: 0x627265, roughness: 0.94, metalness: 0.01 }));
-  mesh.receiveShadow = true;
-  return mesh;
+  return new THREE.Mesh(g, new THREE.MeshStandardMaterial({ color: 0x627265, roughness: 0.94 }));
 }
 
 function makeFoam(shoreline) {
   const pts = shoreline.map(p => new THREE.Vector3(p.x, (p.y || 0) + 0.08, p.z));
   pts.push(pts[0].clone());
   return new THREE.Mesh(
-    new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts, true), shoreline.length, 0.75, 5, true),
-    new THREE.MeshBasicMaterial({ color: 0xfff1d4, transparent: true, opacity: 0.38, depthWrite: false })
+    new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts, true), shoreline.length, 0.65, 5, true),
+    new THREE.MeshBasicMaterial({ color: 0xfff1d4, transparent: true, opacity: 0.36, depthWrite: false })
   );
 }
 
-function makePalm() {
+function makePath(pathNetwork, sampleHeight) {
   const group = new THREE.Group();
-  const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.12, 1.45, 7), new THREE.MeshStandardMaterial({ color: 0x815838, roughness: 0.88 }));
-  trunk.position.y = 0.72;
-  trunk.rotation.z = 0.12;
+  const mat = new THREE.MeshStandardMaterial({ color: 0xb89564, roughness: 0.96, transparent: true, opacity: 0.86 });
+  for (const segment of pathNetwork.segments) {
+    const a = new THREE.Vector3(segment.from.x, sampleHeight(segment.from) + 0.12, segment.from.z);
+    const b = new THREE.Vector3(segment.to.x, sampleHeight(segment.to) + 0.12, segment.to.z);
+    const dir = new THREE.Vector3().subVectors(b, a);
+    const side = new THREE.Vector3(-dir.z, 0, dir.x).normalize().multiplyScalar(segment.width * 0.5);
+    const g = new THREE.BufferGeometry();
+    g.setAttribute("position", new THREE.Float32BufferAttribute([
+      a.x + side.x, a.y, a.z + side.z,
+      a.x - side.x, a.y, a.z - side.z,
+      b.x + side.x, b.y, b.z + side.z,
+      b.x - side.x, b.y, b.z - side.z
+    ], 3));
+    g.setIndex([0, 1, 2, 2, 1, 3]);
+    g.computeVertexNormals();
+    group.add(new THREE.Mesh(g, mat));
+  }
+  return group;
+}
+
+function childrenOf(byParent, id, type = null) {
+  return (byParent.get(id) || []).filter((child) => !type || child.type === type);
+}
+
+function makePalm(record, byParent) {
+  const group = new THREE.Group();
+  const height = record.state?.heightMeters || 7;
+  const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.24, height, 8), new THREE.MeshStandardMaterial({ color: 0x815838, roughness: 0.88 }));
+  trunk.position.y = height * 0.5;
+  trunk.rotation.z = record.state?.lean || 0;
   group.add(trunk);
   const leafMat = new THREE.MeshStandardMaterial({ color: 0x2f8f52, roughness: 0.86, side: THREE.DoubleSide });
   for (let i = 0; i < 7; i++) {
-    const leaf = new THREE.Mesh(new THREE.ConeGeometry(0.12, 0.88, 4), leafMat);
-    leaf.position.y = 1.42;
+    const leaf = new THREE.Mesh(new THREE.ConeGeometry(0.22, height * 0.34, 4), leafMat);
+    leaf.position.y = height * 0.96;
     leaf.rotation.z = Math.PI / 2.8;
     leaf.rotation.y = i / 7 * Math.PI * 2;
     leaf.scale.set(1, 0.42, 1);
     group.add(leaf);
   }
+  const coconutMat = new THREE.MeshStandardMaterial({ color: 0x8a5b32, roughness: 0.8 });
+  const cluster = childrenOf(byParent, record.id, "coconut-cluster")[0];
+  for (const coconut of childrenOf(byParent, cluster?.id, "coconut")) {
+    const mesh = new THREE.Mesh(new THREE.SphereGeometry(0.18, 8, 6), coconutMat);
+    mesh.position.copy(new THREE.Vector3(coconut.transform.position.x, coconut.transform.position.y, coconut.transform.position.z));
+    group.add(mesh);
+  }
+  group.position.copy(new THREE.Vector3(record.transform.position.x, record.transform.position.y, record.transform.position.z));
+  group.rotation.y = record.transform.rotation.y || 0;
+  group.scale.setScalar(record.transform.scale.x || 1);
   return group;
 }
 
-function makeProp(d) {
-  let object;
-  if (d.objectId === "palm") object = makePalm();
-  else {
-    const color = d.objectId === "bush" ? 0x3e8f45 : d.objectId === "driftwood" ? 0x8a6844 : d.objectId === "reef" ? 0xe28f74 : 0x77756a;
-    const geometry = d.objectId === "driftwood" ? new THREE.CapsuleGeometry(0.08, 0.7, 4, 8) : new THREE.DodecahedronGeometry(d.objectId === "reef" ? 0.24 : 0.35, 0);
-    object = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({ color, roughness: 0.9 }));
+function makeBroadleaf(record) {
+  const group = new THREE.Group();
+  const height = record.state?.heightMeters || 9;
+  const canopy = record.state?.canopyRadiusMeters || 3.4;
+  const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.34, height * 0.72, 8), new THREE.MeshStandardMaterial({ color: 0x6f4b30, roughness: 0.9 }));
+  trunk.position.y = height * 0.36;
+  const crown = new THREE.Mesh(new THREE.SphereGeometry(canopy, 12, 8), new THREE.MeshStandardMaterial({ color: record.type === "young-tree" ? 0x4e9b50 : 0x3f8f45, roughness: 0.9 }));
+  crown.position.y = height * 0.78;
+  crown.scale.y = 0.72;
+  const root = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.72, 0.28, 8), new THREE.MeshStandardMaterial({ color: 0x5a3d2c, roughness: 0.9 }));
+  root.position.y = 0.14;
+  group.add(root, trunk, crown);
+  group.position.copy(new THREE.Vector3(record.transform.position.x, record.transform.position.y, record.transform.position.z));
+  group.rotation.y = record.transform.rotation.y || 0;
+  group.scale.setScalar(record.transform.scale.x || 1);
+  return group;
+}
+
+function makeSimple(record) {
+  const type = record.type;
+  const scale = record.transform.scale.x || 1;
+  const color = type === "bush" ? 0x3e8f45 : type === "fern" ? 0x2e7c4a : type === "grass-clump" ? 0x6cae52 : type === "driftwood" || type === "fallen-log" ? 0x8a6844 : type === "reef" || type === "coral" ? 0xe28f74 : 0x77756a;
+  const material = new THREE.MeshStandardMaterial({ color, roughness: 0.9 });
+  let geometry;
+  if (type === "fern") geometry = new THREE.ConeGeometry(0.18, 0.75, 5);
+  else if (type === "grass-clump") geometry = new THREE.ConeGeometry(0.09, 0.45, 4);
+  else if (type === "driftwood" || type === "fallen-log") geometry = new THREE.CapsuleGeometry(0.11, type === "fallen-log" ? 1.2 : 0.75, 4, 8);
+  else if (type === "bush") geometry = new THREE.SphereGeometry(0.42, 8, 6);
+  else geometry = new THREE.DodecahedronGeometry(type === "reef" ? 0.28 : 0.38, 0);
+  const mesh = new THREE.Mesh(geometry, material);
+  mesh.position.copy(new THREE.Vector3(record.transform.position.x, record.transform.position.y, record.transform.position.z));
+  mesh.rotation.y = record.transform.rotation.y || 0;
+  mesh.scale.setScalar(scale);
+  return mesh;
+}
+
+function makeObjects(graph) {
+  const byParent = new Map();
+  for (const object of graph.objects) {
+    if (!object.parentId) continue;
+    if (!byParent.has(object.parentId)) byParent.set(object.parentId, []);
+    byParent.get(object.parentId).push(object);
   }
-  object.position.set(d.position.x, d.position.y, d.position.z);
-  object.rotation.y = d.rotation || 0;
-  object.scale.setScalar(d.scale || 1);
-  object.traverse?.(node => { if (node.isMesh) { node.castShadow = true; node.receiveShadow = true; } });
-  return object;
+  const group = new THREE.Group();
+  const rootTypes = new Set(["palm-tree", "broadleaf-tree", "young-tree", "bush", "fern", "grass-clump", "fallen-log", "rock", "boulder", "driftwood", "reef", "coral"]);
+  for (const object of graph.objects) {
+    if (!rootTypes.has(object.type)) continue;
+    if (object.type === "palm-tree") group.add(makePalm(object, byParent));
+    else if (object.type === "broadleaf-tree" || object.type === "young-tree") group.add(makeBroadleaf(object));
+    else group.add(makeSimple(object));
+  }
+  return group;
 }
 
 function createCloudMaterial(seed = 0, layer = 0) {
@@ -184,86 +204,49 @@ function createCloudMaterial(seed = 0, layer = 0) {
     transparent: true,
     depthWrite: false,
     side: THREE.BackSide,
-    uniforms: {
-      uTime: { value: 0 },
-      uCameraLocal: { value: new THREE.Vector3() },
-      uSeed: { value: seed },
-      uDensity: { value: layer === 2 ? 0.44 : 0.66 },
-      uColor: { value: new THREE.Color(layer === 2 ? 0xf6fbff : 0xfff7e8) }
-    },
+    uniforms: { uTime: { value: 0 }, uCameraLocal: { value: new THREE.Vector3() }, uSeed: { value: seed }, uDensity: { value: layer === 2 ? 0.42 : 0.62 }, uColor: { value: new THREE.Color(layer === 2 ? 0xf6fbff : 0xfff7e8) } },
     vertexShader: `varying vec3 vLocal; void main(){ vLocal = position; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
-    fragmentShader: `
-      precision highp float;
-      varying vec3 vLocal;
-      uniform vec3 uCameraLocal;
-      uniform vec3 uColor;
-      uniform float uTime;
-      uniform float uSeed;
-      uniform float uDensity;
-      float hash(vec3 p){ p = fract(p * 0.3183099 + vec3(.1,.2,.3) + uSeed*.01); p *= 17.0; return fract(p.x*p.y*p.z*(p.x+p.y+p.z)); }
-      float noise(vec3 p){ vec3 i=floor(p); vec3 f=fract(p); f=f*f*(3.0-2.0*f); float n=mix(mix(mix(hash(i+vec3(0,0,0)),hash(i+vec3(1,0,0)),f.x),mix(hash(i+vec3(0,1,0)),hash(i+vec3(1,1,0)),f.x),f.y),mix(mix(hash(i+vec3(0,0,1)),hash(i+vec3(1,0,1)),f.x),mix(hash(i+vec3(0,1,1)),hash(i+vec3(1,1,1)),f.x),f.y),f.z); return n; }
-      float fbm(vec3 p){ float a=.5; float s=0.0; for(int i=0;i<3;i++){ s += noise(p)*a; p = p*2.02 + vec3(11.7,3.2,8.1); a *= .52; } return s; }
-      vec2 hitBox(vec3 ro, vec3 rd){ vec3 m=1.0/rd; vec3 n=m*(vec3(-0.5)-ro); vec3 k=m*(vec3(0.5)-ro); vec3 t1=min(n,k); vec3 t2=max(n,k); return vec2(max(max(t1.x,t1.y),t1.z), min(min(t2.x,t2.y),t2.z)); }
-      void main(){
-        vec3 ro = uCameraLocal;
-        vec3 rd = normalize(vLocal - ro);
-        vec2 h = hitBox(ro, rd);
-        if(h.x > h.y) discard;
-        float t = max(h.x, 0.0);
-        float endT = h.y;
-        vec3 sum = vec3(0.0);
-        float alpha = 0.0;
-        for(int i=0;i<14;i++){
-          float ft = float(i) / 13.0;
-          vec3 p = ro + rd * mix(t, endT, ft);
-          float edge = smoothstep(0.5, 0.12, length(p * vec3(1.0, 1.45, 1.0)));
-          float billow = fbm(p * 2.6 + vec3(uTime*.02, 0.0, uTime*.01));
-          float d = max(0.0, (billow - 0.32) * edge) * uDensity * 0.18;
-          float a = d * (1.0 - alpha);
-          sum += uColor * a;
-          alpha += a;
-          if(alpha > 0.88) break;
-        }
-        if(alpha < 0.015) discard;
-        gl_FragColor = vec4(sum / max(alpha, 0.001), alpha * 0.74);
-      }`
+    fragmentShader: `precision highp float; varying vec3 vLocal; uniform vec3 uCameraLocal; uniform vec3 uColor; uniform float uTime; uniform float uSeed; uniform float uDensity; float hash(vec3 p){ p=fract(p*.3183099+vec3(.1,.2,.3)+uSeed*.01); p*=17.; return fract(p.x*p.y*p.z*(p.x+p.y+p.z)); } float noise(vec3 p){ vec3 i=floor(p); vec3 f=fract(p); f=f*f*(3.-2.*f); return mix(mix(mix(hash(i),hash(i+vec3(1,0,0)),f.x),mix(hash(i+vec3(0,1,0)),hash(i+vec3(1,1,0)),f.x),f.y),mix(mix(hash(i+vec3(0,0,1)),hash(i+vec3(1,0,1)),f.x),mix(hash(i+vec3(0,1,1)),hash(i+vec3(1,1,1)),f.x),f.y),f.z); } float fbm(vec3 p){ float a=.5; float s=0.; for(int i=0;i<3;i++){ s+=noise(p)*a; p=p*2.02+vec3(11.7,3.2,8.1); a*=.52; } return s; } vec2 hitBox(vec3 ro, vec3 rd){ vec3 m=1./rd; vec3 n=m*(vec3(-.5)-ro); vec3 k=m*(vec3(.5)-ro); vec3 t1=min(n,k); vec3 t2=max(n,k); return vec2(max(max(t1.x,t1.y),t1.z),min(min(t2.x,t2.y),t2.z)); } void main(){ vec3 ro=uCameraLocal; vec3 rd=normalize(vLocal-ro); vec2 h=hitBox(ro,rd); if(h.x>h.y) discard; float t=max(h.x,0.); float e=h.y; vec3 sum=vec3(0.); float alpha=0.; for(int i=0;i<12;i++){ float ft=float(i)/11.; vec3 p=ro+rd*mix(t,e,ft); float edge=smoothstep(.5,.12,length(p*vec3(1.,1.45,1.))); float billow=fbm(p*2.5+vec3(uTime*.02,0.,uTime*.01)); float d=max(0.,(billow-.32)*edge)*uDensity*.2; float a=d*(1.-alpha); sum+=uColor*a; alpha+=a; if(alpha>.86) break; } if(alpha<.015) discard; gl_FragColor=vec4(sum/max(alpha,.001),alpha*.72); }`
   });
 }
 
 function makeCloud(d, layer = 0, index = 0) {
   const mat = createCloudMaterial(index * 17 + layer * 101, layer);
-  const mesh = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1, 1, 1, 1), mat);
-  const sx = (d.scale?.x || 250) * (layer === 2 ? 4.8 : 4.2);
-  const sy = (d.scale?.y || 80) * (layer === 2 ? 1.2 : 1.55);
-  const sz = (d.scale?.z || 160) * (layer === 2 ? 4.2 : 3.85);
-  mesh.scale.set(sx, sy, sz);
-  mesh.position.set((d.position?.x || 0) * 0.54, Math.max(135, (d.position?.y || 600) * 0.5), (d.position?.z || 0) * 0.54);
-  mesh.userData.speed = d.driftSpeed || 0.05;
-  mesh.userData.drift = d.drift || { x: 1, z: 0 };
+  const mesh = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), mat);
+  mesh.scale.set((d.scale?.x || 300) * 4.6, (d.scale?.y || 90) * 1.35, (d.scale?.z || 230) * 4.0);
+  mesh.position.set((d.position?.x || 0) * 0.52, Math.max(135, (d.position?.y || 600) * 0.5), (d.position?.z || 0) * 0.52);
+  mesh.userData.speed = d.driftSpeed || 0.04;
+  mesh.userData.drift = d.drift || { x: 1, z: 0.2 };
   mesh.userData.material = mat;
   return mesh;
 }
 
-function fallbackClouds() {
-  return Array.from({ length: CLOUD_COUNT }, (_, i) => ({ position: { x: Math.cos(i * 2.17) * 520, y: 240 + (i % 3) * 180, z: Math.sin(i * 1.77) * 480 }, scale: { x: 320 + (i % 3) * 80, y: 86 + (i % 2) * 24, z: 220 + (i % 3) * 64 }, layerId: i % 3 === 2 ? "high" : i % 3 === 1 ? "mid" : "low", driftSpeed: 0.035 + (i % 3) * 0.008, drift: { x: 1, z: 0.22 } }));
-}
-
 async function main() {
-  const domains = await loadDomains();
-  const islandState = domains.island?.createOceanIslandLandformState?.({ seed: "cozy-island-three", preset: "tropical-small-island", radius: 195, maxHeight: 42, beachWidth: 28, shelfWidth: 72, shelfDepth: 110, objectPalette: ["palm", "palm", "bush", "rock", "boulder", "driftwood", "reef"] });
-  const island = islandState ? domains.island.createOceanIslandLandformRenderContract(islandState, { heightfield: { resolution: 129 }, shoreline: { segments: 128 }, objects: { densityScale: 0.34 } }) : fallbackIslandContract();
-  const cloudState = domains.clouds?.createMattatzCloudsState?.({ seed: "cozy-island-clouds", weather: "sunrise-haze", cloudCount: CLOUD_COUNT });
-  const rawClouds = cloudState ? domains.clouds.createMattatzCloudRenderContract(cloudState, 0).clouds : fallbackClouds();
-  const cloudContract = { clouds: rawClouds.slice(0, CLOUD_COUNT) };
-  const sampleHeight = domains.island?.sampleIslandHeight ? point => domains.island.sampleIslandHeight(islandState, point) : point => fallbackHeight(point.x, point.z);
-  const sampleMasks = domains.island?.sampleIslandMasks ? point => domains.island.sampleIslandMasks(islandState, point) : point => fallbackMasks(point.x, point.z);
+  const islandState = landformDomain.createOceanIslandLandformState({
+    id: "cozy-island-001",
+    seed: "cozy-island-domain-cutover",
+    preset: "tropical-small-island",
+    radius: ISLAND_RADIUS_METERS,
+    maxHeight: 18,
+    beachWidth: 10,
+    shelfWidth: 36,
+    shelfDepth: 110,
+    objectPalette: [],
+    render: { heightfieldResolution: 129, shorelineSegments: 128 }
+  });
+  const landform = landformDomain.createOceanIslandLandformRenderContract(islandState, { heightfield: { resolution: 129 }, shoreline: { segments: 128 }, objects: { densityScale: 0 } });
+  const sampleHeight = (point) => landformDomain.sampleIslandHeight(islandState, { x: point.x, z: point.z });
+  const sampleMasks = (point) => landformDomain.sampleIslandMasks(islandState, { x: point.x, z: point.z });
+  const graph = foliageDomain.createDenseCozyIslandObjectGraph({ seed: "cozy-island-domain-cutover", radiusMeters: ISLAND_RADIUS_METERS, sampleHeight, sampleMasks });
+  const foliageRender = foliageDomain.createDenseCozyIslandRenderContract({ graph, landformContract: landform, seaFloorY: SEA_FLOOR_Y });
+  const cloudState = cloudDomain.createMattatzCloudsState({ seed: "cozy-island-clouds", weather: "sunrise-haze", cloudCount: CLOUD_COUNT });
+  const cloudContract = cloudDomain.createMattatzCloudRenderContract(cloudState, 0);
 
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: "high-performance" });
   renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.5));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.08;
-  renderer.shadowMap.enabled = false;
 
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(0xf3cfa6);
@@ -274,35 +257,33 @@ async function main() {
   sun.position.set(-320, 520, 260);
   scene.add(sun);
 
-  scene.add(makeSeaFloor(3600, SEA_FLOOR_Y));
-  scene.add(makeIslandFormation(island.shoreline, SEA_FLOOR_Y));
-  const terrain = makeTerrain(island);
-  scene.add(terrain);
+  scene.add(makeSeaFloor());
+  scene.add(makeIslandFormation(landform.shoreline));
+  scene.add(makeTerrain(landform.heightfield));
   const water = new THREE.Mesh(new THREE.PlaneGeometry(3600, 3600, 32, 32).rotateX(-Math.PI / 2), new THREE.MeshStandardMaterial({ color: 0x3bb6c8, transparent: true, opacity: 0.64, roughness: 0.48, metalness: 0.02 }));
   water.position.y = -0.08;
-  scene.add(water, makeFoam(island.shoreline));
-  for (const d of island.objects.slice(0, 40)) scene.add(makeProp(d));
+  scene.add(water, makeFoam(landform.shoreline), makePath(graph.pathNetwork, sampleHeight), makeObjects(graph));
   const cloudGroup = new THREE.Group();
-  cloudContract.clouds.forEach((d, i) => cloudGroup.add(makeCloud(d, d.layerId?.includes("high") ? 2 : d.layerId?.includes("mid") ? 1 : 0, i)));
+  cloudContract.clouds.slice(0, CLOUD_COUNT).forEach((d, i) => cloudGroup.add(makeCloud(d, d.layerId?.includes("high") ? 2 : d.layerId?.includes("mid") ? 1 : 0, i)));
   scene.add(cloudGroup);
 
   const keys = new Set();
-  const rig = { yaw: 0, pitch: -0.16, radius: 520, target: new THREE.Vector3(0, 24, 0) };
+  const rig = { yaw: 0, pitch: -0.16, radius: 420, target: new THREE.Vector3(0, 20, 0) };
   let drag = null;
   function resize() { renderer.setSize(innerWidth, innerHeight, false); camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); }
   resize();
   addEventListener("resize", resize);
-  addEventListener("keydown", event => keys.add(event.code));
-  addEventListener("keyup", event => keys.delete(event.code));
+  addEventListener("keydown", e => keys.add(e.code));
+  addEventListener("keyup", e => keys.delete(e.code));
   addEventListener("blur", () => keys.clear());
-  canvas.addEventListener("wheel", event => { event.preventDefault(); rig.radius = Math.max(180, Math.min(1100, rig.radius + event.deltaY * 0.9)); }, { passive: false });
-  canvas.addEventListener("pointerdown", event => { drag = { x: event.clientX, y: event.clientY }; canvas.setPointerCapture?.(event.pointerId); });
+  canvas.addEventListener("wheel", e => { e.preventDefault(); rig.radius = Math.max(140, Math.min(900, rig.radius + e.deltaY * 0.75)); }, { passive: false });
+  canvas.addEventListener("pointerdown", e => { drag = { x: e.clientX, y: e.clientY }; canvas.setPointerCapture?.(e.pointerId); });
   canvas.addEventListener("pointerup", () => { drag = null; });
-  canvas.addEventListener("pointermove", event => {
+  canvas.addEventListener("pointermove", e => {
     if (!drag) return;
-    rig.yaw -= (event.clientX - drag.x) * 0.0045;
-    rig.pitch = Math.max(-0.75, Math.min(0.2, rig.pitch - (event.clientY - drag.y) * 0.0035));
-    drag = { x: event.clientX, y: event.clientY };
+    rig.yaw -= (e.clientX - drag.x) * 0.0045;
+    rig.pitch = Math.max(-0.75, Math.min(0.2, rig.pitch - (e.clientY - drag.y) * 0.0035));
+    drag = { x: e.clientX, y: e.clientY };
   });
 
   let last = performance.now();
@@ -313,25 +294,24 @@ async function main() {
     const r = new THREE.Vector3(Math.cos(rig.yaw), 0, -Math.sin(rig.yaw));
     const move = new THREE.Vector3();
     if (keys.has("KeyW")) move.add(f); if (keys.has("KeyS")) move.sub(f); if (keys.has("KeyD")) move.add(r); if (keys.has("KeyA")) move.sub(r);
-    if (move.lengthSq()) { rig.target.add(move.normalize().multiplyScalar(62 * dt)); rig.target.y = Math.max(14, sampleHeight(rig.target) + 18); }
+    if (move.lengthSq()) { rig.target.add(move.normalize().multiplyScalar(38 * dt)); rig.target.y = Math.max(9, sampleHeight(rig.target) + 11); }
     water.position.y = -0.08 + Math.sin(now * 0.0012) * 0.18;
-    const off = new THREE.Vector3(Math.sin(rig.yaw) * Math.cos(rig.pitch) * rig.radius, Math.max(95, Math.sin(-rig.pitch + 0.46) * rig.radius * 0.42), Math.cos(rig.yaw) * Math.cos(rig.pitch) * rig.radius);
-    camera.position.copy(rig.target).add(off);
+    const offset = new THREE.Vector3(Math.sin(rig.yaw) * Math.cos(rig.pitch) * rig.radius, Math.max(76, Math.sin(-rig.pitch + 0.46) * rig.radius * 0.42), Math.cos(rig.yaw) * Math.cos(rig.pitch) * rig.radius);
+    camera.position.copy(rig.target).add(offset);
     camera.lookAt(rig.target);
-    cloudGroup.children.forEach((c, i) => {
-      c.position.x += (c.userData.drift?.x || 1) * c.userData.speed * dt * 22;
-      c.position.z += (c.userData.drift?.z || 0) * c.userData.speed * dt * 22;
-      c.rotation.y = Math.sin(now * 0.00008 + i) * 0.04;
-      c.userData.material.uniforms.uTime.value = now * 0.001;
-      c.worldToLocal(c.userData.material.uniforms.uCameraLocal.value.copy(camera.position));
+    cloudGroup.children.forEach((cloud, i) => {
+      cloud.position.x += (cloud.userData.drift?.x || 1) * cloud.userData.speed * dt * 18;
+      cloud.position.z += (cloud.userData.drift?.z || 0) * cloud.userData.speed * dt * 18;
+      cloud.userData.material.uniforms.uTime.value = now * 0.001;
+      cloud.worldToLocal(cloud.userData.material.uniforms.uCameraLocal.value.copy(camera.position));
+      cloud.rotation.y = Math.sin(now * 0.00008 + i) * 0.04;
     });
-    const m = sampleMasks(rig.target);
-    hud.innerHTML = `<strong>Cozy Island</strong><br>WASD drift · drag orbit · wheel zoom<br>${domains.source} landform · deep formation to ${SEA_FLOOR_Y}m · low-res seafloor · clouds ${cloudContract.clouds.length} · foam ${Math.round((m.foam || 0) * 100)}%`;
+    hud.innerHTML = `<strong>Cozy Island</strong><br>WASD drift · drag orbit · wheel zoom<br>domain cutover · 200m island · objects ${graph.objects.length} · render descriptors ${foliageRender.objects.length} · clouds ${Math.min(CLOUD_COUNT, cloudContract.clouds.length)}`;
     renderer.render(scene, camera);
     requestAnimationFrame(frame);
   }
 
-  globalThis.CozyIsland = { islandState, island, cloudState, cloudContract, source: domains.source, seaFloorY: SEA_FLOOR_Y };
+  globalThis.CozyIsland = { islandState, landform, graph, foliageRender, cloudContract };
   requestAnimationFrame(frame);
 }
 
