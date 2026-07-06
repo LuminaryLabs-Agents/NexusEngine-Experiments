@@ -5,19 +5,19 @@ import { thirdPersonFollowThroughDomain } from './domain/third-person-follow-thr
 const app = document.getElementById('app');
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x78add8);
-scene.fog = new THREE.Fog(0x78add8, 35, 95);
+scene.fog = new THREE.Fog(0x78add8, 40, 105);
 
-const camera = new THREE.PerspectiveCamera(60, innerWidth / innerHeight, 0.1, 200);
+const camera = new THREE.PerspectiveCamera(62, innerWidth / innerHeight, 0.1, 220);
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(innerWidth, innerHeight);
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 renderer.shadowMap.enabled = true;
 app.appendChild(renderer.domElement);
 
-const hemi = new THREE.HemisphereLight(0xffffff, 0x363636, 1.7);
+const hemi = new THREE.HemisphereLight(0xffffff, 0x343434, 1.65);
 scene.add(hemi);
-const sun = new THREE.DirectionalLight(0xffffff, 2.2);
-sun.position.set(-8, 14, 8);
+const sun = new THREE.DirectionalLight(0xffffff, 2.3);
+sun.position.set(-8, 15, 8);
 sun.castShadow = true;
 sun.shadow.mapSize.set(2048, 2048);
 scene.add(sun);
@@ -26,11 +26,10 @@ const floorMat = new THREE.MeshStandardMaterial({ color: 0x8b8984, roughness: 0.
 const wallMat = new THREE.MeshStandardMaterial({ color: 0x4a4a4a, roughness: 0.9 });
 const blockMat = new THREE.MeshStandardMaterial({ color: 0x6a6865, roughness: 0.86 });
 
-const floor = new THREE.Mesh(new THREE.BoxGeometry(44, 0.25, 44), floorMat);
+const floor = new THREE.Mesh(new THREE.BoxGeometry(46, 0.25, 46), floorMat);
 floor.receiveShadow = true;
 scene.add(floor);
-
-const grid = new THREE.GridHelper(44, 44, 0x333333, 0x666666);
+const grid = new THREE.GridHelper(46, 46, 0x333333, 0x666666);
 grid.position.y = 0.14;
 scene.add(grid);
 
@@ -43,9 +42,9 @@ function box(x, y, z, sx, sy, sz, mat = blockMat) {
   return m;
 }
 
-box(0, 0, -22, 44, 8, 0.5, wallMat);
-box(-22, 0, 0, 0.5, 8, 44, wallMat);
-box(22, 0, 0, 0.5, 8, 44, wallMat);
+box(0, 0, -23, 46, 8, 0.5, wallMat);
+box(-23, 0, 0, 0.5, 8, 46, wallMat);
+box(23, 0, 0, 0.5, 8, 46, wallMat);
 box(-9, 0, -8, 7, 3, 5);
 box(7, 0, -11, 8, 5, 6);
 box(14, 0, 3, 2.5, 2.5, 2.5);
@@ -71,80 +70,123 @@ body.position.y = 1.35;
 body.castShadow = true;
 capsule.add(body);
 
-const headMat = new THREE.MeshStandardMaterial({ color: 0xffd166, roughness: 0.35 });
-const headSphere = new THREE.Mesh(new THREE.SphereGeometry(0.34, 24, 16), headMat);
-headSphere.position.set(0, 2.28, -0.52);
+const markerMat = new THREE.MeshStandardMaterial({ color: 0xffd166, roughness: 0.32, emissive: 0x2d1900 });
+const headSphere = new THREE.Mesh(new THREE.SphereGeometry(0.34, 24, 16), markerMat);
+headSphere.position.set(0, 2.55, -0.9);
 headSphere.castShadow = true;
 capsule.add(headSphere);
-
-const headingStem = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 1.25, 8), headMat);
+const headingStem = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 1.35, 8), markerMat);
 headingStem.rotation.x = Math.PI / 2;
-headingStem.position.set(0, 1.55, -0.86);
+headingStem.position.set(0, 2.05, -0.65);
 headingStem.castShadow = true;
 capsule.add(headingStem);
-
 scene.add(capsule);
 
-const velocity = new THREE.Vector3();
+const lookMat = new THREE.MeshStandardMaterial({ color: 0x44ff88, roughness: 0.3, emissive: 0x063b14 });
+const lookAheadSphere = new THREE.Mesh(new THREE.SphereGeometry(0.22, 18, 12), lookMat);
+lookAheadSphere.castShadow = true;
+scene.add(lookAheadSphere);
+
 const input = new Set();
-const follow = createThirdPersonFollowKit({ distance: 6.2, height: 1.25, lookAhead: 2.15, stiffness: 0.1, pitch: 0.34 });
-camera.position.set(0, 4, 8);
+const wish = new THREE.Vector3();
+const follow = createThirdPersonFollowKit({ distance: 6.4, height: 1.05, lookAhead: 2.4, lagSpeed: 10, pitch: 0.35 });
+let yVel = 0;
+let grounded = true;
+let last = performance.now();
+let headingYaw = 0;
+let cameraYaw = 0;
+let cameraPitch = 0.35;
+const rotateSpeed = 8.5;
+const moveSpeed = 7.5;
+capsule.position.set(0, 0, 8);
+camera.position.set(0, 4, 15);
+document.body.dataset.nexusDomain = thirdPersonFollowThroughDomain.id;
+
+function forwardFromYaw(yaw) {
+  return new THREE.Vector3(Math.sin(yaw), 0, -Math.cos(yaw)).normalize();
+}
+function rightFromYaw(yaw) {
+  return new THREE.Vector3(Math.cos(yaw), 0, Math.sin(yaw)).normalize();
+}
+function shortestAngle(current, target) {
+  return Math.atan2(Math.sin(target - current), Math.cos(target - current));
+}
+function reset() {
+  capsule.position.set(0, 0, 8);
+  yVel = 0;
+  grounded = true;
+  headingYaw = 0;
+  cameraYaw = 0;
+  cameraPitch = 0.35;
+}
 
 addEventListener('keydown', e => {
   input.add(e.key.toLowerCase());
-  if (e.key.toLowerCase() === 'r') {
-    capsule.position.set(0, 0, 8);
-    headingYaw = 0;
-    capsule.rotation.y = 0;
-  }
+  if (e.key.toLowerCase() === 'r') reset();
 });
 addEventListener('keyup', e => input.delete(e.key.toLowerCase()));
+addEventListener('mousemove', e => {
+  if (document.pointerLockElement === renderer.domElement) {
+    cameraYaw -= e.movementX * 0.003;
+    cameraPitch = THREE.MathUtils.clamp(cameraPitch - e.movementY * 0.0025, -0.1, 0.95);
+  }
+});
+renderer.domElement.addEventListener('click', () => renderer.domElement.requestPointerLock?.());
 addEventListener('resize', () => {
   camera.aspect = innerWidth / innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(innerWidth, innerHeight);
 });
 
-let yVel = 0;
-let grounded = true;
-let last = performance.now();
-let headingYaw = 0;
-capsule.position.set(0, 0, 8);
-
-document.body.dataset.nexusDomain = thirdPersonFollowThroughDomain.id;
-
-function shortestAngle(current, target) {
-  return Math.atan2(Math.sin(target - current), Math.cos(target - current));
-}
-
 function tick(now) {
   const dt = Math.min(0.04, (now - last) / 1000);
   last = now;
-  velocity.set(0, 0, 0);
-  if (input.has('w')) velocity.z -= 1;
-  if (input.has('s')) velocity.z += 1;
-  if (input.has('a')) velocity.x -= 1;
-  if (input.has('d')) velocity.x += 1;
 
-  if (velocity.lengthSq() > 0) {
-    velocity.normalize();
-    const desiredYaw = Math.atan2(velocity.x, -velocity.z);
-    headingYaw += shortestAngle(headingYaw, desiredYaw) * Math.min(1, dt * 14);
-    velocity.multiplyScalar(7.5 * dt);
+  if (input.has('arrowleft')) cameraYaw += dt * 1.8;
+  if (input.has('arrowright')) cameraYaw -= dt * 1.8;
+  if (input.has('arrowup')) cameraPitch = THREE.MathUtils.clamp(cameraPitch + dt * 0.9, -0.1, 0.95);
+  if (input.has('arrowdown')) cameraPitch = THREE.MathUtils.clamp(cameraPitch - dt * 0.9, -0.1, 0.95);
+
+  const camForward = forwardFromYaw(cameraYaw);
+  const camRight = rightFromYaw(cameraYaw);
+  wish.set(0, 0, 0);
+  if (input.has('w')) wish.add(camForward);
+  if (input.has('s')) wish.addScaledVector(camForward, -1);
+  if (input.has('d')) wish.add(camRight);
+  if (input.has('a')) wish.addScaledVector(camRight, -1);
+
+  if (wish.lengthSq() > 0) {
+    wish.normalize();
+    const desiredYaw = Math.atan2(wish.x, -wish.z);
+    headingYaw += shortestAngle(headingYaw, desiredYaw) * Math.min(1, dt * rotateSpeed);
+    capsule.position.addScaledVector(wish, moveSpeed * dt);
   }
 
   capsule.rotation.y = headingYaw;
-  capsule.position.add(velocity);
-  capsule.position.x = THREE.MathUtils.clamp(capsule.position.x, -19, 19);
-  capsule.position.z = THREE.MathUtils.clamp(capsule.position.z, -19, 19);
+  capsule.position.x = THREE.MathUtils.clamp(capsule.position.x, -20, 20);
+  capsule.position.z = THREE.MathUtils.clamp(capsule.position.z, -20, 20);
 
   if (input.has(' ') && grounded) { yVel = 7; grounded = false; }
   yVel -= 18 * dt;
   capsule.position.y += yVel * dt;
   if (capsule.position.y <= 0) { capsule.position.y = 0; yVel = 0; grounded = true; }
 
-  const visualVelocity = new THREE.Vector3(Math.sin(headingYaw), 0, -Math.cos(headingYaw)).multiplyScalar(7.5);
-  follow.update({ camera, target: capsule, velocity: visualVelocity, headingYaw, pitchOverride: 0.34, THREE });
+  const headingForward = forwardFromYaw(headingYaw);
+  lookAheadSphere.position.copy(capsule.position)
+    .addScaledVector(headingForward, 2.45)
+    .add(new THREE.Vector3(0, 1.45, 0));
+
+  follow.update({
+    camera,
+    target: capsule,
+    controlYaw: cameraYaw,
+    headingYaw,
+    pitchOverride: cameraPitch,
+    lookTarget: lookAheadSphere.position,
+    THREE,
+    dt
+  });
+
   renderer.render(scene, camera);
   requestAnimationFrame(tick);
 }
