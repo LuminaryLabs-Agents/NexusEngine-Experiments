@@ -25,6 +25,10 @@ function cmix(a, b, t) {
   return [mix(a[0], b[0], t), mix(a[1], b[1], t), mix(a[2], b[2], t)];
 }
 
+function shade(color, amount) {
+  return [clamp(color[0] * amount, 0, 1), clamp(color[1] * amount, 0, 1), clamp(color[2] * amount, 0, 1)];
+}
+
 function hash2(x, z) {
   const s = Math.sin(x * 127.1 + z * 311.7) * 43758.5453;
   return s - Math.floor(s);
