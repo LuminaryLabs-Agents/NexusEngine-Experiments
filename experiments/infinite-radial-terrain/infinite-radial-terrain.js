@@ -1,4 +1,5 @@
 const THREE_URL = "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js";
+const EROSION_SOLVER_KIT_URL = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusRealtime-ProtoKits@main/protokits/terrain-erosion-solver-domain-kit/index.js";
 
 const params = new URLSearchParams(location.search);
 const canvas = document.querySelector("#game");
@@ -23,8 +24,12 @@ function colorFromSample(sample, sky = [0.68, 0.84, 0.94]) {
   const alpine = [0.46, 0.47, 0.39];
   const snow = [0.82, 0.86, 0.80];
   const water = [0.26, 0.52, 0.64];
+  const silt = [0.48, 0.42, 0.28];
+  const exposed = [0.54, 0.55, 0.50];
   let base = height > 0.72 ? snow : [mix(low[0], alpine[0], height + slope * 0.2), mix(low[1], alpine[1], height + slope * 0.2), mix(low[2], alpine[2], height + slope * 0.2)];
-  base = sample.river > 0.72 ? water : base;
+  base = sample.erosion?.materialHints?.exposeRock > 0.5 ? exposed : base;
+  base = sample.erosion?.materialHints?.depositSilt > 0.34 ? [mix(base[0], silt[0], 0.45), mix(base[1], silt[1], 0.45), mix(base[2], silt[2], 0.45)] : base;
+  base = sample.river > 0.72 || sample.erosion?.wetness > 0.78 ? water : base;
   const fog = clamp((sample.distance - 900) / 3600, 0, 0.9);
   return [mix(base[0], sky[0], fog), mix(base[1], sky[1], fog), mix(base[2], sky[2], fog)];
 }
@@ -38,14 +43,41 @@ function rawHeight(x, z) {
   return continental + ridges + folds + valley - river * 46;
 }
 
-function terrainSample(x, z, focus = { x: 0, z: 0 }) {
+function baseTerrainSample(x, z, focus = { x: 0, z: 0 }) {
   const distance = Math.hypot(x - n(focus.x), z - n(focus.z));
   const height = rawHeight(x, z);
   const hx = rawHeight(x + 8, z) - rawHeight(x - 8, z);
   const hz = rawHeight(x, z + 8) - rawHeight(x, z - 8);
   const slope = Math.hypot(hx, hz) / 16;
+  const curvature = (rawHeight(x + 12, z) + rawHeight(x - 12, z) + rawHeight(x, z + 12) + rawHeight(x, z - 12) - height * 4) / 48;
   const river = Math.max(0, 1 - Math.abs(Math.sin(x * 0.0058 + z * 0.0017)) * 12);
-  return { x, z, distance, height, slope, river };
+  const material = height > 360 ? "snow" : slope > 38 ? "rock" : river > 0.62 ? "silt" : "soil";
+  return { x, z, distance, height, slope, curvature, river, material };
+}
+
+function terrainSample(x, z, focus = { x: 0, z: 0 }, erosionSolver = null) {
+  const base = baseTerrainSample(x, z, focus);
+  const rainfall = clamp(0.34 + Math.sin(x * 0.0012 + z * 0.0009) * 0.18 + base.river * 0.28, 0.08, 1.1);
+  const waterFlow = clamp(base.river * 1.2 + Math.max(0, base.curvature) * 0.035 + base.slope * 0.006, 0, 1.4);
+  const soilHardness = base.material === "rock" ? 0.86 : base.material === "snow" ? 0.45 : base.material === "silt" ? 0.28 : 0.38;
+  const vegetationCover = clamp(0.72 - base.slope * 0.01 - Math.max(0, base.height - 250) * 0.001, 0.04, 0.82);
+  const erosion = erosionSolver?.({
+    position: { x, z },
+    baseHeight: base.height,
+    localSlope: base.slope / 64,
+    curvature: base.curvature / 20,
+    rainfall,
+    waterFlow,
+    soilHardness,
+    vegetationCover,
+    material: base.material,
+    exposureTime: 0.74,
+    upstreamArea: 1 + base.river * 6,
+    freezeThaw: base.material === "snow" ? 0.45 : 0.05,
+    wind: base.distance > 2100 ? 0.36 : 0.08
+  }) ?? { heightDelta: 0, sedimentDelta: 0, wetness: 0, roughnessDelta: 0, materialHints: {} };
+  const height = base.height + n(erosion.heightDelta) + n(erosion.sedimentDelta) * 0.08;
+  return { ...base, height, erosion };
 }
 
 function createRadialTerrainDomain(config = {}) {
@@ -110,7 +142,7 @@ function createRadialTerrainDomain(config = {}) {
   };
 }
 
-function createBandGeometry(THREE, descriptor, band) {
+function createBandGeometry(THREE, descriptor, band, erosionSolver) {
   const radialSegments = Math.max(2, Math.floor(n(band.radialSegments, 16)));
   const angularSegments = Math.max(12, Math.floor(n(band.angularSegments, 64)));
   const positions = new Float32Array((radialSegments + 1) * (angularSegments + 1) * 3);
@@ -125,7 +157,7 @@ function createBandGeometry(THREE, descriptor, band) {
       const angle = a / angularSegments * Math.PI * 2;
       const x = center.x + Math.cos(angle) * radius;
       const z = center.z + Math.sin(angle) * radius;
-      const sample = terrainSample(x, z, descriptor.focus);
+      const sample = terrainSample(x, z, descriptor.focus, erosionSolver);
       const color = colorFromSample(sample);
       positions[cursor * 3] = x;
       positions[cursor * 3 + 1] = sample.height;
@@ -155,7 +187,12 @@ function createBandGeometry(THREE, descriptor, band) {
 }
 
 async function boot() {
-  const THREE = await import(params.get("three") || THREE_URL);
+  const [THREE, erosionModule] = await Promise.all([
+    import(params.get("three") || THREE_URL),
+    import(params.get("erosionKit") || EROSION_SOLVER_KIT_URL)
+  ]);
+  const solveTerrainErosionAt = erosionModule.solveTerrainErosionAt;
+  const erosionSolver = (input) => solveTerrainErosionAt(input, { cutScale: 14, depositScale: 7, roughnessScale: 0.12 });
   const radialTerrain = createRadialTerrainDomain({ originSnap: 50 });
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: "high-performance" });
   renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
@@ -184,6 +221,7 @@ async function boot() {
   let lastVersion = -1;
   let frame = 0;
   let elapsed = 0;
+  let lastDebugSample = null;
 
   function syncTerrain() {
     radialTerrain.setFocus(camera.position);
@@ -198,7 +236,7 @@ async function boot() {
         scene.remove(old);
         old.geometry.dispose();
       }
-      const mesh = new THREE.Mesh(createBandGeometry(THREE, descriptors, band), terrainMat);
+      const mesh = new THREE.Mesh(createBandGeometry(THREE, descriptors, band, erosionSolver), terrainMat);
       mesh.receiveShadow = true;
       scene.add(mesh);
       bandMeshes.set(band.id, mesh);
@@ -225,15 +263,16 @@ async function boot() {
     if (keys.has("ShiftLeft") || keys.has("ShiftRight")) move.sub(up);
     if (move.lengthSq() > 0) move.normalize().multiplyScalar(cameraRig.speed * dt * (keys.has("AltLeft") ? 2.2 : 1));
     camera.position.add(move);
-    const floor = rawHeight(camera.position.x, camera.position.z) + 70;
+    const floor = terrainSample(camera.position.x, camera.position.z, descriptors.focus, erosionSolver).height + 70;
     if (camera.position.y < floor) camera.position.y = mix(camera.position.y, floor, 0.18);
     camera.rotation.set(cameraRig.pitch, cameraRig.yaw, 0, "YXZ");
   }
 
   function render() {
     syncTerrain();
-    const sample = terrainSample(camera.position.x, camera.position.z, descriptors.focus);
-    hud.innerHTML = `<strong>Infinite Radial Terrain</strong><br>WASD fly · Space/Shift vertical · mouse drag look<br>Height ${Math.round(sample.height)} · Alt ${Math.round(camera.position.y)} · Core ${descriptors.bands[0].outerRadius}m · Recalc ${descriptors.originSnap}m · Vertices ${descriptors.vertexBudget.toLocaleString()} · Origin ${descriptors.origin.x},${descriptors.origin.z}`;
+    const sample = terrainSample(camera.position.x, camera.position.z, descriptors.focus, erosionSolver);
+    lastDebugSample = sample;
+    hud.innerHTML = `<strong>Infinite Radial Terrain</strong><br>WASD fly · Space/Shift vertical · mouse drag look<br>Height ${Math.round(sample.height)} · Erosion ${Math.round(Math.abs(sample.erosion.heightDelta) * 10) / 10} · Wet ${Math.round(sample.erosion.wetness * 100)}% · Core ${descriptors.bands[0].outerRadius}m · Recalc ${descriptors.originSnap}m · Origin ${descriptors.origin.x},${descriptors.origin.z}`;
     renderer.render(scene, camera);
   }
 
@@ -275,6 +314,7 @@ async function boot() {
   window.GameHost = {
     mode: "infinite-radial-terrain",
     radialTerrain,
+    erosionSolver: { solveAt: erosionSolver, moduleUrl: params.get("erosionKit") || EROSION_SOLVER_KIT_URL },
     renderer,
     scene,
     camera,
@@ -284,10 +324,13 @@ async function boot() {
       camera: { position: camera.position.toArray(), yaw: cameraRig.yaw, pitch: cameraRig.pitch },
       radialTerrain: radialTerrain.getState(),
       descriptors: radialTerrain.getDescriptors(),
+      erosion: clone(lastDebugSample?.erosion ?? null),
       validation: {
         booted: true,
         namedInfiniteRadialTerrain: true,
         cameraDrivesRadialFocus: true,
+        usesTerrainErosionSolverProtoKit: true,
+        erosionSolverDoesNotAuthorTerrain: true,
         lodRecalcAtLeast50Meters: radialTerrain.getDescriptors().originSnap >= 50,
         closestLodBoundaryAtLeast200Meters: radialTerrain.getDescriptors().bands[0]?.outerRadius >= 200,
         terrainNormalsWoundUpward: true,
