@@ -138,8 +138,8 @@ addEventListener('keydown', e => {
 addEventListener('keyup', e => input.delete(e.key.toLowerCase()));
 addEventListener('mousemove', e => {
   if (document.pointerLockElement === renderer.domElement) {
-    orbitYawOffset = THREE.MathUtils.clamp(orbitYawOffset - e.movementX * 0.003, -maxOrbitYaw, maxOrbitYaw);
-    cameraPitch = THREE.MathUtils.clamp(cameraPitch - e.movementY * 0.0025, -0.1, 0.95);
+    orbitYawOffset = THREE.MathUtils.clamp(orbitYawOffset + e.movementX * 0.003, -maxOrbitYaw, maxOrbitYaw);
+    cameraPitch = THREE.MathUtils.clamp(cameraPitch + e.movementY * 0.0025, -0.1, 0.95);
   }
 });
 renderer.domElement.addEventListener('click', () => renderer.domElement.requestPointerLock?.());
@@ -154,15 +154,15 @@ function tick(now) {
   last = now;
 
   let turningCamera = false;
-  if (input.has('arrowleft')) { orbitYawOffset += dt * 1.8; turningCamera = true; }
-  if (input.has('arrowright')) { orbitYawOffset -= dt * 1.8; turningCamera = true; }
+  if (input.has('arrowleft')) { orbitYawOffset -= dt * 1.8; turningCamera = true; }
+  if (input.has('arrowright')) { orbitYawOffset += dt * 1.8; turningCamera = true; }
   orbitYawOffset = THREE.MathUtils.clamp(orbitYawOffset, -maxOrbitYaw, maxOrbitYaw);
   if (!turningCamera && document.pointerLockElement !== renderer.domElement && Math.abs(orbitYawOffset) <= handoffStartYaw) {
     orbitYawOffset += (0 - orbitYawOffset) * (1 - Math.exp(-orbitReturnSpeed * dt));
   }
 
-  if (input.has('arrowup')) cameraPitch = THREE.MathUtils.clamp(cameraPitch + dt * 0.9, -0.1, 0.95);
-  if (input.has('arrowdown')) cameraPitch = THREE.MathUtils.clamp(cameraPitch - dt * 0.9, -0.1, 0.95);
+  if (input.has('arrowup')) cameraPitch = THREE.MathUtils.clamp(cameraPitch - dt * 0.9, -0.1, 0.95);
+  if (input.has('arrowdown')) cameraPitch = THREE.MathUtils.clamp(cameraPitch + dt * 0.9, -0.1, 0.95);
 
   let cameraYaw = normalizeAngle(headingYaw + orbitYawOffset);
   const camForward = forwardFromYaw(cameraYaw);
