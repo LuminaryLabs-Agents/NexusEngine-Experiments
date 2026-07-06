@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Canonical The Open Above flight harness route for NexusRealtime." />
+  <meta name="description" content="Canonical The Open Above radial terrain flight harness route for NexusEngine." />
   <title>The Open Above Harness</title>
   <style>
     html,body { margin:0; height:100%; overflow:hidden; background:#dff7ff; color:#10202a; font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
     #game { width:100vw; height:100vh; display:block; touch-action:none; }
     .hud {
-      position:fixed; left:16px; bottom:16px; z-index:2; max-width:min(420px,calc(100vw - 32px));
+      position:fixed; left:16px; bottom:16px; z-index:2; max-width:min(460px,calc(100vw - 32px));
       padding:10px 12px; border:0; border-radius:16px;
       background:rgba(3,10,16,.82); -webkit-backdrop-filter:blur(12px) saturate(1.2); backdrop-filter:blur(12px) saturate(1.2);
       color:#ffffff; font-size:12px; letter-spacing:.02em; line-height:1.4;
@@ -23,9 +23,9 @@
   </style>
 </head>
 <body>
-  <canvas id="game" aria-label="The Open Above flight harness"></canvas>
-  <div class="hud" id="hud"><strong>The Open Above Harness</strong><br>W/S pitch · A/D bank · Space boost</div>
+  <canvas id="game" aria-label="The Open Above radial terrain flight harness"></canvas>
+  <div class="hud" id="hud"><strong>The Open Above · radial terrain V1</strong><br>W/S pitch · A/D bank · Space boost · ` logs GameHost state</div>
   <pre id="error" hidden></pre>
-  <script type="module" src="../the-open-above-v2/open-above-v2.js"></script>
+  <script type="module" src="../the-open-above-v2/open-above-radial-terrain.js?v=radial-terrain-v1"></script>
 </body>
 </html>
