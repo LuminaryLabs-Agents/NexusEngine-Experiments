@@ -1,0 +1,18 @@
+{
+  "id": "stonewake-depths",
+  "title": "Stonewake Depths",
+  "route": "./games/stonewake-depths/",
+  "kind": "game",
+  "visual": "stonewake",
+  "playLabel": "Play game",
+  "tags": ["cave survival", "acoustic stealth", "physical puzzle"],
+  "kitStack": [
+    "acoustic-signal-domain-kit",
+    "weighted-trigger-domain-kit",
+    "condition-gate-domain-kit",
+    "physics-body-lite-domain-kit",
+    "projectile-lite-domain-kit",
+    "sensory-agent-domain-kit"
+  ],
+  "description": "High-fidelity canvas cave puzzle-survival slice where acoustic signals, weighted triggers, condition gates, lightweight physics, projectiles, and sensory agents work together."
+}
