@@ -3,30 +3,63 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="description" content="Procedural path meadow experiment composed from NexusRealtime ProtoKit descriptors." />
+  <meta name="description" content="Single-file meadow-area-kit proof route for an insertable high-fidelity meadow area." />
   <link rel="icon" href="data:," />
-  <title>Path Meadow - NexusRealtime Experiment</title>
+  <title>Path Meadow - meadow-area-kit Proof</title>
   <style>
-    :root{color-scheme:dark;--ink:#10130d;--cream:#fff4d0;--glass:rgba(20,24,15,.42)}
+    :root{color-scheme:dark;--cream:#fff4d0;--glass:rgba(20,24,15,.42)}
     html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#11150d;color:var(--cream);font-family:Georgia,serif}
     main,canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
     main::before{content:"";position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(circle at 26% 23%,rgba(255,220,116,.5),rgba(255,203,88,.16) 20%,transparent 38%),linear-gradient(180deg,rgba(255,214,130,.18),transparent 38%,rgba(255,224,132,.16) 58%,rgba(36,45,17,.14));mix-blend-mode:soft-light}
     main::after{content:"";position:fixed;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,transparent 0 38%,rgba(255,210,112,.14) 45%,transparent 62%),radial-gradient(circle at 52% 47%,transparent 0 48%,rgba(21,28,12,.2) 100%)}
     canvas{z-index:0}
     #hud{position:fixed;left:18px;top:18px;z-index:2;max-width:min(560px,calc(100vw - 36px));padding:12px 14px;border:1px solid rgba(255,244,208,.18);border-radius:18px;background:var(--glass);box-shadow:0 18px 70px rgba(0,0,0,.22);backdrop-filter:blur(14px);text-shadow:0 2px 12px #000}
-    #hud[hidden]{display:none}
-    #hud strong{letter-spacing:.08em;text-transform:uppercase}
-    #hud div{margin-top:6px;color:#d8e2bd;font:13px/1.35 ui-monospace,Menlo,monospace}
+    #hud[hidden]{display:none}#hud strong{letter-spacing:.08em;text-transform:uppercase}#hud div{margin-top:6px;color:#d8e2bd;font:13px/1.35 ui-monospace,Menlo,monospace}
   </style>
 </head>
 <body>
-  <main aria-label="Path meadow central tree experiment">
-    <canvas id="scene" role="img" aria-label="Procedural meadow path with central hero tree"></canvas>
-    <aside id="hud" hidden>
-      <strong>Path Meadow</strong>
-      <div id="status">loading descriptors...</div>
-    </aside>
+  <main aria-label="Path meadow meadow-area-kit proof">
+    <canvas id="scene" role="img" aria-label="Insertable meadow area with path and focal tree"></canvas>
+    <aside id="hud" hidden><strong>Path Meadow</strong><div id="status">loading meadow-area-kit...</div></aside>
   </main>
-  <script type="module" src="./src/main.js"></script>
+  <script type="module">
+    import { createMeadowAreaKit } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusRealtime-ProtoKits@main/protokits/meadow-area-kit/index.js";
+    import { createMeadowWebglRenderKit } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusRealtime-ProtoKits@main/protokits/meadow-webgl-render-kit/index.js";
+
+    const canvas = document.querySelector("#scene");
+    const hud = document.querySelector("#hud");
+    const statusEl = document.querySelector("#status");
+    const debug = new URLSearchParams(location.search).has("debug");
+    const BUILD_ID = "0.1.0-path-meadow-meadow-area-kit-inline";
+
+    const meadow = createMeadowAreaKit({
+      seed: "path-meadow-v1",
+      area: { id: "path-meadow", anchor: { x: 0, y: 0, z: 20 }, width: 90, depth: 110 },
+      features: {
+        path: { enabled: true, width: 3.9, points: [{ x: 0, z: -44 }, { x: -1.8, z: -31 }, { x: 1.6, z: -18 }, { x: -3.4, z: -6 }, { x: 1.2, z: 7 }, { x: 0, z: 20 }] },
+        focalTree: { enabled: true, position: { x: 0, y: 0, z: 24 }, trunkHeight: 12.2, canopyRadius: 13.2 },
+        grass: { enabled: true, bladeCount: 3600 },
+        flowers: { enabled: true, count: 420 },
+        rocks: { enabled: true, count: 46 },
+        mushrooms: { enabled: true, count: 34 },
+        treeLine: { enabled: true, count: 36 },
+        wind: { enabled: true, strength: 0.38 }
+      },
+      style: { timeOfDay: "golden-hour", renderStyle: "painterly-cel-3d" }
+    });
+
+    const renderer = createMeadowWebglRenderKit({ canvas });
+    hud.hidden = !debug;
+
+    function frame(now) {
+      const plan = meadow.getRenderPlan({ time: now / 1000 });
+      const renderState = renderer.render(plan);
+      if (debug) statusEl.textContent = `${plan.validation.passed ? "ok" : "bad"} · objects:${plan.stats.objectCount} · vertices:${renderState.vertexCount}`;
+      requestAnimationFrame(frame);
+    }
+
+    window.GameHost = { build: BUILD_ID, meadow, renderer, getState: () => ({ build: BUILD_ID, meadow: meadow.getSnapshot(), render: renderer.getSnapshot() }) };
+    requestAnimationFrame(frame);
+  </script>
 </body>
 </html>
