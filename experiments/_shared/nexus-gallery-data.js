@@ -2,10 +2,21 @@ export const galleryConfig = Object.freeze({
   title: "Experiments",
   subtitle: "Nexus Engine playable routes",
   repoUrl: "https://github.com/LuminaryLabs-Agents/NexusEngine-Experiments",
-  hint: "Browse the 11 collective experiment cards. Older removed routes live under deprecated/."
+  hint: "Browse the 12 collective experiment cards. Older removed routes live under deprecated/."
 });
 
 export const games = Object.freeze([
+  {
+    id: "peer-scene-transition",
+    tab: "experiments",
+    title: "Peer Scene Transition",
+    route: "./experiments/peer-scene-transition/",
+    kind: "experiment",
+    visual: "next",
+    playLabel: "Play experiment",
+    tags: [{ label: "Scene Host", tone: "gold" }, { label: "Story Flow", tone: "green" }, { label: "DSK", tone: "blue" }],
+    description: "Story-scene orchestration proof where each HTML scene hosts itself, exits validate through scene state, small puzzle tokens unlock routes, and the debug panel exposes current scene, visited scenes, inventory, and transition ledgers."
+  },
   {
     id: "vr-platformer-board",
     tab: "experiments",
