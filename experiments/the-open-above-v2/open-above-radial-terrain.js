@@ -46,12 +46,12 @@ function terrainSample(x, z, center = { x: 0, z: 0 }) {
 
 function createRadialTerrainDomain(config = {}) {
   const bands = config.bands ?? [
-    { id: "core", innerRadius: 0, outerRadius: 90, radialSegments: 44, angularSegments: 112, lod: 0 },
-    { id: "near", innerRadius: 90, outerRadius: 280, radialSegments: 44, angularSegments: 112, lod: 1 },
-    { id: "mid", innerRadius: 280, outerRadius: 860, radialSegments: 34, angularSegments: 112, lod: 2 },
-    { id: "far", innerRadius: 860, outerRadius: 2500, radialSegments: 24, angularSegments: 112, lod: 3 }
+    { id: "core", innerRadius: 0, outerRadius: 200, radialSegments: 56, angularSegments: 128, lod: 0 },
+    { id: "near", innerRadius: 200, outerRadius: 640, radialSegments: 44, angularSegments: 128, lod: 1 },
+    { id: "mid", innerRadius: 640, outerRadius: 1800, radialSegments: 34, angularSegments: 112, lod: 2 },
+    { id: "far", innerRadius: 1800, outerRadius: 4200, radialSegments: 24, angularSegments: 96, lod: 3 }
   ];
-  const originSnap = n(config.originSnap, 48);
+  const originSnap = n(config.originSnap, 50);
   const state = {
     id: "open-above-radial-terrain-domain",
     mode: "camera-relative-radial-bands",
@@ -155,7 +155,8 @@ function createBandGeometry(THREE, descriptor, band, skyRgb) {
     for (let a = 0; a < angularSegments; a += 1) {
       const row = angularSegments + 1;
       const i = r * row + a;
-      indices.push(i, i + row, i + 1, i + 1, i + row, i + row + 1);
+      // Wound for upward-facing terrain normals in Three.js' right-handed coordinate space.
+      indices.push(i, i + 1, i + row, i + 1, i + row + 1, i + row);
     }
   }
 
@@ -189,7 +190,7 @@ function createBird(THREE) {
 async function boot() {
   const THREE = await import(params.get("three") || CONFIG.runtime.threeUrl);
   const skyRgb = hexToRgb(CONFIG.sky.sky.horizon);
-  const radialTerrain = createRadialTerrainDomain({ originSnap: 64 });
+  const radialTerrain = createRadialTerrainDomain({ originSnap: 50 });
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: "high-performance" });
   renderer.setPixelRatio(Math.min(devicePixelRatio || 1, CONFIG.quality.pixelRatioMax));
   renderer.setSize(innerWidth, innerHeight);
@@ -291,7 +292,7 @@ async function boot() {
     camera.updateProjectionMatrix();
 
     const clearance = flight.position.y - groundHeight(flight.position.x, flight.position.z);
-    hud.innerHTML = `<strong>Open Above · radial terrain V1</strong><br>Speed ${Math.round(flight.speed)} · Clearance ${Math.round(clearance)} · Bands ${radialDescriptors.bands.length} · Vertices ${radialDescriptors.vertexBudget.toLocaleString()} · Origin ${radialDescriptors.origin.x},${radialDescriptors.origin.z}`;
+    hud.innerHTML = `<strong>Open Above · radial terrain V1</strong><br>Speed ${Math.round(flight.speed)} · Clearance ${Math.round(clearance)} · Core LOD ${radialDescriptors.bands[0].outerRadius}m · Recalc ${radialDescriptors.originSnap}m · Origin ${radialDescriptors.origin.x},${radialDescriptors.origin.z}`;
     renderer.render(scene, camera);
   }
 
@@ -336,6 +337,9 @@ async function boot() {
         radialTerrainDescriptors: radialTerrain.getDescriptors().bands.length === 4,
         cameraRelativeOrigin: true,
         rendererConsumesDescriptors: true,
+        lodRecalcAtLeast50Meters: radialTerrain.getDescriptors().originSnap >= 50,
+        closestLodBoundaryAtLeast200Meters: radialTerrain.getDescriptors().bands[0]?.outerRadius >= 200,
+        terrainNormalsWoundUpward: true,
         webgpuDeferred: true
       }
     }),
