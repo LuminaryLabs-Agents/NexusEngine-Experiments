@@ -91,14 +91,21 @@ let last = performance.now();
 let headingYaw = 0;
 let orbitYawOffset = 0;
 let cameraPitch = 0.35;
+let handoffAlpha = 0;
 const maxOrbitYaw = Math.PI / 2;
+const handoffStartYaw = Math.PI / 4;
+const rootYawHandoffSpeed = 2.35;
 const orbitReturnSpeed = 1.8;
 const rotateSpeed = 8.5;
 const moveSpeed = 7.5;
+const headWorld = new THREE.Vector3();
 capsule.position.set(0, 0, 8);
 camera.position.set(0, 4, 15);
 document.body.dataset.nexusDomain = thirdPersonFollowThroughDomain.id;
 
+function normalizeAngle(angle) {
+  return Math.atan2(Math.sin(angle), Math.cos(angle));
+}
 function forwardFromYaw(yaw) {
   return new THREE.Vector3(Math.sin(yaw), 0, -Math.cos(yaw)).normalize();
 }
@@ -108,6 +115,12 @@ function rightFromYaw(yaw) {
 function shortestAngle(current, target) {
   return Math.atan2(Math.sin(target - current), Math.cos(target - current));
 }
+function smoothstep(t) {
+  return t * t * (3 - 2 * t);
+}
+function preserveCameraYawAfterRootChange(previousCameraYaw) {
+  orbitYawOffset = THREE.MathUtils.clamp(shortestAngle(headingYaw, previousCameraYaw), -maxOrbitYaw, maxOrbitYaw);
+}
 function reset() {
   capsule.position.set(0, 0, 8);
   yVel = 0;
@@ -115,6 +128,7 @@ function reset() {
   headingYaw = 0;
   orbitYawOffset = 0;
   cameraPitch = 0.35;
+  handoffAlpha = 0;
 }
 
 addEventListener('keydown', e => {
@@ -143,14 +157,14 @@ function tick(now) {
   if (input.has('arrowleft')) { orbitYawOffset += dt * 1.8; turningCamera = true; }
   if (input.has('arrowright')) { orbitYawOffset -= dt * 1.8; turningCamera = true; }
   orbitYawOffset = THREE.MathUtils.clamp(orbitYawOffset, -maxOrbitYaw, maxOrbitYaw);
-  if (!turningCamera && document.pointerLockElement !== renderer.domElement) {
+  if (!turningCamera && document.pointerLockElement !== renderer.domElement && Math.abs(orbitYawOffset) <= handoffStartYaw) {
     orbitYawOffset += (0 - orbitYawOffset) * (1 - Math.exp(-orbitReturnSpeed * dt));
   }
 
   if (input.has('arrowup')) cameraPitch = THREE.MathUtils.clamp(cameraPitch + dt * 0.9, -0.1, 0.95);
   if (input.has('arrowdown')) cameraPitch = THREE.MathUtils.clamp(cameraPitch - dt * 0.9, -0.1, 0.95);
 
-  const cameraYaw = headingYaw + orbitYawOffset;
+  let cameraYaw = normalizeAngle(headingYaw + orbitYawOffset);
   const camForward = forwardFromYaw(cameraYaw);
   const camRight = rightFromYaw(cameraYaw);
   wish.set(0, 0, 0);
@@ -161,11 +175,25 @@ function tick(now) {
 
   if (wish.lengthSq() > 0) {
     wish.normalize();
+    const previousCameraYaw = cameraYaw;
     const desiredYaw = Math.atan2(wish.x, -wish.z);
-    headingYaw += shortestAngle(headingYaw, desiredYaw) * Math.min(1, dt * rotateSpeed);
+    headingYaw = normalizeAngle(headingYaw + shortestAngle(headingYaw, desiredYaw) * Math.min(1, dt * rotateSpeed));
+    preserveCameraYawAfterRootChange(previousCameraYaw);
     capsule.position.addScaledVector(wish, moveSpeed * dt);
   }
 
+  const orbitAbs = Math.abs(orbitYawOffset);
+  const excess = Math.max(0, orbitAbs - handoffStartYaw);
+  handoffAlpha = excess > 0 ? smoothstep(THREE.MathUtils.clamp(excess / (maxOrbitYaw - handoffStartYaw), 0, 1)) : 0;
+  if (handoffAlpha > 0) {
+    const handoffDelta = Math.sign(orbitYawOffset) * Math.min(excess, rootYawHandoffSpeed * handoffAlpha * dt);
+    headingYaw = normalizeAngle(headingYaw + handoffDelta);
+    orbitYawOffset -= handoffDelta;
+  }
+
+  headingYaw = normalizeAngle(headingYaw);
+  orbitYawOffset = THREE.MathUtils.clamp(orbitYawOffset, -maxOrbitYaw, maxOrbitYaw);
+  cameraYaw = normalizeAngle(headingYaw + orbitYawOffset);
   capsule.rotation.y = headingYaw;
   capsule.position.x = THREE.MathUtils.clamp(capsule.position.x, -20, 20);
   capsule.position.z = THREE.MathUtils.clamp(capsule.position.z, -20, 20);
@@ -175,9 +203,9 @@ function tick(now) {
   capsule.position.y += yVel * dt;
   if (capsule.position.y <= 0) { capsule.position.y = 0; yVel = 0; grounded = true; }
 
-  const headingForward = forwardFromYaw(headingYaw);
+  const lookForward = forwardFromYaw(cameraYaw);
   lookAheadSphere.position.copy(capsule.position)
-    .addScaledVector(headingForward, 2.45)
+    .addScaledVector(lookForward, 2.45)
     .add(new THREE.Vector3(0, 1.45, 0));
 
   follow.update({
@@ -190,6 +218,19 @@ function tick(now) {
     THREE,
     dt
   });
+
+  headCube.getWorldPosition(headWorld);
+  window.__thirdPersonFollowThrough = {
+    rootYawDeg: THREE.MathUtils.radToDeg(headingYaw),
+    orbitYawOffsetDeg: THREE.MathUtils.radToDeg(orbitYawOffset),
+    cameraYawDeg: THREE.MathUtils.radToDeg(cameraYaw),
+    handoffAlpha,
+    headWorld: headWorld.toArray(),
+    lookAheadWorld: lookAheadSphere.position.toArray(),
+    cameraPosition: camera.position.toArray(),
+    targetPosition: capsule.position.toArray(),
+    grounded
+  };
 
   renderer.render(scene, camera);
   requestAnimationFrame(tick);
