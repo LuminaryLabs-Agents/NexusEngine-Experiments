@@ -70,16 +70,11 @@ body.position.y = 1.35;
 body.castShadow = true;
 capsule.add(body);
 
-const markerMat = new THREE.MeshStandardMaterial({ color: 0xffd166, roughness: 0.32, emissive: 0x2d1900 });
-const headSphere = new THREE.Mesh(new THREE.SphereGeometry(0.34, 24, 16), markerMat);
-headSphere.position.set(0, 2.55, -0.9);
-headSphere.castShadow = true;
-capsule.add(headSphere);
-const headingStem = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 1.35, 8), markerMat);
-headingStem.rotation.x = Math.PI / 2;
-headingStem.position.set(0, 2.05, -0.65);
-headingStem.castShadow = true;
-capsule.add(headingStem);
+const headMat = new THREE.MeshStandardMaterial({ color: 0xffd166, roughness: 0.42, emissive: 0x241400 });
+const headCube = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.34, 0.34), headMat);
+headCube.position.set(0, 1.6, 0);
+headCube.castShadow = true;
+capsule.add(headCube);
 scene.add(capsule);
 
 const lookMat = new THREE.MeshStandardMaterial({ color: 0x44ff88, roughness: 0.3, emissive: 0x063b14 });
