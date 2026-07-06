@@ -70,16 +70,33 @@ const body = new THREE.Mesh(new THREE.CapsuleGeometry(0.72, 1.55, 12, 28), bodyM
 body.position.y = 1.35;
 body.castShadow = true;
 capsule.add(body);
+
+const headMat = new THREE.MeshStandardMaterial({ color: 0xffd166, roughness: 0.35 });
+const headSphere = new THREE.Mesh(new THREE.SphereGeometry(0.34, 24, 16), headMat);
+headSphere.position.set(0, 2.28, -0.52);
+headSphere.castShadow = true;
+capsule.add(headSphere);
+
+const headingStem = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 1.25, 8), headMat);
+headingStem.rotation.x = Math.PI / 2;
+headingStem.position.set(0, 1.55, -0.86);
+headingStem.castShadow = true;
+capsule.add(headingStem);
+
 scene.add(capsule);
 
 const velocity = new THREE.Vector3();
 const input = new Set();
-const follow = createThirdPersonFollowKit({ distance: 6.2, height: 3.2, lookAhead: 2.0, stiffness: 0.09 });
+const follow = createThirdPersonFollowKit({ distance: 6.2, height: 1.25, lookAhead: 2.15, stiffness: 0.1, pitch: 0.34 });
 camera.position.set(0, 4, 8);
 
 addEventListener('keydown', e => {
   input.add(e.key.toLowerCase());
-  if (e.key.toLowerCase() === 'r') capsule.position.set(0, 0, 8);
+  if (e.key.toLowerCase() === 'r') {
+    capsule.position.set(0, 0, 8);
+    headingYaw = 0;
+    capsule.rotation.y = 0;
+  }
 });
 addEventListener('keyup', e => input.delete(e.key.toLowerCase()));
 addEventListener('resize', () => {
@@ -91,9 +108,14 @@ addEventListener('resize', () => {
 let yVel = 0;
 let grounded = true;
 let last = performance.now();
+let headingYaw = 0;
 capsule.position.set(0, 0, 8);
 
 document.body.dataset.nexusDomain = thirdPersonFollowThroughDomain.id;
+
+function shortestAngle(current, target) {
+  return Math.atan2(Math.sin(target - current), Math.cos(target - current));
+}
 
 function tick(now) {
   const dt = Math.min(0.04, (now - last) / 1000);
@@ -103,16 +125,26 @@ function tick(now) {
   if (input.has('s')) velocity.z += 1;
   if (input.has('a')) velocity.x -= 1;
   if (input.has('d')) velocity.x += 1;
-  if (velocity.lengthSq() > 0) velocity.normalize().multiplyScalar(7.5 * dt);
+
+  if (velocity.lengthSq() > 0) {
+    velocity.normalize();
+    const desiredYaw = Math.atan2(velocity.x, -velocity.z);
+    headingYaw += shortestAngle(headingYaw, desiredYaw) * Math.min(1, dt * 14);
+    velocity.multiplyScalar(7.5 * dt);
+  }
+
+  capsule.rotation.y = headingYaw;
   capsule.position.add(velocity);
   capsule.position.x = THREE.MathUtils.clamp(capsule.position.x, -19, 19);
   capsule.position.z = THREE.MathUtils.clamp(capsule.position.z, -19, 19);
+
   if (input.has(' ') && grounded) { yVel = 7; grounded = false; }
   yVel -= 18 * dt;
   capsule.position.y += yVel * dt;
   if (capsule.position.y <= 0) { capsule.position.y = 0; yVel = 0; grounded = true; }
-  const visualVelocity = velocity.clone().multiplyScalar(1 / Math.max(dt, 0.001));
-  follow.update({ camera, target: capsule, velocity: visualVelocity, THREE });
+
+  const visualVelocity = new THREE.Vector3(Math.sin(headingYaw), 0, -Math.cos(headingYaw)).multiplyScalar(7.5);
+  follow.update({ camera, target: capsule, velocity: visualVelocity, headingYaw, pitchOverride: 0.34, THREE });
   renderer.render(scene, camera);
   requestAnimationFrame(tick);
 }
