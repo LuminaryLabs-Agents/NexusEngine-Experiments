@@ -1,5 +1,6 @@
 import * as THREE from 'https://unpkg.com/three@0.165.0/build/three.module.js';
 import { createThirdPersonFollowKit } from './kits/third-person-follow-kit.js';
+import { createRiggedActorKit } from './kits/rigged-actor-kit.js';
 import { thirdPersonFollowThroughDomain } from './domain/third-person-follow-through-domain.js';
 
 const app = document.getElementById('app');
@@ -63,18 +64,9 @@ cylinder.castShadow = true;
 cylinder.receiveShadow = true;
 scene.add(cylinder);
 
-const capsule = new THREE.Group();
-const bodyMat = new THREE.MeshStandardMaterial({ color: 0x55bdf2, roughness: 0.38, metalness: 0.02 });
-const body = new THREE.Mesh(new THREE.CapsuleGeometry(0.72, 1.55, 12, 28), bodyMat);
-body.position.y = 1.35;
-body.castShadow = true;
-capsule.add(body);
-
-const headMat = new THREE.MeshStandardMaterial({ color: 0xffd166, roughness: 0.42, emissive: 0x241400 });
-const headCube = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.34, 0.34), headMat);
-headCube.position.set(0, 1.6, 0);
-headCube.castShadow = true;
-capsule.add(headCube);
+const actor = createRiggedActorKit(THREE, { name: 'ThirdPersonFollowActor' });
+const capsule = actor.group;
+const headCube = actor.headMarkerCube;
 scene.add(capsule);
 
 const lookMat = new THREE.MeshStandardMaterial({ color: 0x44ff88, roughness: 0.3, emissive: 0x063b14 });
@@ -229,6 +221,8 @@ function tick(now) {
     lookAheadWorld: lookAheadSphere.position.toArray(),
     cameraPosition: camera.position.toArray(),
     targetPosition: capsule.position.toArray(),
+    rigBoneNames: Object.keys(actor.bones),
+    rigJointCount: Object.keys(actor.joints).length,
     grounded
   };
 
