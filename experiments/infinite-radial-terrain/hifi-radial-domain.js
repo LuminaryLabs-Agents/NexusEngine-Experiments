@@ -2,12 +2,12 @@ import { clone, mix, n, sampleColor, sampleTerrain } from "./hifi-terrain-core.j
 
 export function createRadialTerrainDomain(config = {}) {
   const bands = config.bands ?? [
-    { id: "core", innerRadius: 0, outerRadius: 240, radialSegments: 88, angularSegments: 196, lod: 0 },
-    { id: "near", innerRadius: 240, outerRadius: 900, radialSegments: 68, angularSegments: 176, lod: 1 },
-    { id: "mid", innerRadius: 900, outerRadius: 2800, radialSegments: 48, angularSegments: 144, lod: 2 },
-    { id: "far", innerRadius: 2800, outerRadius: 6500, radialSegments: 30, angularSegments: 112, lod: 3 }
+    { id: "core", innerRadius: 0, outerRadius: 450, radialSegments: 104, angularSegments: 224, lod: 0, transitionWidth: 0, canChangeTopology: false },
+    { id: "near", innerRadius: 390, outerRadius: 1450, radialSegments: 76, angularSegments: 192, lod: 1, transitionWidth: 160, canChangeTopology: true },
+    { id: "mid", innerRadius: 1280, outerRadius: 3800, radialSegments: 52, angularSegments: 152, lod: 2, transitionWidth: 360, canChangeTopology: true },
+    { id: "far", innerRadius: 3400, outerRadius: 7800, radialSegments: 32, angularSegments: 112, lod: 3, transitionWidth: 800, canChangeTopology: true }
   ];
-  const originSnap = n(config.originSnap, 50);
+  const originSnap = n(config.originSnap, 200);
   const state = {
     id: "infinite-radial-terrain-domain",
     mode: "camera-relative-radial-terrain",
@@ -17,9 +17,19 @@ export function createRadialTerrainDomain(config = {}) {
     version: 0,
     bands: clone(bands),
     vertexBudget: bands.reduce((sum, band) => sum + (n(band.radialSegments) + 1) * (n(band.angularSegments) + 1), 0),
-    lastOriginShift: null
+    lastOriginShift: null,
+    stability: {
+      heightSpace: "stable-world",
+      erosionSpace: "stable-world",
+      renderSpace: "camera-relative-window",
+      coreTransitionFree: true,
+      minRebaseDistance: originSnap
+    }
   };
   function computeOrigin(focus) {
+    const dx = n(focus.x) - state.origin.x;
+    const dz = n(focus.z) - state.origin.z;
+    if (Math.max(Math.abs(dx), Math.abs(dz)) < originSnap) return state.origin;
     return { x: Math.round(n(focus.x) / originSnap) * originSnap, z: Math.round(n(focus.z) / originSnap) * originSnap };
   }
   return {
@@ -42,10 +52,11 @@ export function createRadialTerrainDomain(config = {}) {
         focus: clone(state.focus),
         origin: clone(state.origin),
         originMode: "camera-relative",
-        bands: state.bands.map((band) => ({ ...band, heightSampler: "infiniteRadialTerrain.height.v2", materialSampler: "infiniteRadialTerrain.material.v2" })),
+        bands: state.bands.map((band) => ({ ...band, heightSampler: "infiniteRadialTerrain.height.stableWorld.v3", materialSampler: "infiniteRadialTerrain.material.viewFog.v3" })),
         vertexBudget: state.vertexBudget,
         version: state.version,
-        originSnap: state.originSnap
+        originSnap: state.originSnap,
+        stability: clone(state.stability)
       };
     }
   };
