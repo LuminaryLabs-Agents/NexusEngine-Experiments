@@ -9,56 +9,41 @@ function fail(error) {
   hud.innerHTML = "<strong>Infinite Radial Terrain</strong><br>Runtime error. See panel.";
 }
 
-function stableWind(x = 0, z = 0) {
-  return Math.max(0.02, Math.min(0.28, 0.12 + Math.sin(x * 0.0007 - z * 0.0005) * 0.06 + Math.cos((x + z) * 0.00031) * 0.04));
-}
-
-function createStableErosionSolver(rawSolver) {
-  return {
-    ...rawSolver,
-    solveAt(input = {}) {
-      const x = Number(input.position?.x ?? 0);
-      const z = Number(input.position?.z ?? 0);
-      return rawSolver.solveAt({ ...input, wind: stableWind(x, z) });
-    }
-  };
-}
-
 async function boot() {
-  const corePath = "./" + "hifi-terrain-core" + "." + "js";
+  const corePath = "./" + "terrain-world-stack" + "." + "js";
   const domainPath = "./" + "hifi-radial-domain" + "." + "js";
   const core = await import(corePath);
   const domain = await import(domainPath);
   const THREE = await import(params.get("three") || core.THREE_URL);
-  const rawErosionSolver = await core.loadErosionSolver(params);
-  const erosionSolver = createStableErosionSolver(rawErosionSolver);
-  const radialTerrain = domain.createRadialTerrainDomain({ originSnap: 200 });
+  const erosionSolver = await core.loadErosionSolver(params);
+  const radialTerrain = domain.createRadialTerrainDomain({ originSnap: 250 });
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: "high-performance" });
   renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
   renderer.setSize(innerWidth, innerHeight);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.18;
+  renderer.toneMappingExposure = 1.15;
 
   const scene = new THREE.Scene();
   scene.background = new THREE.Color("#b7e9ff");
-  scene.fog = new THREE.FogExp2("#b7e9ff", 0.00013);
-  const camera = new THREE.PerspectiveCamera(66, innerWidth / innerHeight, 0.1, 9000);
-  camera.position.set(0, core.rawHeight(0, 0) + 470, 0);
+  scene.fog = new THREE.FogExp2("#b7e9ff", 0.00009);
+  const camera = new THREE.PerspectiveCamera(66, innerWidth / innerHeight, 0.1, 18000);
+  camera.position.set(0, core.rawHeight(0, 0) + 620, 0);
   camera.rotation.order = "YXZ";
 
   scene.add(new THREE.HemisphereLight(0xd8f5ff, 0x26391f, 1.05));
-  const sun = new THREE.DirectionalLight(0xffefba, 4.35);
+  const sun = new THREE.DirectionalLight(0xffefba, 4.2);
   sun.position.set(-760, 980, 520);
   scene.add(sun);
 
-  const terrainMat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.92, metalness: 0.015, flatShading: false, side: THREE.FrontSide });
+  const terrainMat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.94, metalness: 0.01, flatShading: false, side: THREE.FrontSide });
   const bandMeshes = new Map();
   const keys = new Set();
-  const rig = { yaw: 0, pitch: -0.32, speed: 260 };
+  const rig = { yaw: 0, pitch: -0.32, speed: 320 };
   let descriptors = radialTerrain.getDescriptors();
   let lastVersion = -1;
   let lastSample = null;
+  let frame = 0;
 
   function syncTerrain() {
     radialTerrain.setFocus(camera.position);
@@ -104,7 +89,7 @@ async function boot() {
     if (keys.has("ShiftLeft") || keys.has("ShiftRight")) move.sub(up);
     if (move.lengthSq() > 0) move.normalize().multiplyScalar(rig.speed * dt * (keys.has("AltLeft") ? 2.25 : 1));
     camera.position.add(move);
-    const floor = core.sampleTerrain(camera.position.x, camera.position.z, descriptors.focus, erosionSolver).height + 78;
+    const floor = core.sampleTerrain(camera.position.x, camera.position.z, descriptors.focus, erosionSolver).height + 110;
     if (camera.position.y < floor) camera.position.y = core.mix(camera.position.y, floor, 0.18);
     camera.rotation.set(rig.pitch, rig.yaw, 0, "YXZ");
   }
@@ -112,13 +97,17 @@ async function boot() {
   function render() {
     syncTerrain();
     lastSample = core.sampleTerrain(camera.position.x, camera.position.z, descriptors.focus, erosionSolver);
-    hud.innerHTML = `<strong>Infinite Radial Terrain</strong><br>WASD fly · Space/Shift vertical · arrows look<br>Height ${Math.round(lastSample.height)} · Erosion ${Math.round(Math.abs(lastSample.erosion.heightDelta) * 10) / 10} · Wet ${Math.round(lastSample.erosion.wetness * 100)}% · Stable snap ${descriptors.originSnap}m · Origin ${descriptors.origin.x},${descriptors.origin.z}`;
+    const h = Math.round(lastSample.height);
+    const order = lastSample.hydrology?.stream?.streamOrder ?? 0;
+    const dd = lastSample.hydrology?.stream?.drainageDensityKmPerKm2 ?? 0;
+    hud.innerHTML = `<strong>Infinite Radial Terrain</strong><br>Earth scale · 1 unit = 1m · WASD fly · Space/Shift vertical · arrows look<br>Height ${h}m · Stream ${order} · Drainage ${dd.toFixed(1)}km/km² · Snap ${descriptors.originSnap}m · Origin ${descriptors.origin.x},${descriptors.origin.z}`;
     renderer.render(scene, camera);
   }
 
   function loop(now) {
     const dt = Math.min(0.04, core.n((now - (loop.last ?? now)) / 1000, 1 / 60));
     loop.last = now;
+    frame += 1;
     moveCamera(dt);
     render();
     requestAnimationFrame(loop);
@@ -127,6 +116,7 @@ async function boot() {
   addEventListener("keydown", (event) => {
     keys.add(event.code);
     if (["Space", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(event.code)) event.preventDefault();
+    if (event.code === "Backquote") console.log(globalThis.GameHost?.getState?.());
   });
   addEventListener("keyup", (event) => keys.delete(event.code));
   addEventListener("blur", () => keys.clear());
@@ -136,6 +126,12 @@ async function boot() {
     camera.aspect = innerWidth / innerHeight;
     camera.updateProjectionMatrix();
   });
+
+  globalThis.GameHost = {
+    radialTerrain,
+    erosionSolver,
+    getState: () => ({ frame, camera: { position: camera.position.toArray(), yaw: rig.yaw, pitch: rig.pitch }, descriptors, terrainSample: core.clone(lastSample) })
+  };
 
   syncTerrain();
   render();
