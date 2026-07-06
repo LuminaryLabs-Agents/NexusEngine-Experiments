@@ -1,7 +1,7 @@
 export const galleryConfig = Object.freeze({
   title: "Experiments",
   subtitle: "Nexus Engine playable routes",
-  repoUrl: "https://github.com/LuminaryLabs-Agents/NexusRealtime-Experiments",
+  repoUrl: "https://github.com/LuminaryLabs-Agents/NexusEngine-Experiments",
   hint: "Browse the 11 collective experiment cards. Older removed routes live under deprecated/."
 });
 
@@ -18,15 +18,15 @@ export const games = Object.freeze([
     description: "Floating platformer board validation for XR pose, input, comfort, spatial anchor, stereo descriptors, and renderer-neutral ProtoKit state."
   },
   {
-    id: "the-open-above-harness",
+    id: "infinite-radial-terrain",
     tab: "experiments",
-    title: "The Open Above",
-    route: "./experiments/the-open-above-harness/",
+    title: "Infinite Radial Terrain",
+    route: "./experiments/infinite-radial-terrain/",
     kind: "experiment",
     visual: "sora",
-    playLabel: "Play harness",
-    tags: [{ label: "Flight", tone: "gold" }, { label: "Traversal", tone: "green" }, { label: "3D", tone: "blue" }],
-    description: "Free-flight harness for bird carving, camera-relative sky, terrain patches, scatter, flocking, and validation-first composition."
+    playLabel: "Play experiment",
+    tags: [{ label: "Terrain", tone: "gold" }, { label: "Radial LOD", tone: "green" }, { label: "3D", tone: "blue" }],
+    description: "Camera-driven radial terrain tessellation demo with WASD flight, 50m origin snapping, a 200m closest LOD band, and high-difference procedural terrain."
   },
   {
     id: "high-fidelity-meadow",
