@@ -1,5 +1,5 @@
 export const THREE_URL = "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js";
-export const EROSION_URL = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusRealtime-ProtoKits@main/protokits/terrain-erosion-solver-domain-kit/index.js?v=earth-scale-v1";
+export const EROSION_URL = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusRealtime-ProtoKits@main/protokits/terrain-erosion-solver-domain-kit/index.js?v=earth-scale-v2";
 
 export const n = (value, fallback = 0) => Number.isFinite(Number(value)) ? Number(value) : fallback;
 export const clamp = (value, min, max) => Math.max(min, Math.min(max, n(value, min)));
@@ -52,30 +52,16 @@ function terrainGradient(x, z, radius = 40) {
   const hx = baseHeightOnly(x + radius, z) - baseHeightOnly(x - radius, z);
   const hz = baseHeightOnly(x, z + radius) - baseHeightOnly(x, z - radius);
   const length = Math.max(0.0001, Math.hypot(hx, hz));
-  return {
-    x: -hx / length,
-    z: -hz / length,
-    slope: Math.hypot(hx, hz) / (radius * 2),
-    rawX: hx,
-    rawZ: hz
-  };
+  return { x: -hx / length, z: -hz / length, slope: Math.hypot(hx, hz) / (radius * 2), rawX: hx, rawZ: hz };
 }
 
 export function sampleGeology(x, z) {
   const province = valueNoise(x, z, 24000);
-  const uplift = clamp(0.52 + province * 0.22 + valueNoise(x + 7000, z - 4000, 12000) * 0.15, 0, 1);
-  const basinInfluence = clamp(0.42 - province * 0.26 + valueNoise(x - 9000, z + 3000, 18000) * 0.16, 0, 1);
+  const uplift = clamp(0.58 + province * 0.18 + valueNoise(x + 7000, z - 4000, 12000) * 0.16, 0, 1);
+  const basinInfluence = clamp(0.34 - province * 0.18 + valueNoise(x - 9000, z + 3000, 18000) * 0.12, 0, 1);
   const faultInfluence = Math.pow(Math.abs(Math.sin((x * 0.00019) + (z * 0.00011) + 0.7)), 8);
-  const regionalReliefMeters = mix(220, 1350, uplift);
-  return {
-    provinceId: `foothill-alpine:${Math.floor(x / 16000)},${Math.floor(z / 16000)}`,
-    regionType: uplift > 0.68 ? "alpine" : uplift > 0.46 ? "foothill" : "basin",
-    uplift,
-    subsidence: basinInfluence,
-    faultInfluence,
-    regionalReliefMeters,
-    macroWavelengthMeters: mix(18000, 42000, 1 - uplift)
-  };
+  const regionalReliefMeters = mix(260, 1250, uplift);
+  return { provinceId: `foothill-alpine:${Math.floor(x / 16000)},${Math.floor(z / 16000)}`, regionType: uplift > 0.68 ? "alpine" : uplift > 0.46 ? "foothill" : "basin", uplift, subsidence: basinInfluence, faultInfluence, regionalReliefMeters, macroWavelengthMeters: mix(16000, 36000, 1 - uplift) };
 }
 
 export function sampleLithology(x, z) {
@@ -103,20 +89,30 @@ export function sampleClimate(x, z, height = 0) {
 }
 
 function broadRidgeField(x, z, geology) {
-  const ridgeAxis = Math.sin((x * 0.00032) + (z * 0.00018) + geology.uplift * 2.2);
-  const ridge = Math.pow(Math.abs(ridgeAxis), 1.9) * geology.regionalReliefMeters * 0.24;
-  const plateau = valueNoise(x, z, geology.macroWavelengthMeters) * geology.regionalReliefMeters * 0.18;
+  const ridgeAxis = Math.sin((x * 0.00062) + (z * 0.00031) + geology.uplift * 2.2);
+  const secondaryAxis = Math.sin((x * 0.00115) - (z * 0.00044) + 1.8);
+  const ridge = Math.pow(Math.abs(ridgeAxis), 1.72) * geology.regionalReliefMeters * 0.22;
+  const spur = Math.pow(Math.max(0, secondaryAxis), 1.9) * geology.regionalReliefMeters * 0.08;
+  const plateau = valueNoise(x, z, geology.macroWavelengthMeters) * geology.regionalReliefMeters * 0.13;
   const fault = geology.faultInfluence * geology.regionalReliefMeters * 0.08;
-  return ridge + plateau + fault;
+  return ridge + spur + plateau + fault;
+}
+
+function drainageIncision(x, z) {
+  const trunk = Math.max(0, 1 - Math.abs(Math.sin(x * 0.00072 + z * 0.00042 + 0.4)) * 7.5);
+  const tributary = Math.max(0, 1 - Math.abs(Math.sin(x * 0.0018 - z * 0.0009 + 1.4)) * 9.0);
+  const gullies = Math.max(0, 1 - Math.abs(Math.sin(x * 0.0042 + z * 0.0015 - 0.6)) * 13.0);
+  return Math.pow(trunk, 1.6) * 120 + Math.pow(tributary, 1.5) * 52 + Math.pow(gullies, 1.4) * 14;
 }
 
 function baseHeightOnly(x, z) {
   const geology = sampleGeology(x, z);
-  const regional = 420 + valueNoise(x, z, 36000) * 260 + geology.uplift * geology.regionalReliefMeters * 0.28 - geology.subsidence * 140;
+  const regional = 720 + valueNoise(x, z, 30000) * 210 + geology.uplift * geology.regionalReliefMeters * 0.34 - geology.subsidence * 110;
   const foothills = broadRidgeField(x, z, geology);
-  const longSlope = -z * 0.018 + x * 0.006;
-  const microRelief = valueNoise(x, z, 1800) * 22 + valueNoise(x + 900, z - 200, 650) * 7;
-  return regional + foothills + longSlope + microRelief;
+  const longSlope = -z * 0.014 + x * 0.004;
+  const rollingRelief = valueNoise(x, z, 4200) * 90 + valueNoise(x + 900, z - 200, 1700) * 42;
+  const microRelief = valueNoise(x, z, 760) * 10;
+  return regional + foothills + longSlope + rollingRelief + microRelief - drainageIncision(x, z);
 }
 
 export function rawHeight(x, z) {
