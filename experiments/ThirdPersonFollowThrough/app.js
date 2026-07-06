@@ -89,8 +89,10 @@ let yVel = 0;
 let grounded = true;
 let last = performance.now();
 let headingYaw = 0;
-let cameraYaw = 0;
+let orbitYawOffset = 0;
 let cameraPitch = 0.35;
+const maxOrbitYaw = Math.PI / 2;
+const orbitReturnSpeed = 1.8;
 const rotateSpeed = 8.5;
 const moveSpeed = 7.5;
 capsule.position.set(0, 0, 8);
@@ -111,7 +113,7 @@ function reset() {
   yVel = 0;
   grounded = true;
   headingYaw = 0;
-  cameraYaw = 0;
+  orbitYawOffset = 0;
   cameraPitch = 0.35;
 }
 
@@ -122,7 +124,7 @@ addEventListener('keydown', e => {
 addEventListener('keyup', e => input.delete(e.key.toLowerCase()));
 addEventListener('mousemove', e => {
   if (document.pointerLockElement === renderer.domElement) {
-    cameraYaw -= e.movementX * 0.003;
+    orbitYawOffset = THREE.MathUtils.clamp(orbitYawOffset - e.movementX * 0.003, -maxOrbitYaw, maxOrbitYaw);
     cameraPitch = THREE.MathUtils.clamp(cameraPitch - e.movementY * 0.0025, -0.1, 0.95);
   }
 });
@@ -137,11 +139,18 @@ function tick(now) {
   const dt = Math.min(0.04, (now - last) / 1000);
   last = now;
 
-  if (input.has('arrowleft')) cameraYaw += dt * 1.8;
-  if (input.has('arrowright')) cameraYaw -= dt * 1.8;
+  let turningCamera = false;
+  if (input.has('arrowleft')) { orbitYawOffset += dt * 1.8; turningCamera = true; }
+  if (input.has('arrowright')) { orbitYawOffset -= dt * 1.8; turningCamera = true; }
+  orbitYawOffset = THREE.MathUtils.clamp(orbitYawOffset, -maxOrbitYaw, maxOrbitYaw);
+  if (!turningCamera && document.pointerLockElement !== renderer.domElement) {
+    orbitYawOffset += (0 - orbitYawOffset) * (1 - Math.exp(-orbitReturnSpeed * dt));
+  }
+
   if (input.has('arrowup')) cameraPitch = THREE.MathUtils.clamp(cameraPitch + dt * 0.9, -0.1, 0.95);
   if (input.has('arrowdown')) cameraPitch = THREE.MathUtils.clamp(cameraPitch - dt * 0.9, -0.1, 0.95);
 
+  const cameraYaw = headingYaw + orbitYawOffset;
   const camForward = forwardFromYaw(cameraYaw);
   const camRight = rightFromYaw(cameraYaw);
   wish.set(0, 0, 0);
