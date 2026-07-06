@@ -1,13 +1,13 @@
-import { clone, mix, n, sampleColor, sampleTerrain } from "./hifi-terrain-core.js";
+import { clone, mix, n, sampleColor, sampleTerrain } from "./terrain-world-stack.js";
 
 export function createRadialTerrainDomain(config = {}) {
   const bands = config.bands ?? [
-    { id: "core", innerRadius: 0, outerRadius: 450, radialSegments: 104, angularSegments: 224, lod: 0, transitionWidth: 0, canChangeTopology: false },
-    { id: "near", innerRadius: 390, outerRadius: 1450, radialSegments: 76, angularSegments: 192, lod: 1, transitionWidth: 160, canChangeTopology: true },
-    { id: "mid", innerRadius: 1280, outerRadius: 3800, radialSegments: 52, angularSegments: 152, lod: 2, transitionWidth: 360, canChangeTopology: true },
-    { id: "far", innerRadius: 3400, outerRadius: 7800, radialSegments: 32, angularSegments: 112, lod: 3, transitionWidth: 800, canChangeTopology: true }
+    { id: "core", innerRadius: 0, outerRadius: 520, radialSegments: 112, angularSegments: 240, lod: 0, transitionWidth: 0, canChangeTopology: false, sampleFieldLod: "near" },
+    { id: "near", innerRadius: 470, outerRadius: 1800, radialSegments: 78, angularSegments: 208, lod: 1, transitionWidth: 180, canChangeTopology: true, sampleFieldLod: "near" },
+    { id: "mid", innerRadius: 1600, outerRadius: 6000, radialSegments: 54, angularSegments: 168, lod: 2, transitionWidth: 520, canChangeTopology: true, sampleFieldLod: "mid" },
+    { id: "far", innerRadius: 5400, outerRadius: 16000, radialSegments: 32, angularSegments: 128, lod: 3, transitionWidth: 1400, canChangeTopology: true, sampleFieldLod: "far" }
   ];
-  const originSnap = n(config.originSnap, 200);
+  const originSnap = n(config.originSnap, 250);
   const state = {
     id: "infinite-radial-terrain-domain",
     mode: "camera-relative-radial-terrain",
@@ -21,6 +21,7 @@ export function createRadialTerrainDomain(config = {}) {
     stability: {
       heightSpace: "stable-world",
       erosionSpace: "stable-world",
+      hydrologySpace: "stable-world",
       renderSpace: "camera-relative-window",
       coreTransitionFree: true,
       minRebaseDistance: originSnap
@@ -52,7 +53,7 @@ export function createRadialTerrainDomain(config = {}) {
         focus: clone(state.focus),
         origin: clone(state.origin),
         originMode: "camera-relative",
-        bands: state.bands.map((band) => ({ ...band, heightSampler: "infiniteRadialTerrain.height.stableWorld.v3", materialSampler: "infiniteRadialTerrain.material.viewFog.v3" })),
+        bands: state.bands.map((band) => ({ ...band, heightSampler: "terrainWorldStack.height.v1", materialSampler: "terrainWorldStack.material.v1" })),
         vertexBudget: state.vertexBudget,
         version: state.version,
         originSnap: state.originSnap,
