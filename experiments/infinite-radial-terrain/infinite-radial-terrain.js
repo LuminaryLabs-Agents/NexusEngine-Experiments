@@ -9,14 +9,30 @@ function fail(error) {
   hud.innerHTML = "<strong>Infinite Radial Terrain</strong><br>Runtime error. See panel.";
 }
 
+function stableWind(x = 0, z = 0) {
+  return Math.max(0.02, Math.min(0.28, 0.12 + Math.sin(x * 0.0007 - z * 0.0005) * 0.06 + Math.cos((x + z) * 0.00031) * 0.04));
+}
+
+function createStableErosionSolver(rawSolver) {
+  return {
+    ...rawSolver,
+    solveAt(input = {}) {
+      const x = Number(input.position?.x ?? 0);
+      const z = Number(input.position?.z ?? 0);
+      return rawSolver.solveAt({ ...input, wind: stableWind(x, z) });
+    }
+  };
+}
+
 async function boot() {
   const corePath = "./" + "hifi-terrain-core" + "." + "js";
   const domainPath = "./" + "hifi-radial-domain" + "." + "js";
   const core = await import(corePath);
   const domain = await import(domainPath);
   const THREE = await import(params.get("three") || core.THREE_URL);
-  const erosionSolver = await core.loadErosionSolver(params);
-  const radialTerrain = domain.createRadialTerrainDomain({ originSnap: 50 });
+  const rawErosionSolver = await core.loadErosionSolver(params);
+  const erosionSolver = createStableErosionSolver(rawErosionSolver);
+  const radialTerrain = domain.createRadialTerrainDomain({ originSnap: 200 });
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: "high-performance" });
   renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
   renderer.setSize(innerWidth, innerHeight);
@@ -96,7 +112,7 @@ async function boot() {
   function render() {
     syncTerrain();
     lastSample = core.sampleTerrain(camera.position.x, camera.position.z, descriptors.focus, erosionSolver);
-    hud.innerHTML = `<strong>Infinite Radial Terrain</strong><br>WASD fly · Space/Shift vertical · arrows look<br>Height ${Math.round(lastSample.height)} · Erosion ${Math.round(Math.abs(lastSample.erosion.heightDelta) * 10) / 10} · Wet ${Math.round(lastSample.erosion.wetness * 100)}% · View 5000m+ · Origin ${descriptors.origin.x},${descriptors.origin.z}`;
+    hud.innerHTML = `<strong>Infinite Radial Terrain</strong><br>WASD fly · Space/Shift vertical · arrows look<br>Height ${Math.round(lastSample.height)} · Erosion ${Math.round(Math.abs(lastSample.erosion.heightDelta) * 10) / 10} · Wet ${Math.round(lastSample.erosion.wetness * 100)}% · Stable snap ${descriptors.originSnap}m · Origin ${descriptors.origin.x},${descriptors.origin.z}`;
     renderer.render(scene, camera);
   }
 
