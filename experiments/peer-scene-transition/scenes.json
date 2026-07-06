@@ -1,0 +1,60 @@
+{
+  "camp": {
+    "title": "Ash Road Camp",
+    "copy": "A small fire burns beside the old road. This page is its own scene host, and the scene kit state decides which exits are allowed.",
+    "kind": "web-html-scene",
+    "entry": "./camp.html",
+    "exits": {
+      "road": { "to": "crossroads", "label": "Walk to the crossroads" }
+    }
+  },
+  "crossroads": {
+    "title": "The Crossroads",
+    "copy": "Two routes split from the stones. The forest gate is locked by a token; the bridge route is open but needs repair.",
+    "kind": "web-html-scene",
+    "entry": "./crossroads.html",
+    "exits": {
+      "forest": { "to": "forest", "label": "Enter the lantern forest", "requires": ["has-lantern"] },
+      "bridge": { "to": "bridge", "label": "Take the old bridge" }
+    }
+  },
+  "forest": {
+    "title": "Lantern Forest",
+    "copy": "The forest listens for a tuned lantern. Solve the light sequence before the shrine path opens.",
+    "kind": "web-html-scene",
+    "entry": "./forest.html",
+    "exits": {
+      "shrine": { "to": "shrine", "label": "Follow the lit root path", "requires": ["forest-lit"] },
+      "back": { "to": "crossroads", "label": "Return to crossroads" }
+    }
+  },
+  "bridge": {
+    "title": "Old Bridge",
+    "copy": "The river crossing is damaged. Repair it in order, then cross toward the shrine.",
+    "kind": "web-html-scene",
+    "entry": "./bridge.html",
+    "exits": {
+      "shrine": { "to": "shrine", "label": "Cross toward the shrine", "requires": ["bridge-repaired"] },
+      "back": { "to": "crossroads", "label": "Return to crossroads" }
+    }
+  },
+  "shrine": {
+    "title": "Silent Shrine",
+    "copy": "The final door needs proof of your route and a simple ritual sequence.",
+    "kind": "web-html-scene",
+    "entry": "./shrine.html",
+    "exits": {
+      "ending": { "to": "ending", "label": "Finish the pilgrimage", "requires": ["shrine-open"] },
+      "camp": { "to": "camp", "label": "Loop back to camp" }
+    }
+  },
+  "ending": {
+    "title": "Dawn Ending",
+    "copy": "The campaign closes, but the debug ledger still shows the route that got you here.",
+    "kind": "web-html-scene",
+    "entry": "./ending.html",
+    "exits": {
+      "camp": { "to": "camp", "label": "Start another route" }
+    }
+  }
+}
