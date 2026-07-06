@@ -2,7 +2,7 @@ const canvas = document.querySelector("#game");
 const hud = document.querySelector("#hud");
 const err = document.querySelector("#error");
 
-const SEA_FLOOR_Y = -96;
+const SEA_FLOOR_Y = -128;
 const CLOUD_COUNT = 4;
 const ISLAND_RADIUS_METERS = 100;
 
@@ -17,6 +17,7 @@ const THREE = await import(cdn + "npm/three@0.160.0/build/three.module.js");
 const proto = cdn + "gh/LuminaryLabs-Agents/NexusRealtime-ProtoKits@main/protokits/";
 const landformDomain = await import(proto + "ocean-island-landform-domain/index.js");
 const foliageDomain = await import(proto + "island-foliage-domain/index.js");
+const oceanFloorDomain = await import(proto + "ocean-floor-domain/index.js");
 const cloudDomain = await import(proto + "mattatz-clouds-domain/index.js");
 
 function materialFor(m) {
@@ -46,39 +47,27 @@ function makeTerrain(heightfield) {
   return new THREE.Mesh(g, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.92, metalness: 0.015 }));
 }
 
-function makeSeaFloor(size = 3600) {
-  const g = new THREE.PlaneGeometry(size, size, 34, 34).rotateX(-Math.PI / 2);
-  const p = g.attributes.position;
-  for (let i = 0; i < p.count; i++) {
-    const x = p.getX(i);
-    const z = p.getZ(i);
-    const ripple = Math.sin(x * 0.006) * Math.cos(z * 0.005) * 3 + Math.sin((x + z) * 0.002) * 5;
-    p.setY(i, SEA_FLOOR_Y + ripple);
-  }
-  g.computeVertexNormals();
-  return new THREE.Mesh(g, new THREE.MeshStandardMaterial({ color: 0x286b72, roughness: 0.96 }));
-}
-
-function makeIslandFormation(shoreline) {
-  const rings = [1, 1.18, 1.48, 1.86, 2.18];
-  const depths = [0.02, -24, -58, SEA_FLOOR_Y - 8, SEA_FLOOR_Y - 24];
+function makeOceanFloor(heightfield) {
+  const r = heightfield.resolution;
   const pos = [];
+  const colors = [];
   const idx = [];
-  for (let r = 0; r < rings.length; r++) for (const p of shoreline) pos.push(p.x * rings[r], depths[r], p.z * rings[r]);
-  const n = shoreline.length;
-  for (let r = 0; r < rings.length - 1; r++) {
-    const a0 = r * n;
-    const b0 = (r + 1) * n;
-    for (let i = 0; i < n; i++) {
-      const j = (i + 1) % n;
-      idx.push(a0 + i, b0 + i, a0 + j, a0 + j, b0 + i, b0 + j);
-    }
+  for (const s of heightfield.samples) {
+    pos.push(s.x, s.y, s.z);
+    const m = s.masks || {};
+    const c = new THREE.Color(m.reefBand ? 0x3d8176 : m.shallowShelf ? 0x4b8b7a : 0x235b67);
+    colors.push(c.r, c.g, c.b);
+  }
+  for (let z = 0; z < r - 1; z++) for (let x = 0; x < r - 1; x++) {
+    const a = z * r + x;
+    idx.push(a, a + r, a + 1, a + 1, a + r, a + r + 1);
   }
   const g = new THREE.BufferGeometry();
   g.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
+  g.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
   g.setIndex(idx);
   g.computeVertexNormals();
-  return new THREE.Mesh(g, new THREE.MeshStandardMaterial({ color: 0x627265, roughness: 0.94 }));
+  return new THREE.Mesh(g, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.96, metalness: 0.0 }));
 }
 
 function makeFoam(shoreline) {
@@ -199,6 +188,24 @@ function makeObjects(graph) {
   return group;
 }
 
+function makeSeaFloorObject(record) {
+  const type = record.type;
+  const color = type === "reef-cluster" ? 0xd78367 : type === "coral-cluster" ? 0xf0a58c : type === "sea-floor-boulder" ? 0x56676b : 0x667b78;
+  const material = new THREE.MeshStandardMaterial({ color, roughness: 0.88, metalness: 0.01 });
+  const geometry = new THREE.DodecahedronGeometry(type === "sea-floor-boulder" ? 0.9 : 0.45, 0);
+  const mesh = new THREE.Mesh(geometry, material);
+  mesh.position.set(record.position.x, record.position.y + 0.2, record.position.z);
+  mesh.rotation.y = record.rotation || 0;
+  mesh.scale.setScalar(record.scale || 1);
+  return mesh;
+}
+
+function makeSeaFloorObjects(objects) {
+  const group = new THREE.Group();
+  for (const object of objects) group.add(makeSeaFloorObject(object));
+  return group;
+}
+
 function createCloudMaterial(seed = 0, layer = 0) {
   return new THREE.ShaderMaterial({
     transparent: true,
@@ -221,6 +228,21 @@ function makeCloud(d, layer = 0, index = 0) {
   return mesh;
 }
 
+function makeWaterMaterial(config = {}) {
+  return new THREE.MeshPhysicalMaterial({
+    color: new THREE.Color(config.color || "#22b9c9"),
+    transparent: true,
+    opacity: 0.75,
+    roughness: 0.16,
+    metalness: 0.12,
+    reflectivity: 0.88,
+    clearcoat: 0.72,
+    clearcoatRoughness: 0.08,
+    transmission: 0,
+    envMapIntensity: 1.8
+  });
+}
+
 async function main() {
   const islandState = landformDomain.createOceanIslandLandformState({
     id: "cozy-island-001",
@@ -239,6 +261,8 @@ async function main() {
   const sampleMasks = (point) => landformDomain.sampleIslandMasks(islandState, { x: point.x, z: point.z });
   const graph = foliageDomain.createDenseCozyIslandObjectGraph({ seed: "cozy-island-domain-cutover", radiusMeters: ISLAND_RADIUS_METERS, sampleHeight, sampleMasks });
   const foliageRender = foliageDomain.createDenseCozyIslandRenderContract({ graph, landformContract: landform, seaFloorY: SEA_FLOOR_Y });
+  const floorState = oceanFloorDomain.createOceanFloorState({ seed: "cozy-island-ocean-floor", size: 3600, resolution: 53, baseDepth: SEA_FLOOR_Y, islandRadius: ISLAND_RADIUS_METERS, islandShelfRadius: 145, islandInfluenceRadius: 260, shelfDepth: -16, moundDepth: -42, noiseAmplitude: 9, objects: { seaFloorRocks: 34, seaFloorBoulders: 12, reefClusters: 14, coralClusters: 18 } });
+  const oceanFloor = oceanFloorDomain.createOceanFloorRenderContract(floorState, { heightfield: { resolution: 53 }, objects: {} });
   const cloudState = cloudDomain.createMattatzCloudsState({ seed: "cozy-island-clouds", weather: "sunrise-haze", cloudCount: CLOUD_COUNT });
   const cloudContract = cloudDomain.createMattatzCloudRenderContract(cloudState, 0);
 
@@ -257,10 +281,10 @@ async function main() {
   sun.position.set(-320, 520, 260);
   scene.add(sun);
 
-  scene.add(makeSeaFloor());
-  scene.add(makeIslandFormation(landform.shoreline));
+  scene.add(makeOceanFloor(oceanFloor.heightfield));
+  scene.add(makeSeaFloorObjects(oceanFloor.objects));
   scene.add(makeTerrain(landform.heightfield));
-  const water = new THREE.Mesh(new THREE.PlaneGeometry(3600, 3600, 32, 32).rotateX(-Math.PI / 2), new THREE.MeshStandardMaterial({ color: 0x3bb6c8, transparent: true, opacity: 0.64, roughness: 0.48, metalness: 0.02 }));
+  const water = new THREE.Mesh(new THREE.PlaneGeometry(3600, 3600, 32, 32).rotateX(-Math.PI / 2), makeWaterMaterial(oceanFloor.waterMaterial));
   water.position.y = -0.08;
   scene.add(water, makeFoam(landform.shoreline), makePath(graph.pathNetwork, sampleHeight), makeObjects(graph));
   const cloudGroup = new THREE.Group();
@@ -306,12 +330,12 @@ async function main() {
       cloud.worldToLocal(cloud.userData.material.uniforms.uCameraLocal.value.copy(camera.position));
       cloud.rotation.y = Math.sin(now * 0.00008 + i) * 0.04;
     });
-    hud.innerHTML = `<strong>Cozy Island</strong><br>WASD drift · drag orbit · wheel zoom<br>domain cutover · 200m island · objects ${graph.objects.length} · render descriptors ${foliageRender.objects.length} · clouds ${Math.min(CLOUD_COUNT, cloudContract.clouds.length)}`;
+    hud.innerHTML = `<strong>Cozy Island</strong><br>WASD drift · drag orbit · wheel zoom<br>domain cutover · ocean-floor-domain · objects ${graph.objects.length} · seafloor rocks ${oceanFloor.objects.length} · water opacity 75% · clouds ${Math.min(CLOUD_COUNT, cloudContract.clouds.length)}`;
     renderer.render(scene, camera);
     requestAnimationFrame(frame);
   }
 
-  globalThis.CozyIsland = { islandState, landform, graph, foliageRender, cloudContract };
+  globalThis.CozyIsland = { islandState, landform, graph, foliageRender, oceanFloor, cloudContract };
   requestAnimationFrame(frame);
 }
 
