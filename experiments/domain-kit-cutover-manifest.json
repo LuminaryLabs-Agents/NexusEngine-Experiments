@@ -3,74 +3,14 @@
   "policy": "one canonical base route per experiment or game",
   "protokitsCommit": "6511240f0396619b69dcfb39c01b15f21731d16c",
   "canonicalRoutes": [
-    {
-      "id": "next-ledge",
-      "kind": "experiment",
-      "canonicalPath": "experiments/next-ledge/",
-      "status": "existing",
-      "domainCutover": ["action-input-kit", "generic-route-progress-kit", "generic-route-cargo-extraction-kit", "generic-resource-loop-kit", "generic-pressure-loop-kit", "camera-cinematic-maker-kit", "visual-fidelity-maker-kit", "scenario-qa-harness"],
-      "bridgeNeeded": "next-ledge-compatibility-bridge; route-progress consumption is executable through engine.n.genericRouteProgress; cargo/resource/pressure consumption remains planned",
-      "featureParity": ["click/tap/Space grapple", "A/D swing", "R restart", "N sector advance", "snapshot renderer"]
-    },
-    {
-      "id": "fogline-relay",
-      "kind": "experiment",
-      "canonicalPath": "experiments/fogline-relay/",
-      "status": "existing",
-      "domainCutover": ["action-input-kit", "scan-survey-kit", "zone-field-kit", "timed-pressure-director-kit", "resource-pressure-kit", "hazard-director-kit", "fogline-survey-pressure-bridge-kit", "visual-fidelity-maker-kit", "audio-event-feedback-maker-kit", "scenario-qa-harness"],
-      "bridgeNeeded": "fogline-survey-pressure-bridge-kit",
-      "featureParity": ["first-person movement/look", "hold scan", "fog volumes", "relay objectives", "wraith pressure"]
-    },
-    {
-      "id": "nexus-frontier-signal-isles",
-      "kind": "experiment",
-      "canonicalPath": "experiments/nexus-frontier-signal-isles/",
-      "status": "kit-utilization-showcase",
-      "domainCutover": ["foundation-kit", "token-registry-kit", "action-input-kit", "view-rig-kit", "spatial-interaction-kit", "completion-ledger-kit", "objective-bridge-kit", "lock-group-kit", "damage-health-kit", "encounter-director-kit", "resource-node-kit", "build-placement-kit", "structure-runtime-kit", "diegetic-feedback-signal-kit", "asset-descriptor-kit", "timed-pressure-director-kit", "zone-field-kit", "scan-survey-kit", "route-checkpoint-kit", "cargo-delivery-kit", "agent-group-kit", "resource-pressure-kit", "hazard-director-kit", "content-preset-kit", "visual-fidelity-maker-kit", "audio-event-feedback-maker-kit", "camera-cinematic-maker-kit", "scenario-qa-harness", "deterministic-replay-harness", "gamehost-standard-kit", "biome-field-kit", "vegetation-archetype-kit", "ground-contact-kit", "vegetation-lod-kit", "scatter-object-kit", "surface-material-kit"],
-      "bridgeNeeded": "signal-isles-composition-bridge; no branded stable game kit added",
-      "featureParity": ["first-person 3D movement/look", "hold scan", "harvest signal shards", "build signal mast", "survive pressure wave", "unlock root gate", "route checkpoint", "cargo pickup/delivery", "final beacon activation", "GameHost debug/replay smoke"]
-    },
-    {
-      "id": "sora-the-infinite",
-      "kind": "experiment",
-      "canonicalPath": "experiments/sora-the-infinite/",
-      "status": "existing",
-      "domainCutover": ["action-input-kit", "route-checkpoint-kit", "zone-field-kit", "agent-group-kit", "visual-fidelity-maker-kit", "camera-cinematic-maker-kit", "content-preset-kit", "scenario-qa-harness"],
-      "bridgeNeeded": "sora-flight-compatibility-bridge",
-      "featureParity": ["pitch/bank/boost", "ring checkpoints", "updraft volumes", "terrain/render descriptors", "GameHost"]
-    },
-    {
-      "id": "zombie-orchard",
-      "kind": "experiment",
-      "canonicalPath": "experiments/zombie-orchard/",
-      "status": "existing",
-      "domainCutover": ["action-input-kit", "timed-pressure-director-kit", "zone-field-kit", "resource-pressure-kit", "agent-group-kit", "hazard-director-kit", "content-preset-kit", "scenario-qa-harness"],
-      "bridgeNeeded": "zombie-orchard-survival-bridge",
-      "featureParity": ["move/sprint/dodge", "collect/pickup", "gear use/swap", "survival waves", "canvas view"]
-    },
-    {
-      "id": "signal-bastion",
-      "kind": "game",
-      "canonicalPath": "games/signal-bastion/",
-      "status": "2.5d-cel-presentation-stack-pass",
-      "domainCutover": ["generic-defense-aaa-kits", "generic-defense-presentation-stack-kit", "generic-stylized-view-rig-kit", "generic-cel-material-kit", "generic-ink-outline-kit", "generic-stylized-lighting-kit", "generic-defense-ground-readability-kit", "generic-placement-projector-kit", "generic-range-ring-kit", "generic-defense-unit-render-kit", "generic-tower-identity-layer-kit", "generic-enemy-readability-layer-kit", "generic-combat-vfx-kit", "generic-hit-feedback-kit", "generic-layered-hud-shell-kit", "generic-gameplay-stat-strip-kit", "generic-tower-selection-panel-kit", "generic-upgrade-tree-panel-kit", "generic-selection-context-panel-kit", "generic-ui-motion-polish-kit"],
-      "bridgeNeeded": "none; presentation stack emits descriptor surfaces consumed by the Signal Bastion renderer",
-      "featureParity": ["2.5D oblique cel-style renderer", "inked tower/enemy silhouettes", "sleek gameplay-only stat strip", "12 tower card panel", "selected tower context/upgrade panel", "placement ghost", "range rings", "free-placement presentation over slot-backed validation", "no controls tutorial text", "3 maps", "12 towers", "12+ enemies", "3 bosses", "30 authored waves", "60-wave endless preset"]
-    },
-    {
-      "id": "rogue-lite-hellscape-siege",
-      "kind": "game",
-      "canonicalPath": "games/rogue-lite-hellscape-siege/",
-      "status": "unified-base-route",
-      "removedLegacyPaths": ["games/rogue-lite-hellscape-siege-v2/"],
-      "domainCutover": ["action-input-kit", "resource-pressure-kit", "cargo-delivery-kit", "agent-group-kit", "hazard-director-kit", "route-checkpoint-kit", "visual-fidelity-maker-kit", "audio-event-feedback-maker-kit", "camera-cinematic-maker-kit", "scenario-qa-harness", "gamehost-standard-kit"],
-      "bridgeNeeded": "hellscape-siege-bridge",
-      "featureParity": ["realm portals", "inventory/materials", "harvest/pickup", "build blueprints", "wave/core defense", "FX renderer"]
-    }
+    {"id":"peer-scene-transition","kind":"experiment","canonicalPath":"experiments/peer-scene-transition/","status":"scene-domain-validation-route","domainCutover":["core-scene-kit","scene-host-contract","web-html-scene-host"],"bridgeNeeded":"future native binding can consume the same scene descriptors","featureParity":["peer HTML scene hosts","scene manifest exits","lantern gate","forest puzzle","bridge puzzle","shrine puzzle","debug panel"]},
+    {"id":"next-ledge","kind":"experiment","canonicalPath":"experiments/next-ledge/","status":"existing","domainCutover":["action-input-kit","generic-route-progress-kit","generic-route-cargo-extraction-kit","generic-resource-loop-kit","generic-pressure-loop-kit","camera-cinematic-maker-kit","visual-fidelity-maker-kit","scenario-qa-harness"],"bridgeNeeded":"next-ledge-compatibility-bridge; route-progress consumption is executable through engine.n.genericRouteProgress; cargo/resource/pressure consumption remains planned","featureParity":["click/tap/Space grapple","A/D swing","R restart","N sector advance","snapshot renderer"]},
+    {"id":"fogline-relay","kind":"experiment","canonicalPath":"experiments/fogline-relay/","status":"existing","domainCutover":["action-input-kit","scan-survey-kit","zone-field-kit","timed-pressure-director-kit","resource-pressure-kit","hazard-director-kit","fogline-survey-pressure-bridge-kit","visual-fidelity-maker-kit","audio-event-feedback-maker-kit","scenario-qa-harness"],"bridgeNeeded":"fogline-survey-pressure-bridge-kit","featureParity":["first-person movement/look","hold scan","fog volumes","relay objectives","wraith pressure"]},
+    {"id":"nexus-frontier-signal-isles","kind":"experiment","canonicalPath":"experiments/nexus-frontier-signal-isles/","status":"kit-utilization-showcase","domainCutover":["foundation-kit","token-registry-kit","action-input-kit","view-rig-kit","spatial-interaction-kit","completion-ledger-kit","objective-bridge-kit","lock-group-kit","damage-health-kit","encounter-director-kit","resource-node-kit","build-placement-kit","structure-runtime-kit","diegetic-feedback-signal-kit","asset-descriptor-kit","timed-pressure-director-kit","zone-field-kit","scan-survey-kit","route-checkpoint-kit","cargo-delivery-kit","agent-group-kit","resource-pressure-kit","hazard-director-kit","content-preset-kit","visual-fidelity-maker-kit","audio-event-feedback-maker-kit","camera-cinematic-maker-kit","scenario-qa-harness","deterministic-replay-harness","gamehost-standard-kit","biome-field-kit","vegetation-archetype-kit","ground-contact-kit","vegetation-lod-kit","scatter-object-kit","surface-material-kit"],"bridgeNeeded":"signal-isles-composition-bridge; no branded stable game kit added","featureParity":["first-person 3D movement/look","hold scan","harvest signal shards","build signal mast","survive pressure wave","unlock root gate","route checkpoint","cargo pickup/delivery","final beacon activation","GameHost debug/replay smoke"]},
+    {"id":"sora-the-infinite","kind":"experiment","canonicalPath":"experiments/sora-the-infinite/","status":"existing","domainCutover":["action-input-kit","route-checkpoint-kit","zone-field-kit","agent-group-kit","visual-fidelity-maker-kit","camera-cinematic-maker-kit","content-preset-kit","scenario-qa-harness"],"bridgeNeeded":"sora-flight-compatibility-bridge","featureParity":["pitch/bank/boost","ring checkpoints","updraft volumes","terrain/render descriptors","GameHost"]},
+    {"id":"zombie-orchard","kind":"experiment","canonicalPath":"experiments/zombie-orchard/","status":"existing","domainCutover":["action-input-kit","timed-pressure-director-kit","zone-field-kit","resource-pressure-kit","agent-group-kit","hazard-director-kit","content-preset-kit","scenario-qa-harness"],"bridgeNeeded":"zombie-orchard-survival-bridge","featureParity":["move/sprint/dodge","collect/pickup","gear use/swap","survival waves","canvas view"]},
+    {"id":"signal-bastion","kind":"game","canonicalPath":"games/signal-bastion/","status":"2.5d-cel-presentation-stack-pass","domainCutover":["generic-defense-aaa-kits","generic-defense-presentation-stack-kit","generic-stylized-view-rig-kit","generic-cel-material-kit","generic-ink-outline-kit","generic-stylized-lighting-kit","generic-defense-ground-readability-kit","generic-placement-projector-kit","generic-range-ring-kit","generic-defense-unit-render-kit","generic-tower-identity-layer-kit","generic-enemy-readability-layer-kit","generic-combat-vfx-kit","generic-hit-feedback-kit","generic-layered-hud-shell-kit","generic-gameplay-stat-strip-kit","generic-tower-selection-panel-kit","generic-upgrade-tree-panel-kit","generic-selection-context-panel-kit","generic-ui-motion-polish-kit"],"bridgeNeeded":"none; presentation stack emits descriptor surfaces consumed by the Signal Bastion renderer","featureParity":["2.5D oblique cel-style renderer","inked tower/enemy silhouettes","sleek gameplay-only stat strip","12 tower card panel","selected tower context/upgrade panel","placement ghost","range rings","free-placement presentation over slot-backed validation","no controls tutorial text","3 maps","12 towers","12+ enemies","3 bosses","30 authored waves","60-wave endless preset"]},
+    {"id":"rogue-lite-hellscape-siege","kind":"game","canonicalPath":"games/rogue-lite-hellscape-siege/","status":"unified-base-route","removedLegacyPaths":["games/rogue-lite-hellscape-siege-v2/"],"domainCutover":["action-input-kit","resource-pressure-kit","cargo-delivery-kit","agent-group-kit","hazard-director-kit","route-checkpoint-kit","visual-fidelity-maker-kit","audio-event-feedback-maker-kit","camera-cinematic-maker-kit","scenario-qa-harness","gamehost-standard-kit"],"bridgeNeeded":"hellscape-siege-bridge","featureParity":["realm portals","inventory/materials","harvest/pickup","build blueprints","wave/core defense","FX renderer"]}
   ],
-  "versionedRoutePolicy": {
-    "rootGalleryMustNotLink": ["-v1", "-v2"],
-    "legacyVersionFolders": "should be removed once successful variants are folded into base routes",
-    "newWork": "updates the base route and records bridge/preset ownership here"
-  }
+  "versionedRoutePolicy": {"rootGalleryMustNotLink":["-v1","-v2"],"legacyVersionFolders":"should be removed once successful variants are folded into base routes","newWork":"updates the base route and records bridge/preset ownership here"}
 }
