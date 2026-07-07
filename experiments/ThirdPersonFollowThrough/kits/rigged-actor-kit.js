@@ -8,13 +8,7 @@ export function createRiggedActorKit(THREE, options = {}) {
   const headMat = new THREE.MeshStandardMaterial({ color: 0xffd166, roughness: 0.42, emissive: 0x241400 });
   const forwardMat = new THREE.MeshStandardMaterial({ color: 0x4cff88, roughness: 0.35, emissive: 0x042b11 });
 
-  const pivots = {
-    root: new THREE.Object3D(),
-    pelvis: new THREE.Object3D(),
-    chest: new THREE.Object3D(),
-    head: new THREE.Object3D(),
-    camera: new THREE.Object3D()
-  };
+  const pivots = { root: new THREE.Object3D(), pelvis: new THREE.Object3D(), chest: new THREE.Object3D(), head: new THREE.Object3D(), camera: new THREE.Object3D() };
   pivots.root.name = 'rootPivot';
   pivots.pelvis.name = 'pelvisPivot';
   pivots.chest.name = 'chestPivot';
@@ -27,9 +21,9 @@ export function createRiggedActorKit(THREE, options = {}) {
   group.add(pivots.root, pivots.pelvis, pivots.chest, pivots.head, pivots.camera);
 
   const collisionCapsule = new THREE.Mesh(new THREE.CapsuleGeometry(0.72, 1.55, 12, 28), bodyMat);
-  collisionCapsule.name = 'collisionCapsule';
+  collisionCapsule.name = 'collisionCapsule_hiddenControllerBody';
   collisionCapsule.position.y = 1.35;
-  collisionCapsule.castShadow = true;
+  collisionCapsule.visible = false;
   group.add(collisionCapsule);
 
   const headMarkerCube = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.34, 0.34), headMat);
@@ -52,7 +46,6 @@ export function createRiggedActorKit(THREE, options = {}) {
     leftThigh: [-0.28, 0.62, 0], leftCalf: [-0.33, 0.32, 0], leftFoot: [-0.33, 0.08, -0.22],
     rightThigh: [0.28, 0.62, 0], rightCalf: [0.33, 0.32, 0], rightFoot: [0.33, 0.08, -0.22]
   };
-
   const links = [
     ['root', 'pelvis'], ['pelvis', 'spine01'], ['spine01', 'chest'], ['chest', 'neck'], ['neck', 'head'],
     ['chest', 'leftUpperArm'], ['leftUpperArm', 'leftForeArm'], ['leftForeArm', 'leftHand'],
@@ -63,10 +56,7 @@ export function createRiggedActorKit(THREE, options = {}) {
 
   const skeletonDebug = new THREE.Group();
   skeletonDebug.name = 'skeletonDebug';
-  skeletonDebug.visible = Boolean(options.debugVisible);
-  forwardMarker.visible = Boolean(options.debugVisible);
-  headMarkerCube.visible = Boolean(options.debugVisible);
-
+  skeletonDebug.visible = options.bonesVisible ?? true;
   const joints = {};
   const jointGeo = new THREE.SphereGeometry(0.05, 10, 8);
   for (const [name, position] of Object.entries(bones)) {
