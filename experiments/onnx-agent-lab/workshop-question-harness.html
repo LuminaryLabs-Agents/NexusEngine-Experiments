@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Workshop Question Harness</title>
+  <style>
+    :root{color-scheme:dark;--gold:#ffe18a;--panel:#15120e;--line:rgba(255,255,255,.14)}*{box-sizing:border-box}body{margin:0;min-height:100vh;background:#090908;color:#f4ead0;font-family:Inter,system-ui,sans-serif;padding:24px}.wrap{max-width:840px;margin:0 auto;display:grid;gap:14px}.card{border:1px solid var(--line);border-radius:18px;background:var(--panel);padding:16px}h1{margin:0;color:var(--gold);font-size:18px;text-transform:uppercase;letter-spacing:.1em}p{color:#cfc2ad;line-height:1.42}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}label{display:grid;gap:6px;color:#ffe18a;font-size:12px;text-transform:uppercase;letter-spacing:.08em}select,input{width:100%;border:1px solid var(--line);border-radius:12px;background:#090908;color:white;padding:11px;font:inherit}.actions{display:flex;flex-wrap:wrap;gap:10px}button{border:1px solid rgba(255,225,138,.36);border-radius:999px;background:rgba(255,225,138,.12);color:#ffe18a;padding:10px 13px;font-weight:900;cursor:pointer}.secondary{border-color:rgba(131,220,255,.28);background:rgba(131,220,255,.1);color:#83dcff}.danger{border-color:rgba(255,142,125,.32);background:rgba(255,142,125,.09);color:#ff8e7d}.status{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.status div{border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.04);padding:10px}.status strong{display:block;color:#ffe18a;font-size:11px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}.out{white-space:pre-wrap;line-height:1.45}.answer{color:#fff4dc}.prompt{color:#b9cad5;font-size:13px}@media(max-width:720px){body{padding:14px}.grid,.status{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="card"><h1>Workshop Question Harness</h1><p>Small harness for asking workshop-object questions through the same local-model kit used by the scene.</p></section>
+    <section class="card status"><div><strong>Model</strong><span id="modelName">-</span></div><div><strong>Status</strong><span id="modelStatus">-</span></div><div><strong>Backend</strong><span id="modelBackend">-</span></div><div><strong>Source</strong><span id="modelSource">-</span></div><div><strong>File</strong><span id="modelFile">-</span></div><div><strong>Progress</strong><span id="modelProgress">-</span></div></section>
+    <section class="card grid"><label>Object<select id="objectSelect"></select></label><label>Question<input id="questionInput" value="What is this?" /></label></section>
+    <section class="card actions"><button id="askBtn">Ask</button><button id="installBtn" class="secondary">Install model</button><button id="checkBtn" class="secondary">Check device</button><button id="clearBtn" class="danger">Clear model cache</button></section>
+    <section class="card"><h1>Answer</h1><div class="out answer" id="answerOut">No question asked yet.</div></section>
+    <section class="card"><h1>Prompt</h1><div class="out prompt" id="promptOut">Prompt will appear here.</div></section>
+  </main>
+  <script type="module">
+    import { createWorkshopObjectKit } from "./workshop-object-kit.js";
+    import { createOnnxLocalModelKit } from "./onnx-local-model-kit.js";
+    const model=createOnnxLocalModelKit();
+    const workshop=createWorkshopObjectKit(null,{addMesh(){},boxGeo(){},tubeGeo(){},gearGeo(){},materials:{}});
+    const objectSelect=document.querySelector("#objectSelect"),questionInput=document.querySelector("#questionInput"),answerOut=document.querySelector("#answerOut"),promptOut=document.querySelector("#promptOut");
+    for(const object of workshop.objects){const option=document.createElement("option");option.value=object.id;option.textContent=`${object.label} (${object.type})`;objectSelect.appendChild(option)}
+    function selectedObject(){return workshop.getObject(objectSelect.value)||workshop.objects[0]}
+    function renderStatus(state){document.querySelector("#modelName").textContent=`${state.modelName} / ${state.quantization}`;document.querySelector("#modelStatus").textContent=state.status;document.querySelector("#modelBackend").textContent=state.backend;document.querySelector("#modelSource").textContent=state.sourceBaseUrl;document.querySelector("#modelFile").textContent=state.modelFile;document.querySelector("#modelProgress").textContent=`${state.progress||0}%`}
+    async function ask(){const result=await model.answer({object:selectedObject(),room:"workshop question harness",question:questionInput.value.trim()||"What is this?"});answerOut.textContent=`[${result.source}]\n${result.text}`;promptOut.textContent=result.prompt}
+    model.subscribe(renderStatus);document.querySelector("#askBtn").addEventListener("click",ask);document.querySelector("#installBtn").addEventListener("click",()=>model.install());document.querySelector("#checkBtn").addEventListener("click",()=>model.checkCapabilities());document.querySelector("#clearBtn").addEventListener("click",()=>model.clearCache());objectSelect.addEventListener("change",ask);ask();
+  </script>
+</body>
+</html>
