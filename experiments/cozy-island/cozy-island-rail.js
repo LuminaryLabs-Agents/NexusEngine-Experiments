@@ -4,22 +4,22 @@ const err = document.querySelector("#error");
 const cdn = "https://cdn.jsdelivr.net/";
 const THREE = await import(cdn + "npm/three@0.160.0/build/three.module.js");
 const proto = cdn + "gh/LuminaryLabs-Agents/NexusRealtime-ProtoKits@main/protokits/";
-const landformDomain = await import(proto + "ocean-island-landform-domain/index.js?v=scroll-rail-1");
-const foliageDomain = await import(proto + "island-foliage-domain/index.js?v=scroll-rail-1");
-const oceanFloorDomain = await import(proto + "ocean-floor-domain/index.js?v=scroll-rail-1");
-const grassTextureDomain = await import(proto + "grass-texture-domain/index.js?v=scroll-rail-1");
-const grassObjectDomain = await import(proto + "grass-object-domain/index.js?v=scroll-rail-1");
-const grassWindDomain = await import(proto + "grass-wind-domain/index.js?v=scroll-rail-1");
-const campfireDomain = await import(proto + "campfire-object-domain/index.js?v=scroll-rail-1");
-const smokeDomain = await import(proto + "smoke-particle-domain/index.js?v=scroll-rail-1");
-const fencedClearingDomain = await import(proto + "fenced-clearing-domain/index.js?v=scroll-rail-1");
-const cloudDomain = await import(proto + "mattatz-clouds-domain/index.js?v=scroll-rail-1");
+const landformDomain = await import(proto + "ocean-island-landform-domain/index.js?v=bezier-player-rail-1");
+const foliageDomain = await import(proto + "island-foliage-domain/index.js?v=bezier-player-rail-1");
+const oceanFloorDomain = await import(proto + "ocean-floor-domain/index.js?v=bezier-player-rail-1");
+const grassTextureDomain = await import(proto + "grass-texture-domain/index.js?v=bezier-player-rail-1");
+const grassObjectDomain = await import(proto + "grass-object-domain/index.js?v=bezier-player-rail-1");
+const grassWindDomain = await import(proto + "grass-wind-domain/index.js?v=bezier-player-rail-1");
+const campfireDomain = await import(proto + "campfire-object-domain/index.js?v=bezier-player-rail-1");
+const smokeDomain = await import(proto + "smoke-particle-domain/index.js?v=bezier-player-rail-1");
+const fencedClearingDomain = await import(proto + "fenced-clearing-domain/index.js?v=bezier-player-rail-1");
+const cloudDomain = await import(proto + "mattatz-clouds-domain/index.js?v=bezier-player-rail-1");
 
 const R = 100;
 const SEA_FLOOR_Y = -128;
 const clamp01 = (v) => Math.max(0, Math.min(1, v));
-const smooth = (v) => { const t = clamp01(v); return t * t * (3 - 2 * t); };
-const mixV = (a, b, t) => a.clone().lerp(b, smooth(t));
+const ease = (v) => { const t = clamp01(v); return t * t * (3 - 2 * t); };
+const safe = (v = {}, f = {}) => ({ x: Number.isFinite(v.x) ? v.x : (f.x ?? 0), y: Number.isFinite(v.y) ? v.y : (f.y ?? 0), z: Number.isFinite(v.z) ? v.z : (f.z ?? 0) });
 
 function fail(error) {
   err.hidden = false;
@@ -27,91 +27,343 @@ function fail(error) {
   hud.innerHTML = "<strong>Cozy Island</strong><br>Runtime error. See panel.";
 }
 
-function indexedMesh(samples, res, colorFor, material) {
-  const p = [], c = [], idx = [];
-  for (const s of samples) { p.push(s.x, s.y, s.z); const col = colorFor(s); c.push(col.r, col.g, col.b); }
-  for (let z = 0; z < res - 1; z++) for (let x = 0; x < res - 1; x++) { const a = z * res + x; idx.push(a, a + res, a + 1, a + 1, a + res, a + res + 1); }
-  const g = new THREE.BufferGeometry();
-  g.setAttribute("position", new THREE.Float32BufferAttribute(p, 3));
-  g.setAttribute("color", new THREE.Float32BufferAttribute(c, 3));
-  g.setIndex(idx); g.computeVertexNormals();
-  return new THREE.Mesh(g, material);
+function indexed(samples, resolution, colorFor, material) {
+  const positions = [];
+  const colors = [];
+  const indices = [];
+  for (const sample of samples) {
+    positions.push(sample.x, sample.y, sample.z);
+    const color = colorFor(sample);
+    colors.push(color.r, color.g, color.b);
+  }
+  for (let z = 0; z < resolution - 1; z += 1) for (let x = 0; x < resolution - 1; x += 1) {
+    const a = z * resolution + x;
+    indices.push(a, a + resolution, a + 1, a + 1, a + resolution, a + resolution + 1);
+  }
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+  geometry.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
+  geometry.setIndex(indices);
+  geometry.computeVertexNormals();
+  return new THREE.Mesh(geometry, material);
 }
 
-function terrainColor(m = {}) { return new THREE.Color(m.wetSand ? 0xcaa46b : m.beach ? 0xe7ca91 : m.cliff || m.rock ? 0x817d6d : m.path ? 0xb89564 : 0x4f8d4d); }
-function makeTerrain(h) { return indexedMesh(h.samples, h.resolution, (s) => terrainColor(s.masks), new THREE.MeshStandardMaterial({ vertexColors: true, roughness: .92 })); }
-function makeOceanFloor(h) { return indexedMesh(h.samples, h.resolution, (s) => new THREE.Color(s.masks?.reefBand ? 0x3d8176 : s.masks?.shallowShelf ? 0x4b8b7a : 0x235b67), new THREE.MeshStandardMaterial({ vertexColors: true, roughness: .96 })); }
-function makeFoam(shoreline) { const pts = shoreline.map((p) => new THREE.Vector3(p.x, (p.y || 0) + .08, p.z)); pts.push(pts[0].clone()); return new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts, true), shoreline.length, .65, 5, true), new THREE.MeshBasicMaterial({ color: 0xfff1d4, transparent: true, opacity: .36, depthWrite: false })); }
-function makeWater(config = {}) { const mat = new THREE.MeshPhysicalMaterial({ color: new THREE.Color(config.color || "#22b9c9"), transparent: true, opacity: .75, roughness: .16, metalness: .12, reflectivity: .88, clearcoat: .72, clearcoatRoughness: .08, envMapIntensity: 1.8 }); const m = new THREE.Mesh(new THREE.PlaneGeometry(3600, 3600, 32, 32).rotateX(-Math.PI / 2), mat); m.position.y = -.08; return m; }
-
-function makePath(path, sampleHeight) {
-  const group = new THREE.Group(); const mat = new THREE.MeshStandardMaterial({ color: 0xb89564, roughness: .96, transparent: true, opacity: .86 });
-  for (const s of path.segments) {
-    const a = new THREE.Vector3(s.from.x, sampleHeight(s.from) + .12, s.from.z), b = new THREE.Vector3(s.to.x, sampleHeight(s.to) + .12, s.to.z);
-    const d = new THREE.Vector3().subVectors(b, a), side = new THREE.Vector3(-d.z, 0, d.x).normalize().multiplyScalar(s.width * .5);
-    const g = new THREE.BufferGeometry();
-    g.setAttribute("position", new THREE.Float32BufferAttribute([a.x+side.x,a.y,a.z+side.z,a.x-side.x,a.y,a.z-side.z,b.x+side.x,b.y,b.z+side.z,b.x-side.x,b.y,b.z-side.z], 3));
-    g.setIndex([0,1,2,2,1,3]); g.computeVertexNormals(); group.add(new THREE.Mesh(g, mat));
+function makeTerrain(heightfield) {
+  return indexed(heightfield.samples, heightfield.resolution, (sample) => {
+    const m = sample.masks || {};
+    return new THREE.Color(m.wetSand ? 0xcaa46b : m.beach ? 0xe7ca91 : m.cliff || m.rock ? 0x817d6d : 0x4f8d4d);
+  }, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.92 }));
+}
+function makeOceanFloor(heightfield) {
+  return indexed(heightfield.samples, heightfield.resolution, (sample) => new THREE.Color(sample.masks?.reefBand ? 0x3d8176 : sample.masks?.shallowShelf ? 0x4b8b7a : 0x235b67), new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.96 }));
+}
+function makeWater(config = {}) {
+  const mesh = new THREE.Mesh(new THREE.PlaneGeometry(3600, 3600, 32, 32).rotateX(-Math.PI / 2), new THREE.MeshPhysicalMaterial({ color: new THREE.Color(config.color || "#22b9c9"), transparent: true, opacity: 0.75, roughness: 0.16, metalness: 0.12, reflectivity: 0.88, clearcoat: 0.72, clearcoatRoughness: 0.08, envMapIntensity: 1.8 }));
+  mesh.position.y = -0.08;
+  return mesh;
+}
+function makeFoam(shoreline) {
+  const points = shoreline.map((point) => new THREE.Vector3(point.x, (point.y || 0) + 0.08, point.z));
+  points.push(points[0].clone());
+  return new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(points, true), shoreline.length, 0.65, 5, true), new THREE.MeshBasicMaterial({ color: 0xfff1d4, transparent: true, opacity: 0.36, depthWrite: false }));
+}
+function makePath(pathNetwork, sampleHeight) {
+  const group = new THREE.Group();
+  const material = new THREE.MeshStandardMaterial({ color: 0xb89564, roughness: 0.96, transparent: true, opacity: 0.86 });
+  for (const segment of pathNetwork.segments) {
+    const a = new THREE.Vector3(segment.from.x, sampleHeight(segment.from) + 0.12, segment.from.z);
+    const b = new THREE.Vector3(segment.to.x, sampleHeight(segment.to) + 0.12, segment.to.z);
+    const direction = new THREE.Vector3().subVectors(b, a);
+    const side = new THREE.Vector3(-direction.z, 0, direction.x).normalize().multiplyScalar(segment.width * 0.5);
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute("position", new THREE.Float32BufferAttribute([a.x + side.x, a.y, a.z + side.z, a.x - side.x, a.y, a.z - side.z, b.x + side.x, b.y, b.z + side.z, b.x - side.x, b.y, b.z - side.z], 3));
+    geometry.setIndex([0, 1, 2, 2, 1, 3]);
+    geometry.computeVertexNormals();
+    group.add(new THREE.Mesh(geometry, material));
   }
   return group;
 }
-
-function insideZone(pos, zones = [], margin = 0) { return zones.some((z) => { const c = z.center || z.position || { x: 0, z: 0 }; return Math.hypot(pos.x - c.x, pos.z - c.z) < (z.radius || z.radiusMeters || 0) + margin; }); }
-function childrenMap(objects) { const m = new Map(); for (const o of objects) { if (!o.parentId) continue; if (!m.has(o.parentId)) m.set(o.parentId, []); m.get(o.parentId).push(o); } return m; }
-function makePalm(o, byParent) {
-  const g = new THREE.Group(), h = o.state?.heightMeters || 7;
-  const trunk = new THREE.Mesh(new THREE.CylinderGeometry(.14,.24,h,8), new THREE.MeshStandardMaterial({ color: 0x815838, roughness:.88 })); trunk.position.y = h*.5; trunk.rotation.z = o.state?.lean || 0; g.add(trunk);
-  const leafMat = new THREE.MeshStandardMaterial({ color:0x2f8f52, roughness:.86, side:THREE.DoubleSide });
-  for (let i=0;i<7;i++){ const leaf=new THREE.Mesh(new THREE.ConeGeometry(.22,h*.34,4), leafMat); leaf.position.y=h*.96; leaf.rotation.z=Math.PI/2.8; leaf.rotation.y=i/7*Math.PI*2; leaf.scale.set(1,.42,1); g.add(leaf); }
-  const cluster = (byParent.get(o.id)||[]).find((c)=>c.type==="coconut-cluster"), mat = new THREE.MeshStandardMaterial({ color:0x8a5b32, roughness:.8 });
-  for (const c of byParent.get(cluster?.id)||[]) { const mesh = new THREE.Mesh(new THREE.SphereGeometry(.18,8,6), mat); mesh.position.set(c.transform.position.x,c.transform.position.y,c.transform.position.z); g.add(mesh); }
-  g.position.set(o.transform.position.x,o.transform.position.y,o.transform.position.z); g.rotation.y=o.transform.rotation.y||0; g.scale.setScalar(o.transform.scale.x||1); return g;
+function insideZone(position, zones = [], margin = 0) {
+  return zones.some((zone) => {
+    const center = zone.center || zone.position || { x: 0, z: 0 };
+    return Math.hypot(position.x - center.x, position.z - center.z) < (zone.radius || zone.radiusMeters || 0) + margin;
+  });
 }
-function makeTree(o) { const g=new THREE.Group(), h=o.state?.heightMeters||9, cr=o.state?.canopyRadiusMeters||3.4; const matT=new THREE.MeshStandardMaterial({color:0x6f4b30,roughness:.9}); const matC=new THREE.MeshStandardMaterial({color:o.type==="young-tree"?0x4e9b50:0x3f8f45,roughness:.9}); const tr=new THREE.Mesh(new THREE.CylinderGeometry(.18,.34,h*.72,8),matT); tr.position.y=h*.36; const crown=new THREE.Mesh(new THREE.SphereGeometry(cr,12,8),matC); crown.position.y=h*.78; crown.scale.y=.72; g.add(tr,crown); g.position.set(o.transform.position.x,o.transform.position.y,o.transform.position.z); g.rotation.y=o.transform.rotation.y||0; g.scale.setScalar(o.transform.scale.x||1); return g; }
-function makeSimple(o) { const color=o.type==="bush"?0x3e8f45:o.type==="fern"?0x2e7c4a:o.type.includes("wood")||o.type==="fallen-log"?0x8a6844:0x77756a; const geo=o.type==="fern"?new THREE.ConeGeometry(.18,.75,5):o.type==="bush"?new THREE.SphereGeometry(.42,8,6):new THREE.DodecahedronGeometry(.38,0); const m=new THREE.Mesh(geo,new THREE.MeshStandardMaterial({color,roughness:.9})); m.position.set(o.transform.position.x,o.transform.position.y,o.transform.position.z); m.rotation.y=o.transform.rotation.y||0; m.scale.setScalar(o.transform.scale.x||1); return m; }
-function makeObjects(graph, exclusion) { const group=new THREE.Group(), by=childrenMap(graph.objects), types=new Set(["palm-tree","broadleaf-tree","young-tree","bush","fern","fallen-log","rock","boulder","driftwood","reef","coral"]); for (const o of graph.objects) { if (!types.has(o.type) || insideZone(o.transform.position, exclusion, .35)) continue; group.add(o.type==="palm-tree"?makePalm(o,by):o.type.includes("tree")?makeTree(o):makeSimple(o)); } return group; }
-
-function makeSeaFloorObjects(list) { const group=new THREE.Group(); for (const o of list) { const mat=new THREE.MeshStandardMaterial({ color:o.type==="reef-cluster"?0xd78367:o.type==="coral-cluster"?0xf0a58c:0x667b78, roughness:.88 }); const m=new THREE.Mesh(new THREE.DodecahedronGeometry(o.type==="sea-floor-boulder"?.9:.45,0),mat); m.position.set(o.position.x,o.position.y+.2,o.position.z); m.rotation.y=o.rotation||0; m.scale.setScalar(o.scale||1); group.add(m); } return group; }
-function makeFence(clearing) { const group=new THREE.Group(), postMat=new THREE.MeshStandardMaterial({color:0x7c5738,roughness:.9}), railMat=new THREE.MeshStandardMaterial({color:0x8b6642,roughness:.9}); for(const o of clearing.objects){ if(o.type==="fence-post"){ const h=o.state.heightMeters||1.25, m=new THREE.Mesh(new THREE.CylinderGeometry(.11,.14,h,7),postMat); m.position.set(o.transform.position.x,o.transform.position.y+h*.5,o.transform.position.z); group.add(m); } else if(o.type==="fence-rail"){ const len=o.transform.scale.x||2, m=new THREE.Mesh(new THREE.CylinderGeometry(.055,.055,len,6),railMat); m.rotation.z=Math.PI/2; m.rotation.y=o.transform.rotation.y||0; m.position.set(o.transform.position.x,o.transform.position.y,o.transform.position.z); group.add(m); } } return group; }
-function makeAvatar(o){ const group=new THREE.Group(); const body=new THREE.Mesh(new THREE.CylinderGeometry(.28,.34,1.15,10),new THREE.MeshStandardMaterial({color:0x3d5f82,roughness:.74})); body.position.y=.72; const head=new THREE.Mesh(new THREE.SphereGeometry(.24,12,8),new THREE.MeshStandardMaterial({color:0xd7b38c,roughness:.82})); head.position.y=1.45; group.add(body,head); group.position.set(o.transform.position.x,o.transform.position.y,o.transform.position.z); group.rotation.y=o.transform.rotation.y||0; return group; }
-function makeCampfire(graph){ const root=graph.byId[graph.rootId], group=new THREE.Group(); group.position.set(root.transform.position.x,root.transform.position.y,root.transform.position.z); const logMat=new THREE.MeshStandardMaterial({color:0x70462a,roughness:.88}); for(let i=0;i<7;i++){ const log=new THREE.Mesh(new THREE.CylinderGeometry(.12,.15,2,8),logMat); log.position.y=.22+(i%2)*.1; log.rotation.z=Math.PI/2; log.rotation.y=i/7*Math.PI*2; group.add(log); } const ember=new THREE.Mesh(new THREE.SphereGeometry(.55,12,6),new THREE.MeshStandardMaterial({color:0xff5c22,emissive:0xff3d12,emissiveIntensity:1.4})); ember.scale.y=.18; ember.position.y=.16; group.add(ember); const flames=[]; for(let i=0;i<5;i++){ const f=new THREE.Mesh(new THREE.ConeGeometry(.25+i*.025,1.1-i*.08,5),new THREE.MeshBasicMaterial({color:i%2?0xffa533:0xffdf62,transparent:true,opacity:.72,depthWrite:false})); f.position.set(Math.cos(i)*.18,.65,Math.sin(i*1.7)*.18); group.add(f); flames.push(f); } const light=new THREE.PointLight(0xff9d43,1.8,22,2); light.position.set(0,1.2,0); group.add(light); group.userData={flames,light}; return group; }
-function makeSmoke(d){ const pos=new Float32Array(d.particleCount*3), ages=new Float32Array(d.particleCount), seeds=new Float32Array(d.particleCount); for(let i=0;i<d.particleCount;i++){ages[i]=Math.random()*d.lifespanSeconds;seeds[i]=Math.random()*Math.PI*2;} const g=new THREE.BufferGeometry(); g.setAttribute("position",new THREE.BufferAttribute(pos,3)); const pts=new THREE.Points(g,new THREE.PointsMaterial({color:0xcac3b8,size:1.15,transparent:true,opacity:.38,depthWrite:false,sizeAttenuation:true})); pts.userData={d,ages,seeds,origin:new THREE.Vector3(d.position.x,d.position.y,d.position.z)}; return pts; }
-function updateSmoke(pts,dt,now){ const {d,ages,seeds,origin}=pts.userData,p=pts.geometry.attributes.position,wind=d.wind; for(let i=0;i<ages.length;i++){ ages[i]=(ages[i]+dt)%d.lifespanSeconds; const t=ages[i]/d.lifespanSeconds, swirl=Math.sin(now*.0015+seeds[i]+t*9)*d.turbulence, r=d.spawnRadius+t*2.2; p.setXYZ(i,origin.x+wind.direction.x*wind.response*t*5.5+Math.cos(seeds[i])*r*.35+swirl*.25,origin.y+t*d.riseSpeed*d.lifespanSeconds,origin.z+wind.direction.z*wind.response*t*5.5+Math.sin(seeds[i])*r*.35+swirl*.18); } p.needsUpdate=true; }
-
-function grassGeometry({bladeCount=240,radius=1.85,seed=1,texture}){ let s=seed; const rand=()=>{s^=s<<13;s^=s>>>17;s^=s<<5;return(s>>>0)/0xffffffff}; const root=new THREE.Color(texture.rootColor),tipC=new THREE.Color(texture.tipColor),dry=new THREE.Color(texture.dryColor); const p=[],c=[],idx=[]; for(let i=0;i<bladeCount;i++){ const a=rand()*Math.PI*2,r=radius*Math.sqrt(rand()),x=Math.cos(a)*r,z=Math.sin(a)*r,h=.32+rand()*.6,w=.018+rand()*.03,lean=(rand()-.5)*.24,side=new THREE.Vector3(Math.cos(a+Math.PI/2)*w,0,Math.sin(a+Math.PI/2)*w),tip=new THREE.Vector3(x+Math.cos(a)*lean,h,z+Math.sin(a)*lean),b=p.length/3; p.push(x-side.x,0,z-side.z,x+side.x,0,z+side.z,tip.x+side.x*.32,tip.y,tip.z+side.z*.32,tip.x-side.x*.32,tip.y,tip.z-side.z*.32); const dm=rand()<texture.dryVariation?.42:0,rc=root.clone().lerp(dry,dm),tc=tipC.clone().lerp(dry,dm*.7); c.push(rc.r,rc.g,rc.b,rc.r,rc.g,rc.b,tc.r,tc.g,tc.b,tc.r,tc.g,tc.b); idx.push(b,b+1,b+2,b,b+2,b+3); } const g=new THREE.BufferGeometry(); g.setAttribute("position",new THREE.Float32BufferAttribute(p,3)); g.setAttribute("color",new THREE.Float32BufferAttribute(c,3)); g.setIndex(idx); g.computeVertexNormals(); return g; }
-function makeGrassBatches(placement,tex,wind){ const group=new THREE.Group(), map=new Map(), budgets={"dense-a":900,"dense-b":720,"dense-c":560}; for(const patch of placement.patches){ const k=patch.render.geometryTemplateKey; if(!map.has(k))map.set(k,[]); map.get(k).push(patch); } let t=0; for(const [k,patches] of map){ const mesh=new THREE.InstancedMesh(grassGeometry({bladeCount:Math.max(160,Math.round((budgets[k]||720)/3)),seed:100+t*37,texture:tex}),new THREE.MeshStandardMaterial({vertexColors:true,roughness:.86,side:THREE.DoubleSide}),patches.length); mesh.userData={wind,base:[]}; const m=new THREE.Matrix4(), q=new THREE.Quaternion(), v=new THREE.Vector3(), sc=new THREE.Vector3(); patches.forEach((p,i)=>{v.set(p.transform.position.x,p.transform.position.y+.04,p.transform.position.z);q.setFromEuler(new THREE.Euler(0,p.transform.rotation.y,0));sc.set(p.transform.scale.x,1,p.transform.scale.z);m.compose(v,q,sc);mesh.setMatrixAt(i,m);mesh.userData.base[i]=m.clone();}); mesh.instanceMatrix.needsUpdate=true; group.add(mesh); t++; } return group; }
-function createCloudMaterial(seed=0,layer=0){ return new THREE.ShaderMaterial({transparent:true,depthWrite:false,side:THREE.BackSide,uniforms:{uTime:{value:0},uCameraLocal:{value:new THREE.Vector3()},uSeed:{value:seed},uDensity:{value:layer===2?.42:.62},uColor:{value:new THREE.Color(layer===2?0xf6fbff:0xfff7e8)}},vertexShader:`varying vec3 vLocal;void main(){vLocal=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,fragmentShader:`precision highp float;varying vec3 vLocal;uniform vec3 uCameraLocal,uColor;uniform float uTime,uSeed,uDensity;float h(vec3 p){p=fract(p*.3183099+vec3(.1,.2,.3)+uSeed*.01);p*=17.;return fract(p.x*p.y*p.z*(p.x+p.y+p.z));}float n(vec3 p){vec3 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(mix(h(i),h(i+vec3(1,0,0)),f.x),mix(h(i+vec3(0,1,0)),h(i+vec3(1,1,0)),f.x),f.y),mix(mix(h(i+vec3(0,0,1)),h(i+vec3(1,0,1)),f.x),mix(h(i+vec3(0,1,1)),h(i+vec3(1,1,1)),f.x),f.y),f.z);}float fbm(vec3 p){float a=.5,s=0.;for(int i=0;i<3;i++){s+=n(p)*a;p=p*2.02+vec3(11.7,3.2,8.1);a*=.52;}return s;}vec2 box(vec3 ro,vec3 rd){vec3 m=1./rd,n=m*(vec3(-.5)-ro),k=m*(vec3(.5)-ro),t1=min(n,k),t2=max(n,k);return vec2(max(max(t1.x,t1.y),t1.z),min(min(t2.x,t2.y),t2.z));}void main(){vec3 ro=uCameraLocal,rd=normalize(vLocal-ro);vec2 b=box(ro,rd);if(b.x>b.y)discard;float alpha=0.;vec3 sum=vec3(0.);for(int i=0;i<12;i++){float ft=float(i)/11.;vec3 p=ro+rd*mix(max(b.x,0.),b.y,ft);float e=smoothstep(.5,.12,length(p*vec3(1.,1.45,1.)));float d=max(0.,(fbm(p*2.5+vec3(uTime*.02,0.,uTime*.01))-.32)*e)*uDensity*.2;float a=d*(1.-alpha);sum+=uColor*a;alpha+=a;}if(alpha<.015)discard;gl_FragColor=vec4(sum/max(alpha,.001),alpha*.72);}`}); }
-function makeCloud(d,layer=0,i=0){ const mat=createCloudMaterial(i*17+layer*101,layer),m=new THREE.Mesh(new THREE.BoxGeometry(1,1,1),mat); m.scale.set((d.scale?.x||300)*4.6,(d.scale?.y||90)*1.35,(d.scale?.z||230)*4); m.position.set((d.position?.x||0)*.52,Math.max(135,(d.position?.y||600)*.5),(d.position?.z||0)*.52); m.userData={material:mat,speed:d.driftSpeed||.04,drift:d.drift||{x:1,z:.2}}; return m; }
-
-async function main(){
-  const islandState=landformDomain.createOceanIslandLandformState({id:"cozy-island-001",seed:"cozy-island-domain-cutover",preset:"tropical-small-island",radius:R,maxHeight:18,beachWidth:10,shelfWidth:36,shelfDepth:110,objectPalette:[],render:{heightfieldResolution:129,shorelineSegments:128}});
-  const landform=landformDomain.createOceanIslandLandformRenderContract(islandState,{heightfield:{resolution:129},shoreline:{segments:128},objects:{densityScale:0}});
-  const sampleHeight=(p)=>landformDomain.sampleIslandHeight(islandState,{x:p.x,z:p.z}); const sampleMasks=(p)=>landformDomain.sampleIslandMasks(islandState,{x:p.x,z:p.z});
-  const campfireY=sampleHeight({x:0,z:0});
-  const clearing=fencedClearingDomain.createFencedClearingGraph({parentId:"island:cozy-001",position:{x:0,y:campfireY,z:0},fenceRadiusMeters:12,campfireRadiusMeters:2.25});
-  const avatar=clearing.byId["central-clearing:campfire:player-avatar-anchor"] || {transform:{position:{x:0,y:campfireY,z:6}},state:{eyeHeightMeters:1.7}};
-  const graph=foliageDomain.createDenseCozyIslandObjectGraph({seed:"cozy-island-domain-cutover",radiusMeters:R,sampleHeight,sampleMasks});
-  const floorState=oceanFloorDomain.createOceanFloorState({seed:"cozy-island-ocean-floor",size:3600,resolution:53,baseDepth:SEA_FLOOR_Y,islandRadius:R,islandShelfRadius:145,islandInfluenceRadius:260,shelfDepth:-16,moundDepth:-42,noiseAmplitude:9,objects:{seaFloorRocks:34,seaFloorBoulders:12,reefClusters:14,coralClusters:18}});
-  const oceanFloor=oceanFloorDomain.createOceanFloorRenderContract(floorState,{heightfield:{resolution:53},objects:{}});
-  const grassTexture=grassTextureDomain.createGrassTextureDescriptor({id:"dense-cozy-grass-texture"}); const grassWind=grassWindDomain.createGrassWindDescriptor({id:"central-grove-soft-wind",phaseSeed:"cozy-island-grass",baseSway:.16,gustStrength:.34});
-  const campfireGraph=campfireDomain.createCampfireObjectGraph({parentId:graph.rootId,position:{x:0,y:campfireY,z:0},radiusMeters:1.45,intensity:.86,smoke:true});
-  const smoke=smokeDomain.createSmokeParticleDescriptor({parentId:campfireGraph.rootId,position:{x:0,y:campfireY+1.25,z:0},wind:{...grassWind,response:.78},particleCount:96,riseSpeed:1.2});
-  const grassPlacement=grassObjectDomain.createGrassPatchPlacementContract({seed:"cozy-island-grass",count:140,radiusMeters:R,sampleHeight,sampleMasks,pathNetwork:graph.pathNetwork,avoidObjects:graph.objects,exclusionZones:clearing.clearanceZones,pathClearance:3.6,objectClearance:1.15});
-  const clouds=cloudDomain.createMattatzCloudRenderContract(cloudDomain.createMattatzCloudsState({seed:"cozy-island-clouds",weather:"sunrise-haze",cloudCount:4}),0);
-  const renderer=new THREE.WebGLRenderer({canvas,antialias:true,powerPreference:"high-performance"}); renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5)); renderer.outputColorSpace=THREE.SRGBColorSpace; renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1.08;
-  const scene=new THREE.Scene(); scene.background=new THREE.Color(0xf3cfa6); scene.fog=new THREE.FogExp2(0xf3cfa6,.00072); const camera=new THREE.PerspectiveCamera(58,1,.1,6800); scene.add(new THREE.HemisphereLight(0xfff7e9,0x2d5b64,1.55)); const sun=new THREE.DirectionalLight(0xffe1a3,4.1); sun.position.set(-320,520,260); scene.add(sun);
-  const water=makeWater(oceanFloor.waterMaterial), avatarGroup=makeAvatar(avatar), grassGroup=makeGrassBatches(grassPlacement,grassTexture,grassWind), campfireGroup=makeCampfire(campfireGraph), smokePts=makeSmoke(smoke), cloudGroup=new THREE.Group();
-  clouds.clouds.slice(0,4).forEach((d,i)=>cloudGroup.add(makeCloud(d,d.layerId?.includes("high")?2:d.layerId?.includes("mid")?1:0,i)));
-  scene.add(makeOceanFloor(oceanFloor.heightfield),makeSeaFloorObjects(oceanFloor.objects),makeTerrain(landform.heightfield),water,makeFoam(landform.shoreline),makePath(graph.pathNetwork,sampleHeight),makeObjects(graph,clearing.objectExclusionZones||[{center:{x:0,z:0},radius:11.2}]),makeFence(clearing),campfireGroup,smokePts,avatarGroup,grassGroup,cloudGroup);
-  const keys=new Set(), rig={yaw:0,pitch:-.16,target:new THREE.Vector3(0,20,0)}, avatarBase=new THREE.Vector3(avatar.transform.position.x,avatar.transform.position.y,avatar.transform.position.z), eyeH=avatar.state.eyeHeightMeters||1.7, avatarEye=()=>new THREE.Vector3(avatarBase.x,sampleHeight(avatarBase)+eyeH,avatarBase.z), fp={yaw:0,pitch:0,pos:avatarEye()}; let zoom=0, drag=null, last=performance.now();
-  function resize(){renderer.setSize(innerWidth,innerHeight,false);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();} resize(); addEventListener("resize",resize); addEventListener("keydown",e=>keys.add(e.code)); addEventListener("keyup",e=>keys.delete(e.code)); addEventListener("blur",()=>keys.clear());
-  canvas.addEventListener("wheel",e=>{e.preventDefault();zoom=clamp01(zoom+e.deltaY*-0.0014); if(zoom<.985) avatarGroup.visible=true;},{passive:false});
-  canvas.addEventListener("pointerdown",e=>{drag={x:e.clientX,y:e.clientY};canvas.setPointerCapture?.(e.pointerId);}); canvas.addEventListener("pointerup",()=>drag=null); canvas.addEventListener("pointermove",e=>{ if(!drag)return; const dx=e.clientX-drag.x,dy=e.clientY-drag.y; if(zoom>=.985){fp.yaw-=dx*.0025;fp.pitch=Math.max(-1.1,Math.min(1,fp.pitch-dy*.0025));} else if(zoom<.85){rig.yaw-=dx*.0045;rig.pitch=Math.max(-.75,Math.min(.2,rig.pitch-dy*.0035));} drag={x:e.clientX,y:e.clientY}; });
-  function railPose(){ const eye=avatarEye(), shoulder=eye.clone().add(new THREE.Vector3(0,2.4,4.4)), head=eye.clone().add(new THREE.Vector3(0,.45,1.15)), camp=new THREE.Vector3(0,campfireY+4.8,0), skyTarget=new THREE.Vector3(0,20,0); const t=zoom; const radius=THREE.MathUtils.lerp(520,110,smooth(clamp01(t/.45))), minH=THREE.MathUtils.lerp(135,26,smooth(clamp01(t/.65))); const orbitPos=skyTarget.clone().lerp(camp,smooth(clamp01(t/.65))).add(new THREE.Vector3(Math.sin(rig.yaw)*radius, minH, Math.cos(rig.yaw)*radius)); let pos,look; if(t<.65){pos=orbitPos;look=skyTarget.clone().lerp(camp,smooth(t/.65));} else if(t<.82){pos=mixV(orbitPos,shoulder,(t-.65)/.17);look=camp.clone().lerp(eye,smooth((t-.65)/.17));} else if(t<.94){pos=mixV(shoulder,head,(t-.82)/.12);look=eye.clone();} else {pos=mixV(head,eye,(t-.94)/.06);look=eye.clone().add(new THREE.Vector3(0,0,-1));} return {pos,look}; }
-  function valid(next){ const max=clearing.byId["central-clearing:campfire:collision-boundary"].state.radiusMeters; return Math.hypot(next.x,next.z)<=max && Math.hypot(next.x,next.z)>=2.35; }
-  function updateFp(dt){ const f=new THREE.Vector3(-Math.sin(fp.yaw),0,-Math.cos(fp.yaw)), r=new THREE.Vector3(Math.cos(fp.yaw),0,-Math.sin(fp.yaw)), m=new THREE.Vector3(); if(keys.has("KeyW"))m.add(f); if(keys.has("KeyS"))m.sub(f); if(keys.has("KeyD"))m.add(r); if(keys.has("KeyA"))m.sub(r); if(m.lengthSq()){const n=fp.pos.clone().add(m.normalize().multiplyScalar(2.6*dt)); n.y=sampleHeight(n)+eyeH; if(valid(n))fp.pos.copy(n);} camera.position.copy(fp.pos); const look=new THREE.Vector3(-Math.sin(fp.yaw)*Math.cos(fp.pitch),Math.sin(fp.pitch),-Math.cos(fp.yaw)*Math.cos(fp.pitch)); camera.lookAt(fp.pos.clone().add(look)); }
-  const mx=new THREE.Matrix4(),mp=new THREE.Vector3(),mq=new THREE.Quaternion(),ms=new THREE.Vector3(); function animateGrass(now){grassGroup.children.forEach((mesh,b)=>{const sw=Math.sin(now*.0018+b*1.7)*mesh.userData.wind.baseSway*.035; mesh.userData.base.forEach((base,i)=>{base.decompose(mp,mq,ms); const q=new THREE.Quaternion().setFromEuler(new THREE.Euler(sw*(1+(i%5)*.12),sw*.25,0)); mx.compose(mp,mq.multiply(q),ms); mesh.setMatrixAt(i,mx);}); mesh.instanceMatrix.needsUpdate=true;});}
-  function frame(now){const dt=Math.min(.05,(now-last)/1000); last=now; water.position.y=-.08+Math.sin(now*.0012)*.18; if(zoom>=.985){avatarGroup.visible=false; updateFp(dt);} else {const pose=railPose(); camera.position.copy(pose.pos); camera.lookAt(pose.look); avatarGroup.visible=zoom<.94;} animateGrass(now); updateSmoke(smokePts,dt,now); campfireGroup.userData.flames?.forEach((f,i)=>f.scale.setScalar(1+Math.sin(now*.011+i)*.1)); if(campfireGroup.userData.light)campfireGroup.userData.light.intensity=1.55+Math.sin(now*.01)*.35; cloudGroup.children.forEach((c,i)=>{c.position.x+=(c.userData.drift?.x||1)*c.userData.speed*dt*18;c.position.z+=(c.userData.drift?.z||0)*c.userData.speed*dt*18;c.userData.material.uniforms.uTime.value=now*.001;c.worldToLocal(c.userData.material.uniforms.uCameraLocal.value.copy(camera.position));}); hud.innerHTML=`<strong>Cozy Island</strong><br>scroll = sky → avatar eyes · WASD/drag in human view<br>${zoom>=.985?"first-person":"scroll-rail"} · zoom ${(zoom*100).toFixed(0)}% · smoke ${smoke.particleCount} · grass ${grassPlacement.patchCount}/3 · clouds ${cloudGroup.children.length}`; renderer.render(scene,camera); requestAnimationFrame(frame);} requestAnimationFrame(frame);
-  globalThis.CozyIsland={zoom,landform,graph,clearing,grassPlacement,smoke,clouds};
+function makeObjects(graph, exclusionZones) {
+  const group = new THREE.Group();
+  const types = new Set(["palm-tree", "broadleaf-tree", "young-tree", "bush", "fern", "fallen-log", "rock", "boulder", "driftwood", "reef", "coral"]);
+  for (const object of graph.objects) {
+    if (!types.has(object.type) || insideZone(object.transform.position, exclusionZones, 0.35)) continue;
+    const color = object.type.includes("tree") || object.type === "bush" || object.type === "fern" ? 0x3f8f45 : object.type.includes("wood") || object.type === "fallen-log" ? 0x8a6844 : 0x77756a;
+    const geometry = object.type.includes("tree") ? new THREE.CylinderGeometry(0.22, 0.35, object.state?.heightMeters || 6, 8) : object.type === "bush" ? new THREE.SphereGeometry(0.42, 8, 6) : new THREE.DodecahedronGeometry(0.35, 0);
+    const mesh = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({ color, roughness: 0.9 }));
+    mesh.position.set(object.transform.position.x, object.transform.position.y + (object.type.includes("tree") ? (object.state?.heightMeters || 6) * 0.5 : 0.2), object.transform.position.z);
+    mesh.rotation.y = object.transform.rotation.y || 0;
+    mesh.scale.setScalar(object.transform.scale.x || 1);
+    group.add(mesh);
+  }
+  return group;
 }
+function makeSeaObjects(objects) {
+  const group = new THREE.Group();
+  for (const object of objects) {
+    const mesh = new THREE.Mesh(new THREE.DodecahedronGeometry(object.type === "sea-floor-boulder" ? 0.9 : 0.45, 0), new THREE.MeshStandardMaterial({ color: object.type === "reef-cluster" ? 0xd78367 : object.type === "coral-cluster" ? 0xf0a58c : 0x667b78, roughness: 0.88 }));
+    mesh.position.set(object.position.x, object.position.y + 0.2, object.position.z);
+    mesh.rotation.y = object.rotation || 0;
+    mesh.scale.setScalar(object.scale || 1);
+    group.add(mesh);
+  }
+  return group;
+}
+function makeFence(clearing) {
+  const group = new THREE.Group();
+  const postMaterial = new THREE.MeshStandardMaterial({ color: 0x7c5738, roughness: 0.9 });
+  const railMaterial = new THREE.MeshStandardMaterial({ color: 0x8b6642, roughness: 0.9 });
+  for (const object of clearing.objects) {
+    if (object.type === "fence-post") {
+      const height = object.state.heightMeters || 1.25;
+      const mesh = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.14, height, 7), postMaterial);
+      mesh.position.set(object.transform.position.x, object.transform.position.y + height * 0.5, object.transform.position.z);
+      group.add(mesh);
+    } else if (object.type === "fence-rail") {
+      const length = object.transform.scale.x || 2;
+      const mesh = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.055, length, 6), railMaterial);
+      mesh.rotation.z = Math.PI / 2;
+      mesh.rotation.y = object.transform.rotation.y || 0;
+      mesh.position.set(object.transform.position.x, object.transform.position.y, object.transform.position.z);
+      group.add(mesh);
+    }
+  }
+  return group;
+}
+function makeCampfire(graph) {
+  const root = graph.byId[graph.rootId];
+  const group = new THREE.Group();
+  group.position.set(root.transform.position.x, root.transform.position.y, root.transform.position.z);
+  const logMaterial = new THREE.MeshStandardMaterial({ color: 0x70462a, roughness: 0.88 });
+  for (let i = 0; i < 7; i += 1) {
+    const log = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.15, 2, 8), logMaterial);
+    log.position.y = 0.22 + (i % 2) * 0.1;
+    log.rotation.z = Math.PI / 2;
+    log.rotation.y = i / 7 * Math.PI * 2;
+    group.add(log);
+  }
+  const ember = new THREE.Mesh(new THREE.SphereGeometry(0.55, 12, 6), new THREE.MeshStandardMaterial({ color: 0xff5c22, emissive: 0xff3d12, emissiveIntensity: 1.4 }));
+  ember.scale.y = 0.18;
+  ember.position.y = 0.16;
+  group.add(ember);
+  const flames = [];
+  for (let i = 0; i < 5; i += 1) {
+    const flame = new THREE.Mesh(new THREE.ConeGeometry(0.25 + i * 0.025, 1.1 - i * 0.08, 5), new THREE.MeshBasicMaterial({ color: i % 2 ? 0xffa533 : 0xffdf62, transparent: true, opacity: 0.72, depthWrite: false }));
+    flame.position.set(Math.cos(i) * 0.18, 0.65, Math.sin(i * 1.7) * 0.18);
+    group.add(flame);
+    flames.push(flame);
+  }
+  const light = new THREE.PointLight(0xff9d43, 1.8, 22, 2);
+  light.position.set(0, 1.2, 0);
+  group.add(light);
+  group.userData = { flames, light };
+  return group;
+}
+function makeSmoke(descriptor) {
+  const positions = new Float32Array(descriptor.particleCount * 3);
+  const ages = new Float32Array(descriptor.particleCount);
+  const seeds = new Float32Array(descriptor.particleCount);
+  for (let i = 0; i < descriptor.particleCount; i += 1) { ages[i] = Math.random() * descriptor.lifespanSeconds; seeds[i] = Math.random() * Math.PI * 2; }
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+  const points = new THREE.Points(geometry, new THREE.PointsMaterial({ color: 0xcac3b8, size: 1.15, transparent: true, opacity: 0.38, depthWrite: false, sizeAttenuation: true }));
+  points.userData = { descriptor, ages, seeds, origin: new THREE.Vector3(descriptor.position.x, descriptor.position.y, descriptor.position.z) };
+  return points;
+}
+function updateSmoke(points, dt, now) {
+  const { descriptor, ages, seeds, origin } = points.userData;
+  const position = points.geometry.attributes.position;
+  const wind = descriptor.wind;
+  for (let i = 0; i < ages.length; i += 1) {
+    ages[i] = (ages[i] + dt) % descriptor.lifespanSeconds;
+    const t = ages[i] / descriptor.lifespanSeconds;
+    const swirl = Math.sin(now * 0.0015 + seeds[i] + t * 9) * descriptor.turbulence;
+    const radius = descriptor.spawnRadius + t * 2.2;
+    position.setXYZ(i, origin.x + wind.direction.x * wind.response * t * 5.5 + Math.cos(seeds[i]) * radius * 0.35 + swirl * 0.25, origin.y + t * descriptor.riseSpeed * descriptor.lifespanSeconds, origin.z + wind.direction.z * wind.response * t * 5.5 + Math.sin(seeds[i]) * radius * 0.35 + swirl * 0.18);
+  }
+  position.needsUpdate = true;
+}
+function makeGrass(placement) {
+  const geometry = new THREE.ConeGeometry(0.08, 0.5, 4);
+  const material = new THREE.MeshStandardMaterial({ color: 0x75b84d, roughness: 0.86 });
+  const mesh = new THREE.InstancedMesh(geometry, material, placement.patches.length);
+  const matrix = new THREE.Matrix4();
+  const q = new THREE.Quaternion();
+  const pos = new THREE.Vector3();
+  const scale = new THREE.Vector3();
+  placement.patches.forEach((patch, index) => {
+    pos.set(patch.transform.position.x, patch.transform.position.y + 0.25, patch.transform.position.z);
+    q.setFromEuler(new THREE.Euler(0, patch.transform.rotation.y, 0));
+    scale.setScalar(patch.transform.scale.x || 1);
+    matrix.compose(pos, q, scale);
+    mesh.setMatrixAt(index, matrix);
+  });
+  mesh.instanceMatrix.needsUpdate = true;
+  return mesh;
+}
+function makeClouds(contract) {
+  const group = new THREE.Group();
+  const material = new THREE.MeshStandardMaterial({ color: 0xfff7e8, transparent: true, opacity: 0.36, roughness: 1 });
+  contract.clouds.slice(0, 4).forEach((descriptor) => {
+    const cloud = new THREE.Group();
+    for (let i = 0; i < 5; i += 1) {
+      const puff = new THREE.Mesh(new THREE.SphereGeometry(1, 12, 8), material);
+      puff.position.set((i - 2) * 24, Math.sin(i) * 6, Math.cos(i * 1.7) * 14);
+      puff.scale.set((descriptor.scale?.x || 300) / 80, (descriptor.scale?.y || 90) / 80, (descriptor.scale?.z || 230) / 80);
+      cloud.add(puff);
+    }
+    cloud.position.set((descriptor.position?.x || 0) * 0.52, Math.max(135, (descriptor.position?.y || 600) * 0.5), (descriptor.position?.z || 0) * 0.52);
+    cloud.userData = { speed: descriptor.driftSpeed || 0.04, drift: descriptor.drift || { x: 1, z: 0.2 } };
+    group.add(cloud);
+  });
+  return group;
+}
+
+async function main() {
+  const islandState = landformDomain.createOceanIslandLandformState({ id: "cozy-island-001", seed: "cozy-island-domain-cutover", preset: "tropical-small-island", radius: R, maxHeight: 18, beachWidth: 10, shelfWidth: 36, shelfDepth: 110, objectPalette: [], render: { heightfieldResolution: 129, shorelineSegments: 128 } });
+  const landform = landformDomain.createOceanIslandLandformRenderContract(islandState, { heightfield: { resolution: 129 }, shoreline: { segments: 128 }, objects: { densityScale: 0 } });
+  const sampleHeight = (point) => landformDomain.sampleIslandHeight(islandState, { x: point.x, z: point.z });
+  const sampleMasks = (point) => landformDomain.sampleIslandMasks(islandState, { x: point.x, z: point.z });
+  const campfireY = sampleHeight({ x: 0, z: 0 });
+  const clearing = fencedClearingDomain.createFencedClearingGraph({ parentId: "island:cozy-001", position: { x: 0, y: campfireY, z: 0 }, fenceRadiusMeters: 12, campfireRadiusMeters: 2.25, playerYaw: 0 });
+  const anchor = clearing.byId["central-clearing:campfire:player-avatar-anchor"] || {};
+  const anchorPosition = safe(anchor.transform?.position, { x: 0, y: campfireY, z: 6 });
+  const anchorRotation = safe(anchor.transform?.rotation, { x: 0, y: 0, z: 0 });
+  const graph = foliageDomain.createDenseCozyIslandObjectGraph({ seed: "cozy-island-domain-cutover", radiusMeters: R, sampleHeight, sampleMasks });
+  const floorState = oceanFloorDomain.createOceanFloorState({ seed: "cozy-island-ocean-floor", size: 3600, resolution: 53, baseDepth: SEA_FLOOR_Y, islandRadius: R, islandShelfRadius: 145, islandInfluenceRadius: 260, shelfDepth: -16, moundDepth: -42, noiseAmplitude: 9, objects: { seaFloorRocks: 34, seaFloorBoulders: 12, reefClusters: 14, coralClusters: 18 } });
+  const oceanFloor = oceanFloorDomain.createOceanFloorRenderContract(floorState, { heightfield: { resolution: 53 }, objects: {} });
+  const grassWind = grassWindDomain.createGrassWindDescriptor({ id: "central-grove-soft-wind", phaseSeed: "cozy-island-grass", baseSway: 0.16, gustStrength: 0.34 });
+  const campfireGraph = campfireDomain.createCampfireObjectGraph({ parentId: graph.rootId, position: { x: 0, y: campfireY, z: 0 }, radiusMeters: 1.45, intensity: 0.86, smoke: true });
+  const smokeDescriptor = smokeDomain.createSmokeParticleDescriptor({ parentId: campfireGraph.rootId, position: { x: 0, y: campfireY + 1.25, z: 0 }, wind: { ...grassWind, response: 0.78 }, particleCount: 96, riseSpeed: 1.2 });
+  const grassPlacement = grassObjectDomain.createGrassPatchPlacementContract({ seed: "cozy-island-grass", count: 140, radiusMeters: R, sampleHeight, sampleMasks, pathNetwork: graph.pathNetwork, avoidObjects: graph.objects, exclusionZones: clearing.clearanceZones, pathClearance: 3.6, objectClearance: 1.15 });
+  const cloudContract = cloudDomain.createMattatzCloudRenderContract(cloudDomain.createMattatzCloudsState({ seed: "cozy-island-clouds", weather: "sunrise-haze", cloudCount: 4 }), 0);
+
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: "high-performance" });
+  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.5));
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.08;
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0xf3cfa6);
+  scene.fog = new THREE.FogExp2(0xf3cfa6, 0.00072);
+  const camera = new THREE.PerspectiveCamera(58, 1, 0.1, 6800);
+  scene.add(new THREE.HemisphereLight(0xfff7e9, 0x2d5b64, 1.55));
+  const sun = new THREE.DirectionalLight(0xffe1a3, 4.1);
+  sun.position.set(-320, 520, 260);
+  scene.add(sun);
+
+  const waterMesh = makeWater(oceanFloor.waterMaterial);
+  const fire = makeCampfire(campfireGraph);
+  const smoke = makeSmoke(smokeDescriptor);
+  const grass = makeGrass(grassPlacement);
+  const clouds = makeClouds(cloudContract);
+  scene.add(makeOceanFloor(oceanFloor.heightfield), makeSeaObjects(oceanFloor.objects), makeTerrain(landform.heightfield), waterMesh, makeFoam(landform.shoreline), makePath(graph.pathNetwork, sampleHeight), makeObjects(graph, clearing.objectExclusionZones || [{ center: { x: 0, z: 0 }, radius: 11.2 }]), makeFence(clearing), fire, smoke, grass, clouds);
+
+  const keys = new Set();
+  const player = {
+    position: new THREE.Vector3(anchorPosition.x, anchorPosition.y, anchorPosition.z),
+    yaw: anchorRotation.y || 0,
+    pitch: 0,
+    eyeHeight: anchor.state?.eyeHeightMeters || 1.7,
+    forward() { return new THREE.Vector3(-Math.sin(this.yaw), 0, -Math.cos(this.yaw)); },
+    eye() { return new THREE.Vector3(this.position.x, sampleHeight(this.position) + this.eyeHeight, this.position.z); },
+    look() { return new THREE.Vector3(-Math.sin(this.yaw) * Math.cos(this.pitch), Math.sin(this.pitch), -Math.cos(this.yaw) * Math.cos(this.pitch)); }
+  };
+  let scrollProgress = 0;
+  let drag = null;
+  let last = performance.now();
+
+  function resize() { renderer.setSize(innerWidth, innerHeight, false); camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); }
+  resize();
+  addEventListener("resize", resize);
+  addEventListener("keydown", (event) => keys.add(event.code));
+  addEventListener("keyup", (event) => keys.delete(event.code));
+  addEventListener("blur", () => keys.clear());
+  canvas.addEventListener("wheel", (event) => { event.preventDefault(); scrollProgress = clamp01(scrollProgress + event.deltaY * -0.0014); }, { passive: false });
+  canvas.addEventListener("pointerdown", (event) => { drag = { x: event.clientX, y: event.clientY }; canvas.setPointerCapture?.(event.pointerId); });
+  canvas.addEventListener("pointerup", () => { drag = null; });
+  canvas.addEventListener("pointermove", (event) => {
+    if (!drag) return;
+    const dx = event.clientX - drag.x;
+    const dy = event.clientY - drag.y;
+    if (scrollProgress >= 0.985) {
+      player.yaw -= dx * 0.0025;
+      player.pitch = Math.max(-1.1, Math.min(1, player.pitch - dy * 0.0025));
+    } else if (scrollProgress < 0.85) {
+      player.yaw -= dx * 0.0045;
+    }
+    drag = { x: event.clientX, y: event.clientY };
+  });
+
+  function railPose() {
+    const up = new THREE.Vector3(0, 1, 0);
+    const base = player.position.clone();
+    const forward = player.forward();
+    const eye = player.eye();
+    const cameraPoints = [
+      base.clone().sub(forward.clone().multiplyScalar(520)).add(up.clone().multiplyScalar(155)),
+      base.clone().sub(forward.clone().multiplyScalar(260)).add(up.clone().multiplyScalar(105)),
+      base.clone().sub(forward.clone().multiplyScalar(95)).add(up.clone().multiplyScalar(42)),
+      base.clone().sub(forward.clone().multiplyScalar(12)).add(up.clone().multiplyScalar(7)),
+      base.clone().sub(forward.clone().multiplyScalar(3.2)).add(up.clone().multiplyScalar(2.2)),
+      eye.clone()
+    ];
+    const lookPoints = [
+      new THREE.Vector3(0, campfireY + 4.8, 0),
+      new THREE.Vector3(0, campfireY + 2.4, 0),
+      base.clone().add(up.clone().multiplyScalar(1.2)),
+      base.clone().add(up.clone().multiplyScalar(1.65)),
+      eye.clone().add(forward),
+      eye.clone().add(forward)
+    ];
+    return {
+      position: new THREE.CatmullRomCurve3(cameraPoints, false, "catmullrom", 0.35).getPoint(ease(scrollProgress)),
+      look: new THREE.CatmullRomCurve3(lookPoints, false, "catmullrom", 0.35).getPoint(ease(scrollProgress))
+    };
+  }
+  function valid(next) {
+    const max = clearing.byId["central-clearing:campfire:collision-boundary"].state.radiusMeters;
+    return Math.hypot(next.x, next.z) <= max && Math.hypot(next.x, next.z) >= 2.35;
+  }
+  function updateFirstPerson(dt) {
+    const forward = player.forward();
+    const right = new THREE.Vector3(Math.cos(player.yaw), 0, -Math.sin(player.yaw));
+    const move = new THREE.Vector3();
+    if (keys.has("KeyW")) move.add(forward);
+    if (keys.has("KeyS")) move.sub(forward);
+    if (keys.has("KeyD")) move.add(right);
+    if (keys.has("KeyA")) move.sub(right);
+    if (move.lengthSq()) {
+      const next = player.position.clone().add(move.normalize().multiplyScalar(2.6 * dt));
+      next.y = sampleHeight(next);
+      if (valid(next)) player.position.copy(next);
+    }
+    const eye = player.eye();
+    camera.position.copy(eye);
+    camera.lookAt(eye.clone().add(player.look()));
+  }
+  function frame(now) {
+    const dt = Math.min(0.05, (now - last) / 1000);
+    last = now;
+    waterMesh.position.y = -0.08 + Math.sin(now * 0.0012) * 0.18;
+    if (scrollProgress >= 0.985) updateFirstPerson(dt);
+    else { const pose = railPose(); camera.position.copy(pose.position); camera.lookAt(pose.look); }
+    updateSmoke(smoke, dt, now);
+    fire.userData.flames?.forEach((flame, index) => flame.scale.setScalar(1 + Math.sin(now * 0.011 + index) * 0.1));
+    if (fire.userData.light) fire.userData.light.intensity = 1.55 + Math.sin(now * 0.01) * 0.35;
+    clouds.children.forEach((cloud) => { cloud.position.x += (cloud.userData.drift?.x || 1) * cloud.userData.speed * dt * 18; cloud.position.z += (cloud.userData.drift?.z || 0) * cloud.userData.speed * dt * 18; });
+    hud.innerHTML = `<strong>Cozy Island</strong><br>scroll = sky → invisible player eyes · WASD/drag in human view<br>${scrollProgress >= 0.985 ? "first-person" : "scroll-rail"} · ${(scrollProgress * 100).toFixed(0)}% · grass ${grassPlacement.patchCount} · clouds ${clouds.children.length}`;
+    renderer.render(scene, camera);
+    requestAnimationFrame(frame);
+  }
+  globalThis.CozyIsland = { landform, graph, clearing, grassPlacement, smokeDescriptor, cloudContract, getScrollProgress: () => scrollProgress };
+  requestAnimationFrame(frame);
+}
+
 main().catch(fail);
