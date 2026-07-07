@@ -1,2 +1,2 @@
-import '../app.js?v=camera-pivot-utility-rewrite';
+import '../app.js?v=bones-only-colliders-v1';
 export {};
