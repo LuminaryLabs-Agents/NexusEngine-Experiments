@@ -1,12 +1,22 @@
 export function createOnnxLocalModelKit() {
+  const DEFAULT_SOURCE_BASE_URL = "https://huggingface.co/onnx-community/Qwen2.5-1.5B-Instruct/resolve/main";
+
   const config = {
-    modelName: "Qwen2.5 2B Instruct",
+    modelName: "Qwen2.5 1.5B Instruct",
+    modelId: "onnx-community/Qwen2.5-1.5B-Instruct",
     format: "ONNX",
-    quantization: "2-bit",
+    quantization: "Q4F16",
     runtime: "ONNX Runtime Web",
-    cacheName: "workshop-qwen25-2b-onnx-cache-v1",
-    sourceBaseUrl: localStorage.getItem("workshop.model.sourceBaseUrl") || "",
-    files: ["model.onnx", "tokenizer.json", "tokenizer_config.json", "generation_config.json", "special_tokens_map.json"],
+    cacheName: "workshop-qwen25-15b-onnx-q4f16-cache-v1",
+    sourceBaseUrl: localStorage.getItem("workshop.model.sourceBaseUrl") || DEFAULT_SOURCE_BASE_URL,
+    modelFile: "onnx/model_q4f16.onnx",
+    files: [
+      "onnx/model_q4f16.onnx",
+      "tokenizer.json",
+      "tokenizer_config.json",
+      "generation_config.json",
+      "special_tokens_map.json"
+    ],
     ortScriptUrl: "https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js"
   };
 
@@ -54,9 +64,17 @@ export function createOnnxLocalModelKit() {
   }
 
   function setModelSource({ sourceBaseUrl = "", manifestUrl = "" } = {}) {
-    config.sourceBaseUrl = (sourceBaseUrl || manifestUrl || "").trim();
+    config.sourceBaseUrl = (sourceBaseUrl || manifestUrl || DEFAULT_SOURCE_BASE_URL).trim();
     localStorage.setItem("workshop.model.sourceBaseUrl", config.sourceBaseUrl);
-    state.message = config.sourceBaseUrl ? "Model source saved." : "Model source cleared.";
+    state.message = "Model source saved.";
+    emit();
+    return getState();
+  }
+
+  function resetModelSource() {
+    config.sourceBaseUrl = DEFAULT_SOURCE_BASE_URL;
+    localStorage.setItem("workshop.model.sourceBaseUrl", config.sourceBaseUrl);
+    state.message = "Model source reset to the default Hugging Face ONNX repo.";
     emit();
     return getState();
   }
@@ -126,10 +144,10 @@ export function createOnnxLocalModelKit() {
 
     const providers = state.canUseWebGPU ? ["webgpu", "wasm"] : ["wasm"];
     try {
-      session = await globalThis.ort.InferenceSession.create(modelUrl("model.onnx"), { executionProviders: providers });
+      session = await globalThis.ort.InferenceSession.create(modelUrl(config.modelFile), { executionProviders: providers });
       state.sessionReady = true;
       state.status = "ready";
-      state.message = "ONNX session is ready. Object chat will use fallback responses until the generation loop is connected to the model outputs.";
+      state.message = "ONNX session is ready. Workshop harness and object chat can now route through the local runtime when generation is wired.";
       localStorage.setItem("workshop.model.status", state.status);
       emit();
       return true;
@@ -137,7 +155,7 @@ export function createOnnxLocalModelKit() {
       session = null;
       state.sessionReady = false;
       state.status = "cached";
-      state.message = "Model files are cached. Session creation needs a browser-compatible ONNX graph at the configured source.";
+      state.message = "Model files are cached. Session creation needs a browser-compatible ONNX graph and enough device memory.";
       state.lastError = error?.message || String(error);
       localStorage.setItem("workshop.model.status", state.status);
       emit();
@@ -147,14 +165,6 @@ export function createOnnxLocalModelKit() {
 
   async function install() {
     await checkCapabilities();
-
-    if (!config.sourceBaseUrl) {
-      state.status = "needs-source";
-      state.message = "Add a hosted model source URL before installing.";
-      localStorage.setItem("workshop.model.status", state.status);
-      emit();
-      return getState();
-    }
 
     try {
       state.status = "downloading";
@@ -246,12 +256,14 @@ export function createOnnxLocalModelKit() {
     return {
       ...state,
       modelName: config.modelName,
+      modelId: config.modelId,
       format: config.format,
       quantization: config.quantization,
       runtime: config.runtime,
       cacheName: config.cacheName,
       sourceBaseUrl: config.sourceBaseUrl,
       manifestUrl: config.sourceBaseUrl,
+      modelFile: config.modelFile,
       files: [...config.files]
     };
   }
@@ -265,6 +277,7 @@ export function createOnnxLocalModelKit() {
     subscribe,
     checkCapabilities,
     setModelSource,
+    resetModelSource,
     install,
     unload,
     clearCache,
