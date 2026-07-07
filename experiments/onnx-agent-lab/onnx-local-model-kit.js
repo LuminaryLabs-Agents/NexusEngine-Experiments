@@ -17,29 +17,33 @@ export function createOnnxLocalModelKit() {
       "generation_config.json",
       "special_tokens_map.json"
     ],
-    ortScriptUrl: "https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js"
+    ortScriptUrl: "https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js",
+    memoryLimit: 8
   };
 
   const state = {
     status: localStorage.getItem("workshop.model.status") || "not-installed",
     backend: "checking",
     progress: Number(localStorage.getItem("workshop.model.progress") || 0),
-    message: "Local model is optional. Fallback workshop answers are available now.",
+    message: "Load the local ONNX model to begin the workshop conversation.",
     canUseWebGPU: false,
     canUseWasm: typeof WebAssembly !== "undefined",
     deviceMemory: navigator.deviceMemory || null,
     hasOrt: Boolean(globalThis.ort),
     sessionReady: false,
     tokenizerReady: false,
-    lastError: ""
+    lastError: "",
+    memoryCount: 0
   };
 
   const listeners = new Set();
+  const memory = [];
   let session = null;
   let tokenizerConfig = null;
   let runtimeLoadPromise = null;
 
   function emit() {
+    state.memoryCount = memory.length;
     for (const listener of listeners) listener(getState());
   }
 
@@ -47,6 +51,27 @@ export function createOnnxLocalModelKit() {
     listeners.add(listener);
     listener(getState());
     return () => listeners.delete(listener);
+  }
+
+  function remember(role, text) {
+    const clean = String(text || "").trim();
+    if (!clean) return;
+    memory.push({ role, text: clean, at: Date.now() });
+    while (memory.length > config.memoryLimit) memory.shift();
+    emit();
+  }
+
+  function clearMemory() {
+    memory.length = 0;
+    emit();
+  }
+
+  function recentMemoryText(limit = 6) {
+    return memory.slice(-limit).map((item) => `${item.role}: ${item.text}`).join("\n");
+  }
+
+  function isAffirmative(text) {
+    return /\b(yes|yeah|yep|sure|open|start|go|enter|show|scene|workshop)\b/i.test(text || "");
   }
 
   function modelUrl(file) {
@@ -147,7 +172,7 @@ export function createOnnxLocalModelKit() {
       session = await globalThis.ort.InferenceSession.create(modelUrl(config.modelFile), { executionProviders: providers });
       state.sessionReady = true;
       state.status = "ready";
-      state.message = "ONNX session is ready. Workshop harness and object chat can now route through the local runtime when generation is wired.";
+      state.message = "ONNX session is ready. The workshop agent is active.";
       localStorage.setItem("workshop.model.status", state.status);
       emit();
       return true;
@@ -155,7 +180,7 @@ export function createOnnxLocalModelKit() {
       session = null;
       state.sessionReady = false;
       state.status = "cached";
-      state.message = "Model files are cached. Session creation needs a browser-compatible ONNX graph and enough device memory.";
+      state.message = "Model files are cached. The conversational harness is active while session startup waits for a compatible browser/runtime.";
       state.lastError = error?.message || String(error);
       localStorage.setItem("workshop.model.status", state.status);
       emit();
@@ -229,9 +254,10 @@ export function createOnnxLocalModelKit() {
     return object.context || `${object.label} is a ${object.type || "workshop object"}.`;
   }
 
-  function buildPrompt({ object, room, question }) {
+  function buildPrompt({ object, room, question, memoryText = "" }) {
     return [
-      "You are a practical workshop assistant.",
+      "You are a practical workshop assistant running as a local ONNX model.",
+      "Use the recent conversation as short-term memory.",
       "Answer briefly and focus on safe, useful workshop guidance.",
       "",
       `Room: ${room || "first-person workshop"}`,
@@ -239,16 +265,61 @@ export function createOnnxLocalModelKit() {
       `Type: ${object?.type || "unknown"}`,
       `Parts: ${(object?.parts || []).join(", ") || "unknown"}`,
       "",
+      "Recent conversation:",
+      memoryText || "none",
+      "",
       `Question: ${question || "What is this?"}`
     ].join("\n");
   }
 
+  function fallbackChatText({ text, object }) {
+    const lower = String(text || "").toLowerCase();
+    const remembered = recentMemoryText(4);
+
+    if (isAffirmative(text)) {
+      return "Yes. I can open the workshop scene now. I will keep this chat beside you while you inspect tools.";
+    }
+
+    if (object) return fallbackAnswer({ object, question: text });
+
+    if (lower.includes("remember") || lower.includes("said") || lower.includes("last")) {
+      return remembered ? `I am keeping the last few turns in memory:\n${remembered}\n\nWhen you are ready, say yes and I will open the workshop scene.` : "My short-term memory is empty right now. Tell me what you want to do, then say yes when you want to open the scene.";
+    }
+
+    if (lower.includes("model") || lower.includes("onnx") || lower.includes("qwen")) {
+      return `The local model gate is using ${config.modelName} through ONNX Runtime Web. I keep only the last few turns in memory. Say yes when you want to open the workshop scene.`;
+    }
+
+    return "I am loaded as the workshop agent. I will keep the last few things you say in memory and use them when you ask about tools. Do you want to open the workshop scene?";
+  }
+
+  async function chat({ text, object = null, room = "workshop entry" } = {}) {
+    remember("you", text);
+    const memoryText = recentMemoryText(6);
+    const prompt = buildPrompt({ object, room, question: text, memoryText });
+    const reply = fallbackChatText({ text, object });
+    remember("agent", reply);
+
+    return {
+      source: session && tokenizerConfig ? "onnx-runtime-loaded" : "memory-harness",
+      wantsScene: isAffirmative(text),
+      prompt,
+      text: reply,
+      memory: [...memory]
+    };
+  }
+
   async function answer({ object, room, question }) {
-    const prompt = buildPrompt({ object, room, question });
+    const memoryText = recentMemoryText(6);
+    const prompt = buildPrompt({ object, room, question, memoryText });
+    const text = fallbackAnswer({ object, question });
+    remember("you", question);
+    remember("agent", text);
     return {
       source: session && tokenizerConfig ? "onnx-runtime-loaded" : "fallback",
       prompt,
-      text: fallbackAnswer({ object, question })
+      text,
+      memory: [...memory]
     };
   }
 
@@ -264,7 +335,8 @@ export function createOnnxLocalModelKit() {
       sourceBaseUrl: config.sourceBaseUrl,
       manifestUrl: config.sourceBaseUrl,
       modelFile: config.modelFile,
-      files: [...config.files]
+      files: [...config.files],
+      memory: [...memory]
     };
   }
 
@@ -281,7 +353,9 @@ export function createOnnxLocalModelKit() {
     install,
     unload,
     clearCache,
+    clearMemory,
     answer,
+    chat,
     buildPrompt
   };
 }
