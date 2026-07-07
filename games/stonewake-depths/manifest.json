@@ -5,8 +5,9 @@
   "kind": "game",
   "visual": "stonewake",
   "playLabel": "Play game",
-  "tags": ["cave survival", "acoustic stealth", "physical puzzle", "reactive particles"],
+  "tags": ["cave survival", "acoustic stealth", "physical puzzle", "reactive particles", "generated level"],
   "kitStack": [
+    "layered-drunk-walk-level-generation-kit",
     "acoustic-signal-domain-kit",
     "weighted-trigger-domain-kit",
     "condition-gate-domain-kit",
@@ -29,5 +30,5 @@
     "gpu-ambient-cave-dust-kit",
     "gpu-foam-line-kit"
   ],
-  "description": "High-fidelity canvas cave platformer slice where acoustic stealth, weighted triggers, condition gates, lightweight physics, projectiles, sensory agents, brighter readable routes, and reactive shader-style particles work together."
+  "description": "High-fidelity canvas cave platformer slice now generated from bounds and target counts through a layered drunk-walk level generator, with acoustic stealth, weighted triggers, condition gates, physics, projectiles, sensory agents, and reactive shader-style particles."
 }
