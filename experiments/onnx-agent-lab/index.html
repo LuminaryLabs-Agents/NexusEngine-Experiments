@@ -3,288 +3,47 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>ONNX Context Interior</title>
+  <title>Workshop Assistant</title>
   <style>
-    :root{color-scheme:dark;--gold:#ffe18a;--cyan:#83dcff;--green:#9fffc8;--red:#ff8e7d;--panel:rgba(9,11,13,.58);--line:rgba(255,255,255,.13)}
-    *{box-sizing:border-box}
-    html,body{margin:0;height:100%;overflow:hidden;background:#090908;color:#f4ead0;font-family:Inter,ui-sans-serif,system-ui,sans-serif}
-    #app,#view{position:fixed;inset:0}
-    #view{display:block;cursor:crosshair}
-    .hud{position:fixed;left:14px;right:14px;top:12px;display:flex;justify-content:space-between;gap:12px;pointer-events:none}
-    .card{border:1px solid var(--line);border-radius:16px;background:var(--panel);box-shadow:0 18px 80px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.06);backdrop-filter:blur(14px);padding:10px 12px}
-    .brand strong{display:block;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;font-size:.78rem}
-    .brand span,.status{display:block;color:#c7beb0;font-size:.78rem;margin-top:4px}
-    .answer{position:fixed;right:16px;bottom:16px;width:min(420px,42vw);max-height:32vh;overflow:auto;pointer-events:none}
-    .answer h2{margin:0 0 6px;color:var(--gold);font-size:.78rem;text-transform:uppercase;letter-spacing:.1em}
-    .answer p{margin:.35rem 0 0;color:#fff3dd;line-height:1.38;font-size:.92rem}
-    .answer[hidden]{display:none}
-    .prompt{position:fixed;left:50%;top:50%;width:8px;height:8px;margin:-4px 0 0 -4px;border:1px solid rgba(255,225,138,.9);border-radius:50%;box-shadow:0 0 12px rgba(255,225,138,.4);pointer-events:none}
-    .err{position:fixed;left:16px;right:16px;bottom:16px;white-space:pre-wrap;color:#ffd8d2;background:#3b0d09;border:1px solid var(--red);border-radius:14px;padding:12px;font-size:12px;z-index:5}
-    .err[hidden]{display:none}
-    @media(max-width:760px){.hud{flex-direction:column}.answer{left:16px;right:16px;width:auto}.status{text-align:left}}
+    :root{color-scheme:dark;--gold:#ffe18a;--panel:rgba(9,11,13,.64);--line:rgba(255,255,255,.13)}
+    *{box-sizing:border-box}html,body{margin:0;height:100%;overflow:hidden;background:#090908;color:#f4ead0;font-family:Inter,system-ui,sans-serif}#view{position:fixed;inset:0;display:block;cursor:crosshair}.hud{position:fixed;left:14px;top:12px;z-index:8;pointer-events:none}.card{border:1px solid var(--line);border-radius:16px;background:var(--panel);box-shadow:0 18px 80px rgba(0,0,0,.34);backdrop-filter:blur(14px);padding:10px 12px}.hud strong{display:block;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;font-size:.78rem}.hud span{display:block;color:#c7beb0;font-size:.78rem;margin-top:4px}.dot{position:fixed;left:50%;top:50%;width:8px;height:8px;margin:-4px;border:1px solid rgba(255,225,138,.9);border-radius:50%;box-shadow:0 0 12px rgba(255,225,138,.4);pointer-events:none}.chat{position:fixed;right:16px;bottom:16px;width:min(430px,calc(100vw - 32px));max-height:min(520px,70vh);display:none;grid-template-rows:auto 1fr auto;gap:10px;z-index:10}.chat[data-open="true"]{display:grid}.chat h2{margin:0;color:var(--gold);font-size:.8rem;text-transform:uppercase;letter-spacing:.1em}.meta{color:#c7beb0;font-size:.78rem;margin-top:4px}.log{overflow:auto;display:grid;gap:8px;max-height:300px}.msg{border:1px solid rgba(255,255,255,.1);border-radius:13px;padding:9px 10px;line-height:1.36;font-size:.9rem}.user{background:rgba(131,220,255,.08)}.assistant{background:rgba(255,225,138,.08)}.quick{display:flex;flex-wrap:wrap;gap:7px}.quick button{border:1px solid rgba(255,255,255,.12);border-radius:999px;background:rgba(255,255,255,.06);color:#f7eddd;padding:7px 9px;font-size:.78rem;cursor:pointer}.form{display:grid;grid-template-columns:1fr auto auto;gap:8px}.form input{min-width:0;border:1px solid rgba(255,255,255,.14);border-radius:12px;background:rgba(0,0,0,.24);color:white;padding:10px;font:inherit}.form button{border:1px solid rgba(255,225,138,.34);border-radius:12px;background:rgba(255,225,138,.13);color:#ffe18a;font-weight:900;cursor:pointer;padding:10px 12px}.err{position:fixed;left:16px;right:16px;bottom:16px;white-space:pre-wrap;color:#ffd8d2;background:#3b0d09;border:1px solid #ff8e7d;border-radius:14px;padding:12px;font-size:12px;z-index:30}.err[hidden]{display:none}@media(max-width:760px){.chat{left:16px;right:16px;width:auto}.form{grid-template-columns:1fr}.form button{width:100%}}
   </style>
 </head>
 <body>
-  <main id="app" aria-label="ONNX Context Interior">
-    <canvas id="view"></canvas>
-    <div class="prompt" aria-hidden="true"></div>
-    <header class="hud">
-      <div class="card brand">
-        <strong>ONNX Context Interior</strong>
-        <span>First-person interior. Click or press E on objects for context.</span>
-      </div>
-      <div class="card status" id="statusText">WASD move · mouse look · E inspect · Shift sprint</div>
-    </header>
-    <section class="answer card" id="answerCard" hidden>
-      <h2 id="answerTitle">Context</h2>
-      <p id="answerText"></p>
-    </section>
-    <section class="err" id="error" role="alert" hidden></section>
-  </main>
+  <canvas id="view"></canvas><div class="dot"></div>
+  <header class="hud card"><strong>Workshop Assistant</strong><span>WASD move. Click a tool to inspect. E inspect. Settings installs the optional local model.</span></header>
+  <section class="chat card" id="chat" data-open="false"><header><h2 id="title">Object chat</h2><div class="meta" id="meta">Select a workshop object.</div></header><div class="log" id="log"></div><div><div class="quick" id="quick"><button data-q="What is this?">What is this?</button><button data-q="How do I use it?">How do I use it?</button><button data-q="What safety issue should I know?">Safety</button><button data-q="What other tools does it work with?">Works with?</button></div><form class="form" id="form"><input id="input" placeholder="Ask about the selected object..." autocomplete="off"/><button>Ask</button><button type="button" id="returnBtn">Return</button></form></div></section>
+  <section class="err" id="error" hidden></section>
   <script type="module">
     import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
-    import { createOnnxWorkshopThreeJsKits } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusRealtime-ProtoKits@d8b353bd4a5922f863b56d3de6f365b8d792c427/protokits/onnx-workshop-threejs-kits/index.js";
     import { createBuildingInteriorKit } from "./building-interior-kit.js";
+    import { createWorkshopObjectKit } from "./workshop-object-kit.js";
+    import { createObjectFocusKit } from "./object-focus-kit.js";
+    import { createOnnxLocalModelKit } from "./onnx-local-model-kit.js";
+    import { createLocalModelSettingsKit } from "./local-model-settings-kit.js";
 
-    const canvas=document.querySelector("#view");
-    const statusText=document.querySelector("#statusText");
-    const answerCard=document.querySelector("#answerCard");
-    const answerTitle=document.querySelector("#answerTitle");
-    const answerText=document.querySelector("#answerText");
-    const errorPanel=document.querySelector("#error");
+    const canvas=document.querySelector("#view"),errorPanel=document.querySelector("#error"),chat=document.querySelector("#chat"),title=document.querySelector("#title"),meta=document.querySelector("#meta"),log=document.querySelector("#log"),form=document.querySelector("#form"),input=document.querySelector("#input"),quick=document.querySelector("#quick"),returnBtn=document.querySelector("#returnBtn");
+    const clock=new THREE.Clock(),keys=new Set();
+    let scene,camera,renderer,raycaster,room,workshop,workshopState,focus,model,yaw=0,pitch=0,look=false,hovered=null;
 
-    const clock=new THREE.Clock();
-    let engine,world,kits,scene,camera,renderer,raycaster,mouse,buildingInterior,interiorState;
-    let yaw=0,pitch=0,lookActive=false,selected=null,hovered=null;
-    const keyState=new Set(), objectMeshes=new Map(), contextMeshes=new Map();
-
-    function showError(error){errorPanel.hidden=false;errorPanel.textContent=String(error?.stack||error?.message||error)}
-    function setStatus(value){statusText.textContent=value}
-    function nexusStub(){return{defineResource(name){return{kind:"resource",name}},defineEvent(name){return{kind:"event",name}},defineRuntimeKit(definition){return definition}}}
-    function install(k){const resources=new Map(),events=[];world={__nexusClock:{frame:0,elapsed:0,delta:1/60},getResource(r){return resources.get(r)},setResource(r,v){resources.set(r,v)},emit(e,p){events.push({event:e.name,payload:p})},readEvents(e){return events.filter(x=>x.event===e.name).map(x=>x.payload)}};engine={};for(const kit of k)kit.initWorld?.({world,engine});for(const kit of k)kit.install?.({world,engine});return{world,engine,events}}
-
-    function mat(color, opts={}){return new THREE.MeshStandardMaterial({color,roughness:opts.roughness??.5,metalness:opts.metalness??.07,transparent:opts.transparent??false,opacity:opts.opacity??1,emissive:opts.emissive??0x000000,emissiveIntensity:opts.emissiveIntensity??0});}
-    const materials={
-      wood:mat(0x8b5e34,{roughness:.72}),
-      darkWood:mat(0x322012,{roughness:.84}),
-      wall:mat(0x6f6250,{roughness:.82}),
-      partition:mat(0x4d473d,{roughness:.78}),
-      floor:mat(0x2f281d,{roughness:.86}),
-      floorTrim:mat(0x4a3822,{roughness:.82}),
-      trim:mat(0xae8d5a,{roughness:.6}),
-      metal:mat(0xa7b1b8,{metalness:.65,roughness:.28}),
-      brass:mat(0xffd36e,{metalness:.55,roughness:.25}),
-      glass:mat(0x92ddff,{transparent:true,opacity:.34,roughness:.05,metalness:.1,emissive:0x1d5875,emissiveIntensity:.16}),
-      rubber:mat(0x171b20,{roughness:.8}),
-      paper:mat(0xf4ead0,{roughness:.75}),
-      greenGlow:mat(0x94ffc3,{emissive:0x1eff9b,emissiveIntensity:.9}),
-      blueGlow:mat(0x82dcff,{emissive:0x28a6ff,emissiveIntensity:.78}),
-      goldGlow:mat(0xffe18a,{emissive:0xffb000,emissiveIntensity:.85}),
-      redGlow:mat(0xff8e7d,{emissive:0xff311f,emissiveIntensity:.9})
-    };
-
-    function geometryFrom(vertices, indices){const g=new THREE.BufferGeometry();g.setAttribute("position",new THREE.Float32BufferAttribute(vertices.flat(),3));g.setIndex(indices);g.computeVertexNormals();return g}
-    function boxGeo(w=1,h=1,d=1){const x=w/2,y=h/2,z=d/2;return geometryFrom([[-x,-y,-z],[x,-y,-z],[x,y,-z],[-x,y,-z],[-x,-y,z],[x,-y,z],[x,y,z],[-x,y,z]],[0,2,1,0,3,2,4,5,6,4,6,7,0,1,5,0,5,4,1,2,6,1,6,5,2,3,7,2,7,6,3,0,4,3,4,7])}
-    function tubeGeo(length=1,radius=.05,radial=14,segments=5){const v=[],idx=[];for(let i=0;i<=segments;i++){const x=-length/2+length*i/segments;for(let j=0;j<radial;j++){const a=Math.PI*2*j/radial;v.push([x,Math.cos(a)*radius,Math.sin(a)*radius])}}for(let i=0;i<segments;i++)for(let j=0;j<radial;j++){const a=i*radial+j,b=i*radial+(j+1)%radial,c=(i+1)*radial+j,d=(i+1)*radial+(j+1)%radial;idx.push(a,c,b,b,c,d)}return geometryFrom(v,idx)}
-    function helixGeo(turns=6,r=.16,pitch=.055,width=.035,segments=120){const v=[],idx=[];for(let i=0;i<=segments;i++){const t=Math.PI*2*turns*i/segments;v.push([Math.cos(t)*r,pitch*t/(Math.PI*2),Math.sin(t)*r],[Math.cos(t)*(r+width),pitch*t/(Math.PI*2),Math.sin(t)*(r+width)])}for(let i=0;i<segments;i++){const a=i*2,b=a+1,c=a+2,d=a+3;idx.push(a,c,b,b,c,d)}return geometryFrom(v,idx)}
-    function gearGeo(teeth=18,root=.24,outer=.34,width=.08){const rings=teeth*2,v=[],idx=[];for(const y of[-width/2,width/2])for(let i=0;i<rings;i++){const rr=i%2?outer:root,a=Math.PI*2*i/rings;v.push([Math.cos(a)*rr,y,Math.sin(a)*rr])}for(let i=0;i<rings;i++){const n=(i+1)%rings,a=i,b=n,c=rings+i,d=rings+n;idx.push(a,c,b,b,c,d)}return geometryFrom(v,idx)}
-    function planeGeo(w=1,h=1){const x=w/2,y=h/2;return geometryFrom([[-x,-y,0],[x,-y,0],[x,y,0],[-x,y,0]],[0,1,2,0,2,3])}
-    function toV(v){return new THREE.Vector3(v?.x??0,v?.y??0,v?.z??0)}
-    function addMesh(parent,geo,material,pos={},rot={},scale={x:1,y:1,z:1}){const m=new THREE.Mesh(geo,material);m.position.set(pos.x??0,pos.y??0,pos.z??0);m.rotation.set(rot.x??0,rot.y??0,rot.z??0);m.scale.set(scale.x??1,scale.y??1,scale.z??1);m.castShadow=true;m.receiveShadow=true;parent.add(m);return m}
-
-    function groupAt(desc){const g=new THREE.Group();g.position.copy(toV(desc.transform.position));g.rotation.set(desc.transform.rotation.x,desc.transform.rotation.y,desc.transform.rotation.z);g.scale.copy(toV(desc.transform.scale));g.userData.workshopObjectId=desc.id;return g}
-
-    function makeObject(desc){
-      const g=groupAt(desc),type=desc.type;
-      if(type==="hammer"){addMesh(g,tubeGeo(.78,.045),materials.wood,{x:-.08},{z:.1});addMesh(g,boxGeo(.28,.16,.16),materials.metal,{x:.28});addMesh(g,boxGeo(.09,.22,.18),materials.metal,{x:.43});}
-      else if(type==="screwdriver"){addMesh(g,tubeGeo(.62,.03),materials.metal,{x:.12});addMesh(g,tubeGeo(.28,.075),materials.rubber,{x:-.36});addMesh(g,boxGeo(.08,.018,.018),materials.metal,{x:.48});}
-      else if(type==="screw"){addMesh(g,tubeGeo(.38,.035),materials.metal,{x:0},{z:Math.PI/2});const h=new THREE.Mesh(helixGeo(7,.04,.018,.018,100),materials.brass);h.rotation.z=Math.PI/2;h.position.x=-.19;g.add(h);}
-      else if(type==="wrench"){addMesh(g,tubeGeo(.55,.035),materials.metal,{x:0});addMesh(g,gearGeo(10,.09,.16,.045),materials.metal,{x:.34},{z:Math.PI/2});addMesh(g,boxGeo(.18,.06,.045),materials.metal,{x:-.34});}
-      else if(type==="lever"){addMesh(g,boxGeo(.9,.06,.08),materials.wood);addMesh(g,boxGeo(.12,.2,.16),materials.brass,{y:-.12});}
-      else if(type==="spring"){const s=new THREE.Mesh(helixGeo(8,.15,.045,.022,160),materials.blueGlow);s.rotation.z=Math.PI/2;g.add(s);}
-      else if(type==="pulley"){addMesh(g,gearGeo(24,.2,.32,.12),materials.metal,{},{z:Math.PI/2});addMesh(g,tubeGeo(.42,.018),materials.rubber,{y:-.33},{z:Math.PI/2});}
-      else if(type==="mass-block"||type==="goal-block"){addMesh(g,boxGeo(.42,.28,.32),type==="goal-block"?materials.brass:materials.metal);}
-      else if(type==="force-gauge"){addMesh(g,boxGeo(.38,.38,.08),materials.paper);addMesh(g,tubeGeo(.28,.01),materials.redGlow,{},{z:.85});}
-      else if(type==="prompt-card"){addMesh(g,boxGeo(.46,.3,.025),materials.paper);}
-      else if(type==="output-tray"){addMesh(g,boxGeo(.7,.08,.42),materials.darkWood);addMesh(g,boxGeo(.64,.02,.36),materials.paper,{y:.06});}
-      else if(type==="onnx-core"){addMesh(g,boxGeo(.55,.38,.42),materials.glass);addMesh(g,gearGeo(18,.16,.25,.08),materials.blueGlow,{y:.04},{x:Math.PI/2});}
-      else addMesh(g,boxGeo(.3,.3,.3),materials.wood);
-      g.traverse(o=>{if(o.isMesh)o.userData.workshopObjectId=desc.id});
-      scene.add(g);
-      objectMeshes.set(desc.id,g);
-      return g;
-    }
-
-    function syncObjects(){
-      const descriptors=engine.onnxWorkshopScene.getDescriptors();
-      for(const desc of descriptors){
-        let g=objectMeshes.get(desc.id);
-        if(!g)g=makeObject(desc);
-        g.position.copy(toV(desc.transform.position));
-        g.rotation.set(desc.transform.rotation.x,desc.transform.rotation.y,desc.transform.rotation.z);
-        g.scale.copy(toV(desc.transform.scale));
-        const active=desc.id===hovered||desc.id===selected;
-        g.traverse(o=>{if(o.isMesh){o.material=o.material.clone();if(active){o.material.emissive?.setHex?.(0x4c3912);o.material.emissiveIntensity=.18}}});
-      }
-    }
-
-    function collectContextMeshes(){
-      contextMeshes.clear();
-      for(const mesh of interiorState.propMeshes){
-        mesh.traverse((node)=>{if(node.isMesh&&node.userData.contextObjectId)contextMeshes.set(node.uuid,node)});
-      }
-    }
-
-    function objectFromHit(target){
-      while(target.parent && !target.userData.workshopObjectId && !target.userData.contextObject) target=target.parent;
-      if(target.userData.contextObject) return { id: target.userData.contextObjectId, label: target.userData.contextObject.label, context: target.userData.contextObject.context, source: "interior" };
-      if(target.userData.workshopObjectId){
-        const obj=engine.onnxWorkshopScene.getObject(target.userData.workshopObjectId);
-        return { id: target.userData.workshopObjectId, label: obj?.label??"ONNX object", context: contextualWorkshopAnswer(obj), source: "workshop" };
-      }
-      return null;
-    }
-
-    function raycastInspectable(){
-      raycaster.setFromCamera({x:0,y:0},camera);
-      const inspectables=[...Array.from(objectMeshes.values()),...interiorState.propMeshes];
-      const hits=raycaster.intersectObjects(inspectables,true);
-      if(!hits.length) return null;
-      return objectFromHit(hits[0].object);
-    }
-
-    function contextualWorkshopAnswer(obj){
-      if(!obj) return buildingInterior.getContextAnswer({cameraPosition:camera.position});
-      const type=obj.type||"object";
-      if(type==="onnx-core") return "This ONNX core object marks the compiled graph boundary. Use it as the mental anchor for model inputs, outputs, and runtime execution.";
-      if(type==="prompt-card") return "This prompt card represents the user-facing context request. In this scene it is not a visible agent log; it is just the clean question layer.";
-      if(type==="output-tray") return "This output tray represents generated answers leaving the model/runtime path after the graph has enough context.";
-      if(type==="spring") return "This spring is a physical metaphor for stiffness and response curves. It can map to force, animation, or constraint parameters.";
-      if(type==="pulley") return "This pulley represents transformation and routing. In an ONNX workflow, that maps to moving data between compatible stages.";
-      if(type==="force-gauge") return "This gauge represents observable values. It is useful for explaining model output, scene state, or runtime metrics without showing raw logs.";
-      return `${obj.label} is a physical object in the interior. The contextual assistant can explain what it means for ONNX graph composition and runtime interaction.`;
-    }
-
-    function showContext(target){
-      selected=target?.id??null;
-      const text=target?.context || buildingInterior.getContextAnswer({selectedObject:target,cameraPosition:camera.position});
-      answerTitle.textContent=target?.label || "Room Context";
-      answerText.textContent=text;
-      answerCard.hidden=false;
-      setStatus(target?.label ? `Context: ${target.label}` : buildingInterior.describeRoom(camera.position));
-    }
-
-    function inspectCenter(){
-      const target=raycastInspectable();
-      showContext(target);
-    }
-
-    function onPointerDown(){
-      canvas.requestPointerLock?.();
-      lookActive=true;
-      inspectCenter();
-    }
-
-    function onPointerMove(event){
-      if(!lookActive && document.pointerLockElement!==canvas)return;
-      yaw-=event.movementX*.0023;
-      pitch=Math.max(-1.05,Math.min(1.05,pitch-event.movementY*.002));
-    }
-
-    function updateHover(){
-      const target=raycastInspectable();
-      hovered=target?.id??null;
-    }
-
-    function updateCamera(dt){
-      const previous=camera.position.clone();
-      const forward=new THREE.Vector3(-Math.sin(yaw),0,-Math.cos(yaw));
-      const backward=forward.clone().multiplyScalar(-1);
-      const right=new THREE.Vector3(Math.cos(yaw),0,-Math.sin(yaw));
-      let move=new THREE.Vector3();
-      if(keyState.has("KeyW"))move.add(forward);
-      if(keyState.has("KeyS"))move.add(backward);
-      if(keyState.has("KeyA"))move.add(right.clone().multiplyScalar(-1));
-      if(keyState.has("KeyD"))move.add(right);
-      if(move.lengthSq()>0){
-        const speed=keyState.has("ShiftLeft")||keyState.has("ShiftRight") ? 3.4 : 2.25;
-        move.normalize().multiplyScalar(dt*speed);
-        camera.position.add(move);
-        buildingInterior.constrainPlayer(camera.position,previous);
-      }
-      camera.rotation.set(pitch,yaw,0,"YXZ");
-    }
-
-    function build(){
-      scene=new THREE.Scene();
-      camera=new THREE.PerspectiveCamera(68,innerWidth/innerHeight,.05,90);
-      camera.position.set(0,1.58,3.65);
-      renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:false,powerPreference:"high-performance"});
-      renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));
-      renderer.setSize(innerWidth,innerHeight);
-      renderer.shadowMap.enabled=true;
-      renderer.shadowMap.type=THREE.PCFSoftShadowMap;
-      renderer.outputColorSpace=THREE.SRGBColorSpace;
-      raycaster=new THREE.Raycaster();
-      raycaster.far=4.2;
-      mouse=new THREE.Vector2();
-      buildingInterior=createBuildingInteriorKit(THREE,{addMesh,boxGeo,tubeGeo,gearGeo,helixGeo,planeGeo,materials});
-      interiorState=buildingInterior.build(scene);
-      collectContextMeshes();
-      syncObjects();
-      showContext(null);
-    }
-
-    function animate(){
-      requestAnimationFrame(animate);
-      const dt=Math.min(.04,clock.getDelta());
-      world.__nexusClock.frame++;
-      world.__nexusClock.elapsed+=dt;
-      world.__nexusClock.delta=dt;
-      engine.workshopReview.updateMotion?.(dt);
-      engine.workshopSignalFlow.updatePackets?.(dt);
-      updateCamera(dt);
-      updateHover();
-      syncObjects();
-      renderer.render(scene,camera);
-    }
-
-    function boot(){
-      try{
-        kits=createOnnxWorkshopThreeJsKits(nexusStub(),{});
-        ({engine,world}=install(kits));
-        build();
-        window.GameHost={
-          engine,
-          world,
-          kits,
-          buildingInterior,
-          getState:()=>({
-            camera:{mode:"first-person",position:{x:camera.position.x,y:camera.position.y,z:camera.position.z},yaw,pitch},
-            room:buildingInterior.describeRoom(camera.position),
-            selected,
-            interiorObjects:buildingInterior.proceduralObjects.map(o=>({id:o.id,label:o.label,kind:o.kind}))
-          })
-        };
-        animate();
-      }catch(error){
-        showError(error);
-        setStatus("boot failed");
-      }
-    }
-
-    canvas.addEventListener("pointerdown",onPointerDown);
-    canvas.addEventListener("pointermove",onPointerMove);
-    addEventListener("keydown",e=>{
-      keyState.add(e.code);
-      if(e.code==="KeyE"){e.preventDefault();inspectCenter();}
-      if(e.code==="Escape"){answerCard.hidden=true;selected=null;}
-    });
-    addEventListener("keyup",e=>keyState.delete(e.code));
-    addEventListener("resize",()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
-    document.addEventListener("pointerlockchange",()=>{lookActive=document.pointerLockElement===canvas});
-
-    boot();
+    const mat=(color,opts={})=>new THREE.MeshStandardMaterial({color,roughness:opts.roughness??.5,metalness:opts.metalness??.07,transparent:opts.transparent??false,opacity:opts.opacity??1,emissive:opts.emissive??0,emissiveIntensity:opts.emissiveIntensity??0});
+    const materials={wood:mat(0x8b5e34,{roughness:.72}),darkWood:mat(0x322012,{roughness:.84}),wall:mat(0x6f6250,{roughness:.82}),partition:mat(0x4d473d,{roughness:.78}),floor:mat(0x2f281d,{roughness:.86}),floorTrim:mat(0x4a3822,{roughness:.82}),trim:mat(0xae8d5a,{roughness:.6}),metal:mat(0xa7b1b8,{metalness:.65,roughness:.28}),brass:mat(0xffd36e,{metalness:.55,roughness:.25}),glass:mat(0x92ddff,{transparent:true,opacity:.34,roughness:.05,metalness:.1,emissive:0x1d5875,emissiveIntensity:.16}),rubber:mat(0x171b20,{roughness:.8}),paper:mat(0xf4ead0,{roughness:.75}),goldGlow:mat(0xffe18a,{emissive:0xffb000,emissiveIntensity:.85}),redGlow:mat(0xff8e7d,{emissive:0xff311f,emissiveIntensity:.9})};
+    function geo(v,i){const g=new THREE.BufferGeometry();g.setAttribute("position",new THREE.Float32BufferAttribute(v.flat(),3));g.setIndex(i);g.computeVertexNormals();return g}
+    function boxGeo(w=1,h=1,d=1){const x=w/2,y=h/2,z=d/2;return geo([[-x,-y,-z],[x,-y,-z],[x,y,-z],[-x,y,-z],[-x,-y,z],[x,-y,z],[x,y,z],[-x,y,z]],[0,2,1,0,3,2,4,5,6,4,6,7,0,1,5,0,5,4,1,2,6,1,6,5,2,3,7,2,7,6,3,0,4,3,4,7])}
+    function tubeGeo(length=1,radius=.05,radial=14,segments=5){const v=[],idx=[];for(let i=0;i<=segments;i++){const x=-length/2+length*i/segments;for(let j=0;j<radial;j++){const a=Math.PI*2*j/radial;v.push([x,Math.cos(a)*radius,Math.sin(a)*radius])}}for(let i=0;i<segments;i++)for(let j=0;j<radial;j++){const a=i*radial+j,b=i*radial+(j+1)%radial,c=(i+1)*radial+j,d=(i+1)*radial+(j+1)%radial;idx.push(a,c,b,b,c,d)}return geo(v,idx)}
+    function gearGeo(teeth=18,root=.24,outer=.34,width=.08){const rings=teeth*2,v=[],idx=[];for(const y of[-width/2,width/2])for(let i=0;i<rings;i++){const rr=i%2?outer:root,a=Math.PI*2*i/rings;v.push([Math.cos(a)*rr,y,Math.sin(a)*rr])}for(let i=0;i<rings;i++){const n=(i+1)%rings,a=i,b=n,c=rings+i,d=rings+n;idx.push(a,c,b,b,c,d)}return geo(v,idx)}
+    function helixGeo(){return tubeGeo(.5,.025,12,8)}
+    function planeGeo(w=1,h=1){const x=w/2,y=h/2;return geo([[-x,-y,0],[x,-y,0],[x,y,0],[-x,y,0]],[0,1,2,0,2,3])}
+    function addMesh(parent,geometry,material,pos={},rot={},scale={x:1,y:1,z:1}){const m=new THREE.Mesh(geometry,material);m.position.set(pos.x??0,pos.y??0,pos.z??0);m.rotation.set(rot.x??0,rot.y??0,rot.z??0);m.scale.set(scale.x??1,scale.y??1,scale.z??1);m.castShadow=true;m.receiveShadow=true;parent.add(m);return m}
+    function append(role,text){const node=document.createElement("div");node.className=`msg ${role}`;node.textContent=text;log.appendChild(node);log.scrollTop=log.scrollHeight}
+    function hit(){raycaster.setFromCamera({x:0,y:0},camera);const hits=raycaster.intersectObjects(Array.from(workshopState.meshes.values()),true);if(!hits.length)return null;let t=hits[0].object;while(t.parent&&!t.userData.workshopObject)t=t.parent;if(!t.userData.workshopObject)return null;return{id:t.userData.workshopObjectId,object:t.userData.workshopObject,mesh:workshopState.meshes.get(t.userData.workshopObjectId)}}
+    async function ask(q){const object=focus.selectedObject;if(!object)return;append("user",q);const result=await model.answer({object,room:room.describeRoom(camera.position),question:q});append("assistant",result.text);input.value=""}
+    function inspect(){const target=hit();if(!target){if(focus.selectedObject)closeFocus();return;}document.exitPointerLock?.();look=false;focus.select(target);chat.dataset.open="true";title.textContent=target.object.label;meta.textContent=`${target.object.type} - optional local model in Settings`;log.innerHTML="";append("assistant",target.object.context)}
+    function closeFocus(){focus.clear();chat.dataset.open="false"}
+    function move(dt){const prev=camera.position.clone(),f=new THREE.Vector3(-Math.sin(yaw),0,-Math.cos(yaw)),b=f.clone().multiplyScalar(-1),r=new THREE.Vector3(Math.cos(yaw),0,-Math.sin(yaw));let m=new THREE.Vector3();if(keys.has("KeyW"))m.add(f);if(keys.has("KeyS"))m.add(b);if(keys.has("KeyA"))m.add(r.clone().multiplyScalar(-1));if(keys.has("KeyD"))m.add(r);if(m.lengthSq()){m.normalize().multiplyScalar(dt*(keys.has("ShiftLeft")?3.4:2.25));camera.position.add(m);room.constrainPlayer(camera.position,prev)}camera.rotation.set(pitch,yaw,0,"YXZ")}
+    function boot(){try{scene=new THREE.Scene();camera=new THREE.PerspectiveCamera(68,innerWidth/innerHeight,.05,90);camera.position.set(0,1.58,3.65);renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:false});renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;renderer.outputColorSpace=THREE.SRGBColorSpace;raycaster=new THREE.Raycaster();raycaster.far=4.2;const helpers={addMesh,boxGeo,tubeGeo,gearGeo,helixGeo,planeGeo,materials};room=createBuildingInteriorKit(THREE,helpers);room.build(scene);workshop=createWorkshopObjectKit(THREE,helpers);workshopState=workshop.build(scene);focus=createObjectFocusKit(THREE);model=createOnnxLocalModelKit();createLocalModelSettingsKit({modelKit:model}).create();window.GameHost={room,workshop,focus,model,getState:()=>({hovered,focus:focus.getState(),model:model.getState()})};animate()}catch(e){errorPanel.hidden=false;errorPanel.textContent=String(e?.stack||e)}}
+    function animate(){requestAnimationFrame(animate);const dt=Math.min(.04,clock.getDelta());move(dt);hovered=hit()?.id??null;focus.update(camera,dt);renderer.render(scene,camera)}
+    canvas.addEventListener("pointerdown",e=>{if(e.target!==canvas)return;if(hit())inspect();else{canvas.requestPointerLock?.();look=true}});canvas.addEventListener("pointermove",e=>{if(!look&&document.pointerLockElement!==canvas)return;yaw-=e.movementX*.0023;pitch=Math.max(-1.05,Math.min(1.05,pitch-e.movementY*.002))});document.addEventListener("pointerlockchange",()=>look=document.pointerLockElement===canvas);addEventListener("keydown",e=>{keys.add(e.code);if(e.code==="KeyE")inspect();if(e.code==="Escape")closeFocus()});addEventListener("keyup",e=>keys.delete(e.code));addEventListener("resize",()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});form.addEventListener("submit",e=>{e.preventDefault();ask(input.value.trim()||"What is this?")});quick.addEventListener("click",e=>{if(e.target.dataset.q)ask(e.target.dataset.q)});returnBtn.addEventListener("click",closeFocus);boot();
   </script>
 </body>
 </html>
