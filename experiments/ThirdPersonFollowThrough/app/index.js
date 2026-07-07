@@ -1,2 +1,2 @@
-import '../app.js?v=rigged-actor-kit-v1';
+import '../app.js?v=camera-pivot-utility-rewrite';
 export {};
