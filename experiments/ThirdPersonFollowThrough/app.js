@@ -42,7 +42,6 @@ scene.add(grid);
 function addAabbCollider(name, x, z, sx, sz) {
   colliders.push({ name, minX: x - sx / 2, maxX: x + sx / 2, minZ: z - sz / 2, maxZ: z + sz / 2 });
 }
-
 function box(x, y, z, sx, sy, sz, mat = blockMat, blocks = true) {
   const m = new THREE.Mesh(new THREE.BoxGeometry(sx, sy, sz), mat);
   m.position.set(x, y + sy / 2, z);
@@ -117,14 +116,12 @@ document.body.dataset.nexusDomain = thirdPersonFollowThroughDomain.id;
 function toVector3(v) {
   return new THREE.Vector3(v.x, v.y, v.z);
 }
-
 function resolveCircleAabb(position, collider, radius) {
   const closestX = THREE.MathUtils.clamp(position.x, collider.minX, collider.maxX);
   const closestZ = THREE.MathUtils.clamp(position.z, collider.minZ, collider.maxZ);
   let dx = position.x - closestX;
   let dz = position.z - closestZ;
   let distSq = dx * dx + dz * dz;
-
   if (distSq > 0 && distSq < radius * radius) {
     const dist = Math.sqrt(distSq);
     const push = radius - dist;
@@ -132,7 +129,6 @@ function resolveCircleAabb(position, collider, radius) {
     position.z += (dz / dist) * push;
     return true;
   }
-
   if (distSq === 0 && position.x >= collider.minX && position.x <= collider.maxX && position.z >= collider.minZ && position.z <= collider.maxZ) {
     const left = Math.abs(position.x - collider.minX);
     const right = Math.abs(collider.maxX - position.x);
@@ -147,7 +143,6 @@ function resolveCircleAabb(position, collider, radius) {
   }
   return false;
 }
-
 function resolveSceneCollisions(position) {
   let hit = false;
   for (let pass = 0; pass < 3; pass += 1) {
@@ -157,7 +152,6 @@ function resolveSceneCollisions(position) {
   position.z = THREE.MathUtils.clamp(position.z, -21.5, 21.5);
   return hit;
 }
-
 function reset() {
   actorRoot.position.set(0, 0, 8);
   yVel = 0;
@@ -215,9 +209,12 @@ function tick(now) {
 
   if (wish.lengthSq() > 0) {
     const previousCameraYaw = cameraYaw;
-    const desiredYaw = Math.atan2(wish.x, -wish.z);
-    rootYaw = transformUtil.lerpAngle(rootYaw, desiredYaw, Math.min(1, dt * rotateSpeed));
-    orbitYawOffset = cameraUtil.preserveOrbitForCameraYaw(rootYaw, previousCameraYaw, maxOrbitYaw);
+    const preserveFacingWhileBacking = basisInput.back && !basisInput.forward;
+    if (!preserveFacingWhileBacking) {
+      const desiredYaw = Math.atan2(wish.x, -wish.z);
+      rootYaw = transformUtil.lerpAngle(rootYaw, desiredYaw, Math.min(1, dt * rotateSpeed));
+      orbitYawOffset = cameraUtil.preserveOrbitForCameraYaw(rootYaw, previousCameraYaw, maxOrbitYaw);
+    }
     actorRoot.position.addScaledVector(wish, moveSpeed * dt);
     resolveSceneCollisions(actorRoot.position);
   }
@@ -227,7 +224,6 @@ function tick(now) {
   orbitYawOffset = handoff.orbitYawOffset;
   handoffAlpha = handoff.handoffAlpha;
   cameraYaw = handoff.cameraYaw;
-
   actorRoot.rotation.y = rootYaw;
 
   if (input.has(' ') && grounded) { yVel = 7; grounded = false; }
