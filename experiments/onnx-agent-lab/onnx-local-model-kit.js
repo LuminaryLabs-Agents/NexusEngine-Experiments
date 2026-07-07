@@ -1,22 +1,29 @@
 export function createOnnxLocalModelKit() {
-  const DEFAULT_SOURCE_BASE_URL = "";
-  const TARGET_MODEL_ID = "Qwen/Qwen3.5-2B";
+  const DEFAULT_SOURCE_BASE_URL = "https://huggingface.co/onnx-community/Qwen3.5-2B-ONNX-OPT/resolve/main";
+  const TARGET_MODEL_ID = "onnx-community/Qwen3.5-2B-ONNX-OPT";
+  const SOURCE_STORAGE_KEY = "workshop.model.qwen35.sourceBaseUrl";
 
   const config = {
     modelName: "Qwen3.5 2B",
     modelId: TARGET_MODEL_ID,
     format: "ONNX",
-    quantization: "browser quantized",
+    quantization: "Q4F16 OPT",
     runtime: "ONNX Runtime Web",
-    cacheName: "workshop-qwen35-2b-onnx-cache-v1",
-    sourceBaseUrl: localStorage.getItem("workshop.model.sourceBaseUrl") || DEFAULT_SOURCE_BASE_URL,
-    modelFile: "onnx/model_q4f16.onnx",
+    cacheName: "workshop-qwen35-2b-onnx-opt-q4f16-cache-v1",
+    sourceBaseUrl: localStorage.getItem(SOURCE_STORAGE_KEY) || DEFAULT_SOURCE_BASE_URL,
+    modelFile: "onnx/decoder_model_merged_q4f16.onnx",
     files: [
-      "onnx/model_q4f16.onnx",
-      "tokenizer.json",
-      "tokenizer_config.json",
+      "onnx/decoder_model_merged_q4f16.onnx",
+      "onnx/decoder_model_merged_q4f16.onnx_data",
+      "onnx/embed_tokens_q4f16.onnx",
+      "onnx/embed_tokens_q4f16.onnx_data",
+      "chat_template.jinja",
+      "config.json",
       "generation_config.json",
-      "special_tokens_map.json"
+      "preprocessor_config.json",
+      "processor_config.json",
+      "tokenizer.json",
+      "tokenizer_config.json"
     ],
     ortScriptUrl: "https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js",
     memoryLimit: 8
@@ -26,7 +33,7 @@ export function createOnnxLocalModelKit() {
     status: localStorage.getItem("workshop.model.status") || "not-installed",
     backend: "checking",
     progress: Number(localStorage.getItem("workshop.model.progress") || 0),
-    message: "Qwen3.5 2B is selected. Add a hosted ONNX source URL to load it in-browser.",
+    message: "Qwen3.5 2B ONNX OPT is selected and ready to cache from Hugging Face.",
     canUseWebGPU: false,
     canUseWasm: typeof WebAssembly !== "undefined",
     deviceMemory: navigator.deviceMemory || null,
@@ -84,23 +91,23 @@ export function createOnnxLocalModelKit() {
     state.canUseWasm = typeof WebAssembly !== "undefined";
     state.hasOrt = Boolean(globalThis.ort);
     state.backend = state.canUseWebGPU ? "WebGPU preferred" : "WASM fallback";
-    state.message = config.sourceBaseUrl ? (state.hasOrt ? "ONNX Runtime Web detected." : "ONNX Runtime Web can be loaded when installing.") : "Qwen3.5 2B is selected. Add a hosted ONNX source URL before loading.";
+    state.message = state.hasOrt ? "ONNX Runtime Web detected." : "ONNX Runtime Web can be loaded when installing.";
     emit();
     return getState();
   }
 
   function setModelSource({ sourceBaseUrl = "", manifestUrl = "" } = {}) {
-    config.sourceBaseUrl = (sourceBaseUrl || manifestUrl || "").trim();
-    localStorage.setItem("workshop.model.sourceBaseUrl", config.sourceBaseUrl);
-    state.message = config.sourceBaseUrl ? "Qwen3.5 2B ONNX source saved." : "Model source cleared. Add a hosted ONNX URL before loading.";
+    config.sourceBaseUrl = (sourceBaseUrl || manifestUrl || DEFAULT_SOURCE_BASE_URL).trim();
+    localStorage.setItem(SOURCE_STORAGE_KEY, config.sourceBaseUrl);
+    state.message = "Qwen3.5 2B ONNX source saved.";
     emit();
     return getState();
   }
 
   function resetModelSource() {
     config.sourceBaseUrl = DEFAULT_SOURCE_BASE_URL;
-    localStorage.setItem("workshop.model.sourceBaseUrl", config.sourceBaseUrl);
-    state.message = "Qwen3.5 2B remains selected. No verified default ONNX source is bundled.";
+    localStorage.setItem(SOURCE_STORAGE_KEY, config.sourceBaseUrl);
+    state.message = "Qwen3.5 2B ONNX source reset to the ONNX Community OPT repo.";
     emit();
     return getState();
   }
@@ -138,8 +145,6 @@ export function createOnnxLocalModelKit() {
   }
 
   async function cacheModelFiles() {
-    if (!config.sourceBaseUrl) throw new Error("Qwen3.5 2B needs a hosted ONNX source URL before files can be cached.");
-
     const cache = await caches.open(config.cacheName);
     for (let index = 0; index < config.files.length; index++) {
       const file = config.files[index];
@@ -155,11 +160,6 @@ export function createOnnxLocalModelKit() {
   }
 
   async function loadTokenizerConfigFromCache() {
-    if (!config.sourceBaseUrl) {
-      state.tokenizerReady = false;
-      return null;
-    }
-
     const cache = await caches.open(config.cacheName);
     const response = await cache.match(modelUrl("tokenizer_config.json")) || await cache.match(modelUrl("tokenizer.json"));
     if (!response) {
@@ -198,17 +198,6 @@ export function createOnnxLocalModelKit() {
 
   async function install() {
     await checkCapabilities();
-
-    if (!config.sourceBaseUrl) {
-      state.status = "needs-source";
-      state.progress = 0;
-      state.message = "Qwen3.5 2B is selected, but no verified ONNX source URL is configured.";
-      state.lastError = "Add a hosted ONNX base URL containing model and tokenizer files.";
-      localStorage.setItem("workshop.model.status", state.status);
-      localStorage.setItem("workshop.model.progress", "0");
-      emit();
-      return getState();
-    }
 
     try {
       state.status = "downloading";
@@ -306,7 +295,7 @@ export function createOnnxLocalModelKit() {
     }
 
     if (lower.includes("model") || lower.includes("onnx") || lower.includes("qwen")) {
-      return `The local model target is ${config.modelName}. I need a hosted ONNX source URL before I can cache and start the real browser runtime. Say yes when you want to open the workshop scene.`;
+      return `The local model target is ${config.modelName} from ${config.modelId}. I cache the Q4F16 decoder and embedding ONNX files from Hugging Face. Say yes when you want to open the workshop scene.`;
     }
 
     return "I am loaded as the workshop agent. I will keep the last few things you say in memory and use them when you ask about tools. Do you want to open the workshop scene?";
