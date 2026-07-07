@@ -8,6 +8,24 @@ export function createRiggedActorKit(THREE, options = {}) {
   const headMat = new THREE.MeshStandardMaterial({ color: 0xffd166, roughness: 0.42, emissive: 0x241400 });
   const forwardMat = new THREE.MeshStandardMaterial({ color: 0x4cff88, roughness: 0.35, emissive: 0x042b11 });
 
+  const pivots = {
+    root: new THREE.Object3D(),
+    pelvis: new THREE.Object3D(),
+    chest: new THREE.Object3D(),
+    head: new THREE.Object3D(),
+    camera: new THREE.Object3D()
+  };
+  pivots.root.name = 'rootPivot';
+  pivots.pelvis.name = 'pelvisPivot';
+  pivots.chest.name = 'chestPivot';
+  pivots.head.name = 'headPivot';
+  pivots.camera.name = 'cameraPivot';
+  pivots.pelvis.position.set(0, 0.82, 0);
+  pivots.chest.position.set(0, 1.38, 0);
+  pivots.head.position.set(0, 1.6, 0);
+  pivots.camera.position.set(0, 1.55, -0.18);
+  group.add(pivots.root, pivots.pelvis, pivots.chest, pivots.head, pivots.camera);
+
   const collisionCapsule = new THREE.Mesh(new THREE.CapsuleGeometry(0.72, 1.55, 12, 28), bodyMat);
   collisionCapsule.name = 'collisionCapsule';
   collisionCapsule.position.y = 1.35;
@@ -28,24 +46,11 @@ export function createRiggedActorKit(THREE, options = {}) {
   group.add(forwardMarker);
 
   const bones = {
-    root: [0, 0.0, 0],
-    pelvis: [0, 0.82, 0],
-    spine01: [0, 1.12, 0],
-    chest: [0, 1.42, 0],
-    neck: [0, 1.58, 0],
-    head: [0, 1.72, 0],
-    leftUpperArm: [-0.48, 1.42, 0],
-    leftForeArm: [-0.88, 1.18, 0],
-    leftHand: [-1.08, 0.93, 0],
-    rightUpperArm: [0.48, 1.42, 0],
-    rightForeArm: [0.88, 1.18, 0],
-    rightHand: [1.08, 0.93, 0],
-    leftThigh: [-0.28, 0.62, 0],
-    leftCalf: [-0.33, 0.32, 0],
-    leftFoot: [-0.33, 0.08, -0.22],
-    rightThigh: [0.28, 0.62, 0],
-    rightCalf: [0.33, 0.32, 0],
-    rightFoot: [0.33, 0.08, -0.22]
+    root: [0, 0.0, 0], pelvis: [0, 0.82, 0], spine01: [0, 1.12, 0], chest: [0, 1.42, 0], neck: [0, 1.58, 0], head: [0, 1.72, 0],
+    leftUpperArm: [-0.48, 1.42, 0], leftForeArm: [-0.88, 1.18, 0], leftHand: [-1.08, 0.93, 0],
+    rightUpperArm: [0.48, 1.42, 0], rightForeArm: [0.88, 1.18, 0], rightHand: [1.08, 0.93, 0],
+    leftThigh: [-0.28, 0.62, 0], leftCalf: [-0.33, 0.32, 0], leftFoot: [-0.33, 0.08, -0.22],
+    rightThigh: [0.28, 0.62, 0], rightCalf: [0.33, 0.32, 0], rightFoot: [0.33, 0.08, -0.22]
   };
 
   const links = [
@@ -58,8 +63,12 @@ export function createRiggedActorKit(THREE, options = {}) {
 
   const skeletonDebug = new THREE.Group();
   skeletonDebug.name = 'skeletonDebug';
+  skeletonDebug.visible = Boolean(options.debugVisible);
+  forwardMarker.visible = Boolean(options.debugVisible);
+  headMarkerCube.visible = Boolean(options.debugVisible);
+
   const joints = {};
-  const jointGeo = new THREE.SphereGeometry(0.055, 10, 8);
+  const jointGeo = new THREE.SphereGeometry(0.05, 10, 8);
   for (const [name, position] of Object.entries(bones)) {
     const marker = new THREE.Mesh(jointGeo, jointMat);
     marker.name = `joint_${name}`;
@@ -83,5 +92,11 @@ export function createRiggedActorKit(THREE, options = {}) {
   links.forEach(([a, b]) => addBoneLink(a, b));
   group.add(skeletonDebug);
 
-  return { group, bones, joints, collisionCapsule, headMarkerCube, forwardMarker, skeletonDebug };
+  function setDebugVisible(visible) {
+    skeletonDebug.visible = visible;
+    forwardMarker.visible = visible;
+    headMarkerCube.visible = visible;
+  }
+
+  return { group, bones, joints, links, pivots, collisionCapsule, headMarkerCube, forwardMarker, skeletonDebug, setDebugVisible };
 }
