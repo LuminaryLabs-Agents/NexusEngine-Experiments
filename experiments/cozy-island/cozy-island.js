@@ -5,6 +5,7 @@ const err = document.querySelector("#error");
 const SEA_FLOOR_Y = -128;
 const CLOUD_COUNT = 4;
 const ISLAND_RADIUS_METERS = 100;
+const GRASS_PATCH_COUNT = 140;
 
 function fail(error) {
   err.hidden = false;
@@ -15,59 +16,59 @@ function fail(error) {
 const cdn = "https://cdn.jsdelivr.net/";
 const THREE = await import(cdn + "npm/three@0.160.0/build/three.module.js");
 const proto = cdn + "gh/LuminaryLabs-Agents/NexusRealtime-ProtoKits@main/protokits/";
-const landformDomain = await import(proto + "ocean-island-landform-domain/index.js");
-const foliageDomain = await import(proto + "island-foliage-domain/index.js");
-const oceanFloorDomain = await import(proto + "ocean-floor-domain/index.js");
-const cloudDomain = await import(proto + "mattatz-clouds-domain/index.js");
+const landformDomain = await import(proto + "ocean-island-landform-domain/index.js?v=grass-cutover-1");
+const foliageDomain = await import(proto + "island-foliage-domain/index.js?v=grass-cutover-1");
+const oceanFloorDomain = await import(proto + "ocean-floor-domain/index.js?v=grass-cutover-1");
+const grassTextureDomain = await import(proto + "grass-texture-domain/index.js?v=grass-cutover-1");
+const grassObjectDomain = await import(proto + "grass-object-domain/index.js?v=grass-cutover-1");
+const grassWindDomain = await import(proto + "grass-wind-domain/index.js?v=grass-cutover-1");
+const cloudDomain = await import(proto + "mattatz-clouds-domain/index.js?v=grass-cutover-1");
 
 function materialFor(m) {
   const color = m.wetSand ? 0xcaa46b : m.beach ? 0xe7ca91 : m.cliff || m.rock ? 0x817d6d : m.path ? 0xb89564 : 0x4f8d4d;
   return new THREE.Color(color);
 }
 
-function makeTerrain(heightfield) {
-  const r = heightfield.resolution;
+function buildIndexedMeshFromSamples(samples, resolution, colorForSample, material) {
   const pos = [];
   const colors = [];
   const idx = [];
-  for (const s of heightfield.samples) {
+  for (const s of samples) {
     pos.push(s.x, s.y, s.z);
-    const c = materialFor(s.masks || {});
+    const c = colorForSample(s);
     colors.push(c.r, c.g, c.b);
   }
-  for (let z = 0; z < r - 1; z++) for (let x = 0; x < r - 1; x++) {
-    const a = z * r + x;
-    idx.push(a, a + r, a + 1, a + 1, a + r, a + r + 1);
+  for (let z = 0; z < resolution - 1; z++) for (let x = 0; x < resolution - 1; x++) {
+    const a = z * resolution + x;
+    idx.push(a, a + resolution, a + 1, a + 1, a + resolution, a + resolution + 1);
   }
   const g = new THREE.BufferGeometry();
   g.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
   g.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
   g.setIndex(idx);
   g.computeVertexNormals();
-  return new THREE.Mesh(g, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.92, metalness: 0.015 }));
+  return new THREE.Mesh(g, material);
+}
+
+function makeTerrain(heightfield) {
+  return buildIndexedMeshFromSamples(
+    heightfield.samples,
+    heightfield.resolution,
+    (s) => materialFor(s.masks || {}),
+    new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.92, metalness: 0.015 })
+  );
 }
 
 function makeOceanFloor(heightfield) {
-  const r = heightfield.resolution;
-  const pos = [];
-  const colors = [];
-  const idx = [];
-  for (const s of heightfield.samples) {
-    pos.push(s.x, s.y, s.z);
-    const m = s.masks || {};
-    const c = new THREE.Color(m.reefBand ? 0x3d8176 : m.shallowShelf ? 0x4b8b7a : 0x235b67);
-    colors.push(c.r, c.g, c.b);
-  }
-  for (let z = 0; z < r - 1; z++) for (let x = 0; x < r - 1; x++) {
-    const a = z * r + x;
-    idx.push(a, a + r, a + 1, a + 1, a + r, a + r + 1);
-  }
-  const g = new THREE.BufferGeometry();
-  g.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
-  g.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
-  g.setIndex(idx);
-  g.computeVertexNormals();
-  return new THREE.Mesh(g, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.96, metalness: 0.0 }));
+  return buildIndexedMeshFromSamples(
+    heightfield.samples,
+    heightfield.resolution,
+    (s) => {
+      const m = s.masks || {};
+      return new THREE.Color(m.reefBand ? 0x3d8176 : m.shallowShelf ? 0x4b8b7a : 0x235b67);
+    },
+    new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.96, metalness: 0.0 })
+  );
 }
 
 function makeFoam(shoreline) {
@@ -155,11 +156,10 @@ function makeBroadleaf(record) {
 function makeSimple(record) {
   const type = record.type;
   const scale = record.transform.scale.x || 1;
-  const color = type === "bush" ? 0x3e8f45 : type === "fern" ? 0x2e7c4a : type === "grass-clump" ? 0x6cae52 : type === "driftwood" || type === "fallen-log" ? 0x8a6844 : type === "reef" || type === "coral" ? 0xe28f74 : 0x77756a;
+  const color = type === "bush" ? 0x3e8f45 : type === "fern" ? 0x2e7c4a : type === "driftwood" || type === "fallen-log" ? 0x8a6844 : type === "reef" || type === "coral" ? 0xe28f74 : 0x77756a;
   const material = new THREE.MeshStandardMaterial({ color, roughness: 0.9 });
   let geometry;
   if (type === "fern") geometry = new THREE.ConeGeometry(0.18, 0.75, 5);
-  else if (type === "grass-clump") geometry = new THREE.ConeGeometry(0.09, 0.45, 4);
   else if (type === "driftwood" || type === "fallen-log") geometry = new THREE.CapsuleGeometry(0.11, type === "fallen-log" ? 1.2 : 0.75, 4, 8);
   else if (type === "bush") geometry = new THREE.SphereGeometry(0.42, 8, 6);
   else geometry = new THREE.DodecahedronGeometry(type === "reef" ? 0.28 : 0.38, 0);
@@ -178,7 +178,7 @@ function makeObjects(graph) {
     byParent.get(object.parentId).push(object);
   }
   const group = new THREE.Group();
-  const rootTypes = new Set(["palm-tree", "broadleaf-tree", "young-tree", "bush", "fern", "grass-clump", "fallen-log", "rock", "boulder", "driftwood", "reef", "coral"]);
+  const rootTypes = new Set(["palm-tree", "broadleaf-tree", "young-tree", "bush", "fern", "fallen-log", "rock", "boulder", "driftwood", "reef", "coral"]);
   for (const object of graph.objects) {
     if (!rootTypes.has(object.type)) continue;
     if (object.type === "palm-tree") group.add(makePalm(object, byParent));
@@ -203,6 +203,87 @@ function makeSeaFloorObject(record) {
 function makeSeaFloorObjects(objects) {
   const group = new THREE.Group();
   for (const object of objects) group.add(makeSeaFloorObject(object));
+  return group;
+}
+
+function hexToColor(hex) {
+  return new THREE.Color(hex);
+}
+
+function createGrassPatchGeometry({ bladeCount = 260, radius = 1.8, seed = 1, heightMin = 0.32, heightMax = 0.92, texture }) {
+  let state = seed || 1;
+  const random = () => {
+    state ^= state << 13;
+    state ^= state >>> 17;
+    state ^= state << 5;
+    return (state >>> 0) / 0xffffffff;
+  };
+  const rootColor = hexToColor(texture.rootColor);
+  const tipColor = hexToColor(texture.tipColor);
+  const dryColor = hexToColor(texture.dryColor);
+  const positions = [];
+  const colors = [];
+  const indices = [];
+  for (let i = 0; i < bladeCount; i++) {
+    const a = random() * Math.PI * 2;
+    const r = radius * Math.sqrt(random());
+    const x = Math.cos(a) * r;
+    const z = Math.sin(a) * r;
+    const h = heightMin + (heightMax - heightMin) * random();
+    const w = 0.018 + random() * 0.03;
+    const lean = (random() - 0.5) * 0.24;
+    const side = new THREE.Vector3(Math.cos(a + Math.PI / 2) * w, 0, Math.sin(a + Math.PI / 2) * w);
+    const base = new THREE.Vector3(x, 0, z);
+    const tip = new THREE.Vector3(x + Math.cos(a) * lean, h, z + Math.sin(a) * lean);
+    const b = positions.length / 3;
+    positions.push(base.x - side.x, 0, base.z - side.z, base.x + side.x, 0, base.z + side.z, tip.x + side.x * 0.32, tip.y, tip.z + side.z * 0.32, tip.x - side.x * 0.32, tip.y, tip.z - side.z * 0.32);
+    const dryMix = random() < texture.dryVariation ? 0.42 : 0;
+    const root = rootColor.clone().lerp(dryColor, dryMix);
+    const tipC = tipColor.clone().lerp(dryColor, dryMix * 0.7);
+    colors.push(root.r, root.g, root.b, root.r, root.g, root.b, tipC.r, tipC.g, tipC.b, tipC.r, tipC.g, tipC.b);
+    indices.push(b, b + 1, b + 2, b, b + 2, b + 3);
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+  g.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
+  g.setIndex(indices);
+  g.computeVertexNormals();
+  return g;
+}
+
+function makeGrassBatches(placement, textureDescriptor, windDescriptor) {
+  const group = new THREE.Group();
+  const patchesByKey = new Map();
+  for (const patch of placement.patches) {
+    const key = patch.render.geometryTemplateKey;
+    if (!patchesByKey.has(key)) patchesByKey.set(key, []);
+    patchesByKey.get(key).push(patch);
+  }
+  const templateBudgets = { "dense-a": 900, "dense-b": 720, "dense-c": 560 };
+  let templateIndex = 0;
+  for (const [key, patches] of patchesByKey) {
+    const bladeCount = Math.max(160, Math.round((templateBudgets[key] ?? 720) / 3));
+    const geometry = createGrassPatchGeometry({ bladeCount, radius: 1.85, seed: 101 + templateIndex * 37, texture: textureDescriptor });
+    const material = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.86, side: THREE.DoubleSide });
+    const mesh = new THREE.InstancedMesh(geometry, material, patches.length);
+    mesh.userData.wind = windDescriptor;
+    mesh.userData.baseMatrices = [];
+    const matrix = new THREE.Matrix4();
+    const position = new THREE.Vector3();
+    const quat = new THREE.Quaternion();
+    const scale = new THREE.Vector3();
+    patches.forEach((patch, index) => {
+      position.set(patch.transform.position.x, patch.transform.position.y + 0.04, patch.transform.position.z);
+      quat.setFromEuler(new THREE.Euler(0, patch.transform.rotation.y, 0));
+      scale.set(patch.transform.scale.x, 1, patch.transform.scale.z);
+      matrix.compose(position, quat, scale);
+      mesh.setMatrixAt(index, matrix);
+      mesh.userData.baseMatrices[index] = matrix.clone();
+    });
+    mesh.instanceMatrix.needsUpdate = true;
+    group.add(mesh);
+    templateIndex += 1;
+  }
   return group;
 }
 
@@ -263,6 +344,10 @@ async function main() {
   const foliageRender = foliageDomain.createDenseCozyIslandRenderContract({ graph, landformContract: landform, seaFloorY: SEA_FLOOR_Y });
   const floorState = oceanFloorDomain.createOceanFloorState({ seed: "cozy-island-ocean-floor", size: 3600, resolution: 53, baseDepth: SEA_FLOOR_Y, islandRadius: ISLAND_RADIUS_METERS, islandShelfRadius: 145, islandInfluenceRadius: 260, shelfDepth: -16, moundDepth: -42, noiseAmplitude: 9, objects: { seaFloorRocks: 34, seaFloorBoulders: 12, reefClusters: 14, coralClusters: 18 } });
   const oceanFloor = oceanFloorDomain.createOceanFloorRenderContract(floorState, { heightfield: { resolution: 53 }, objects: {} });
+  const grassTexture = grassTextureDomain.createGrassTextureDescriptor({ id: "dense-cozy-grass-texture" });
+  const grassWind = grassWindDomain.createGrassWindDescriptor({ id: "central-grove-soft-wind", phaseSeed: "cozy-island-grass", baseSway: 0.16, gustStrength: 0.34 });
+  const grassPlacement = grassObjectDomain.createGrassPatchPlacementContract({ seed: "cozy-island-grass", count: GRASS_PATCH_COUNT, radiusMeters: ISLAND_RADIUS_METERS, sampleHeight, sampleMasks, pathNetwork: graph.pathNetwork, avoidObjects: graph.objects, pathClearance: 3.6, objectClearance: 1.15 });
+  const grassBatches = grassObjectDomain.createGrassPatchBatchDescriptors(grassPlacement.patches);
   const cloudState = cloudDomain.createMattatzCloudsState({ seed: "cozy-island-clouds", weather: "sunrise-haze", cloudCount: CLOUD_COUNT });
   const cloudContract = cloudDomain.createMattatzCloudRenderContract(cloudState, 0);
 
@@ -286,7 +371,8 @@ async function main() {
   scene.add(makeTerrain(landform.heightfield));
   const water = new THREE.Mesh(new THREE.PlaneGeometry(3600, 3600, 32, 32).rotateX(-Math.PI / 2), makeWaterMaterial(oceanFloor.waterMaterial));
   water.position.y = -0.08;
-  scene.add(water, makeFoam(landform.shoreline), makePath(graph.pathNetwork, sampleHeight), makeObjects(graph));
+  const grassGroup = makeGrassBatches(grassPlacement, grassTexture, grassWind);
+  scene.add(water, makeFoam(landform.shoreline), makePath(graph.pathNetwork, sampleHeight), makeObjects(graph), grassGroup);
   const cloudGroup = new THREE.Group();
   cloudContract.clouds.slice(0, CLOUD_COUNT).forEach((d, i) => cloudGroup.add(makeCloud(d, d.layerId?.includes("high") ? 2 : d.layerId?.includes("mid") ? 1 : 0, i)));
   scene.add(cloudGroup);
@@ -311,6 +397,24 @@ async function main() {
   });
 
   let last = performance.now();
+  const swayMatrix = new THREE.Matrix4();
+  const swayPos = new THREE.Vector3();
+  const swayQuat = new THREE.Quaternion();
+  const swayScale = new THREE.Vector3();
+  function animateGrass(now) {
+    grassGroup.children.forEach((mesh, batchIndex) => {
+      const wind = mesh.userData.wind;
+      const base = mesh.userData.baseMatrices || [];
+      const sway = Math.sin(now * 0.0018 + batchIndex * 1.7) * wind.baseSway * 0.035;
+      for (let i = 0; i < base.length; i++) {
+        base[i].decompose(swayPos, swayQuat, swayScale);
+        const q = new THREE.Quaternion().setFromEuler(new THREE.Euler(sway * (1 + (i % 5) * 0.12), sway * 0.25, 0));
+        swayMatrix.compose(swayPos, swayQuat.multiply(q), swayScale);
+        mesh.setMatrixAt(i, swayMatrix);
+      }
+      mesh.instanceMatrix.needsUpdate = true;
+    });
+  }
   function frame(now) {
     const dt = Math.min(0.05, (now - last) / 1000);
     last = now;
@@ -323,6 +427,7 @@ async function main() {
     const offset = new THREE.Vector3(Math.sin(rig.yaw) * Math.cos(rig.pitch) * rig.radius, Math.max(76, Math.sin(-rig.pitch + 0.46) * rig.radius * 0.42), Math.cos(rig.yaw) * Math.cos(rig.pitch) * rig.radius);
     camera.position.copy(rig.target).add(offset);
     camera.lookAt(rig.target);
+    animateGrass(now);
     cloudGroup.children.forEach((cloud, i) => {
       cloud.position.x += (cloud.userData.drift?.x || 1) * cloud.userData.speed * dt * 18;
       cloud.position.z += (cloud.userData.drift?.z || 0) * cloud.userData.speed * dt * 18;
@@ -330,12 +435,12 @@ async function main() {
       cloud.worldToLocal(cloud.userData.material.uniforms.uCameraLocal.value.copy(camera.position));
       cloud.rotation.y = Math.sin(now * 0.00008 + i) * 0.04;
     });
-    hud.innerHTML = `<strong>Cozy Island</strong><br>WASD drift · drag orbit · wheel zoom<br>domain cutover · ocean-floor-domain · objects ${graph.objects.length} · seafloor rocks ${oceanFloor.objects.length} · water opacity 75% · clouds ${Math.min(CLOUD_COUNT, cloudContract.clouds.length)}`;
+    hud.innerHTML = `<strong>Cozy Island</strong><br>WASD drift · drag orbit · wheel zoom<br>grass domains · patches ${grassPlacement.patchCount} · batches ${grassBatches.length} · objects ${graph.objects.length} · seafloor ${oceanFloor.objects.length} · clouds ${Math.min(CLOUD_COUNT, cloudContract.clouds.length)}`;
     renderer.render(scene, camera);
     requestAnimationFrame(frame);
   }
 
-  globalThis.CozyIsland = { islandState, landform, graph, foliageRender, oceanFloor, cloudContract };
+  globalThis.CozyIsland = { islandState, landform, graph, foliageRender, oceanFloor, grassTexture, grassWind, grassPlacement, grassBatches, cloudContract };
   requestAnimationFrame(frame);
 }
 
