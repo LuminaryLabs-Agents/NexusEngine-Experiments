@@ -5,8 +5,9 @@ export function createOnnxLocalModelKit() {
     quantization: "2-bit",
     runtime: "ONNX Runtime Web",
     cacheName: "workshop-qwen25-2b-onnx-cache-v1",
-    manifestUrl: "",
-    files: ["model.onnx", "tokenizer.json", "tokenizer_config.json", "generation_config.json", "special_tokens_map.json"]
+    sourceBaseUrl: localStorage.getItem("workshop.model.sourceBaseUrl") || "",
+    files: ["model.onnx", "tokenizer.json", "tokenizer_config.json", "generation_config.json", "special_tokens_map.json"],
+    ortScriptUrl: "https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js"
   };
 
   const state = {
@@ -15,66 +16,163 @@ export function createOnnxLocalModelKit() {
     progress: Number(localStorage.getItem("workshop.model.progress") || 0),
     message: "Local model is optional. Fallback workshop answers are available now.",
     canUseWebGPU: false,
-    canUseWasm: true,
-    hasOrt: false,
+    canUseWasm: typeof WebAssembly !== "undefined",
+    deviceMemory: navigator.deviceMemory || null,
+    hasOrt: Boolean(globalThis.ort),
     sessionReady: false,
+    tokenizerReady: false,
     lastError: ""
   };
 
   const listeners = new Set();
-  function emit() { for (const listener of listeners) listener(getState()); }
-  function subscribe(listener) { listeners.add(listener); listener(getState()); return () => listeners.delete(listener); }
+  let session = null;
+  let tokenizerConfig = null;
+  let runtimeLoadPromise = null;
+
+  function emit() {
+    for (const listener of listeners) listener(getState());
+  }
+
+  function subscribe(listener) {
+    listeners.add(listener);
+    listener(getState());
+    return () => listeners.delete(listener);
+  }
+
+  function modelUrl(file) {
+    return `${config.sourceBaseUrl.replace(/\/$/, "")}/${file}`;
+  }
 
   async function checkCapabilities() {
     state.canUseWebGPU = Boolean(navigator.gpu);
     state.canUseWasm = typeof WebAssembly !== "undefined";
-    state.backend = state.canUseWebGPU ? "WebGPU preferred" : "WASM fallback";
     state.hasOrt = Boolean(globalThis.ort);
-    state.message = state.hasOrt ? "ONNX Runtime Web detected." : "ONNX Runtime Web is not loaded yet. Fallback object chat remains active.";
+    state.backend = state.canUseWebGPU ? "WebGPU preferred" : "WASM fallback";
+    state.message = state.hasOrt ? "ONNX Runtime Web detected." : "ONNX Runtime Web can be loaded when installing.";
     emit();
     return getState();
   }
 
-  function setModelSource({ manifestUrl = "", files = [] } = {}) {
-    config.manifestUrl = manifestUrl;
-    if (files.length) config.files = files;
-    state.message = manifestUrl ? "Model source configured." : "Model source cleared. Add hosted model URLs before installing the real model.";
+  function setModelSource({ sourceBaseUrl = "", manifestUrl = "" } = {}) {
+    config.sourceBaseUrl = (sourceBaseUrl || manifestUrl || "").trim();
+    localStorage.setItem("workshop.model.sourceBaseUrl", config.sourceBaseUrl);
+    state.message = config.sourceBaseUrl ? "Model source saved." : "Model source cleared.";
     emit();
+    return getState();
+  }
+
+  function loadRuntimeScript() {
+    if (globalThis.ort) {
+      state.hasOrt = true;
+      return Promise.resolve(globalThis.ort);
+    }
+
+    if (runtimeLoadPromise) return runtimeLoadPromise;
+
+    runtimeLoadPromise = new Promise((resolve, reject) => {
+      const existing = document.querySelector("script[data-workshop-ort]");
+      if (existing) {
+        existing.addEventListener("load", () => resolve(globalThis.ort));
+        existing.addEventListener("error", () => reject(new Error("ONNX Runtime Web failed to load.")));
+        return;
+      }
+
+      const script = document.createElement("script");
+      script.src = config.ortScriptUrl;
+      script.async = true;
+      script.dataset.workshopOrt = "true";
+      script.onload = () => globalThis.ort ? resolve(globalThis.ort) : reject(new Error("ONNX Runtime Web loaded without a global runtime."));
+      script.onerror = () => reject(new Error("ONNX Runtime Web failed to load."));
+      document.head.appendChild(script);
+    });
+
+    return runtimeLoadPromise.then((ort) => {
+      state.hasOrt = true;
+      emit();
+      return ort;
+    });
+  }
+
+  async function cacheModelFiles() {
+    const cache = await caches.open(config.cacheName);
+    for (let index = 0; index < config.files.length; index++) {
+      const file = config.files[index];
+      const url = modelUrl(file);
+      const response = await fetch(url, { cache: "reload" });
+      if (!response.ok) throw new Error(`Failed to fetch ${file}: ${response.status}`);
+      await cache.put(url, response.clone());
+      state.progress = Math.round(((index + 1) / config.files.length) * 100);
+      state.message = `Cached ${index + 1} of ${config.files.length} model files.`;
+      localStorage.setItem("workshop.model.progress", String(state.progress));
+      emit();
+    }
+  }
+
+  async function loadTokenizerConfigFromCache() {
+    const cache = await caches.open(config.cacheName);
+    const response = await cache.match(modelUrl("tokenizer_config.json")) || await cache.match(modelUrl("tokenizer.json"));
+    if (!response) {
+      state.tokenizerReady = false;
+      return null;
+    }
+
+    tokenizerConfig = await response.json();
+    state.tokenizerReady = true;
+    return tokenizerConfig;
+  }
+
+  async function tryCreateSession() {
+    if (!globalThis.ort || !config.sourceBaseUrl) return false;
+
+    const providers = state.canUseWebGPU ? ["webgpu", "wasm"] : ["wasm"];
+    try {
+      session = await globalThis.ort.InferenceSession.create(modelUrl("model.onnx"), { executionProviders: providers });
+      state.sessionReady = true;
+      state.status = "ready";
+      state.message = "ONNX session is ready. Object chat will use fallback responses until the generation loop is connected to the model outputs.";
+      localStorage.setItem("workshop.model.status", state.status);
+      emit();
+      return true;
+    } catch (error) {
+      session = null;
+      state.sessionReady = false;
+      state.status = "cached";
+      state.message = "Model files are cached. Session creation needs a browser-compatible ONNX graph at the configured source.";
+      state.lastError = error?.message || String(error);
+      localStorage.setItem("workshop.model.status", state.status);
+      emit();
+      return false;
+    }
   }
 
   async function install() {
     await checkCapabilities();
-    state.status = "downloading";
-    state.progress = 0;
-    state.lastError = "";
-    localStorage.setItem("workshop.model.status", state.status);
-    emit();
 
-    if (!config.manifestUrl) {
+    if (!config.sourceBaseUrl) {
       state.status = "needs-source";
-      state.message = "No Qwen2.5 2B ONNX source URL is configured yet. Fallback object chat remains active.";
+      state.message = "Add a hosted model source URL before installing.";
       localStorage.setItem("workshop.model.status", state.status);
       emit();
       return getState();
     }
 
     try {
-      const base = config.manifestUrl.replace(/\/$/, "");
-      const urls = config.files.map((file) => `${base}/${file}`);
-      const cache = await caches.open(config.cacheName);
-      for (let i = 0; i < urls.length; i++) {
-        const response = await fetch(urls[i], { cache: "reload" });
-        if (!response.ok) throw new Error(`Failed to fetch ${urls[i]}: ${response.status}`);
-        await cache.put(urls[i], response.clone());
-        state.progress = Math.round(((i + 1) / urls.length) * 100);
-        state.message = `Cached ${i + 1} of ${urls.length} model files.`;
-        localStorage.setItem("workshop.model.progress", String(state.progress));
-        emit();
-      }
+      state.status = "downloading";
+      state.progress = 0;
+      state.lastError = "";
+      localStorage.setItem("workshop.model.status", state.status);
+      localStorage.setItem("workshop.model.progress", "0");
+      emit();
+
+      await cacheModelFiles();
+      await loadRuntimeScript();
+      await loadTokenizerConfigFromCache();
       state.status = "cached";
-      state.message = "Model files are cached. Runtime session creation can be enabled after the exact ONNX graph path is configured.";
+      state.message = "Model files are cached.";
       localStorage.setItem("workshop.model.status", state.status);
       emit();
+
+      await tryCreateSession();
       return getState();
     } catch (error) {
       state.status = "failed";
@@ -86,22 +184,27 @@ export function createOnnxLocalModelKit() {
     }
   }
 
-  async function clearCache() {
-    await caches.delete(config.cacheName);
-    state.status = "not-installed";
-    state.progress = 0;
+  async function unload() {
+    session = null;
     state.sessionReady = false;
-    state.message = "Cached model files cleared.";
-    localStorage.setItem("workshop.model.status", state.status);
-    localStorage.setItem("workshop.model.progress", "0");
+    state.status = state.status === "ready" ? "cached" : state.status;
+    state.message = "Runtime session unloaded. Cached files were kept.";
     emit();
     return getState();
   }
 
-  async function unload() {
+  async function clearCache() {
+    await caches.delete(config.cacheName);
+    session = null;
+    tokenizerConfig = null;
+    state.status = "not-installed";
+    state.progress = 0;
     state.sessionReady = false;
-    state.status = state.status === "ready" ? "cached" : state.status;
-    state.message = "Runtime session unloaded. Cached files were kept.";
+    state.tokenizerReady = false;
+    state.lastError = "";
+    state.message = "Cached model files cleared.";
+    localStorage.setItem("workshop.model.status", state.status);
+    localStorage.setItem("workshop.model.progress", "0");
     emit();
     return getState();
   }
@@ -132,13 +235,40 @@ export function createOnnxLocalModelKit() {
 
   async function answer({ object, room, question }) {
     const prompt = buildPrompt({ object, room, question });
-    return { source: state.sessionReady ? "onnx" : "fallback", prompt, text: fallbackAnswer({ object, question }) };
+    return {
+      source: session && tokenizerConfig ? "onnx-runtime-loaded" : "fallback",
+      prompt,
+      text: fallbackAnswer({ object, question })
+    };
   }
 
   function getState() {
-    return { ...state, modelName: config.modelName, format: config.format, quantization: config.quantization, runtime: config.runtime, cacheName: config.cacheName, manifestUrl: config.manifestUrl, files: [...config.files] };
+    return {
+      ...state,
+      modelName: config.modelName,
+      format: config.format,
+      quantization: config.quantization,
+      runtime: config.runtime,
+      cacheName: config.cacheName,
+      sourceBaseUrl: config.sourceBaseUrl,
+      manifestUrl: config.sourceBaseUrl,
+      files: [...config.files]
+    };
   }
 
   checkCapabilities();
-  return { id: "onnx-local-model-kit", label: "Local Model Kit", getState, subscribe, checkCapabilities, install, unload, clearCache, setModelSource, answer, buildPrompt };
+
+  return {
+    id: "onnx-local-model-kit",
+    label: "Local Model Kit",
+    getState,
+    subscribe,
+    checkCapabilities,
+    setModelSource,
+    install,
+    unload,
+    clearCache,
+    answer,
+    buildPrompt
+  };
 }
