@@ -16,17 +16,24 @@ function fail(error) {
 const cdn = "https://cdn.jsdelivr.net/";
 const THREE = await import(cdn + "npm/three@0.160.0/build/three.module.js");
 const proto = cdn + "gh/LuminaryLabs-Agents/NexusRealtime-ProtoKits@main/protokits/";
-const landformDomain = await import(proto + "ocean-island-landform-domain/index.js?v=campfire-fp-1");
-const foliageDomain = await import(proto + "island-foliage-domain/index.js?v=campfire-fp-1");
-const oceanFloorDomain = await import(proto + "ocean-floor-domain/index.js?v=campfire-fp-1");
-const grassTextureDomain = await import(proto + "grass-texture-domain/index.js?v=campfire-fp-1");
-const grassObjectDomain = await import(proto + "grass-object-domain/index.js?v=campfire-fp-1");
-const grassWindDomain = await import(proto + "grass-wind-domain/index.js?v=campfire-fp-1");
-const campfireDomain = await import(proto + "campfire-object-domain/index.js?v=campfire-fp-1");
-const smokeDomain = await import(proto + "smoke-particle-domain/index.js?v=campfire-fp-1");
-const fencedClearingDomain = await import(proto + "fenced-clearing-domain/index.js?v=campfire-fp-1");
-const cameraModeDomain = await import(proto + "camera-mode-domain/index.js?v=campfire-fp-1");
-const cloudDomain = await import(proto + "mattatz-clouds-domain/index.js?v=campfire-fp-1");
+const landformDomain = await import(proto + "ocean-island-landform-domain/index.js?v=avatar-takeover-1");
+const foliageDomain = await import(proto + "island-foliage-domain/index.js?v=avatar-takeover-1");
+const oceanFloorDomain = await import(proto + "ocean-floor-domain/index.js?v=avatar-takeover-1");
+const grassTextureDomain = await import(proto + "grass-texture-domain/index.js?v=avatar-takeover-1");
+const grassObjectDomain = await import(proto + "grass-object-domain/index.js?v=avatar-takeover-1");
+const grassWindDomain = await import(proto + "grass-wind-domain/index.js?v=avatar-takeover-1");
+const campfireDomain = await import(proto + "campfire-object-domain/index.js?v=avatar-takeover-1");
+const smokeDomain = await import(proto + "smoke-particle-domain/index.js?v=avatar-takeover-1");
+const fencedClearingDomain = await import(proto + "fenced-clearing-domain/index.js?v=avatar-takeover-1");
+const cameraModeDomain = await import(proto + "camera-mode-domain/index.js?v=avatar-takeover-1");
+const cloudDomain = await import(proto + "mattatz-clouds-domain/index.js?v=avatar-takeover-1");
+
+const clamp01 = (value) => Math.max(0, Math.min(1, value));
+const smoother = (value) => {
+  const t = clamp01(value);
+  return t * t * (3 - 2 * t);
+};
+const lerpVec = (a, b, t) => a.clone().lerp(b, smoother(t));
 
 function materialFor(m) {
   const color = m.wetSand ? 0xcaa46b : m.beach ? 0xe7ca91 : m.cliff || m.rock ? 0x817d6d : m.path ? 0xb89564 : 0x4f8d4d;
@@ -34,56 +41,76 @@ function materialFor(m) {
 }
 
 function buildIndexedMeshFromSamples(samples, resolution, colorForSample, material) {
-  const pos = [];
+  const positions = [];
   const colors = [];
-  const idx = [];
-  for (const s of samples) {
-    pos.push(s.x, s.y, s.z);
-    const c = colorForSample(s);
-    colors.push(c.r, c.g, c.b);
+  const indices = [];
+  for (const sample of samples) {
+    positions.push(sample.x, sample.y, sample.z);
+    const color = colorForSample(sample);
+    colors.push(color.r, color.g, color.b);
   }
-  for (let z = 0; z < resolution - 1; z++) for (let x = 0; x < resolution - 1; x++) {
-    const a = z * resolution + x;
-    idx.push(a, a + resolution, a + 1, a + 1, a + resolution, a + resolution + 1);
+  for (let z = 0; z < resolution - 1; z += 1) {
+    for (let x = 0; x < resolution - 1; x += 1) {
+      const a = z * resolution + x;
+      indices.push(a, a + resolution, a + 1, a + 1, a + resolution, a + resolution + 1);
+    }
   }
-  const g = new THREE.BufferGeometry();
-  g.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
-  g.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
-  g.setIndex(idx);
-  g.computeVertexNormals();
-  return new THREE.Mesh(g, material);
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+  geometry.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
+  geometry.setIndex(indices);
+  geometry.computeVertexNormals();
+  return new THREE.Mesh(geometry, material);
 }
 
 function makeTerrain(heightfield) {
-  return buildIndexedMeshFromSamples(heightfield.samples, heightfield.resolution, (s) => materialFor(s.masks || {}), new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.92, metalness: 0.015 }));
+  return buildIndexedMeshFromSamples(
+    heightfield.samples,
+    heightfield.resolution,
+    (sample) => materialFor(sample.masks || {}),
+    new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.92, metalness: 0.015 })
+  );
 }
 
 function makeOceanFloor(heightfield) {
-  return buildIndexedMeshFromSamples(heightfield.samples, heightfield.resolution, (s) => {
-    const m = s.masks || {};
-    return new THREE.Color(m.reefBand ? 0x3d8176 : m.shallowShelf ? 0x4b8b7a : 0x235b67);
-  }, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.96, metalness: 0.0 }));
+  return buildIndexedMeshFromSamples(
+    heightfield.samples,
+    heightfield.resolution,
+    (sample) => {
+      const masks = sample.masks || {};
+      return new THREE.Color(masks.reefBand ? 0x3d8176 : masks.shallowShelf ? 0x4b8b7a : 0x235b67);
+    },
+    new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.96, metalness: 0.0 })
+  );
 }
 
 function makeFoam(shoreline) {
-  const pts = shoreline.map(p => new THREE.Vector3(p.x, (p.y || 0) + 0.08, p.z));
-  pts.push(pts[0].clone());
-  return new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts, true), shoreline.length, 0.65, 5, true), new THREE.MeshBasicMaterial({ color: 0xfff1d4, transparent: true, opacity: 0.36, depthWrite: false }));
+  const points = shoreline.map((point) => new THREE.Vector3(point.x, (point.y || 0) + 0.08, point.z));
+  points.push(points[0].clone());
+  return new THREE.Mesh(
+    new THREE.TubeGeometry(new THREE.CatmullRomCurve3(points, true), shoreline.length, 0.65, 5, true),
+    new THREE.MeshBasicMaterial({ color: 0xfff1d4, transparent: true, opacity: 0.36, depthWrite: false })
+  );
 }
 
 function makePath(pathNetwork, sampleHeight) {
   const group = new THREE.Group();
-  const mat = new THREE.MeshStandardMaterial({ color: 0xb89564, roughness: 0.96, transparent: true, opacity: 0.86 });
+  const material = new THREE.MeshStandardMaterial({ color: 0xb89564, roughness: 0.96, transparent: true, opacity: 0.86 });
   for (const segment of pathNetwork.segments) {
     const a = new THREE.Vector3(segment.from.x, sampleHeight(segment.from) + 0.12, segment.from.z);
     const b = new THREE.Vector3(segment.to.x, sampleHeight(segment.to) + 0.12, segment.to.z);
     const dir = new THREE.Vector3().subVectors(b, a);
     const side = new THREE.Vector3(-dir.z, 0, dir.x).normalize().multiplyScalar(segment.width * 0.5);
-    const g = new THREE.BufferGeometry();
-    g.setAttribute("position", new THREE.Float32BufferAttribute([a.x + side.x, a.y, a.z + side.z, a.x - side.x, a.y, a.z - side.z, b.x + side.x, b.y, b.z + side.z, b.x - side.x, b.y, b.z - side.z], 3));
-    g.setIndex([0, 1, 2, 2, 1, 3]);
-    g.computeVertexNormals();
-    group.add(new THREE.Mesh(g, mat));
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute("position", new THREE.Float32BufferAttribute([
+      a.x + side.x, a.y, a.z + side.z,
+      a.x - side.x, a.y, a.z - side.z,
+      b.x + side.x, b.y, b.z + side.z,
+      b.x - side.x, b.y, b.z - side.z
+    ], 3));
+    geometry.setIndex([0, 1, 2, 2, 1, 3]);
+    geometry.computeVertexNormals();
+    group.add(new THREE.Mesh(geometry, material));
   }
   return group;
 }
@@ -107,19 +134,19 @@ function makePalm(record, byParent) {
   trunk.position.y = height * 0.5;
   trunk.rotation.z = record.state?.lean || 0;
   group.add(trunk);
-  const leafMat = new THREE.MeshStandardMaterial({ color: 0x2f8f52, roughness: 0.86, side: THREE.DoubleSide });
-  for (let i = 0; i < 7; i++) {
-    const leaf = new THREE.Mesh(new THREE.ConeGeometry(0.22, height * 0.34, 4), leafMat);
+  const leafMaterial = new THREE.MeshStandardMaterial({ color: 0x2f8f52, roughness: 0.86, side: THREE.DoubleSide });
+  for (let index = 0; index < 7; index += 1) {
+    const leaf = new THREE.Mesh(new THREE.ConeGeometry(0.22, height * 0.34, 4), leafMaterial);
     leaf.position.y = height * 0.96;
     leaf.rotation.z = Math.PI / 2.8;
-    leaf.rotation.y = i / 7 * Math.PI * 2;
+    leaf.rotation.y = index / 7 * Math.PI * 2;
     leaf.scale.set(1, 0.42, 1);
     group.add(leaf);
   }
-  const coconutMat = new THREE.MeshStandardMaterial({ color: 0x8a5b32, roughness: 0.8 });
+  const coconutMaterial = new THREE.MeshStandardMaterial({ color: 0x8a5b32, roughness: 0.8 });
   const cluster = childrenOf(byParent, record.id, "coconut-cluster")[0];
   for (const coconut of childrenOf(byParent, cluster?.id, "coconut")) {
-    const mesh = new THREE.Mesh(new THREE.SphereGeometry(0.18, 8, 6), coconutMat);
+    const mesh = new THREE.Mesh(new THREE.SphereGeometry(0.18, 8, 6), coconutMaterial);
     mesh.position.copy(new THREE.Vector3(coconut.transform.position.x, coconut.transform.position.y, coconut.transform.position.z));
     group.add(mesh);
   }
@@ -183,43 +210,41 @@ function makeObjects(graph, exclusionZones = []) {
   return group;
 }
 
-function makeSeaFloorObject(record) {
-  const type = record.type;
-  const color = type === "reef-cluster" ? 0xd78367 : type === "coral-cluster" ? 0xf0a58c : type === "sea-floor-boulder" ? 0x56676b : 0x667b78;
-  const material = new THREE.MeshStandardMaterial({ color, roughness: 0.88, metalness: 0.01 });
-  const geometry = new THREE.DodecahedronGeometry(type === "sea-floor-boulder" ? 0.9 : 0.45, 0);
-  const mesh = new THREE.Mesh(geometry, material);
-  mesh.position.set(record.position.x, record.position.y + 0.2, record.position.z);
-  mesh.rotation.y = record.rotation || 0;
-  mesh.scale.setScalar(record.scale || 1);
-  return mesh;
-}
-
 function makeSeaFloorObjects(objects) {
   const group = new THREE.Group();
-  for (const object of objects) group.add(makeSeaFloorObject(object));
+  for (const object of objects) {
+    const type = object.type;
+    const color = type === "reef-cluster" ? 0xd78367 : type === "coral-cluster" ? 0xf0a58c : type === "sea-floor-boulder" ? 0x56676b : 0x667b78;
+    const material = new THREE.MeshStandardMaterial({ color, roughness: 0.88, metalness: 0.01 });
+    const geometry = new THREE.DodecahedronGeometry(type === "sea-floor-boulder" ? 0.9 : 0.45, 0);
+    const mesh = new THREE.Mesh(geometry, material);
+    mesh.position.set(object.position.x, object.position.y + 0.2, object.position.z);
+    mesh.rotation.y = object.rotation || 0;
+    mesh.scale.setScalar(object.scale || 1);
+    group.add(mesh);
+  }
   return group;
 }
 
 function makeFence(clearing) {
   const group = new THREE.Group();
-  const postMat = new THREE.MeshStandardMaterial({ color: 0x7c5738, roughness: 0.9 });
-  const railMat = new THREE.MeshStandardMaterial({ color: 0x8b6642, roughness: 0.9 });
+  const postMaterial = new THREE.MeshStandardMaterial({ color: 0x7c5738, roughness: 0.9 });
+  const railMaterial = new THREE.MeshStandardMaterial({ color: 0x8b6642, roughness: 0.9 });
   for (const object of clearing.objects) {
     if (object.type === "fence-post") {
-      const h = object.state.heightMeters || 1.25;
-      const mesh = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.14, h, 7), postMat);
-      mesh.position.set(object.transform.position.x, object.transform.position.y + h * 0.5, object.transform.position.z);
+      const height = object.state.heightMeters || 1.25;
+      const mesh = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.14, height, 7), postMaterial);
+      mesh.position.set(object.transform.position.x, object.transform.position.y + height * 0.5, object.transform.position.z);
       group.add(mesh);
     } else if (object.type === "fence-rail") {
-      const len = object.transform.scale.x || 2;
-      const mesh = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.055, len, 6), railMat);
+      const length = object.transform.scale.x || 2;
+      const mesh = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.055, length, 6), railMaterial);
       mesh.rotation.z = Math.PI / 2;
       mesh.rotation.y = object.transform.rotation.y || 0;
       mesh.position.set(object.transform.position.x, object.transform.position.y, object.transform.position.z);
       group.add(mesh);
     } else if (object.type === "fence-gate") {
-      const mesh = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.8, 0.08), railMat);
+      const mesh = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.8, 0.08), railMaterial);
       mesh.position.set(object.transform.position.x, object.transform.position.y + 0.7, object.transform.position.z);
       mesh.rotation.y = object.transform.rotation.y || 0;
       group.add(mesh);
@@ -228,29 +253,44 @@ function makeFence(clearing) {
   return group;
 }
 
+function makeAvatar(avatarRecord) {
+  const group = new THREE.Group();
+  const bodyMaterial = new THREE.MeshStandardMaterial({ color: 0x3d5f82, roughness: 0.74 });
+  const headMaterial = new THREE.MeshStandardMaterial({ color: 0xd7b38c, roughness: 0.82 });
+  const body = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.34, 1.15, 10), bodyMaterial);
+  body.position.y = 0.72;
+  const head = new THREE.Mesh(new THREE.SphereGeometry(0.24, 12, 8), headMaterial);
+  head.position.y = 1.45;
+  const eye = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.035, 0.035), new THREE.MeshBasicMaterial({ color: 0x111111 }));
+  eye.position.set(0, 1.47, -0.22);
+  group.add(body, head, eye);
+  group.position.set(avatarRecord.transform.position.x, avatarRecord.transform.position.y, avatarRecord.transform.position.z);
+  group.rotation.y = avatarRecord.transform.rotation.y || 0;
+  group.userData.eyeHeight = avatarRecord.state.eyeHeightMeters || 1.7;
+  return group;
+}
+
 function makeCampfire(campfireGraph) {
   const root = campfireGraph.byId[campfireGraph.rootId];
   const group = new THREE.Group();
   group.position.set(root.transform.position.x, root.transform.position.y, root.transform.position.z);
-  const logMat = new THREE.MeshStandardMaterial({ color: 0x70462a, roughness: 0.88 });
-  for (let i = 0; i < 7; i++) {
-    const log = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.15, 2.0, 8), logMat);
-    log.position.y = 0.22 + (i % 2) * 0.1;
+  const logMaterial = new THREE.MeshStandardMaterial({ color: 0x70462a, roughness: 0.88 });
+  for (let index = 0; index < 7; index += 1) {
+    const log = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.15, 2.0, 8), logMaterial);
+    log.position.y = 0.22 + (index % 2) * 0.1;
     log.rotation.z = Math.PI / 2;
-    log.rotation.y = i / 7 * Math.PI * 2;
+    log.rotation.y = index / 7 * Math.PI * 2;
     group.add(log);
   }
-  const emberMat = new THREE.MeshStandardMaterial({ color: 0xff5c22, emissive: 0xff3d12, emissiveIntensity: 1.4, roughness: 0.5 });
-  const ember = new THREE.Mesh(new THREE.SphereGeometry(0.55, 12, 6), emberMat);
+  const ember = new THREE.Mesh(new THREE.SphereGeometry(0.55, 12, 6), new THREE.MeshStandardMaterial({ color: 0xff5c22, emissive: 0xff3d12, emissiveIntensity: 1.4, roughness: 0.5 }));
   ember.scale.y = 0.18;
   ember.position.y = 0.16;
   group.add(ember);
   const flames = [];
-  for (let i = 0; i < 5; i++) {
-    const flameMat = new THREE.MeshBasicMaterial({ color: i % 2 ? 0xffa533 : 0xffdf62, transparent: true, opacity: 0.72, depthWrite: false });
-    const flame = new THREE.Mesh(new THREE.ConeGeometry(0.25 + i * 0.025, 1.1 - i * 0.08, 5), flameMat);
-    flame.position.set(Math.cos(i) * 0.18, 0.65, Math.sin(i * 1.7) * 0.18);
-    flame.rotation.y = i;
+  for (let index = 0; index < 5; index += 1) {
+    const flame = new THREE.Mesh(new THREE.ConeGeometry(0.25 + index * 0.025, 1.1 - index * 0.08, 5), new THREE.MeshBasicMaterial({ color: index % 2 ? 0xffa533 : 0xffdf62, transparent: true, opacity: 0.72, depthWrite: false }));
+    flame.position.set(Math.cos(index) * 0.18, 0.65, Math.sin(index * 1.7) * 0.18);
+    flame.rotation.y = index;
     group.add(flame);
     flames.push(flame);
   }
@@ -268,9 +308,9 @@ function makeSmokeParticles(descriptor) {
   const ages = new Float32Array(count);
   const seeds = new Float32Array(count);
   const origin = new THREE.Vector3(descriptor.position.x, descriptor.position.y, descriptor.position.z);
-  for (let i = 0; i < count; i++) {
-    ages[i] = Math.random() * descriptor.lifespanSeconds;
-    seeds[i] = Math.random() * Math.PI * 2;
+  for (let index = 0; index < count; index += 1) {
+    ages[index] = Math.random() * descriptor.lifespanSeconds;
+    seeds[index] = Math.random() * Math.PI * 2;
   }
   const geometry = new THREE.BufferGeometry();
   geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
@@ -283,24 +323,24 @@ function makeSmokeParticles(descriptor) {
 
 function updateSmokeParticles(points, dt, now) {
   const { descriptor, ages, seeds, origin } = points.userData;
-  const pos = points.geometry.attributes.position;
+  const positions = points.geometry.attributes.position;
   const life = descriptor.lifespanSeconds;
   const wind = descriptor.wind;
-  for (let i = 0; i < ages.length; i++) {
-    ages[i] += dt;
-    if (ages[i] > life) ages[i] -= life;
-    const t = ages[i] / life;
-    const swirl = Math.sin(now * 0.0015 + seeds[i] + t * 9) * descriptor.turbulence;
+  for (let index = 0; index < ages.length; index += 1) {
+    ages[index] += dt;
+    if (ages[index] > life) ages[index] -= life;
+    const t = ages[index] / life;
+    const swirl = Math.sin(now * 0.0015 + seeds[index] + t * 9) * descriptor.turbulence;
     const radius = descriptor.spawnRadius + t * 2.2;
     const rise = t * descriptor.riseSpeed * life;
-    pos.setXYZ(i, origin.x + wind.direction.x * wind.response * t * 5.5 + Math.cos(seeds[i]) * radius * 0.35 + swirl * 0.25, origin.y + rise, origin.z + wind.direction.z * wind.response * t * 5.5 + Math.sin(seeds[i]) * radius * 0.35 + swirl * 0.18);
+    positions.setXYZ(index,
+      origin.x + wind.direction.x * wind.response * t * 5.5 + Math.cos(seeds[index]) * radius * 0.35 + swirl * 0.25,
+      origin.y + rise,
+      origin.z + wind.direction.z * wind.response * t * 5.5 + Math.sin(seeds[index]) * radius * 0.35 + swirl * 0.18
+    );
   }
-  pos.needsUpdate = true;
+  positions.needsUpdate = true;
   points.material.opacity = 0.28 + Math.sin(now * 0.001) * 0.04;
-}
-
-function hexToColor(hex) {
-  return new THREE.Color(hex);
 }
 
 function createGrassPatchGeometry({ bladeCount = 260, radius = 1.8, seed = 1, heightMin = 0.32, heightMax = 0.92, texture }) {
@@ -311,37 +351,36 @@ function createGrassPatchGeometry({ bladeCount = 260, radius = 1.8, seed = 1, he
     state ^= state << 5;
     return (state >>> 0) / 0xffffffff;
   };
-  const rootColor = hexToColor(texture.rootColor);
-  const tipColor = hexToColor(texture.tipColor);
-  const dryColor = hexToColor(texture.dryColor);
+  const rootColor = new THREE.Color(texture.rootColor);
+  const tipColor = new THREE.Color(texture.tipColor);
+  const dryColor = new THREE.Color(texture.dryColor);
   const positions = [];
   const colors = [];
   const indices = [];
-  for (let i = 0; i < bladeCount; i++) {
-    const a = random() * Math.PI * 2;
-    const r = radius * Math.sqrt(random());
-    const x = Math.cos(a) * r;
-    const z = Math.sin(a) * r;
-    const h = heightMin + (heightMax - heightMin) * random();
-    const w = 0.018 + random() * 0.03;
+  for (let index = 0; index < bladeCount; index += 1) {
+    const angle = random() * Math.PI * 2;
+    const spread = radius * Math.sqrt(random());
+    const x = Math.cos(angle) * spread;
+    const z = Math.sin(angle) * spread;
+    const height = heightMin + (heightMax - heightMin) * random();
+    const width = 0.018 + random() * 0.03;
     const lean = (random() - 0.5) * 0.24;
-    const side = new THREE.Vector3(Math.cos(a + Math.PI / 2) * w, 0, Math.sin(a + Math.PI / 2) * w);
-    const base = new THREE.Vector3(x, 0, z);
-    const tip = new THREE.Vector3(x + Math.cos(a) * lean, h, z + Math.sin(a) * lean);
-    const b = positions.length / 3;
-    positions.push(base.x - side.x, 0, base.z - side.z, base.x + side.x, 0, base.z + side.z, tip.x + side.x * 0.32, tip.y, tip.z + side.z * 0.32, tip.x - side.x * 0.32, tip.y, tip.z - side.z * 0.32);
+    const side = new THREE.Vector3(Math.cos(angle + Math.PI / 2) * width, 0, Math.sin(angle + Math.PI / 2) * width);
+    const tip = new THREE.Vector3(x + Math.cos(angle) * lean, height, z + Math.sin(angle) * lean);
+    const base = positions.length / 3;
+    positions.push(x - side.x, 0, z - side.z, x + side.x, 0, z + side.z, tip.x + side.x * 0.32, tip.y, tip.z + side.z * 0.32, tip.x - side.x * 0.32, tip.y, tip.z - side.z * 0.32);
     const dryMix = random() < texture.dryVariation ? 0.42 : 0;
     const root = rootColor.clone().lerp(dryColor, dryMix);
     const tipC = tipColor.clone().lerp(dryColor, dryMix * 0.7);
     colors.push(root.r, root.g, root.b, root.r, root.g, root.b, tipC.r, tipC.g, tipC.b, tipC.r, tipC.g, tipC.b);
-    indices.push(b, b + 1, b + 2, b, b + 2, b + 3);
+    indices.push(base, base + 1, base + 2, base, base + 2, base + 3);
   }
-  const g = new THREE.BufferGeometry();
-  g.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
-  g.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
-  g.setIndex(indices);
-  g.computeVertexNormals();
-  return g;
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+  geometry.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
+  geometry.setIndex(indices);
+  geometry.computeVertexNormals();
+  return geometry;
 }
 
 function makeGrassBatches(placement, textureDescriptor, windDescriptor) {
@@ -391,14 +430,14 @@ function createCloudMaterial(seed = 0, layer = 0) {
   });
 }
 
-function makeCloud(d, layer = 0, index = 0) {
-  const mat = createCloudMaterial(index * 17 + layer * 101, layer);
-  const mesh = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), mat);
-  mesh.scale.set((d.scale?.x || 300) * 4.6, (d.scale?.y || 90) * 1.35, (d.scale?.z || 230) * 4.0);
-  mesh.position.set((d.position?.x || 0) * 0.52, Math.max(135, (d.position?.y || 600) * 0.5), (d.position?.z || 0) * 0.52);
-  mesh.userData.speed = d.driftSpeed || 0.04;
-  mesh.userData.drift = d.drift || { x: 1, z: 0.2 };
-  mesh.userData.material = mat;
+function makeCloud(descriptor, layer = 0, index = 0) {
+  const material = createCloudMaterial(index * 17 + layer * 101, layer);
+  const mesh = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), material);
+  mesh.scale.set((descriptor.scale?.x || 300) * 4.6, (descriptor.scale?.y || 90) * 1.35, (descriptor.scale?.z || 230) * 4.0);
+  mesh.position.set((descriptor.position?.x || 0) * 0.52, Math.max(135, (descriptor.position?.y || 600) * 0.5), (descriptor.position?.z || 0) * 0.52);
+  mesh.userData.speed = descriptor.driftSpeed || 0.04;
+  mesh.userData.drift = descriptor.drift || { x: 1, z: 0.2 };
+  mesh.userData.material = material;
   return mesh;
 }
 
@@ -413,6 +452,7 @@ async function main() {
   const sampleMasks = (point) => landformDomain.sampleIslandMasks(islandState, { x: point.x, z: point.z });
   const campfireY = sampleHeight({ x: 0, z: 0 });
   const clearing = fencedClearingDomain.createFencedClearingGraph({ parentId: "island:cozy-001", position: { x: 0, y: campfireY, z: 0 }, fenceRadiusMeters: 12, clearingRadiusMeters: 9.5, campfireRadiusMeters: 2.25 });
+  const avatarRecord = clearing.byId["central-clearing:campfire:player-avatar-anchor"] ?? { transform: { position: { x: 0, y: campfireY, z: 6 }, rotation: { y: 0 } }, state: { eyeHeightMeters: 1.7 } };
   const graph = foliageDomain.createDenseCozyIslandObjectGraph({ seed: "cozy-island-domain-cutover", radiusMeters: ISLAND_RADIUS_METERS, sampleHeight, sampleMasks });
   const foliageRender = foliageDomain.createDenseCozyIslandRenderContract({ graph, landformContract: landform, seaFloorY: SEA_FLOOR_Y });
   const campfireGraph = campfireDomain.createCampfireObjectGraph({ parentId: graph.rootId, position: { x: 0, y: campfireY, z: 0 }, radiusMeters: 1.45, intensity: 0.86, smoke: true });
@@ -450,40 +490,54 @@ async function main() {
   const grassGroup = makeGrassBatches(grassPlacement, grassTexture, grassWind);
   const campfireGroup = makeCampfire(campfireGraph);
   const smokePoints = makeSmokeParticles(smoke);
-  scene.add(water, makeFoam(landform.shoreline), makePath(graph.pathNetwork, sampleHeight), makeObjects(graph, clearing.clearanceZones), makeFence(clearing), campfireGroup, smokePoints, grassGroup);
+  const avatarGroup = makeAvatar(avatarRecord);
+  const objectExclusionZones = clearing.objectExclusionZones ?? [{ center: { x: 0, z: 0 }, radius: 11.2 }];
+  scene.add(water, makeFoam(landform.shoreline), makePath(graph.pathNetwork, sampleHeight), makeObjects(graph, objectExclusionZones), makeFence(clearing), campfireGroup, smokePoints, avatarGroup, grassGroup);
   const cloudGroup = new THREE.Group();
-  cloudContract.clouds.slice(0, CLOUD_COUNT).forEach((d, i) => cloudGroup.add(makeCloud(d, d.layerId?.includes("high") ? 2 : d.layerId?.includes("mid") ? 1 : 0, i)));
+  cloudContract.clouds.slice(0, CLOUD_COUNT).forEach((descriptor, index) => cloudGroup.add(makeCloud(descriptor, descriptor.layerId?.includes("high") ? 2 : descriptor.layerId?.includes("mid") ? 1 : 0, index)));
   scene.add(cloudGroup);
 
   const keys = new Set();
   const rig = { yaw: 0, pitch: -0.16, radius: 420, target: new THREE.Vector3(0, 20, 0) };
-  const fp = { active: false, yaw: Math.PI, pitch: 0, position: new THREE.Vector3(0, campfireY + cameraDescriptor.firstPerson.eyeHeightMeters, 5.2) };
+  const avatarBase = new THREE.Vector3(avatarRecord.transform.position.x, avatarRecord.transform.position.y, avatarRecord.transform.position.z);
+  const avatarEye = () => new THREE.Vector3(avatarBase.x, sampleHeight(avatarBase) + (avatarRecord.state.eyeHeightMeters || 1.7), avatarBase.z);
+  const avatarForward = new THREE.Vector3(0, 0, -1);
+  const fp = { active: false, yaw: 0, pitch: 0, position: avatarEye() };
+  const transition = { active: false, started: 0, duration: 1550, startPos: new THREE.Vector3(), startLook: new THREE.Vector3(), shoulder: new THREE.Vector3(), head: new THREE.Vector3(), eye: new THREE.Vector3() };
   let drag = null;
+
   function resize() { renderer.setSize(innerWidth, innerHeight, false); camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); }
   resize();
   addEventListener("resize", resize);
-  addEventListener("keydown", e => keys.add(e.code));
-  addEventListener("keyup", e => keys.delete(e.code));
+  addEventListener("keydown", (event) => keys.add(event.code));
+  addEventListener("keyup", (event) => keys.delete(event.code));
   addEventListener("blur", () => keys.clear());
-  canvas.addEventListener("wheel", e => {
-    e.preventDefault();
-    if (fp.active && e.deltaY > 0) { fp.active = false; rig.radius = 125; return; }
-    rig.radius = Math.max(40, Math.min(900, rig.radius + e.deltaY * 0.75));
+  canvas.addEventListener("wheel", (event) => {
+    event.preventDefault();
+    if ((fp.active || transition.active) && event.deltaY > 0) {
+      fp.active = false;
+      transition.active = false;
+      avatarGroup.visible = true;
+      rig.radius = 125;
+      rig.target.set(0, campfireY + 5.2, 0);
+      return;
+    }
+    if (!fp.active && !transition.active) rig.radius = Math.max(40, Math.min(900, rig.radius + event.deltaY * 0.75));
   }, { passive: false });
-  canvas.addEventListener("pointerdown", e => { drag = { x: e.clientX, y: e.clientY }; canvas.setPointerCapture?.(e.pointerId); });
+  canvas.addEventListener("pointerdown", (event) => { drag = { x: event.clientX, y: event.clientY }; canvas.setPointerCapture?.(event.pointerId); });
   canvas.addEventListener("pointerup", () => { drag = null; });
-  canvas.addEventListener("pointermove", e => {
+  canvas.addEventListener("pointermove", (event) => {
     if (!drag) return;
-    const dx = e.clientX - drag.x;
-    const dy = e.clientY - drag.y;
+    const dx = event.clientX - drag.x;
+    const dy = event.clientY - drag.y;
     if (fp.active) {
       fp.yaw -= dx * cameraDescriptor.firstPerson.lookSensitivity;
       fp.pitch = Math.max(-1.1, Math.min(1.0, fp.pitch - dy * cameraDescriptor.firstPerson.lookSensitivity));
-    } else {
+    } else if (!transition.active) {
       rig.yaw -= dx * 0.0045;
       rig.pitch = Math.max(-0.75, Math.min(0.2, rig.pitch - dy * 0.0035));
     }
-    drag = { x: e.clientX, y: e.clientY };
+    drag = { x: event.clientX, y: event.clientY };
   });
 
   let last = performance.now();
@@ -491,27 +545,30 @@ async function main() {
   const swayPos = new THREE.Vector3();
   const swayQuat = new THREE.Quaternion();
   const swayScale = new THREE.Vector3();
+
   function animateGrass(now) {
     grassGroup.children.forEach((mesh, batchIndex) => {
       const wind = mesh.userData.wind;
       const base = mesh.userData.baseMatrices || [];
       const sway = Math.sin(now * 0.0018 + batchIndex * 1.7) * wind.baseSway * 0.035;
-      for (let i = 0; i < base.length; i++) {
-        base[i].decompose(swayPos, swayQuat, swayScale);
-        const q = new THREE.Quaternion().setFromEuler(new THREE.Euler(sway * (1 + (i % 5) * 0.12), sway * 0.25, 0));
+      for (let index = 0; index < base.length; index += 1) {
+        base[index].decompose(swayPos, swayQuat, swayScale);
+        const q = new THREE.Quaternion().setFromEuler(new THREE.Euler(sway * (1 + (index % 5) * 0.12), sway * 0.25, 0));
         swayMatrix.compose(swayPos, swayQuat.multiply(q), swayScale);
-        mesh.setMatrixAt(i, swayMatrix);
+        mesh.setMatrixAt(index, swayMatrix);
       }
       mesh.instanceMatrix.needsUpdate = true;
     });
   }
+
   function validFirstPersonPosition(next) {
-    const r = Math.hypot(next.x, next.z);
+    const radius = Math.hypot(next.x, next.z);
     const max = clearing.byId["central-clearing:campfire:collision-boundary"].state.radiusMeters;
-    if (r > max) return false;
+    if (radius > max) return false;
     if (Math.hypot(next.x, next.z) < 2.35) return false;
     return true;
   }
+
   function updateFirstPerson(dt) {
     const forward = new THREE.Vector3(-Math.sin(fp.yaw), 0, -Math.cos(fp.yaw));
     const right = new THREE.Vector3(Math.cos(fp.yaw), 0, -Math.sin(fp.yaw));
@@ -526,53 +583,85 @@ async function main() {
     camera.position.copy(fp.position);
     camera.lookAt(fp.position.clone().add(look));
   }
+
   function updateOrbitOrInspection(dt, mode) {
     const f = new THREE.Vector3(-Math.sin(rig.yaw), 0, -Math.cos(rig.yaw));
     const r = new THREE.Vector3(Math.cos(rig.yaw), 0, -Math.sin(rig.yaw));
     const move = new THREE.Vector3();
     if (keys.has("KeyW")) move.add(f); if (keys.has("KeyS")) move.sub(f); if (keys.has("KeyD")) move.add(r); if (keys.has("KeyA")) move.sub(r);
     if (move.lengthSq()) { rig.target.add(move.normalize().multiplyScalar(38 * dt)); rig.target.y = Math.max(9, sampleHeight(rig.target) + 11); }
-    const campfireFocus = new THREE.Vector3(0, campfireY + (mode === "inspection" ? 5.2 : 2.6), 0);
-    if (mode === "inspection") rig.target.lerp(campfireFocus, 0.055);
-    const offset = new THREE.Vector3(Math.sin(rig.yaw) * Math.cos(rig.pitch) * rig.radius, Math.max(76, Math.sin(-rig.pitch + 0.46) * rig.radius * 0.42), Math.cos(rig.yaw) * Math.cos(rig.pitch) * rig.radius);
+    const campfireFocus = new THREE.Vector3(0, campfireY + 4.8, 0);
+    const avatarFocus = avatarEye().add(new THREE.Vector3(0, 0.35, 0));
+    const inspectT = clamp01((260 - rig.radius) / 170);
+    if (mode === "inspection") rig.target.lerp(avatarFocus.clone().lerp(campfireFocus, 0.35), 0.065);
+    const minHeight = THREE.MathUtils.lerp(76, 24, inspectT);
+    const offset = new THREE.Vector3(Math.sin(rig.yaw) * Math.cos(rig.pitch) * rig.radius, Math.max(minHeight, Math.sin(-rig.pitch + 0.46) * rig.radius * 0.42), Math.cos(rig.yaw) * Math.cos(rig.pitch) * rig.radius);
     camera.position.copy(rig.target).add(offset);
     camera.lookAt(rig.target);
   }
+
+  function startAvatarTakeover(now) {
+    transition.active = true;
+    transition.started = now;
+    transition.startPos.copy(camera.position);
+    transition.startLook.copy(rig.target);
+    const eye = avatarEye();
+    transition.eye.copy(eye);
+    transition.shoulder.copy(eye).add(new THREE.Vector3(0, 2.4, 4.2));
+    transition.head.copy(eye).add(new THREE.Vector3(0, 0.45, 1.15));
+    avatarGroup.visible = true;
+  }
+
+  function updateAvatarTakeover(now) {
+    const t = clamp01((now - transition.started) / transition.duration);
+    let position;
+    if (t < 0.55) position = lerpVec(transition.startPos, transition.shoulder, t / 0.55);
+    else if (t < 0.84) position = lerpVec(transition.shoulder, transition.head, (t - 0.55) / 0.29);
+    else position = lerpVec(transition.head, transition.eye, (t - 0.84) / 0.16);
+    const campfireLook = new THREE.Vector3(0, campfireY + 1.15, 0);
+    const eyeLook = transition.eye.clone().add(avatarForward);
+    const lookTarget = transition.startLook.clone().lerp(campfireLook, smoother(Math.min(t * 1.3, 1))).lerp(eyeLook, smoother(Math.max(0, (t - 0.78) / 0.22)));
+    camera.position.copy(position);
+    camera.lookAt(lookTarget);
+    avatarGroup.visible = t < 0.92;
+    if (t >= 1) {
+      transition.active = false;
+      fp.active = true;
+      fp.position.copy(transition.eye);
+      fp.yaw = 0;
+      fp.pitch = 0;
+      avatarGroup.visible = false;
+    }
+  }
+
   function frame(now) {
     const dt = Math.min(0.05, (now - last) / 1000);
     last = now;
     water.position.y = -0.08 + Math.sin(now * 0.0012) * 0.18;
-    const mode = cameraModeDomain.resolveCameraMode(rig.radius, cameraDescriptor.thresholds);
-    if (mode === "first-person") {
-      if (!fp.active) {
-        fp.active = true;
-        fp.position.set(0, sampleHeight({ x: 0, z: 5.2 }) + cameraDescriptor.firstPerson.eyeHeightMeters, 5.2);
-        fp.yaw = Math.PI;
-        fp.pitch = 0;
-      }
-      updateFirstPerson(dt);
-    } else {
-      fp.active = false;
-      updateOrbitOrInspection(dt, mode);
-    }
+    const resolvedMode = cameraModeDomain.resolveCameraMode(rig.radius, cameraDescriptor.thresholds);
+    if (fp.active) updateFirstPerson(dt);
+    else if (transition.active) updateAvatarTakeover(now);
+    else if (resolvedMode === "first-person") startAvatarTakeover(now);
+    else updateOrbitOrInspection(dt, resolvedMode);
     animateGrass(now);
     updateSmokeParticles(smokePoints, dt, now);
     const flamePulse = 1 + Math.sin(now * 0.011) * 0.12;
-    campfireGroup.userData.flames?.forEach((flame, i) => flame.scale.setScalar(flamePulse + Math.sin(now * 0.014 + i) * 0.08));
+    campfireGroup.userData.flames?.forEach((flame, index) => flame.scale.setScalar(flamePulse + Math.sin(now * 0.014 + index) * 0.08));
     if (campfireGroup.userData.light) campfireGroup.userData.light.intensity = 1.55 + Math.sin(now * 0.01) * 0.35;
-    cloudGroup.children.forEach((cloud, i) => {
+    cloudGroup.children.forEach((cloud, index) => {
       cloud.position.x += (cloud.userData.drift?.x || 1) * cloud.userData.speed * dt * 18;
       cloud.position.z += (cloud.userData.drift?.z || 0) * cloud.userData.speed * dt * 18;
       cloud.userData.material.uniforms.uTime.value = now * 0.001;
       cloud.worldToLocal(cloud.userData.material.uniforms.uCameraLocal.value.copy(camera.position));
-      cloud.rotation.y = Math.sin(now * 0.00008 + i) * 0.04;
+      cloud.rotation.y = Math.sin(now * 0.00008 + index) * 0.04;
     });
-    hud.innerHTML = `<strong>Cozy Island</strong><br>WASD move · drag look/orbit · wheel zoom/exit<br>${mode} · fenced campfire clearing · smoke ${smoke.particleCount} · grass ${grassPlacement.patchCount}/${grassBatches.length} · clouds ${Math.min(CLOUD_COUNT, cloudContract.clouds.length)}`;
+    const visibleMode = transition.active ? "entering-first-person" : fp.active ? "first-person" : resolvedMode;
+    hud.innerHTML = `<strong>Cozy Island</strong><br>WASD move · drag look/orbit · wheel zoom/exit<br>${visibleMode} · avatar takeover · smoke ${smoke.particleCount} · grass ${grassPlacement.patchCount}/${grassBatches.length} · clouds ${Math.min(CLOUD_COUNT, cloudContract.clouds.length)}`;
     renderer.render(scene, camera);
     requestAnimationFrame(frame);
   }
 
-  globalThis.CozyIsland = { islandState, landform, graph, foliageRender, oceanFloor, grassTexture, grassWind, grassPlacement, grassBatches, clearing, campfireGraph, smoke, cloudContract };
+  globalThis.CozyIsland = { islandState, landform, graph, foliageRender, oceanFloor, grassTexture, grassWind, grassPlacement, grassBatches, clearing, campfireGraph, smoke, cloudContract, cameraDescriptor };
   requestAnimationFrame(frame);
 }
 
