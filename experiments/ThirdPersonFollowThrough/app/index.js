@@ -1,2 +1,2 @@
-import '../app.js?v=bones-only-colliders-v1';
+import '../app.js?v=backpedal-controller-v1';
 export {};
