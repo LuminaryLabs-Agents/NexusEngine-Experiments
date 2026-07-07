@@ -29,6 +29,9 @@ scene.add(sun);
 const floorMat = new THREE.MeshStandardMaterial({ color: 0x8b8984, roughness: 0.86 });
 const wallMat = new THREE.MeshStandardMaterial({ color: 0x4a4a4a, roughness: 0.9 });
 const blockMat = new THREE.MeshStandardMaterial({ color: 0x6a6865, roughness: 0.86 });
+const colliders = [];
+const actorRadius = 0.58;
+
 const floor = new THREE.Mesh(new THREE.BoxGeometry(46, 0.25, 46), floorMat);
 floor.receiveShadow = true;
 scene.add(floor);
@@ -36,14 +39,20 @@ const grid = new THREE.GridHelper(46, 46, 0x333333, 0x666666);
 grid.position.y = 0.14;
 scene.add(grid);
 
-function box(x, y, z, sx, sy, sz, mat = blockMat) {
+function addAabbCollider(name, x, z, sx, sz) {
+  colliders.push({ name, minX: x - sx / 2, maxX: x + sx / 2, minZ: z - sz / 2, maxZ: z + sz / 2 });
+}
+
+function box(x, y, z, sx, sy, sz, mat = blockMat, blocks = true) {
   const m = new THREE.Mesh(new THREE.BoxGeometry(sx, sy, sz), mat);
   m.position.set(x, y + sy / 2, z);
   m.castShadow = true;
   m.receiveShadow = true;
   scene.add(m);
+  if (blocks) addAabbCollider(m.uuid, x, z, sx, sz);
   return m;
 }
+
 box(0, 0, -23, 46, 8, 0.5, wallMat);
 box(-23, 0, 0, 0.5, 8, 46, wallMat);
 box(23, 0, 0, 0.5, 8, 46, wallMat);
@@ -51,22 +60,27 @@ box(-9, 0, -8, 7, 3, 5);
 box(7, 0, -11, 8, 5, 6);
 box(14, 0, 3, 2.5, 2.5, 2.5);
 box(0, 0, -16, 2, 2, 2);
+
 const ramp = new THREE.Mesh(new THREE.BoxGeometry(10, 0.45, 6), blockMat);
 ramp.position.set(-13, 1.25, 7);
 ramp.rotation.x = -0.42;
 ramp.castShadow = true;
 ramp.receiveShadow = true;
 scene.add(ramp);
+addAabbCollider('ramp-proxy', -13, 7, 10, 6);
+
 const cylinder = new THREE.Mesh(new THREE.CylinderGeometry(5, 5, 1.2, 48), blockMat);
 cylinder.position.set(13, 0.6, 9);
 cylinder.castShadow = true;
 cylinder.receiveShadow = true;
 scene.add(cylinder);
+addAabbCollider('cylinder-proxy', 13, 9, 10, 10);
 
-const actor = createRiggedActorKit(THREE, { name: 'ThirdPersonFollowActor', debugVisible: false });
+const actor = createRiggedActorKit(THREE, { name: 'ThirdPersonFollowActor', bonesVisible: true, debugVisible: true });
 const actorRoot = actor.group;
 scene.add(actorRoot);
 actorRoot.position.set(0, 0, 8);
+actor.collisionCapsule.visible = false;
 
 const cameraPivotWorld = new THREE.Vector3();
 const cameraTarget = new THREE.Object3D();
@@ -90,7 +104,7 @@ let rootYaw = 0;
 let orbitYawOffset = 0;
 let cameraPitch = 0.28;
 let handoffAlpha = 0;
-let debugVisible = false;
+let debugVisible = true;
 const maxOrbitYaw = Math.PI / 2;
 const handoffStartYaw = Math.PI / 4;
 const rootYawHandoffSpeed = 2.35;
@@ -103,6 +117,47 @@ document.body.dataset.nexusDomain = thirdPersonFollowThroughDomain.id;
 function toVector3(v) {
   return new THREE.Vector3(v.x, v.y, v.z);
 }
+
+function resolveCircleAabb(position, collider, radius) {
+  const closestX = THREE.MathUtils.clamp(position.x, collider.minX, collider.maxX);
+  const closestZ = THREE.MathUtils.clamp(position.z, collider.minZ, collider.maxZ);
+  let dx = position.x - closestX;
+  let dz = position.z - closestZ;
+  let distSq = dx * dx + dz * dz;
+
+  if (distSq > 0 && distSq < radius * radius) {
+    const dist = Math.sqrt(distSq);
+    const push = radius - dist;
+    position.x += (dx / dist) * push;
+    position.z += (dz / dist) * push;
+    return true;
+  }
+
+  if (distSq === 0 && position.x >= collider.minX && position.x <= collider.maxX && position.z >= collider.minZ && position.z <= collider.maxZ) {
+    const left = Math.abs(position.x - collider.minX);
+    const right = Math.abs(collider.maxX - position.x);
+    const back = Math.abs(position.z - collider.minZ);
+    const front = Math.abs(collider.maxZ - position.z);
+    const min = Math.min(left, right, back, front);
+    if (min === left) position.x = collider.minX - radius;
+    else if (min === right) position.x = collider.maxX + radius;
+    else if (min === back) position.z = collider.minZ - radius;
+    else position.z = collider.maxZ + radius;
+    return true;
+  }
+  return false;
+}
+
+function resolveSceneCollisions(position) {
+  let hit = false;
+  for (let pass = 0; pass < 3; pass += 1) {
+    for (const collider of colliders) hit = resolveCircleAabb(position, collider, actorRadius) || hit;
+  }
+  position.x = THREE.MathUtils.clamp(position.x, -21.5, 21.5);
+  position.z = THREE.MathUtils.clamp(position.z, -21.5, 21.5);
+  return hit;
+}
+
 function reset() {
   actorRoot.position.set(0, 0, 8);
   yVel = 0;
@@ -116,6 +171,7 @@ function setDebugVisible(visible) {
   debugVisible = visible;
   actor.setDebugVisible(visible);
   lookAheadSphere.visible = visible;
+  actor.collisionCapsule.visible = false;
 }
 
 addEventListener('keydown', e => {
@@ -163,6 +219,7 @@ function tick(now) {
     rootYaw = transformUtil.lerpAngle(rootYaw, desiredYaw, Math.min(1, dt * rotateSpeed));
     orbitYawOffset = cameraUtil.preserveOrbitForCameraYaw(rootYaw, previousCameraYaw, maxOrbitYaw);
     actorRoot.position.addScaledVector(wish, moveSpeed * dt);
+    resolveSceneCollisions(actorRoot.position);
   }
 
   const handoff = cameraUtil.applyRootYawHandoff({ rootYaw, orbitYawOffset }, { maxOrbitYaw, handoffStartYaw, rootYawHandoffSpeed, dt });
@@ -172,8 +229,6 @@ function tick(now) {
   cameraYaw = handoff.cameraYaw;
 
   actorRoot.rotation.y = rootYaw;
-  actorRoot.position.x = THREE.MathUtils.clamp(actorRoot.position.x, -20, 20);
-  actorRoot.position.z = THREE.MathUtils.clamp(actorRoot.position.z, -20, 20);
 
   if (input.has(' ') && grounded) { yVel = 7; grounded = false; }
   yVel -= 18 * dt;
@@ -200,6 +255,8 @@ function tick(now) {
     cameraPosition: camera.position.toArray(),
     targetPosition: actorRoot.position.toArray(),
     debugVisible,
+    colliderCount: colliders.length,
+    actorRadius,
     rigBoneNames: Object.keys(actor.bones),
     rigJointCount: Object.keys(actor.joints).length,
     grounded
