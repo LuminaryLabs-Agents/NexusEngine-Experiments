@@ -9,7 +9,7 @@ const app = fs.readFileSync(new URL('../experiments/ThirdPersonFollowThrough/app
 const domain = fs.readFileSync(new URL('../experiments/ThirdPersonFollowThrough/domain/third-person-follow-through-domain.js', import.meta.url), 'utf8');
 
 const cdn = 'https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js';
-assert.ok(indexHtml.includes('camera-composition-readability-v1'), 'route shell should cache-bust through latest composed readability entry');
+assert.ok(indexHtml.includes('navigation-challenge-readiness-v1'), 'route shell should cache-bust through latest composed readability entry');
 assert.ok(routeIndex.includes('arena-fractal-entry.js'), 'route index should import arena fractal wrapper');
 assert.ok(entry.includes(cdn), 'arena fractal entry should import NexusEngine main CDN');
 assert.equal(entry.includes('LuminaryLabs-Dev/NexusRealtime'), false, 'changed wrapper should not import old NexusRealtime runtime');
