@@ -197,7 +197,7 @@ export function createSignalBastionCanvasRenderer({ canvas, statStripEl, towerPa
     const units = [...(presentation.units ?? [])].sort((a, b) => (a.y ?? 0) - (b.y ?? 0));
     for (const unit of units) {
       if (unit.entityType === "tower") drawTower(unit, presentation);
-      else drawEnemy(unit, presentation);
+      else drawEnemy(unit);
     }
   }
 
@@ -214,6 +214,47 @@ export function createSignalBastionCanvasRenderer({ canvas, statStripEl, towerPa
       ctx.fill();
       ctx.stroke();
       ctx.restore();
+    }
+  }
+
+  function drawCommandFractal(presentation) {
+    const descriptors = presentation.commandFractal?.rendererHandoff?.descriptors ?? [];
+    for (const descriptor of descriptors) {
+      if (descriptor.kind === "path-threat-gradient") {
+        for (const segment of descriptor.segments ?? []) {
+          drawPolyline([segment.from, segment.to], Math.max(3, segment.width * 0.22), color(segment.color, 0.10 + segment.pressure * 0.2), 10 + segment.pressure * 18);
+        }
+      }
+      if (descriptor.kind === "economy-flow-ribbon-set") {
+        for (const ribbon of descriptor.ribbons ?? []) {
+          drawPolyline([ribbon.from, ribbon.mid, ribbon.to], Math.max(1.5, ribbon.width * 0.35), color(ribbon.color, 0.10 + ribbon.intensity * 0.18), 8);
+        }
+      }
+      if (descriptor.kind === "tower-synergy-cell-set") {
+        for (const cell of descriptor.cells ?? []) {
+          ellipse(cell.center, cell.radius, cell.radius * 0.52, color(cell.color, 0.035 + cell.synergy * 0.045), color(cell.color, 0.18 + cell.synergy * 0.18), 0.9, 8 + cell.synergy * 14);
+        }
+      }
+      if (descriptor.kind === "enemy-intent-thread-set") {
+        for (const thread of descriptor.threads ?? []) {
+          drawPolyline([thread.from, thread.mid, thread.to], Math.max(1, thread.width), color(thread.color, 0.12 + thread.danger * 0.22), 6 + thread.danger * 10);
+        }
+      }
+      if (descriptor.kind === "wave-readiness-glyph") {
+        for (const ring of descriptor.rings ?? []) {
+          ellipse(ring.center, ring.radius, ring.radius * 0.55, color(ring.color, 0.018 + descriptor.urgency * 0.04), color(ring.color, ring.opacity), 1, 8 + descriptor.urgency * 16);
+        }
+      }
+      if (descriptor.kind === "command-choice-band") {
+        const selected = (descriptor.options ?? []).find((option) => option.selected);
+        if (selected) {
+          ctx.save();
+          ctx.globalAlpha = 0.8;
+          ctx.fillStyle = color(selected.color, selected.affordable ? 0.24 : 0.12);
+          ctx.fillRect(18, 82 + selected.index * 4, 4, 32);
+          ctx.restore();
+        }
+      }
     }
   }
 
@@ -270,6 +311,7 @@ export function createSignalBastionCanvasRenderer({ canvas, statStripEl, towerPa
     const safe = presentation?.rawSnapshot ? presentation : { rawSnapshot: presentation ?? {} };
     drawBackdrop();
     drawGround(safe);
+    drawCommandFractal(safe);
     drawRangeRings(safe);
     drawPlacement(safe);
     drawUnits(safe);
