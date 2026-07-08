@@ -82,6 +82,19 @@ function setGround(level, object, pos) {
   object.position.set(Number(pos.x ?? 0), height(level, Number(pos.x ?? 0), Number(pos.z ?? 0)), Number(pos.z ?? 0));
 }
 
+function disposeMaterial(material) {
+  if (Array.isArray(material)) material.forEach((entry) => entry?.dispose?.());
+  else material?.dispose?.();
+}
+
+function clearLayer(group) {
+  for (const child of [...group.children]) {
+    child.geometry?.dispose?.();
+    disposeMaterial(child.material);
+    group.remove(child);
+  }
+}
+
 export async function createSignalIslesRenderer({ canvas, level, preset }) {
   const THREE = await import(THREE_URL);
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference: "high-performance" });
@@ -132,11 +145,70 @@ export async function createSignalIslesRenderer({ canvas, level, preset }) {
   const agentMat = new THREE.MeshStandardMaterial({ color: color(preset.visual.palette.agent, 0xff6a5c), emissive: color(preset.visual.palette.agent, 0xff6a5c), emissiveIntensity: 0.16 });
   const marker = new THREE.Mesh(new THREE.RingGeometry(0.72, 0.86, 64), new THREE.MeshBasicMaterial({ color: color(preset.visual.palette.signal, 0x65f1ff), transparent: true, opacity: 0.54, side: THREE.DoubleSide }));
   marker.rotation.x = -Math.PI / 2; scene.add(marker);
+  const visualLayer = new THREE.Group();
+  scene.add(visualLayer);
 
   const raycaster = new THREE.Raycaster();
   const pointer = new THREE.Vector2();
   function resize() { const w = innerWidth, h = innerHeight; camera.aspect = w / h; camera.updateProjectionMatrix(); renderer.setSize(w, h, false); }
   function pick(event) { const rect = canvas.getBoundingClientRect(); pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1; pointer.y = -(((event.clientY - rect.top) / rect.height) * 2 - 1); raycaster.setFromCamera(pointer, camera); const id = raycaster.intersectObjects(pickables, false)[0]?.object?.userData?.objectId; return id ? { id, kind: "world-object" } : null; }
+
+  function addGroundDisc(descriptor, opacity = 0.16) {
+    const radius = Math.max(0.05, Number(descriptor.radius ?? 1));
+    const mesh = new THREE.Mesh(
+      new THREE.CircleGeometry(radius, 48),
+      new THREE.MeshBasicMaterial({ color: color(descriptor.color, 0x65f1ff), transparent: true, opacity, side: THREE.DoubleSide, depthWrite: false })
+    );
+    mesh.rotation.x = -Math.PI / 2;
+    mesh.position.set(Number(descriptor.x ?? 0), height(level, Number(descriptor.x ?? 0), Number(descriptor.z ?? 0)) + 0.035, Number(descriptor.z ?? 0));
+    visualLayer.add(mesh);
+  }
+
+  function addGroundRing(descriptor, opacity = 0.42) {
+    const radius = Math.max(0.05, Number(descriptor.radius ?? 1));
+    const mesh = new THREE.Mesh(
+      new THREE.TorusGeometry(radius, 0.025 + Number(descriptor.intensity ?? 0.2) * 0.035, 8, 80),
+      new THREE.MeshBasicMaterial({ color: color(descriptor.color, 0x65f1ff), transparent: true, opacity, side: THREE.DoubleSide, depthWrite: false })
+    );
+    mesh.rotation.x = -Math.PI / 2;
+    mesh.position.set(Number(descriptor.x ?? 0), height(level, Number(descriptor.x ?? 0), Number(descriptor.z ?? 0)) + 0.07, Number(descriptor.z ?? 0));
+    visualLayer.add(mesh);
+  }
+
+  function addThread(descriptor) {
+    const from = descriptor.from ?? {};
+    const to = descriptor.to ?? {};
+    const fromX = Number(from.x ?? 0), fromZ = Number(from.z ?? 0), toX = Number(to.x ?? 0), toZ = Number(to.z ?? 0);
+    const geometry = new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(fromX, height(level, fromX, fromZ) + 0.18, fromZ),
+      new THREE.Vector3((fromX + toX) / 2, 1.1 + Number(descriptor.strength ?? 0) * 0.9, (fromZ + toZ) / 2),
+      new THREE.Vector3(toX, height(level, toX, toZ) + 0.22, toZ)
+    ]);
+    const line = new THREE.Line(geometry, new THREE.LineBasicMaterial({ color: color(descriptor.color, 0x65f1ff), transparent: true, opacity: 0.18 + Number(descriptor.strength ?? 0.2) * 0.48 }));
+    visualLayer.add(line);
+  }
+
+  function addShard(descriptor) {
+    if (!descriptor.active) return;
+    const x = Number(descriptor.x ?? 0), z = Number(descriptor.z ?? 0);
+    const mesh = new THREE.Mesh(
+      new THREE.OctahedronGeometry(Number(descriptor.size ?? 0.1), 0),
+      new THREE.MeshBasicMaterial({ color: color(descriptor.color, 0x65f1ff), transparent: true, opacity: 0.82 })
+    );
+    mesh.position.set(x, height(level, x, z) + 0.38 + Math.sin(Number(descriptor.phase ?? 0) * Math.PI * 2) * 0.08, z);
+    visualLayer.add(mesh);
+  }
+
+  function drawVisualDescriptors(snapshot) {
+    clearLayer(visualLayer);
+    const descriptors = snapshot.visualFractal?.rendererHandoff?.descriptors ?? {};
+    for (const cell of descriptors.reliefCells ?? []) addGroundDisc(cell, cell.id === "shoreline-falloff" ? 0.08 : 0.13 + Number(cell.pulse ?? 0) * 0.08);
+    for (const thread of descriptors.signalThreads ?? []) addThread(thread);
+    for (const ring of descriptors.pressureFronts ?? []) addGroundRing(ring, 0.16 + Number(ring.intensity ?? 0) * 0.3);
+    for (const ghost of descriptors.buildGhosts ?? []) addGroundRing(ghost, ghost.placed ? 0.18 : 0.44);
+    for (const shard of descriptors.resourceShards ?? []) addShard(shard);
+    for (const compass of descriptors.compass ?? []) addThread({ from: compass.from, to: compass.to, strength: 0.65 + Number(compass.progress ?? 0) * 0.35, color: compass.color });
+  }
 
   function draw(snapshot) {
     const session = snapshot.session, p = session.player, px = Number(p.x ?? 0), pz = Number(p.z ?? 0);
@@ -149,12 +221,13 @@ export async function createSignalIslesRenderer({ canvas, level, preset }) {
     const gate = objects.get("gate-01"); if (gate?.userData?.lightMaterial) { const c = session.gateUnlocked ? color(preset.visual.palette.signal) : color(preset.visual.palette.locked); gate.userData.lightMaterial.color.setHex(c); gate.userData.lightMaterial.emissive.setHex(c); }
     const agents = snapshot.kitStates.agentGroup?.agents ?? {};
     for (const [id, agent] of Object.entries(agents)) { let mesh = agentMeshes.get(id); if (!mesh) { mesh = new THREE.Mesh(new THREE.IcosahedronGeometry(0.32, 1), agentMat); agentMeshes.set(id, mesh); scene.add(mesh); } const x = Number(agent.x ?? 0), z = Number(agent.y ?? agent.z ?? 0); mesh.position.set(x, height(level, x, z) + 0.38, z); }
+    drawVisualDescriptors(snapshot);
     water.material.opacity = 0.76 + Math.sin(session.elapsed * 0.7) * 0.03;
     renderer.render(scene, camera);
   }
 
   addEventListener("resize", resize); resize();
-  return { THREE, scene, camera, renderer, draw, pick, resize, dispose() { removeEventListener("resize", resize); renderer.dispose(); } };
+  return { THREE, scene, camera, renderer, draw, pick, resize, dispose() { removeEventListener("resize", resize); clearLayer(visualLayer); renderer.dispose(); } };
 }
 
 export default createSignalIslesRenderer;
