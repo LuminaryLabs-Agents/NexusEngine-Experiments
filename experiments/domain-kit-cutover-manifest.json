@@ -25,10 +25,10 @@
       "id": "the-cavalry-of-rome",
       "kind": "experiment",
       "canonicalPath": "apps/the-cavalry-of-rome/",
-      "status": "diplomatic-command-readiness-renderer-handoff-pass",
-      "domainCutover": ["cavalry-campaign-map-kit", "cavalry-world-actions-kit", "cavalry-campaign-fractal-domain-kit", "cavalry-battlefield-orders-domain-kit", "cavalry-logistics-readiness-domain-kit", "cavalry-diplomatic-command-readiness-domain-kit"],
-      "bridgeNeeded": "live and experiment routes load NexusEngine main CDN handoff passes; reusable campaign, battlefield-orders, logistics-readiness, and diplomatic-command readiness kits emit descriptor-only campaign surfaces",
-      "featureParity": ["campaign map", "world actions", "campaign fractal descriptors", "battlefield orders", "logistics readiness", "diplomatic command readiness"]
+      "status": "field-hospital-readiness-renderer-handoff-pass",
+      "domainCutover": ["cavalry-campaign-map-kit", "cavalry-world-actions-kit", "cavalry-campaign-fractal-domain-kit", "cavalry-battlefield-orders-domain-kit", "cavalry-logistics-readiness-domain-kit", "cavalry-diplomatic-command-readiness-domain-kit", "cavalry-field-hospital-readiness-domain-kit"],
+      "bridgeNeeded": "live and experiment routes load NexusEngine main CDN handoff passes; reusable campaign, battlefield-orders, logistics-readiness, diplomatic-command, and field-hospital readiness kits emit descriptor-only campaign surfaces consumed by presentation overlays",
+      "featureParity": ["campaign map", "world actions", "campaign fractal descriptors", "battlefield orders", "logistics readiness", "diplomatic command readiness", "field hospital readiness"]
     },
     {
       "id": "vr-platformer-board",
