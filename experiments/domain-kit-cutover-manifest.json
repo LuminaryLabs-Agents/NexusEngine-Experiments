@@ -97,10 +97,10 @@
       "id": "sora-the-infinite",
       "kind": "experiment",
       "canonicalPath": "experiments/sora-the-infinite/",
-      "status": "preflight-challenge-readiness-renderer-handoff-pass",
-      "domainCutover": ["sora-compatibility-domain-kit", "sora-renderer-handoff-kit", "sora-launch-rehearsal-domain-kit", "sora-flightplan-readability-domain-kit", "sora-sky-negotiation-readiness-domain-kit", "sora-preflight-challenge-readiness-domain-kit"],
-      "bridgeNeeded": "legacy zero-frame redirect is now an authored NexusEngine CDN route-preview gateway with launch rehearsal, flightplan readability, sky negotiation readiness, and preflight challenge readiness domains",
-      "featureParity": ["legacy route preserved", "route preview descriptors", "launch rehearsal", "flightplan readability", "sky negotiation", "preflight challenge"]
+      "status": "microflight-trial-readiness-renderer-handoff-pass",
+      "domainCutover": ["sora-compatibility-domain-kit", "sora-renderer-handoff-kit", "sora-launch-rehearsal-domain-kit", "sora-flightplan-readability-domain-kit", "sora-sky-negotiation-readiness-domain-kit", "sora-preflight-challenge-readiness-domain-kit", "sora-microflight-trial-readiness-domain-kit"],
+      "bridgeNeeded": "legacy zero-frame redirect is now an authored NexusEngine CDN route-preview gateway with launch rehearsal, flightplan readability, sky negotiation readiness, preflight challenge readiness, and microflight trial readiness domains",
+      "featureParity": ["legacy route preserved", "route preview descriptors", "launch rehearsal", "flightplan readability", "sky negotiation", "preflight challenge", "microflight trial readiness"]
     },
     {
       "id": "zombie-orchard",
