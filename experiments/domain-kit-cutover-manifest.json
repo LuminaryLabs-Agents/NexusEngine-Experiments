@@ -25,10 +25,10 @@
       "id": "the-cavalry-of-rome",
       "kind": "experiment",
       "canonicalPath": "apps/the-cavalry-of-rome/",
-      "status": "logistics-readiness-renderer-handoff-pass",
-      "domainCutover": ["cavalry-campaign-map-kit", "cavalry-world-actions-kit", "cavalry-campaign-fractal-domain-kit", "cavalry-battlefield-orders-domain-kit", "cavalry-logistics-readiness-domain-kit"],
-      "bridgeNeeded": "live and experiment routes load NexusEngine main CDN handoff passes; reusable campaign, battlefield-orders, and logistics-readiness kits emit descriptor-only campaign surfaces",
-      "featureParity": ["campaign map", "world actions", "campaign fractal descriptors", "battlefield orders", "logistics readiness"]
+      "status": "diplomatic-command-readiness-renderer-handoff-pass",
+      "domainCutover": ["cavalry-campaign-map-kit", "cavalry-world-actions-kit", "cavalry-campaign-fractal-domain-kit", "cavalry-battlefield-orders-domain-kit", "cavalry-logistics-readiness-domain-kit", "cavalry-diplomatic-command-readiness-domain-kit"],
+      "bridgeNeeded": "live and experiment routes load NexusEngine main CDN handoff passes; reusable campaign, battlefield-orders, logistics-readiness, and diplomatic-command readiness kits emit descriptor-only campaign surfaces",
+      "featureParity": ["campaign map", "world actions", "campaign fractal descriptors", "battlefield orders", "logistics readiness", "diplomatic command readiness"]
     },
     {
       "id": "vr-platformer-board",
