@@ -1,3 +1,5 @@
+import "./zombie-orchard-cure-crafting-readiness-kits-smoke.mjs";
+import "./zombie-orchard-cure-crafting-cdn-state-input-smoke.mjs";
 import assert from "node:assert/strict";
 import { createServer } from "node:http";
 import { readFile } from "node:fs/promises";
@@ -45,6 +47,7 @@ try {
   const page = await browser.newPage();
   await page.goto(`${baseUrl}/experiments/zombie-orchard/`, { waitUntil: "domcontentloaded" });
   await page.waitForFunction(() => Boolean(globalThis.GameHost?.getState), null, { timeout: 15000 });
+  await page.waitForFunction(() => Boolean(globalThis.GameHost?.getZombieOrchardCureCraftingReadiness), null, { timeout: 15000 });
   await page.keyboard.press("KeyW");
   await page.keyboard.press("KeyE");
   await page.keyboard.press("KeyJ");
@@ -59,25 +62,38 @@ try {
       useGear: true,
       swapSlot: 0
     });
-    return globalThis.GameHost.getState();
+    return {
+      state: globalThis.GameHost.getState(),
+      cure: globalThis.GameHost.getZombieOrchardCureCraftingReadiness(),
+      handoff: globalThis.GameHost.getRendererHandoff(),
+      marker: document.documentElement.dataset.zombieCureCraftingReadiness
+    };
   });
 
-  assert.ok(state.player?.position);
-  assert.ok(state.visualDomains?.lighting);
-  assert.ok(state.visualDomains?.ground);
-  assert.ok(Array.isArray(state.visualDomains?.ground?.furrows));
-  assert.ok(Array.isArray(state.visualDomains?.ground?.leafPatches));
-  assert.ok(Array.isArray(state.visualDomains?.ground?.mudPatches));
-  assert.ok(Array.isArray(state.visualDomains?.trees));
-  assert.ok(Array.isArray(state.visualDomains?.lanes));
-  assert.ok(Array.isArray(state.visualDomains?.fogRibbons));
-  assert.ok(Array.isArray(state.visualDomains?.hauntZones));
-  assert.ok(Array.isArray(state.visualDomains?.pickups));
-  assert.ok(Array.isArray(state.visualDomains?.apples));
-  assert.ok(Array.isArray(state.visualDomains?.threats));
-  assert.ok(state.visualDomains?.combatCue?.playerRing);
-  assert.ok(state.visualDomains.lighting.fogDensity > 0);
-  assert.ok(state.stamina01 >= 0 && state.stamina01 <= 1);
+  assert.ok(state.state.player?.position);
+  assert.ok(state.state.visualDomains?.lighting);
+  assert.ok(state.state.visualDomains?.ground);
+  assert.ok(Array.isArray(state.state.visualDomains?.ground?.furrows));
+  assert.ok(Array.isArray(state.state.visualDomains?.ground?.leafPatches));
+  assert.ok(Array.isArray(state.state.visualDomains?.ground?.mudPatches));
+  assert.ok(Array.isArray(state.state.visualDomains?.trees));
+  assert.ok(Array.isArray(state.state.visualDomains?.lanes));
+  assert.ok(Array.isArray(state.state.visualDomains?.fogRibbons));
+  assert.ok(Array.isArray(state.state.visualDomains?.hauntZones));
+  assert.ok(Array.isArray(state.state.visualDomains?.pickups));
+  assert.ok(Array.isArray(state.state.visualDomains?.apples));
+  assert.ok(Array.isArray(state.state.visualDomains?.threats));
+  assert.ok(state.state.visualDomains?.combatCue?.playerRing);
+  assert.ok(state.state.visualDomains.lighting.fogDensity > 0);
+  assert.ok(state.state.stamina01 >= 0 && state.state.stamina01 <= 1);
+  assert.equal(state.marker, "active");
+  assert.ok(Array.isArray(state.cure.rendererHandoff.descriptors.infectedRootSamples));
+  assert.ok(Array.isArray(state.cure.rendererHandoff.descriptors.antidotePressQueues));
+  assert.ok(Array.isArray(state.cure.rendererHandoff.descriptors.sapDistillerNodes));
+  assert.ok(Array.isArray(state.cure.rendererHandoff.descriptors.barricadeGraftPlans));
+  assert.ok(Array.isArray(state.cure.rendererHandoff.descriptors.survivorSignalGlyphs));
+  assert.ok(Array.isArray(state.cure.rendererHandoff.descriptors.dawnCureRitualWindows));
+  assert.ok(state.handoff.cureCraftingDescriptorCount >= 6);
   console.log("zombie orchard NexusEngine CDN-backed Playwright state input smoke passed");
 } finally {
   if (browser) await browser.close();
