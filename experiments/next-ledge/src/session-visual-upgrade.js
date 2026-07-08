@@ -1,4 +1,4 @@
-import * as NexusRealtime from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusRealtime@0.0.2/src/index.js";
+import * as NexusEngine from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js";
 import { createParallaxKit } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusRealtime-ProtoKits@0.0.2/protokits/parallax-kit/index.js";
 import { createConfigurableRenderLayerKit } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusRealtime-ProtoKits@0.0.2/protokits/configurable-render-layer-kit/index.js";
 import { createNextLedgeSession as createBaseNextLedgeSession } from "./session.js";
@@ -7,20 +7,36 @@ import {
   createNextLedgeRenderStyleInput,
   createNextLedgeVisualQualityReport
 } from "./next-ledge-visual-domain.js";
+import { createNextLedgeVisualFractalDomainKit } from "./visual-fractal-kits.js";
+
+function createRuntimeEngine(options = {}) {
+  const createEngine = NexusEngine.createRealtimeGame ?? NexusEngine.createRealtimeEngine ?? NexusEngine.createEngine;
+  if (typeof createEngine !== "function") {
+    throw new Error("NexusEngine CDN runtime did not expose createRealtimeGame/createRealtimeEngine/createEngine.");
+  }
+  return createEngine(options);
+}
+
+function createHeadlessRenderer() {
+  if (typeof NexusEngine.createRenderer === "function") return NexusEngine.createRenderer("headless");
+  if (typeof NexusEngine.createHeadlessRenderer === "function") return NexusEngine.createHeadlessRenderer();
+  return undefined;
+}
 
 function createVisualEngine() {
-  return NexusRealtime.createRealtimeGame({
+  return createRuntimeEngine({
     kits: [
-      createParallaxKit(NexusRealtime, createNextLedgeParallaxInput({})),
-      createConfigurableRenderLayerKit(NexusRealtime, createNextLedgeRenderStyleInput({}))
+      createParallaxKit(NexusEngine, createNextLedgeParallaxInput({})),
+      createConfigurableRenderLayerKit(NexusEngine, createNextLedgeRenderStyleInput({}))
     ],
-    renderer: typeof NexusRealtime.createRenderer === "function" ? NexusRealtime.createRenderer("headless") : undefined
+    renderer: createHeadlessRenderer()
   });
 }
 
 export function createNextLedgeSession(options = {}) {
   const base = createBaseNextLedgeSession(options);
   const visualEngine = createVisualEngine();
+  const visualFractal = createNextLedgeVisualFractalDomainKit(options.visualFractal ?? {});
 
   function decorate(snapshot = {}) {
     const parallaxInput = createNextLedgeParallaxInput(snapshot);
@@ -33,13 +49,35 @@ export function createNextLedgeSession(options = {}) {
     visualEngine.tick?.(0);
 
     const renderStyleSnapshot = visualEngine.configurableRenderLayers?.getResolvedLayers?.() ?? null;
+    const fractalSnapshot = visualFractal.compose(snapshot);
     return {
       ...snapshot,
       domain: {
         ...(snapshot.domain ?? {}),
         parallax: parallaxSnapshot,
         renderStyles: renderStyleSnapshot,
-        visualQuality: createNextLedgeVisualQualityReport(snapshot, parallaxSnapshot, renderStyleSnapshot)
+        visualFractal: fractalSnapshot,
+        visualQuality: {
+          ...createNextLedgeVisualQualityReport(snapshot, parallaxSnapshot, renderStyleSnapshot),
+          uses: [
+            "parallax-kit",
+            "configurable-render-layer-kit",
+            "next-ledge-visual-fractal-domain-kit",
+            "cliff-strata-band-kit",
+            "cliff-crack-vein-kit",
+            "anchor-aura-ring-kit",
+            "rope-braid-segment-kit",
+            "cloud-wisp-strip-kit",
+            "danger-fall-streak-kit"
+          ],
+          visualFractalDescriptors:
+            fractalSnapshot.cliffStrata.length +
+            fractalSnapshot.cliffCracks.length +
+            fractalSnapshot.anchorAuras.length +
+            fractalSnapshot.ropeBraids.length +
+            fractalSnapshot.cloudWisps.length +
+            fractalSnapshot.fallStreaks.length
+        }
       }
     };
   }
