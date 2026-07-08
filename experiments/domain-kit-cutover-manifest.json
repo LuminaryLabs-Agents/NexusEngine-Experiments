@@ -61,10 +61,10 @@
       "id": "the-open-above",
       "kind": "experiment",
       "canonicalPath": "experiments/the-open-above/",
-      "status": "flight-route-readability-renderer-handoff-pass",
-      "domainCutover": ["open-above-visual-fractal-domain-kit", "open-above-flight-route-readability-domain-kit"],
-      "bridgeNeeded": "browser host imports NexusEngine main via CDN; visual and flight-route readability domains emit descriptors consumed by WebGL and DOM presentation only",
-      "featureParity": ["bird flight", "terrain streaming", "visual sky descriptors", "flight route readability"]
+      "status": "aerial-courier-readiness-renderer-handoff-pass",
+      "domainCutover": ["open-above-visual-fractal-domain-kit", "open-above-flight-route-readability-domain-kit", "open-above-aerial-courier-readiness-domain-kit"],
+      "bridgeNeeded": "browser host imports NexusEngine main via CDN; visual, flight-route readability, and aerial-courier readiness domains emit descriptors consumed by WebGL and DOM presentation only",
+      "featureParity": ["bird flight", "terrain streaming", "visual sky descriptors", "flight route readability", "aerial courier readiness"]
     },
     {
       "id": "high-fidelity-meadow",
