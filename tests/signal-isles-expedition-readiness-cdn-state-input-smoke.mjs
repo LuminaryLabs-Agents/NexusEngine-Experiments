@@ -15,7 +15,7 @@ const expeditionKitSource = readFileSync("experiments/_kits/nexus-frontier-signa
 const checkSource = readFileSync("scripts/run-checks.mjs", "utf8");
 
 const cdn = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js";
-assert.ok(index.includes('src="./src/main.js?v=expedition-readiness-1"'), "Signal Isles route shell should cache-bust the expedition runtime");
+assert.ok(index.includes('src="./src/main.js?v=storm-anchor-readiness-1"'), "Signal Isles route shell should cache-bust the expedition runtime");
 assert.ok(main.includes(cdn), "changed Signal Isles runtime should import NexusEngine main via CDN");
 assert.equal(main.includes("NexusRealtime@main"), false, "changed runtime should not import old NexusRealtime main CDN");
 assert.ok(compositionSource.includes("createSignalIslesExpeditionReadinessDomainKit"), "composition should install expedition readiness domain kit");
