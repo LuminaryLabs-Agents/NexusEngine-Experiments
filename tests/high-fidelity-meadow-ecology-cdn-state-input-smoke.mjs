@@ -19,7 +19,7 @@ assert.equal(files.main.includes("LuminaryLabs-Dev/NexusRealtime"), false, "chan
 assert.ok(files.main.includes("createMeadowEcologyReadabilityDomainKit"), "main should install ecology readability domain kit");
 assert.ok(files.main.includes("getEcologyReadability"), "GameHost should expose ecology readability state");
 assert.ok(files.main.includes("getRendererHandoff"), "GameHost should expose composed renderer handoff");
-assert.ok(files.index.includes("20260708-ecology-readability-1"), "entrypoint should cache-bust the ecology upgrade");
+assert.ok(files.index.includes("20260708-flock-safety-readiness-1"), "entrypoint should cache-bust the latest meadow upgrade while preserving ecology wiring");
 assert.ok(files.renderer.includes("pollinatorRoutes"), "renderer should consume pollinator route descriptors");
 assert.ok(files.renderer.includes("seasonalBloomQueue"), "renderer should consume bloom queue descriptors");
 assert.ok(files.renderer.includes("attentionBeacons"), "renderer should consume attention beacon descriptors");
