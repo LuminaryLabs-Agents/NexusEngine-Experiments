@@ -88,10 +88,10 @@
       "id": "nexus-frontier-signal-isles",
       "kind": "experiment",
       "canonicalPath": "experiments/nexus-frontier-signal-isles/",
-      "status": "storm-anchor-readiness-renderer-handoff-pass",
-      "domainCutover": ["foundation-kit", "action-input-kit", "scan-survey-kit", "resource-node-kit", "build-placement-kit", "route-checkpoint-kit", "cargo-delivery-kit", "signal-isles-visual-fractal-domain-kit", "signal-isles-objective-step-queue-kit", "signal-isles-proximity-action-cue-kit", "signal-isles-gate-dependency-thread-kit", "signal-isles-cargo-route-ribbon-kit", "signal-isles-pressure-safe-pocket-kit", "signal-isles-resource-build-delta-kit", "signal-isles-objective-renderer-handoff-kit", "signal-isles-objective-readability-domain-kit", "signal-isles-expedition-readiness-domain-kit", "signal-isles-storm-anchor-readiness-domain-kit"],
-      "bridgeNeeded": "browser host imports NexusEngine main CDN; visual, objective readability, expedition readiness, and storm anchor readiness descriptors are consumed by Three presentation only",
-      "featureParity": ["first-person movement", "harvest", "build mast", "objective readability", "expedition readiness", "storm anchor readiness"]
+      "status": "harbor-relief-readiness-renderer-handoff-pass",
+      "domainCutover": ["foundation-kit", "action-input-kit", "scan-survey-kit", "resource-node-kit", "build-placement-kit", "route-checkpoint-kit", "cargo-delivery-kit", "signal-isles-visual-fractal-domain-kit", "signal-isles-objective-step-queue-kit", "signal-isles-proximity-action-cue-kit", "signal-isles-gate-dependency-thread-kit", "signal-isles-cargo-route-ribbon-kit", "signal-isles-pressure-safe-pocket-kit", "signal-isles-resource-build-delta-kit", "signal-isles-objective-renderer-handoff-kit", "signal-isles-objective-readability-domain-kit", "signal-isles-expedition-readiness-domain-kit", "signal-isles-storm-anchor-readiness-domain-kit", "signal-isles-harbor-relief-readiness-domain-kit"],
+      "bridgeNeeded": "browser host imports NexusEngine main CDN; visual, objective readability, expedition readiness, storm anchor readiness, and harbor relief readiness descriptors are consumed by Three presentation only",
+      "featureParity": ["first-person movement", "harvest", "build mast", "objective readability", "expedition readiness", "storm anchor readiness", "harbor relief readiness"]
     },
     {
       "id": "sora-the-infinite",
