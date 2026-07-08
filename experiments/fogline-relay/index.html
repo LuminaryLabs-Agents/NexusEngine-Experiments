@@ -21,11 +21,11 @@
   </style>
 </head>
 <body>
-  <main id="app">
+  <main id="app" data-upgrade="operator-rhythm-readability-renderer-handoff-pass">
     <canvas id="game" role="application" aria-label="Fogline Relay game canvas"></canvas>
     <aside id="hud" aria-label="Game HUD">
-      <header id="status" aria-live="polite">Loading…</header>
-      <section id="prompt" aria-live="polite">Booting Nexus Engine kits…</section>
+      <header id="status" aria-live="polite">Loading operator rhythm readability…</header>
+      <section id="prompt" aria-live="polite">Booting Nexus Engine kits with scan cadence and extraction rhythm descriptors…</section>
       <footer id="controls">WASD move · mouse/←→ look · hold E scan · R restart · click canvas to lock</footer>
     </aside>
     <section id="errorPanel" role="alert" hidden>
@@ -37,6 +37,6 @@
     import { attachNexusRealtimePageLoader } from "../_shared/nexus-realtime-page-loader.js";
     attachNexusRealtimePageLoader({ title: "Fogline Relay", loadingLabel: "Loading Fogline Relay" });
   </script>
-  <script type="module" src="./src/main.js"></script>
+  <script type="module" src="./src/main.js?v=fogline-operator-rhythm-readability-1"></script>
 </body>
 </html>
