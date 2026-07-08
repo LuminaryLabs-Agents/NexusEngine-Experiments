@@ -15,6 +15,7 @@ const requiredFiles = [
   "games/signal-bastion/src/boot.js",
   "games/signal-bastion/src/input-host.js",
   "games/signal-bastion/src/renderer-canvas.js",
+  "games/signal-bastion/src/signal-bastion-frontline-tactics-domain-kit.js",
   "games/signal-bastion/presets/content.js",
   "games/signal-bastion/presets/default.js",
   "games/signal-bastion/presets/hard.js",
@@ -37,7 +38,8 @@ assert.equal(resolveSignalBastionPreset("?preset=hard").mode, "hard");
 assert.equal(resolveSignalBastionPreset("?preset=endless").level.waves.length, 60);
 
 const index = readFileSync("games/signal-bastion/index.html", "utf8");
-assert.match(index, /src\/boot\.js\?v=presentation-stack-phase/);
+assert.match(index, /src\/boot\.js\?v=frontline-tactics-readability-1/);
+assert.match(index, /NexusEngine 2\.5D Defense/);
 assert.match(index, /statStrip/);
 assert.match(index, /towerPanel/);
 assert.match(index, /contextPanel/);
@@ -54,6 +56,8 @@ assert.match(boot, /generic-defense-presentation-stack-kit/);
 assert.match(boot, /createGenericDefensePresentationStackKits/);
 assert.match(boot, /getPresentation/);
 assert.match(boot, /getSignalBastionSessionFacade/);
+assert.match(boot, /createSignalBastionFrontlineTacticsDomainKit/);
+assert.match(boot, /getFrontlineTactics/);
 assert.match(boot, /engine\.n\?\.genericDefense/);
 assert.doesNotMatch(boot, /\bcreateGenericDefenseKits\s*\(/);
 assert.doesNotMatch(boot, /createGenericDefenseBuildKit\(/);
