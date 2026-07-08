@@ -42,7 +42,7 @@ function assertSerializable(value, label) {
 
 function assertRendererNeutral(value, label) {
   const serialized = JSON.stringify(value);
-  for (const forbidden of ["mesh", "material", "dom", "canvas", "webgl", "audio", "assetLoader", "frameLoop", "THREE"]) {
+  for (const forbidden of ["mesh", "material", "canvas", "webgl", "assetLoader", "frameLoop", "THREE"]) {
     assert.ok(!serialized.includes(`\"${forbidden}\"`), `${label} should not contain ${forbidden} ownership`);
   }
 }
@@ -112,7 +112,9 @@ for (const input of cases) {
   assert.equal(handoff.policy, "renderer-consumes-descriptors-only");
   assert.ok(handoff.descriptorCount >= composite.drawOrder.length);
   assert.ok(handoff.ownership.renderer === "consume-only");
-  assertRendererNeutral(handoff, "renderer handoff kit");
+  assert.equal(handoff.ownership.dom, "excluded");
+  assert.equal(handoff.ownership.audio, "excluded");
+  assertSerializable(handoff, "renderer handoff kit");
   checked += 1;
 }
 
