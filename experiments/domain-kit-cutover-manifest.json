@@ -43,10 +43,10 @@
       "id": "next-ledge",
       "kind": "experiment",
       "canonicalPath": "experiments/next-ledge/",
-      "status": "route-cargo-fractal-handoff-candidate",
-      "domainCutover": ["action-input-kit", "generic-route-progress-kit", "generic-route-cargo-extraction-kit", "generic-resource-loop-kit", "generic-pressure-loop-kit", "camera-cinematic-maker-kit", "visual-fidelity-maker-kit", "scenario-qa-harness", "next-ledge-visual-fractal-domain-kit", "cliff-strata-band-kit", "cliff-crack-vein-kit", "anchor-aura-ring-kit", "rope-braid-segment-kit", "cloud-wisp-strip-kit", "danger-fall-streak-kit", "next-ledge-route-cargo-domain-kit", "cargo-cache-anchor-kit", "cargo-route-thread-kit", "extraction-pressure-channel-kit", "extraction-summit-handoff-kit", "cargo-status-descriptor-kit", "route-cargo-renderer-handoff-kit"],
-      "bridgeNeeded": "browser wrapper consumes generic-route-cargo-extraction-kit through NexusEngine main CDN and emits renderer-neutral route-cargo descriptors",
-      "featureParity": ["grapple", "swing", "sector advance", "cargo cache descriptors", "fall pressure descriptors"]
+      "status": "traversal-readability-renderer-handoff-pass",
+      "domainCutover": ["action-input-kit", "generic-route-progress-kit", "generic-route-cargo-extraction-kit", "generic-resource-loop-kit", "generic-pressure-loop-kit", "camera-cinematic-maker-kit", "visual-fidelity-maker-kit", "scenario-qa-harness", "next-ledge-visual-fractal-domain-kit", "cliff-strata-band-kit", "cliff-crack-vein-kit", "anchor-aura-ring-kit", "rope-braid-segment-kit", "cloud-wisp-strip-kit", "danger-fall-streak-kit", "next-ledge-route-cargo-domain-kit", "cargo-cache-anchor-kit", "cargo-route-thread-kit", "extraction-pressure-channel-kit", "extraction-summit-handoff-kit", "cargo-status-descriptor-kit", "route-cargo-renderer-handoff-kit", "swing-arc-forecast-kit", "anchor-confidence-field-kit", "stamina-risk-band-kit", "recovery-vector-kit", "momentum-window-kit", "summit-route-beat-kit", "traversal-readability-renderer-handoff-kit", "next-ledge-traversal-readability-domain-kit"],
+      "bridgeNeeded": "browser wrapper consumes NexusEngine main CDN and emits renderer-neutral route-cargo plus traversal-readability descriptors while the Three/diegetic renderer consumes descriptors only",
+      "featureParity": ["grapple", "swing", "sector advance", "cargo cache descriptors", "fall pressure descriptors", "swing arc forecast descriptors", "anchor confidence descriptors", "stamina risk descriptors", "recovery vector descriptors", "GameHost renderer handoff"]
     },
     {
       "id": "infinite-radial-terrain",
