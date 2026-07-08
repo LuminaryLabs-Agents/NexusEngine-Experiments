@@ -10,7 +10,7 @@ const kitSource = fs.readFileSync(new URL("../experiments/_kits/sora-the-infinit
 const cdn = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js";
 assert.ok(gateway.includes(cdn), "changed Sora gateway should import NexusEngine main CDN");
 assert.equal(gateway.includes("LuminaryLabs-Dev/NexusRealtime"), false, "changed gateway should not import old NexusRealtime runtime");
-assert.ok(indexHtml.includes("launch-rehearsal-v1"), "route shell should cache-bust launch rehearsal entry");
+assert.ok(indexHtml.includes("sky-rescue-readiness-v1"), "route shell should cache-bust current Sora readiness entries");
 assert.ok(indexHtml.includes("rehearsal-list"), "route shell should expose launch rehearsal telemetry");
 assert.ok(gateway.includes("createSoraLaunchRehearsalDomainKit"), "gateway should import launch rehearsal domain kit");
 assert.ok(gateway.includes("getLaunchRehearsal"), "GameHost should expose launch rehearsal state");
