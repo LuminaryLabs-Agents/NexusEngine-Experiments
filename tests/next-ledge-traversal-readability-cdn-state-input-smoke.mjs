@@ -11,8 +11,8 @@ const kitSource = readFileSync("experiments/next-ledge/src/traversal-readability
 const nexusEngineCdn = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js";
 const oldRuntimeCdn = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusRealtime@main/src/index.js";
 
-assert.match(routeShell, /traversal-readability-renderer-handoff-pass/, "route shell should identify the traversal readability cutover");
-assert.match(routeShell, /main\.js\?v=traversal-readability-1/, "route shell should cache-bust the upgraded module");
+assert.match(routeShell, /anchor-timing-readability-renderer-handoff-pass|traversal-readability-renderer-handoff-pass/, "route shell should identify the active Next Ledge readability cutover");
+assert.match(routeShell, /main\.js\?v=(anchor-timing-readability-1|traversal-readability-1)/, "route shell should cache-bust the upgraded module");
 assert.match(mainSource, /session-cargo-extraction-upgrade\.js/, "browser entry should still use the NexusEngine cargo/traversal wrapper");
 assert.ok(wrapperSource.includes(nexusEngineCdn), "changed wrapper should pull NexusEngine main through the CDN");
 assert.doesNotMatch(wrapperSource, new RegExp(oldRuntimeCdn.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")), "changed wrapper must not import the old NexusRealtime runtime CDN");
