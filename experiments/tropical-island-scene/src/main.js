@@ -1,3 +1,4 @@
+import * as NexusEngine from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js";
 import { createIslandKit } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusRealtime-ProtoKits@0.0.2/protokits/island-kit/index.js?v=tropical-island-scene-20260619";
 import { createPalmTreeKit } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusRealtime-ProtoKits@0.0.2/protokits/palm-tree-kit/index.js?v=tropical-island-scene-20260619";
 import { createCoconutPropKit } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusRealtime-ProtoKits@0.0.2/protokits/coconut-prop-kit/index.js?v=tropical-island-scene-20260619";
@@ -24,7 +25,9 @@ import { createWaterMeshKit } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Age
 import { createWaterShadingKit } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusRealtime-ProtoKits@0.0.2/protokits/water-shading-kit/index.js?v=tropical-island-scene-20260619";
 import { createWaterPhysicsKit } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusRealtime-ProtoKits@0.0.2/protokits/water-physics-kit/index.js?v=tropical-island-scene-20260619";
 import { createWaterEffectsKit } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusRealtime-ProtoKits@0.0.2/protokits/water-effects-kit/index.js?v=tropical-island-scene-20260619";
+import { createTropicalLagoonVisualFractalDomainKit } from "./tropical-lagoon-visual-fractal-domain-kit.js";
 
+const NEXUS_ENGINE_CDN = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js";
 const canvas = document.querySelector("#game");
 const statusEl = document.querySelector("#status");
 const errorPanel = document.querySelector("#errorPanel");
@@ -56,7 +59,8 @@ const REQUIRED_KITS = [
   "water-mesh-kit",
   "water-shading-kit",
   "water-physics-kit",
-  "water-effects-kit"
+  "water-effects-kit",
+  "tropical-lagoon-visual-fractal-domain-kit"
 ];
 
 const VERTEX_SHADER = `#version 300 es
@@ -77,12 +81,17 @@ uniform float uOrbit;
 uniform vec4 uCoconuts[3];
 uniform vec4 uFish[12];
 uniform vec4 uFloats[6];
+uniform vec4 uReefs[8];
+uniform vec4 uCurrents[8];
+uniform vec4 uClouds[5];
+uniform vec4 uWakes[8];
+uniform vec4 uShelfBands[4];
 
 float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123); }
 float band(float v){ return v < 0.34 ? 0.24 : v < 0.66 ? 0.62 : 1.0; }
 float ellipse(vec2 p, vec2 c, vec2 r){ vec2 d = (p - c) / r; return length(d) - 1.0; }
 float circle(vec2 p, vec2 c, float r){ return length(p - c) - r; }
-float lineSegment(vec2 p, vec2 a, vec2 b, float w){ vec2 pa = p - a; vec2 ba = b - a; float h = clamp(dot(pa, ba) / dot(ba, ba), 0.0, 1.0); return length(pa - ba * h) - w; }
+float lineSegment(vec2 p, vec2 a, vec2 b, float w){ vec2 pa = p - a; vec2 ba = b - a; float h = clamp(dot(pa, ba) / max(0.0001, dot(ba, ba)), 0.0, 1.0); return length(pa - ba * h) - w; }
 vec3 cel(vec3 shadow, vec3 mid, vec3 light, float n){ float b = band(n); return mix(shadow, mix(mid, light, step(0.9, b)), step(0.45, b)); }
 
 void main(){
@@ -93,6 +102,12 @@ void main(){
   vec3 skyLow = vec3(0.74, 0.94, 0.94);
   vec3 color = mix(skyLow, skyTop, smoothstep(0.0, 1.0, uv.y));
 
+  for(int i=0;i<5;i++){
+    vec4 cloud = uClouds[i];
+    float cm = smoothstep(1.0, 0.0, ellipse(p, cloud.xy, vec2(max(0.02, cloud.z), 0.035 + cloud.z * 0.10)));
+    color = mix(color, vec3(0.92, 0.99, 1.0), cm * cloud.w);
+  }
+
   float waterMask = smoothstep(horizon, horizon - 0.02, p.y);
   float perspective = 1.0 / max(0.12, 1.15 + p.y);
   float wave = sin((p.x * 18.0 + uTime * 1.8) * perspective + sin(p.y * 7.0)) * 0.035;
@@ -100,6 +115,24 @@ void main(){
   vec3 water = cel(vec3(0.02, 0.18, 0.32), vec3(0.05, 0.48, 0.68), vec3(0.62, 0.96, 1.0), 0.55 + wave * 4.5 + uv.y * 0.3);
   float sparkle = smoothstep(0.985, 1.0, sin((p.x + p.y * 1.7 + uTime * 0.45) * 95.0)) * smoothstep(0.24, -0.15, p.y);
   color = mix(color, water + sparkle * vec3(0.55, 0.72, 0.62), waterMask);
+
+  for(int i=0;i<4;i++){
+    vec4 shelf = uShelfBands[i];
+    float sm = smoothstep(0.018, -0.008, abs(ellipse(p, shelf.xy, vec2(max(0.02, shelf.z), max(0.02, shelf.w)))));
+    color = mix(color, vec3(0.38, 0.92, 0.82), sm * waterMask * 0.08);
+  }
+  for(int i=0;i<8;i++){
+    vec4 reef = uReefs[i];
+    float rm = smoothstep(reef.z, 0.0, length(p - reef.xy));
+    vec3 reefColor = mix(vec3(1.0, 0.44, 0.28), vec3(0.75, 0.38, 0.95), mod(float(i), 3.0) / 2.0);
+    color = mix(color, reefColor, rm * waterMask * reef.w * 0.22);
+  }
+  for(int i=0;i<8;i++){
+    vec4 current = uCurrents[i];
+    vec2 end = current.xy + current.zw;
+    float ribbon = smoothstep(0.018, 0.0, lineSegment(p, current.xy, end, 0.006 + float(i) * 0.0008));
+    color = mix(color, vec3(0.74, 1.0, 0.95), ribbon * waterMask * 0.18);
+  }
 
   vec2 islandCenter = vec2(0.0, -0.16);
   float island = ellipse(p, islandCenter, vec2(0.54, 0.19));
@@ -124,7 +157,6 @@ void main(){
   float trunkEdge = smoothstep(0.006, 0.0, abs(trunk));
 
   float frondMask = 0.0;
-  vec3 frondColor = vec3(0.18, 0.62, 0.24);
   for(int i=0;i<10;i++){
     float a = float(i) / 10.0 * 6.28318 + uOrbit * 0.2;
     vec2 tip = trunkTop + vec2(cos(a) * 0.23, sin(a) * 0.085 - 0.03);
@@ -137,9 +169,9 @@ void main(){
   for(int i=0;i<3;i++){
     vec2 c = uCoconuts[i].xy;
     float active = uCoconuts[i].w;
-    coconutMask = max(coconutMask, smoothstep(0.032, -0.003, circle(p, c, 0.032)) * active);
+    coconutMask = max(coconutMask, smoothstep(0.036, -0.002, circle(p, c, 0.035)) * active);
   }
-  color = mix(color, cel(vec3(0.18,0.10,0.04), vec3(0.45,0.25,0.09), vec3(0.78,0.48,0.19), 0.72), coconutMask);
+  color = mix(color, vec3(0.22, 0.10, 0.04), coconutMask);
 
   for(int i=0;i<12;i++){
     vec2 fp = uFish[i].xy;
@@ -147,7 +179,6 @@ void main(){
     float vis = smoothstep(0.012, -0.006, fish) * smoothstep(-0.05, -0.5, p.y);
     color = mix(color, vec3(1.0, 0.68, 0.22), vis * 0.8);
   }
-
   for(int i=0;i<6;i++){
     vec2 op = uFloats[i].xy;
     float objectShape = ellipse(p, op, vec2(0.045, 0.016));
@@ -156,6 +187,11 @@ void main(){
     vec2 reflected = vec2(op.x, horizon - (op.y - horizon) * 0.42);
     float refl = ellipse(p, reflected, vec2(0.055, 0.010));
     color = mix(color, vec3(0.70, 0.96, 1.0), smoothstep(0.014, -0.004, refl) * 0.18);
+  }
+  for(int i=0;i<8;i++){
+    vec4 wake = uWakes[i];
+    float wm = smoothstep(0.018, 0.0, lineSegment(p, wake.xy - vec2(wake.z * 0.5, 0.0), wake.xy + vec2(wake.z * 0.5, 0.0), 0.004));
+    color = mix(color, vec3(0.92, 1.0, 0.94), wm * waterMask * wake.w);
   }
 
   float edge = 0.0;
@@ -229,6 +265,16 @@ function createProgram() {
   return program;
 }
 
+function fallbackCoconuts() {
+  return [0, 1, 2].map((index) => ({ id: `coconut-${index}`, position: { x: 0.2 - index * 0.18, y: 2.9, z: 0.08 + index * 0.12 }, velocity: { x: 0, y: 0, z: 0 }, scale: 1 }));
+}
+function fallbackFish(count = 24) {
+  return Array.from({ length: count }, (_, index) => ({ id: `fish-${index}`, position: { x: Math.sin(index) * 16, y: -1, z: -8 - index * 1.4 }, scale: 0.65 + (index % 5) * 0.1 }));
+}
+function fallbackFloats(count = 6) {
+  return Array.from({ length: count }, (_, index) => ({ id: `float-${index}`, position: { x: -12 + index * 4.8, y: 0, z: -18 - index * 2.2 }, scale: 0.85 + (index % 3) * 0.14 }));
+}
+
 function createComposition() {
   const islandKit = createIslandKit({ radius: 18, beachWidth: 4.5, moundHeight: 3.8 });
   const palmKit = createPalmTreeKit({ height: 8.5, frondCount: 10 });
@@ -244,6 +290,7 @@ function createComposition() {
   const outlineKit = createOutlineSobelKit({ thickness: 1.25 });
   const normalKit = createNormalStyleKit();
   const reflectKit = createReflectProbeKit({ strength: 0.45 });
+  const lagoonVisualKit = createTropicalLagoonVisualFractalDomainKit({ engine: "NexusEngine main CDN", reefs: { seed: 91, count: 8 } });
 
   const NexusRealtime = createMiniNexus();
   const waterKits = [
@@ -262,18 +309,19 @@ function createComposition() {
   ];
   const waterRuntime = createMiniRuntime(waterKits);
 
-  const island = islandKit.createScene();
-  const palm = palmKit.createTree(island.anchors.palm);
-  let coconuts = coconutKit.createCoconuts(palm.sockets, { anchors: island.anchors.coconuts });
-  let fish = fishSchoolKit.createSchool();
-  let floatProps = floatPropKit.createProps(31);
-  timerKit.schedule("drop-coconut-1", 3.0, { index: 0 });
-  timerKit.schedule("drop-coconut-2", 6.5, { index: 1 });
-  timerKit.schedule("drop-coconut-3", 10.0, { index: 2 });
+  const island = islandKit.createScene?.() ?? { anchors: { palm: { x: -2, y: 0, z: 1 }, coconuts: [] } };
+  const palm = palmKit.createTree?.(island.anchors.palm) ?? { fronds: Array.from({ length: 10 }, (_, index) => ({ index })) };
+  let coconuts = coconutKit.createCoconuts?.(palm.sockets, { anchors: island.anchors.coconuts }) ?? fallbackCoconuts();
+  let fish = fishSchoolKit.createSchool?.() ?? fallbackFish();
+  let floatProps = floatPropKit.createProps?.(31) ?? fallbackFloats();
+  timerKit.schedule?.("drop-coconut-1", 3.0, { index: 0 });
+  timerKit.schedule?.("drop-coconut-2", 6.5, { index: 1 });
+  timerKit.schedule?.("drop-coconut-3", 10.0, { index: 2 });
 
-  const kits = [islandKit, palmKit, coconutKit, timerKit, fallKit, fishSchoolKit, fishMotionKit, floatPropKit, floatMotionKit, orbitKit, celKit, outlineKit, normalKit, reflectKit, ...waterKits];
-  const renderer = { api: "webgl2", style: "high-fidelity-cel", outline: "sobel", reflectiveWater: true, horizonWater: true };
-  const review = () => reviewComposition({ kits, island, palm, coconuts, fish, floatProps, renderer, waterRuntime });
+  const kits = [islandKit, palmKit, coconutKit, timerKit, fallKit, fishSchoolKit, fishMotionKit, floatPropKit, floatMotionKit, orbitKit, celKit, outlineKit, normalKit, reflectKit, ...waterKits, lagoonVisualKit];
+  const renderer = { api: "webgl2", style: "high-fidelity-cel", outline: "sobel", reflectiveWater: true, horizonWater: true, descriptorHandoff: "tropical-lagoon-renderer-handoff-kit" };
+  let visualFractal = lagoonVisualKit.describe({ time: 0, orbit: orbitKit.getState?.().angle ?? 0.38, coconuts, fish, floatProps, water: waterRuntime.getState() });
+  const review = () => reviewComposition({ kits, island, palm, coconuts, fish, floatProps, renderer, waterRuntime, visualFractal });
 
   return {
     kits,
@@ -292,27 +340,43 @@ function createComposition() {
     normalKit,
     reflectKit,
     waterRuntime,
+    lagoonVisualKit,
+    visualFractal,
     renderer,
     review,
     tick(delta, time) {
-      const events = timerKit.tick(delta);
+      const events = timerKit.tick?.(delta) ?? [];
       for (const event of events) {
-        if (event.id.startsWith("drop-coconut")) {
+        if (event.id?.startsWith("drop-coconut")) {
           const index = event.payload.index;
-          coconuts[index] = fallKit.release(coconuts[index], { x: 0.2 - index * 0.12, y: 0, z: 0.05 });
+          coconuts[index] = fallKit.release?.(coconuts[index], { x: 0.2 - index * 0.12, y: 0, z: 0.05 }) ?? coconuts[index];
         }
       }
-      coconuts = fallKit.tick(coconuts, delta, islandKit.sampleHeight);
-      fish = fishMotionKit.tick(fish, time, delta);
-      floatProps = floatMotionKit.tick(floatProps, time, delta);
+      coconuts = fallKit.tick?.(coconuts, delta, islandKit.sampleHeight) ?? coconuts;
+      fish = fishMotionKit.tick?.(fish, time, delta) ?? fish;
+      floatProps = floatMotionKit.tick?.(floatProps, time, delta) ?? floatProps;
       waterRuntime.tick(delta);
+      const orbit = orbitKit.getState?.().angle ?? 0.38;
+      visualFractal = lagoonVisualKit.describe({ time, orbit, coconuts, fish, floatProps, water: waterRuntime.getState() });
       this.coconuts = coconuts;
       this.fish = fish;
       this.floatProps = floatProps;
+      this.visualFractal = visualFractal;
       return this.getState();
     },
     getState() {
-      return { coconuts, fish, floatProps, camera: orbitKit.getState(), reflection: reflectKit.createDescriptor({ floatProps, coconuts }), review: review() };
+      return {
+        coconuts,
+        fish,
+        floatProps,
+        camera: orbitKit.getState?.() ?? { angle: 0.38, pitch: 0.54, distance: 42 },
+        reflection: reflectKit.createDescriptor?.({ floatProps, coconuts }) ?? { strength: 0.45 },
+        review: review(),
+        visualFractal,
+        domain: { tropicalLagoonVisualFractal: visualFractal },
+        nexusEngineCdn: NEXUS_ENGINE_CDN,
+        nexusEngineExports: Object.keys(NexusEngine).slice(0, 8)
+      };
     }
   };
 }
@@ -329,7 +393,8 @@ export function reviewComposition(composition) {
   if (composition.renderer.api !== "webgl2") problems.push("renderer must use WebGL2");
   if (composition.renderer.outline !== "sobel") problems.push("renderer must use Sobel outlines");
   if (!composition.renderer.reflectiveWater || !composition.renderer.horizonWater) problems.push("water must be reflective and horizon-capable");
-  return { ok: problems.length === 0, problems, kitIds: [...kitIds] };
+  if (!composition.visualFractal?.rendererHandoff?.descriptors?.reefs?.length) problems.push("lagoon visual fractal descriptors missing reef blooms");
+  return { ok: problems.length === 0, problems, kitIds: [...kitIds], visualDescriptorCounts: composition.visualFractal?.rendererHandoff?.counts ?? {} };
 }
 
 function resize() {
@@ -350,6 +415,18 @@ function screenProject(position, cameraAngle, scale = 1) {
   return [x / 36 * scale, (-0.18 + y / 18 - z / 90) * scale, z];
 }
 
+function fillVec4s(count, entries, project) {
+  const values = new Float32Array(count * 4);
+  entries.slice(0, count).forEach((entry, index) => {
+    const projected = project(entry, index);
+    values[index * 4 + 0] = projected[0] ?? 0;
+    values[index * 4 + 1] = projected[1] ?? 0;
+    values[index * 4 + 2] = projected[2] ?? 0;
+    values[index * 4 + 3] = projected[3] ?? 0;
+  });
+  return values;
+}
+
 function boot() {
   if (!gl) throw new Error("Tropical Island Scene requires WebGL2.");
   resize();
@@ -364,7 +441,12 @@ function boot() {
     uOrbit: gl.getUniformLocation(program, "uOrbit"),
     uCoconuts: gl.getUniformLocation(program, "uCoconuts[0]"),
     uFish: gl.getUniformLocation(program, "uFish[0]"),
-    uFloats: gl.getUniformLocation(program, "uFloats[0]")
+    uFloats: gl.getUniformLocation(program, "uFloats[0]"),
+    uReefs: gl.getUniformLocation(program, "uReefs[0]"),
+    uCurrents: gl.getUniformLocation(program, "uCurrents[0]"),
+    uClouds: gl.getUniformLocation(program, "uClouds[0]"),
+    uWakes: gl.getUniformLocation(program, "uWakes[0]"),
+    uShelfBands: gl.getUniformLocation(program, "uShelfBands[0]")
   };
   const composition = createComposition();
   let last = performance.now();
@@ -375,42 +457,36 @@ function boot() {
   canvas.addEventListener("pointerup", () => { dragging = false; lastPointer = null; });
   canvas.addEventListener("pointermove", (event) => {
     if (!dragging || !lastPointer) return;
-    composition.orbitKit.setInput({ dragX: event.clientX - lastPointer.x, dragY: event.clientY - lastPointer.y });
+    composition.orbitKit.setInput?.({ dragX: event.clientX - lastPointer.x, dragY: event.clientY - lastPointer.y });
     lastPointer = { x: event.clientX, y: event.clientY };
   });
-  canvas.addEventListener("wheel", (event) => { event.preventDefault(); composition.orbitKit.setInput({ zoom: Math.sign(event.deltaY) * 1.5 }); }, { passive: false });
+  canvas.addEventListener("wheel", (event) => { event.preventDefault(); composition.orbitKit.setInput?.({ zoom: Math.sign(event.deltaY) * 1.5 }); }, { passive: false });
   window.addEventListener("resize", resize);
 
   function frame(now) {
     const delta = Math.min(1 / 30, Math.max(0, (now - last) / 1000 || 1 / 60));
     last = now;
-    composition.orbitKit.tick(delta);
+    composition.orbitKit.tick?.(delta);
     composition.tick(delta, now / 1000);
-    const orbit = composition.orbitKit.getState().angle;
-    const coconutUniforms = new Float32Array(12);
-    composition.coconuts.forEach((entry, index) => {
+    const orbit = composition.orbitKit.getState?.().angle ?? 0.38;
+    const handoff = composition.visualFractal?.rendererHandoff?.descriptors ?? {};
+    const coconutUniforms = fillVec4s(3, composition.coconuts, (entry) => {
       const projected = screenProject(entry.position, orbit, 1);
-      coconutUniforms[index * 4 + 0] = projected[0];
-      coconutUniforms[index * 4 + 1] = projected[1] + 0.22;
-      coconutUniforms[index * 4 + 2] = projected[2];
-      coconutUniforms[index * 4 + 3] = 1;
+      return [projected[0], projected[1] + 0.22, projected[2], 1];
     });
-    const fishUniforms = new Float32Array(48);
-    composition.fish.slice(0, 12).forEach((entry, index) => {
+    const fishUniforms = fillVec4s(12, composition.fish, (entry) => {
       const projected = screenProject(entry.position, orbit, 1);
-      fishUniforms[index * 4 + 0] = projected[0];
-      fishUniforms[index * 4 + 1] = projected[1] - 0.02;
-      fishUniforms[index * 4 + 2] = projected[2];
-      fishUniforms[index * 4 + 3] = entry.scale;
+      return [projected[0], projected[1] - 0.02, projected[2], entry.scale ?? 1];
     });
-    const floatUniforms = new Float32Array(24);
-    composition.floatProps.slice(0, 6).forEach((entry, index) => {
+    const floatUniforms = fillVec4s(6, composition.floatProps, (entry) => {
       const projected = screenProject(entry.position, orbit, 1);
-      floatUniforms[index * 4 + 0] = projected[0];
-      floatUniforms[index * 4 + 1] = projected[1] - 0.03;
-      floatUniforms[index * 4 + 2] = projected[2];
-      floatUniforms[index * 4 + 3] = entry.scale;
+      return [projected[0], projected[1] - 0.03, projected[2], entry.scale ?? 1];
     });
+    const reefUniforms = fillVec4s(8, handoff.reefs ?? [], (entry) => [entry.position.x, entry.position.y, entry.radius, entry.intensity]);
+    const currentUniforms = fillVec4s(8, handoff.currents ?? [], (entry) => [entry.start.x, entry.start.y, entry.end.x - entry.start.x, entry.end.y - entry.start.y]);
+    const cloudUniforms = fillVec4s(5, handoff.clouds ?? [], (entry) => [entry.position.x, entry.position.y, entry.width, entry.opacity]);
+    const wakeUniforms = fillVec4s(8, handoff.wakes ?? [], (entry) => [entry.position.x, entry.position.y, entry.length, entry.opacity]);
+    const shelfUniforms = fillVec4s(4, handoff.shelves ?? [], (entry) => [entry.center.x, entry.center.y, entry.radius.x, entry.radius.y]);
 
     gl.useProgram(program);
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
@@ -422,15 +498,33 @@ function boot() {
     gl.uniform4fv(uniforms.uCoconuts, coconutUniforms);
     gl.uniform4fv(uniforms.uFish, fishUniforms);
     gl.uniform4fv(uniforms.uFloats, floatUniforms);
+    gl.uniform4fv(uniforms.uReefs, reefUniforms);
+    gl.uniform4fv(uniforms.uCurrents, currentUniforms);
+    gl.uniform4fv(uniforms.uClouds, cloudUniforms);
+    gl.uniform4fv(uniforms.uWakes, wakeUniforms);
+    gl.uniform4fv(uniforms.uShelfBands, shelfUniforms);
     gl.drawArrays(gl.TRIANGLES, 0, 6);
 
     const review = composition.review();
-    statusEl.textContent = review.ok ? `review ok · ${REQUIRED_KITS.length} kits composed · 3 coconuts · ${composition.fish.length} fish · reflective horizon water · drag to orbit` : `review failed · ${review.problems.join(" · ")}`;
+    const counts = composition.visualFractal?.rendererHandoff?.counts ?? {};
+    statusEl.textContent = review.ok ? `review ok · ${REQUIRED_KITS.length} kits composed · lagoon descriptors ${counts.reefs}/${counts.currents}/${counts.clouds} · reflective horizon water · drag to orbit` : `review failed · ${review.problems.join(" · ")}`;
     requestAnimationFrame(frame);
   }
 
-  window.GameHost = { composition, reviewComposition: composition.review, getState: () => composition.getState(), renderer: { api: "webgl2", cel: true, sobel: true } };
+  window.GameHost = {
+    composition,
+    reviewComposition: composition.review,
+    getState: () => composition.getState(),
+    getRendererHandoff: () => composition.visualFractal?.rendererHandoff,
+    visualFractal: () => composition.visualFractal,
+    renderer: { api: "webgl2", cel: true, sobel: true, descriptorHandoff: true },
+    runtime: { nexusEngineCdn: NEXUS_ENGINE_CDN, nexusEngineExportCount: Object.keys(NexusEngine).length }
+  };
   requestAnimationFrame(frame);
 }
 
-boot();
+try {
+  boot();
+} catch (error) {
+  showFatal(error);
+}
