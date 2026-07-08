@@ -81,6 +81,7 @@ const deployCheckSuites = [
   "tests/open-above-visual-domain-kits-smoke.mjs",
   "tests/open-above-visual-static-smoke.mjs",
   "tests/peer-scene-transition-kits-smoke.mjs",
+  "tests/peer-scene-transition-playwright-smoke.mjs",
   "tests/vr-platformer-board-kits-smoke.mjs",
   "tests/zombie-orchard-visual-fractal-kits-smoke.mjs",
   "tests/experiment-flat-routes-smoke.mjs",
