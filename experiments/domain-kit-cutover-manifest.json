@@ -8,7 +8,7 @@
       "kind": "experiment",
       "canonicalPath": "experiments/ThirdPersonFollowThrough/",
       "status": "controller-arena-fractal-debug-handoff-pass",
-      "domainCutover": ["third-person-follow-kit", "rigged-actor-kit", "three-debug-ray-adapter", "n-core-debug-kit", "third-person-arena-surface-band-kit", "third-person-movement-basis-trail-kit", "third-person-camera-handoff-arc-kit", "third-person-collider-proximity-halo-kit", "third-person-rig-metric-spine-kit", "third-person-training-cue-kit", "third-person-arena-renderer-handoff-kit", "third-person-arena-fractal-domain-kit"],
+      "domainCutover": ["third-person-follow-kit", "rigged-actor-kit", "three-debug-ray-adapter", "n-core-debug-kit", "third-person-arena-fractal-domain-kit"],
       "bridgeNeeded": "browser route imports NexusEngine main via CDN through an arena-fractal wrapper; controller math remains in runtime while the domain kit emits renderer-neutral descriptors",
       "featureParity": ["WASD movement", "spring-arm camera", "core debug export", "arena fractal descriptors"]
     },
@@ -17,16 +17,16 @@
       "kind": "experiment",
       "canonicalPath": "experiments/peer-scene-transition/",
       "status": "peer-scene-consequence-fractal-handoff-pass",
-      "domainCutover": ["core-scene-kit", "scene-host-contract", "web-html-scene-host", "peer-scene-domain-kit", "scene-route-graph-kit", "scene-gate-preview-kit", "scene-puzzle-hint-kit", "scene-ambient-variation-kit", "scene-completion-constellation-kit", "scene-renderer-handoff-kit", "scene-depth-fog-band-kit", "scene-light-ray-kit", "scene-relic-focus-kit", "scene-path-tension-kit", "scene-memory-echo-kit", "scene-atmospheric-handoff-kit", "scene-objective-beat-kit", "scene-clue-thread-kit", "scene-inventory-constellation-kit", "scene-pressure-weather-kit", "scene-continuity-splice-kit", "scene-choice-readability-kit", "scene-chronicle-renderer-handoff-kit", "scene-chronicle-domain-kit", "scene-cause-lens-kit", "scene-risk-delta-kit", "scene-ally-presence-kit", "scene-route-consequence-kit", "scene-reward-preview-kit", "scene-consequence-renderer-handoff-kit", "scene-consequence-domain-kit"],
+      "domainCutover": ["core-scene-kit", "scene-host-contract", "peer-scene-domain-kit", "scene-renderer-handoff-kit", "scene-chronicle-domain-kit", "scene-consequence-domain-kit"],
       "bridgeNeeded": "browser host imports NexusEngine main via CDN; renderer consumes base, atmospheric, chronicle, and consequence descriptors only while route solving and inventory truth stay in domain kits",
-      "featureParity": ["scene routes", "lantern gate", "forest puzzle", "bridge puzzle", "shrine puzzle", "chronicle descriptors", "consequence descriptors", "GameHost consequence domain state"]
+      "featureParity": ["scene routes", "lantern gate", "forest puzzle", "bridge puzzle", "shrine puzzle", "chronicle descriptors", "consequence descriptors"]
     },
     {
       "id": "the-cavalry-of-rome",
       "kind": "experiment",
       "canonicalPath": "apps/the-cavalry-of-rome/",
       "status": "campaign-fractal-command-handoff-pass",
-      "domainCutover": ["cavalry-campaign-map-kit", "cavalry-world-actions-kit", "cavalry-campaign-3d-terrain-pass", "cavalry-campaign-tactical-grid-pass", "cavalry-campaign-space-select-pass", "cavalry-supply-line-kit", "cavalry-march-corridor-kit", "cavalry-unit-cohesion-field-kit", "cavalry-morale-weather-front-kit", "cavalry-maneuver-choice-band-kit", "cavalry-fractal-renderer-handoff-kit", "cavalry-campaign-fractal-domain-kit"],
+      "domainCutover": ["cavalry-campaign-map-kit", "cavalry-world-actions-kit", "cavalry-campaign-fractal-domain-kit"],
       "bridgeNeeded": "live and experiment routes load a NexusEngine main CDN campaign-fractal handoff pass; reusable campaign logic emits supply line, march corridor, cohesion, morale, and maneuver-choice descriptors while the overlay consumes descriptors only",
       "featureParity": ["large campaign map", "one world action cadence", "Rome territory movement", "AI pressure", "campaign fractal descriptors"]
     },
@@ -35,7 +35,7 @@
       "kind": "experiment",
       "canonicalPath": "experiments/vr-platformer-board/",
       "status": "traversal-readability-renderer-handoff-pass",
-      "domainCutover": ["platformer-level-domain-kit", "platformer-avatar-domain-kit", "platformer-physics-system-kit", "platformer-collision-domain-kit", "platformer-object-domain-kit", "platformer-camera-domain-kit", "platformer-render-descriptor-kit", "platformer-effects-domain-kit", "platformer-parallax-domain-kit", "platformer-objective-sequence-kit", "xr-pose-domain-kit", "xr-input-adapter-kit", "spatial-anchor-domain-kit", "spatial-game-board-domain-kit", "xr-comfort-domain-kit", "stereoscopic-render-domain-kit", "xr-platformer-render-adapter-kit", "vr-board-world-seed-kit", "vr-board-challenge-director-kit", "vr-board-depth-lane-kit", "vr-board-atmospheric-dome-kit", "vr-board-platform-relief-kit", "vr-board-hazard-telemetry-kit", "vr-board-collectible-constellation-kit", "vr-board-comfort-focus-kit", "vr-board-motion-trail-kit", "vr-board-renderer-handoff-kit", "vr-board-jump-arc-forecast-kit", "vr-board-landing-zone-heat-kit", "vr-board-checkpoint-thread-kit", "vr-board-fail-recovery-beacon-kit", "vr-board-tempo-pulse-band-kit", "vr-board-control-coaching-strip-kit", "vr-board-traversal-renderer-handoff-kit", "vr-board-traversal-readability-domain-kit"],
+      "domainCutover": ["platformer-level-domain-kit", "spatial-game-board-domain-kit", "vr-board-renderer-handoff-kit", "vr-board-traversal-readability-domain-kit"],
       "bridgeNeeded": "browser host imports NexusEngine main via CDN; route exposes traversal readability handoff descriptors while the renderer consumes descriptors only",
       "featureParity": ["A/D movement", "Space jump", "R reset", "coins", "hazards", "exit", "traversal readability descriptors"]
     },
@@ -44,34 +44,34 @@
       "kind": "experiment",
       "canonicalPath": "experiments/next-ledge/",
       "status": "traversal-readability-renderer-handoff-pass",
-      "domainCutover": ["action-input-kit", "generic-route-progress-kit", "generic-route-cargo-extraction-kit", "generic-resource-loop-kit", "generic-pressure-loop-kit", "camera-cinematic-maker-kit", "visual-fidelity-maker-kit", "scenario-qa-harness", "next-ledge-visual-fractal-domain-kit", "cliff-strata-band-kit", "cliff-crack-vein-kit", "anchor-aura-ring-kit", "rope-braid-segment-kit", "cloud-wisp-strip-kit", "danger-fall-streak-kit", "next-ledge-route-cargo-domain-kit", "cargo-cache-anchor-kit", "cargo-route-thread-kit", "extraction-pressure-channel-kit", "extraction-summit-handoff-kit", "cargo-status-descriptor-kit", "route-cargo-renderer-handoff-kit", "swing-arc-forecast-kit", "anchor-confidence-field-kit", "stamina-risk-band-kit", "recovery-vector-kit", "momentum-window-kit", "summit-route-beat-kit", "traversal-readability-renderer-handoff-kit", "next-ledge-traversal-readability-domain-kit"],
+      "domainCutover": ["action-input-kit", "generic-route-cargo-extraction-kit", "next-ledge-visual-fractal-domain-kit", "next-ledge-route-cargo-domain-kit", "next-ledge-traversal-readability-domain-kit"],
       "bridgeNeeded": "browser wrapper consumes NexusEngine main CDN and emits renderer-neutral route-cargo plus traversal-readability descriptors while the Three/diegetic renderer consumes descriptors only",
-      "featureParity": ["grapple", "swing", "sector advance", "cargo cache descriptors", "fall pressure descriptors", "swing arc forecast descriptors", "anchor confidence descriptors", "stamina risk descriptors", "recovery vector descriptors", "GameHost renderer handoff"]
+      "featureParity": ["grapple", "swing", "sector advance", "cargo cache descriptors", "fall pressure descriptors", "traversal readability descriptors"]
     },
     {
       "id": "infinite-radial-terrain",
       "kind": "experiment",
       "canonicalPath": "experiments/infinite-radial-terrain/",
       "status": "terrain-expedition-readability-handoff-pass",
-      "domainCutover": ["terrain-geology-province-kit", "terrain-hydrology-thread-kit", "terrain-biome-mosaic-kit", "terrain-lod-ring-telemetry-kit", "terrain-travel-forecast-kit", "terrain-sky-haze-gradient-kit", "terrain-renderer-handoff-kit", "infinite-radial-terrain-visual-domain-kit", "terrain-survey-transect-kit", "terrain-altitude-corridor-kit", "terrain-ridge-pass-beacon-kit", "terrain-hazard-basin-kit", "terrain-sample-bookmark-kit", "terrain-route-task-band-kit", "terrain-expedition-renderer-handoff-kit", "terrain-expedition-readability-domain-kit"],
-      "bridgeNeeded": "browser host imports NexusEngine main via CDN; radial terrain visual and expedition readability domains emit survey transect, altitude corridor, ridge pass, hazard basin, sample bookmark, and route task descriptors consumed by Three presentation only",
-      "featureParity": ["camera flight", "radial LOD rings", "biome mosaic", "hydrology threads", "survey transect descriptors", "altitude corridor descriptors", "ridge pass beacons", "hazard basins", "sample bookmarks", "route task bands", "GameHost expedition readability state"]
+      "domainCutover": ["infinite-radial-terrain-visual-domain-kit", "terrain-expedition-readability-domain-kit"],
+      "bridgeNeeded": "browser host imports NexusEngine main via CDN; radial terrain visual and expedition readability domains emit survey, altitude, ridge, hazard, sample, and route task descriptors consumed by Three presentation only",
+      "featureParity": ["camera flight", "radial LOD rings", "biome mosaic", "survey transect descriptors", "altitude corridor descriptors", "route task bands"]
     },
     {
       "id": "high-fidelity-meadow",
       "kind": "experiment",
       "canonicalPath": "experiments/high-fidelity-meadow/",
       "status": "meadow-ecology-readability-handoff-pass",
-      "domainCutover": ["terrain-field-domain-service-kit", "wind-field-domain-service-kit", "grass-field-system-kit", "procedural-structure-domain-service-kit", "particle-vfx-domain-service-kit", "creature-domain-service-kit", "creature-animation-domain-service-kit", "fur-wool-hair-domain-service-kit", "sky-atmosphere-domain-service-kit", "meadow-visual-target-kit", "meadow-simulation-mode-kit", "meadow-depth-strata-kit", "meadow-grass-patch-cluster-kit", "meadow-flower-drift-patch-kit", "meadow-grazing-trail-kit", "meadow-light-shaft-kit", "meadow-atmospheric-parallax-kit", "meadow-renderer-handoff-kit", "meadow-visual-fractal-domain-kit", "meadow-pollinator-route-kit", "meadow-shepherd-path-kit", "meadow-rest-spot-kit", "meadow-wind-lane-kit", "meadow-seasonal-bloom-queue-kit", "meadow-attention-beacon-kit", "meadow-ecology-renderer-handoff-kit", "meadow-ecology-readability-domain-kit"],
-      "bridgeNeeded": "browser host imports NexusEngine main via CDN; meadow visual and ecology readability kits emit pollinator, shepherd path, rest spot, wind lane, bloom queue, and attention beacon descriptors consumed by Three presentation only",
-      "featureParity": ["grass", "flowers", "sheep", "depth strata", "patch grass descriptors", "pollinator route descriptors", "shepherd path descriptors", "wind lane descriptors", "bloom queue descriptors", "GameHost renderer handoff"]
+      "domainCutover": ["terrain-field-domain-service-kit", "meadow-visual-fractal-domain-kit", "meadow-ecology-readability-domain-kit"],
+      "bridgeNeeded": "browser host imports NexusEngine main via CDN; meadow visual and ecology readability kits emit living-scene descriptors consumed by Three presentation only",
+      "featureParity": ["grass", "flowers", "sheep", "pollinator route descriptors", "shepherd path descriptors", "GameHost renderer handoff"]
     },
     {
       "id": "fogline-relay",
       "kind": "experiment",
       "canonicalPath": "experiments/fogline-relay/",
       "status": "fog-route-readability-handoff-pass",
-      "domainCutover": ["action-input-kit", "scan-survey-kit", "zone-field-kit", "timed-pressure-director-kit", "resource-pressure-kit", "hazard-director-kit", "fogline-survey-pressure-bridge-kit", "visual-fidelity-maker-kit", "audio-event-feedback-maker-kit", "scenario-qa-harness", "fogline-visual-fractal-domain-kit", "fogline-route-thread-kit", "fogline-ground-mottle-kit", "fogline-relay-aura-kit", "fogline-wraith-echo-kit", "fogline-gate-sigil-kit", "fogline-canopy-shaft-kit", "fogline-scan-cone-kit", "fogline-objective-needle-kit", "fogline-memory-breadcrumb-kit", "fogline-pressure-vignette-kit", "fogline-safe-pocket-kit", "fogline-renderer-handoff-kit"],
+      "domainCutover": ["action-input-kit", "scan-survey-kit", "fogline-visual-fractal-domain-kit", "fogline-renderer-handoff-kit"],
       "bridgeNeeded": "browser host imports NexusEngine main via CDN; visual and route-readability descriptors are consumed by Canvas/Three presentation only through GameHost renderer handoff",
       "featureParity": ["first-person movement", "scan", "relays", "wraith pressure", "route readability descriptors"]
     },
@@ -79,45 +79,45 @@
       "id": "nexus-frontier-signal-isles",
       "kind": "experiment",
       "canonicalPath": "experiments/nexus-frontier-signal-isles/",
-      "status": "signal-isles-visual-fractal-handoff-pass",
-      "domainCutover": ["foundation-kit", "token-registry-kit", "action-input-kit", "view-rig-kit", "spatial-interaction-kit", "completion-ledger-kit", "objective-bridge-kit", "lock-group-kit", "damage-health-kit", "encounter-director-kit", "resource-node-kit", "build-placement-kit", "structure-runtime-kit", "diegetic-feedback-signal-kit", "asset-descriptor-kit", "timed-pressure-director-kit", "zone-field-kit", "scan-survey-kit", "route-checkpoint-kit", "cargo-delivery-kit", "agent-group-kit", "resource-pressure-kit", "hazard-director-kit", "content-preset-kit", "visual-fidelity-maker-kit", "audio-event-feedback-maker-kit", "camera-cinematic-maker-kit", "scenario-qa-harness", "deterministic-replay-harness", "gamehost-standard-kit", "biome-field-kit", "vegetation-archetype-kit", "ground-contact-kit", "vegetation-lod-kit", "scatter-object-kit", "surface-material-kit", "signal-isles-island-relief-cell-kit", "signal-isles-signal-flow-thread-kit", "signal-isles-hazard-pressure-front-kit", "signal-isles-resource-shard-cluster-kit", "signal-isles-build-ghost-readout-kit", "signal-isles-objective-beacon-compass-kit", "signal-isles-renderer-handoff-kit", "signal-isles-visual-fractal-domain-kit"],
-      "bridgeNeeded": "browser host imports NexusEngine main via CDN; visual fractal kits emit descriptors consumed by presentation only",
-      "featureParity": ["first-person movement", "harvest", "build mast", "pressure wave", "visual descriptors"]
+      "status": "signal-isles-objective-readability-handoff-pass",
+      "domainCutover": ["foundation-kit", "action-input-kit", "scan-survey-kit", "resource-node-kit", "build-placement-kit", "route-checkpoint-kit", "cargo-delivery-kit", "signal-isles-visual-fractal-domain-kit", "signal-isles-objective-step-queue-kit", "signal-isles-proximity-action-cue-kit", "signal-isles-gate-dependency-thread-kit", "signal-isles-cargo-route-ribbon-kit", "signal-isles-pressure-safe-pocket-kit", "signal-isles-resource-build-delta-kit", "signal-isles-objective-renderer-handoff-kit", "signal-isles-objective-readability-domain-kit"],
+      "bridgeNeeded": "browser host imports NexusEngine main via CDN; visual and objective readability kits emit objective beat, action cue, dependency, cargo route, safe pocket, and resource delta descriptors consumed by Three presentation only",
+      "featureParity": ["first-person movement", "harvest", "build mast", "pressure wave", "visual descriptors", "objective readability descriptors", "GameHost composed renderer handoff"]
     },
     {
       "id": "sora-the-infinite",
       "kind": "experiment",
       "canonicalPath": "experiments/sora-the-infinite/",
       "status": "route-preview-fractal-handoff-pass",
-      "domainCutover": ["sora-alias-provenance-kit", "sora-launch-vector-kit", "sora-sky-memory-band-kit", "sora-wind-shear-forecast-kit", "sora-waypoint-ribbon-kit", "sora-handoff-packet-kit", "sora-altitude-envelope-kit", "sora-continuity-gate-kit", "sora-input-coaching-kit", "sora-renderer-handoff-kit", "sora-compatibility-domain-kit"],
-      "bridgeNeeded": "legacy zero-frame redirect is now an authored NexusEngine CDN route-preview gateway; renderer consumes wind shear, waypoint, handoff packet, altitude, launch vector, sky memory, continuity, and coaching descriptors only",
-      "featureParity": ["legacy route preserved", "query/hash preserved", "input coaching", "route preview descriptors", "GameHost route preview handoff"]
+      "domainCutover": ["sora-compatibility-domain-kit", "sora-renderer-handoff-kit"],
+      "bridgeNeeded": "legacy zero-frame redirect is now an authored NexusEngine CDN route-preview gateway; renderer consumes route-preview descriptors only",
+      "featureParity": ["legacy route preserved", "query/hash preserved", "input coaching", "route preview descriptors"]
     },
     {
       "id": "zombie-orchard",
       "kind": "experiment",
       "canonicalPath": "experiments/zombie-orchard/",
       "status": "survival-readability-renderer-handoff-pass",
-      "domainCutover": ["action-input-kit", "timed-pressure-director-kit", "zone-field-kit", "resource-pressure-kit", "agent-group-kit", "hazard-director-kit", "content-preset-kit", "scenario-qa-harness", "zombie-orchard-visual-fractal-domain-kit", "orchard-ground-texture-kit", "orchard-fog-ribbon-kit", "orchard-haunting-zone-ring-kit", "orchard-pickup-beacon-kit", "orchard-combat-cue-kit", "orchard-lane-band-kit", "orchard-leaf-cluster-kit", "orchard-trunk-form-kit", "orchard-apple-glow-kit", "orchard-threat-silhouette-kit", "orchard-tension-lighting-kit", "orchard-threat-gradient-kit", "orchard-resource-route-kit", "orchard-stamina-breath-kit", "orchard-round-pressure-band-kit", "orchard-escape-lane-kit", "orchard-melee-window-kit", "orchard-survival-renderer-handoff-kit", "zombie-orchard-survival-readability-domain-kit"],
-      "bridgeNeeded": "browser host imports NexusEngine main via CDN; survival readability domain emits threat, resource, stamina, round pressure, escape lane, and melee window descriptors consumed by canvas presentation only",
-      "featureParity": ["move", "collect", "survival waves", "orchard descriptors", "survival readability descriptors", "GameHost renderer handoff"]
+      "domainCutover": ["action-input-kit", "zombie-orchard-visual-fractal-domain-kit", "zombie-orchard-survival-readability-domain-kit"],
+      "bridgeNeeded": "browser host imports NexusEngine main via CDN; survival readability domain emits descriptors consumed by canvas presentation only",
+      "featureParity": ["move", "collect", "survival waves", "orchard descriptors", "survival readability descriptors"]
     },
     {
       "id": "tropical-island-scene",
       "kind": "experiment",
       "canonicalPath": "experiments/tropical-island-scene/",
       "status": "beachcomber-readability-renderer-handoff-pass",
-      "domainCutover": ["island-kit", "palm-tree-kit", "coconut-prop-kit", "timer-kit", "fall-motion-kit", "fish-school-kit", "fish-motion-kit", "float-prop-kit", "float-motion-kit", "orbit-camera-kit", "cel-shading-kit", "outline-sobel-kit", "normal-style-kit", "reflect-probe-kit", "fluid-field-kit", "fluid-motion-kit", "fluid-shading-kit", "fluid-effects-kit", "water-mode-kit", "water-data-kit", "water-stream-kit", "water-surface-kit", "water-mesh-kit", "water-shading-kit", "water-physics-kit", "water-effects-kit", "lagoon-depth-shelf-kit", "reef-bloom-cluster-kit", "current-ribbon-field-kit", "palm-canopy-motion-kit", "horizon-cloud-bank-kit", "wildlife-wake-trail-kit", "tropical-lagoon-renderer-handoff-kit", "tropical-lagoon-visual-fractal-domain-kit", "beachcomber-task-beacon-kit", "shoreline-path-ribbon-kit", "coconut-risk-shadow-kit", "fish-school-focus-ring-kit", "drift-collection-lane-kit", "tide-window-pulse-kit", "beachcomber-renderer-handoff-kit", "tropical-beachcomber-readability-domain-kit"],
-      "bridgeNeeded": "browser host imports NexusEngine main via CDN; existing local ProtoKit import-map remains for old island/water stack; beachcomber readability overlay imports NexusEngine main CDN and consumes task, shoreline, coconut-risk, fish-focus, drift, and tide descriptors only",
-      "featureParity": ["drag orbit", "fish", "coconuts", "reef descriptors", "wake descriptors", "task beacons", "shoreline path ribbons", "coconut risk shadows", "fish focus rings", "drift collection lanes", "tide windows", "GameHost beachcomber readability handoff"]
+      "domainCutover": ["island-kit", "water-surface-kit", "tropical-lagoon-visual-fractal-domain-kit", "tropical-beachcomber-readability-domain-kit"],
+      "bridgeNeeded": "browser host imports NexusEngine main via CDN; existing local ProtoKit import-map remains for old island/water stack; beachcomber readability overlay imports NexusEngine main CDN and consumes descriptors only",
+      "featureParity": ["drag orbit", "fish", "coconuts", "reef descriptors", "task beacons", "shoreline path ribbons", "tide windows"]
     },
     {
       "id": "signal-bastion",
       "kind": "game",
       "canonicalPath": "games/signal-bastion/",
       "status": "command-fractal-readability-handoff-pass",
-      "domainCutover": ["generic-defense-aaa-kits", "generic-defense-presentation-stack-kit", "generic-stylized-view-rig-kit", "generic-cel-material-kit", "generic-ink-outline-kit", "generic-stylized-lighting-kit", "generic-defense-ground-readability-kit", "generic-placement-projector-kit", "generic-range-ring-kit", "generic-defense-unit-render-kit", "generic-tower-identity-layer-kit", "generic-enemy-readability-layer-kit", "generic-combat-vfx-kit", "generic-hit-feedback-kit", "generic-layered-hud-shell-kit", "generic-gameplay-stat-strip", "generic-tower-selection-panel-kit", "generic-upgrade-tree-panel-kit", "generic-selection-context-panel-kit", "generic-ui-motion-polish-kit", "bastion-path-threat-gradient-kit", "bastion-economy-flow-ribbon-kit", "bastion-tower-synergy-cell-kit", "bastion-enemy-intent-thread-kit", "bastion-wave-readiness-glyph-kit", "bastion-command-choice-band-kit", "bastion-command-renderer-handoff-kit", "signal-bastion-command-fractal-domain-kit"],
-      "bridgeNeeded": "browser host imports NexusEngine main via CDN; command fractal kits emit path threat, economy flow, tower synergy, enemy intent, wave readiness, and command choice descriptors consumed by canvas presentation only",
+      "domainCutover": ["generic-defense-aaa-kits", "generic-defense-presentation-stack-kit", "signal-bastion-command-fractal-domain-kit"],
+      "bridgeNeeded": "browser host imports NexusEngine main via CDN; command fractal kits emit descriptors consumed by canvas presentation only",
       "featureParity": ["2.5D oblique renderer", "placement ghost", "range rings", "30 waves", "command fractal descriptors"]
     },
     {
@@ -126,9 +126,9 @@
       "canonicalPath": "games/rogue-lite-hellscape-siege/",
       "status": "hellscape-siege-fractal-readability-handoff-pass",
       "removedLegacyPaths": ["games/rogue-lite-hellscape-siege-v2/"],
-      "domainCutover": ["action-input-kit", "resource-pressure-kit", "cargo-delivery-kit", "agent-group-kit", "hazard-director-kit", "route-checkpoint-kit", "visual-fidelity-maker-kit", "audio-event-feedback-maker-kit", "camera-cinematic-maker-kit", "scenario-qa-harness", "gamehost-standard-kit", "hellscape-realm-pressure-gradient-kit", "hellscape-resource-route-web-kit", "hellscape-core-defense-radius-kit", "hellscape-portal-risk-beacon-kit", "hellscape-build-affordance-band-kit", "hellscape-wave-threat-lane-kit", "hellscape-renderer-handoff-kit", "hellscape-siege-fractal-domain-kit"],
-      "bridgeNeeded": "browser host imports NexusEngine main via CDN; hellscape siege fractal domain emits realm pressure, resource route, defense radius, portal beacon, build affordance, and threat lane descriptors consumed by canvas presentation only",
-      "featureParity": ["realm portals", "harvesting", "inventory", "build", "core defense", "hellscape readability descriptors", "GameHost renderer handoff"]
+      "domainCutover": ["action-input-kit", "resource-pressure-kit", "hellscape-siege-fractal-domain-kit"],
+      "bridgeNeeded": "browser host imports NexusEngine main via CDN; hellscape siege fractal domain emits descriptors consumed by canvas presentation only",
+      "featureParity": ["realm portals", "harvesting", "inventory", "build", "core defense", "hellscape readability descriptors"]
     }
   ],
   "versionedRoutePolicy": {
