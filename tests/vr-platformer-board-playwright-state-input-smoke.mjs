@@ -1,5 +1,7 @@
 import "./vr-board-skill-rhythm-readiness-kits-smoke.mjs";
 import "./vr-board-skill-rhythm-readiness-cdn-state-input-smoke.mjs";
+import "./vr-board-companion-rescue-readiness-kits-smoke.mjs";
+import "./vr-board-companion-rescue-cdn-state-input-smoke.mjs";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
@@ -7,6 +9,7 @@ const index = readFileSync("experiments/vr-platformer-board/index.html", "utf8")
 const visualKits = readFileSync("experiments/_kits/vr-platformer-board/vr-platformer-board-kits.js", "utf8");
 const traversalKits = readFileSync("experiments/_kits/vr-platformer-board/vr-board-traversal-readability-kits.js", "utf8");
 const skillKits = readFileSync("experiments/_kits/vr-platformer-board/vr-board-skill-rhythm-readiness-kits.js", "utf8");
+const companionKits = readFileSync("experiments/_kits/vr-platformer-board/vr-board-companion-rescue-readiness-kits.js", "utf8");
 
 assert.ok(index.includes("https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js"));
 assert.ok(!index.includes("LuminaryLabs-Dev/NexusRealtime@main/src/index.js"));
@@ -14,15 +17,19 @@ assert.ok(!index.includes("LuminaryLabs-Agents/NexusRealtime-ProtoKits@main/prot
 assert.ok(index.includes("await import(NEXUS_URL)"));
 assert.ok(index.includes("createVrBoardCompositionKit"));
 assert.ok(index.includes("createVrBoardTraversalReadabilityDomainKit"));
+assert.ok(index.includes("createVrBoardCompanionRescueReadinessDomainKit"));
 assert.ok(index.includes("latestBoardComposition = boardCompositionKit.describe"));
 assert.ok(index.includes("latestTraversalReadability = traversalReadabilityKit.describe"));
+assert.ok(index.includes("latestCompanionRescueReadiness = companionRescueReadinessKit.describe"));
 assert.ok(index.includes("drawAtmosphericDome(composition)"));
 assert.ok(index.includes("drawPlatformRelief(composition, cameraX, cameraY)"));
 assert.ok(index.includes("drawHazardTelemetry(composition, cameraX, cameraY)"));
 assert.ok(index.includes("drawComfortFocus(composition)"));
 assert.ok(index.includes("drawJumpArc(traversal, cameraX, cameraY)"));
 assert.ok(index.includes("drawLandingZones(traversal, cameraX, cameraY)"));
-assert.ok(index.includes("getRendererHandoff: () => latestTraversalReadability?.rendererHandoff ?? null"));
+assert.ok(index.includes("drawCompanionRescueReadiness(companionRescue, cameraX, cameraY)"));
+assert.ok(index.includes("getRendererHandoff"));
+assert.ok(index.includes("getCompanionRescueReadiness"));
 
 const expectedVisualKits = [
   "createVrBoardAtmosphericDomeKit",
@@ -62,6 +69,18 @@ const expectedSkillKits = [
 ];
 for (const kit of expectedSkillKits) assert.ok(skillKits.includes(kit), kit);
 
+const expectedCompanionKits = [
+  "createVrBoardLostCompanionBeaconKit",
+  "createVrBoardEscortLaneRibbonKit",
+  "createVrBoardRescueNetAnchorKit",
+  "createVrBoardShieldBubbleTimingKit",
+  "createVrBoardMedalCacheSignalKit",
+  "createVrBoardExitStretcherCommitKit",
+  "createVrBoardCompanionRescueRendererHandoffKit",
+  "createVrBoardCompanionRescueReadinessDomainKit"
+];
+for (const kit of expectedCompanionKits) assert.ok(companionKits.includes(kit), kit);
+
 const intakes = Array.from({ length: 10 }, (_, index) => ({
   dt: index % 2 ? 1 / 60 : 1 / 30,
   input: {
@@ -71,6 +90,11 @@ const intakes = Array.from({ length: 10 }, (_, index) => ({
     head: { position: { x: Math.max(-0.22, Math.min(0.22, -0.1 + index * 0.02)), y: Math.max(1.35, Math.min(1.9, 1.45 + index * 0.04)), z: 0 } },
     skillRhythm: {
       jumpGateReadiness: Math.max(0, Math.min(1, 0.18 + index * 0.08)),
+      exitCommitment: Math.max(0, Math.min(1, index / 9))
+    },
+    companionRescue: {
+      rescueNetAnchors: 3,
+      shieldBubbleWindows: 3,
       exitCommitment: Math.max(0, Math.min(1, index / 9))
     }
   }
@@ -84,6 +108,9 @@ for (const intake of intakes) {
   assert.ok(intake.input.head.position.y >= 1.35 && intake.input.head.position.y <= 1.9);
   assert.ok(intake.input.skillRhythm.jumpGateReadiness >= 0 && intake.input.skillRhythm.jumpGateReadiness <= 1);
   assert.ok(intake.input.skillRhythm.exitCommitment >= 0 && intake.input.skillRhythm.exitCommitment <= 1);
+  assert.equal(intake.input.companionRescue.rescueNetAnchors, 3);
+  assert.equal(intake.input.companionRescue.shieldBubbleWindows, 3);
+  assert.ok(intake.input.companionRescue.exitCommitment >= 0 && intake.input.companionRescue.exitCommitment <= 1);
 }
 
-console.log("vr platformer board NexusEngine CDN playwright/state-input smoke passed: 10 intake cases with traversal and skill rhythm handoff");
+console.log("vr platformer board NexusEngine CDN playwright/state-input smoke passed: 10 intake cases with traversal, skill rhythm, and companion rescue handoff");
