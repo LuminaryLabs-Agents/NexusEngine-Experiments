@@ -25,10 +25,10 @@
       "id": "the-cavalry-of-rome",
       "kind": "experiment",
       "canonicalPath": "apps/the-cavalry-of-rome/",
-      "status": "campaign-fractal-command-handoff-pass",
-      "domainCutover": ["cavalry-campaign-map-kit", "cavalry-world-actions-kit", "cavalry-campaign-fractal-domain-kit"],
-      "bridgeNeeded": "live and experiment routes load a NexusEngine main CDN campaign-fractal handoff pass; reusable campaign logic emits supply line, march corridor, cohesion, morale, and maneuver-choice descriptors while the overlay consumes descriptors only",
-      "featureParity": ["large campaign map", "one world action cadence", "Rome territory movement", "AI pressure", "campaign fractal descriptors"]
+      "status": "battlefield-orders-readability-handoff-pass",
+      "domainCutover": ["cavalry-campaign-map-kit", "cavalry-world-actions-kit", "cavalry-campaign-fractal-domain-kit", "cavalry-battlefield-orders-domain-kit"],
+      "bridgeNeeded": "live and experiment routes load a NexusEngine main CDN campaign handoff pass; reusable campaign and battlefield-orders logic emits supply line, march corridor, cohesion, morale, maneuver choice, scout, flank, reinforcement, attrition, tempo, and objective pressure descriptors while the overlay consumes descriptors only",
+      "featureParity": ["large campaign map", "one world action cadence", "Rome territory movement", "AI pressure", "campaign fractal descriptors", "scouting vector descriptors", "flank risk arcs", "reinforcement callouts", "attrition forecast chips", "turn tempo standards", "objective pressure banner"]
     },
     {
       "id": "vr-platformer-board",
