@@ -97,10 +97,10 @@
       "id": "zombie-orchard",
       "kind": "experiment",
       "canonicalPath": "experiments/zombie-orchard/",
-      "status": "foraging-readability-renderer-handoff-pass",
-      "domainCutover": ["action-input-kit", "zombie-orchard-visual-fractal-domain-kit", "zombie-orchard-survival-readability-domain-kit", "zombie-orchard-foraging-readability-domain-kit"],
-      "bridgeNeeded": "browser host imports NexusEngine main via CDN; survival and foraging readability domains emit apple rarity, gear choice, harvest streak, safe pocket, row memory, and boss omen descriptors consumed by Canvas and existing Three-compatible visual buckets only",
-      "featureParity": ["move", "collect", "survival waves", "orchard descriptors", "survival readability descriptors", "apple rarity heat", "gear choice arcs", "harvest streak trails", "safe harvest pockets", "row memory breadcrumbs", "boss omen branches", "GameHost composed renderer handoff"]
+      "status": "horde-pathing-readiness-renderer-handoff-pass",
+      "domainCutover": ["action-input-kit", "zombie-orchard-visual-fractal-domain-kit", "zombie-orchard-survival-readability-domain-kit", "zombie-orchard-foraging-readability-domain-kit", "zombie-orchard-horde-pathing-readiness-domain-kit"],
+      "bridgeNeeded": "browser host imports NexusEngine main via CDN through the existing kit stack and the new horde-pathing overlay; survival, foraging, and horde-pathing readiness domains emit apple rarity, gear choice, harvest, row memory, boss omen, spawn lane, choke row, noise lure, retreat thread, weapon uptime, and surge countdown descriptors consumed by Canvas and overlay presentation only",
+      "featureParity": ["move", "collect", "survival waves", "orchard descriptors", "survival readability descriptors", "apple rarity heat", "gear choice arcs", "harvest streak trails", "safe harvest pockets", "row memory breadcrumbs", "boss omen branches", "spawn lane forecasts", "choke row priorities", "noise lure cones", "panic retreat threads", "weapon uptime rings", "round surge countdowns", "GameHost composed renderer handoff"]
     },
     {
       "id": "tropical-island-scene",
