@@ -38,7 +38,8 @@ async function boot() {
     renderer,
     loop,
     getState: session.snapshot,
-    getRendererHandoff: () => session.snapshot().visualFractal?.rendererHandoff,
+    getSignalCartography: () => session.snapshot().signalCartography,
+    getRendererHandoff: () => session.snapshot().rendererHandoff,
     tick: loop.tick,
     stop: loop.stop,
     start: loop.start
