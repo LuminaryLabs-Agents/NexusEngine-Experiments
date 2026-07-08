@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
+import "./signal-bastion-evacuation-corridor-readiness-cdn-state-input-smoke.mjs";
+
 import { createSignalBastionFrontlineTacticsDomainKit } from "../games/signal-bastion/src/signal-bastion-frontline-tactics-domain-kit.js";
 
 const boot = readFileSync("games/signal-bastion/src/boot.js", "utf8");
@@ -15,7 +17,7 @@ assert.ok(boot.includes("getSignalBastionFrontlineTactics"), "boot should compos
 assert.ok(boot.includes("signalBastionFrontlineTactics"), "presentation domain should expose signalBastionFrontlineTactics");
 assert.ok(boot.includes("getFrontlineTactics"), "GameHost should expose frontline tactics state");
 assert.ok(boot.includes("frontlineTacticsDescriptors"), "renderer handoff should count frontline tactic descriptors");
-assert.ok(html.includes("frontline-tactics-readability-1"), "route shell should cache bust frontline tactics integration");
+assert.ok(html.includes("evacuation-corridor-readiness-1"), "route shell should cache bust latest evacuation corridor integration");
 assert.ok(checksSource.includes("tests/signal-bastion-frontline-tactics-domain-kits-smoke.mjs"), "full/deploy checks should include kit smoke");
 assert.ok(checksSource.includes("tests/signal-bastion-frontline-tactics-cdn-state-input-smoke.mjs"), "full/deploy checks should include CDN state smoke");
 
