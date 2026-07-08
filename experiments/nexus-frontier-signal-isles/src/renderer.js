@@ -225,6 +225,16 @@ export async function createSignalIslesRenderer({ canvas, level, preset }) {
     }
   }
 
+  function drawStormAnchorDescriptors(snapshot) {
+    const descriptors = snapshot.stormAnchorReadiness?.rendererHandoff?.descriptors ?? snapshot.domain?.signalIslesStormAnchorReadiness?.rendererHandoff?.descriptors ?? {};
+    for (const cell of descriptors.stormCells ?? []) if (cell.active) addGroundDisc({ ...cell, intensity: cell.pressure }, 0.06 + Number(cell.pressure ?? 0) * 0.13);
+    for (const rod of descriptors.groundingRods ?? []) addGroundRing({ ...rod, intensity: rod.grounded ? 0.78 : 0.36 + Number(rod.charge ?? 0) * 0.34 }, rod.grounded ? 0.34 : 0.16 + Number(rod.charge ?? 0) * 0.2);
+    for (const pocket of descriptors.shelterPockets ?? []) if (pocket.active) addGroundDisc({ ...pocket, intensity: pocket.safety }, 0.07 + Number(pocket.safety ?? 0) * 0.11);
+    for (const cable of descriptors.anchorCables ?? []) addThread({ ...cable, strength: Number(cable.strength ?? cable.tension ?? 0.3) });
+    for (const ring of descriptors.beaconResonanceRings ?? []) if (ring.active) addGroundRing({ ...ring, intensity: ring.resonance ?? 0.3 }, 0.14 + Number(ring.resonance ?? 0) * 0.26);
+    for (const route of descriptors.evacuationTideRoutes ?? []) addThread(route);
+  }
+
   function drawVisualDescriptors(snapshot) {
     clearLayer(visualLayer);
     const descriptors = snapshot.visualFractal?.rendererHandoff?.descriptors ?? {};
@@ -236,6 +246,7 @@ export async function createSignalIslesRenderer({ canvas, level, preset }) {
     for (const compass of descriptors.compass ?? []) addThread({ from: compass.from, to: compass.to, strength: 0.65 + Number(compass.progress ?? 0) * 0.35, color: compass.color });
     drawObjectiveReadabilityDescriptors(snapshot);
     drawExpeditionReadinessDescriptors(snapshot);
+    drawStormAnchorDescriptors(snapshot);
   }
 
   function draw(snapshot) {
