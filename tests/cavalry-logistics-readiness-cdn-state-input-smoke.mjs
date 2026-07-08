@@ -7,6 +7,8 @@ const kit = readFileSync("experiments/The Cavalry of Rome/src/cavalry-logistics-
 const experimentEntry = readFileSync("experiments/The Cavalry of Rome/index.html", "utf8");
 const liveEntry = readFileSync("apps/the-cavalry-of-rome/index.html", "utf8");
 const manifest = readFileSync("experiments/domain-kit-cutover-manifest.json", "utf8");
+const routedDomainSmoke = readFileSync("tests/cavalry-battlefield-orders-domain-kits-smoke.mjs", "utf8");
+const routedCdnSmoke = readFileSync("tests/cavalry-battlefield-orders-cdn-state-input-smoke.mjs", "utf8");
 const checks = readFileSync("scripts/run-checks.mjs", "utf8");
 
 assert.ok(pass.includes("https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js"), "logistics pass should import NexusEngine main CDN");
@@ -28,8 +30,10 @@ assert.ok(liveEntry.includes("cavalry-logistics-readiness-pass.js?v=campaign-035
 assert.ok(liveEntry.includes("Campaign 035"), "live route should expose upgraded build stamp");
 assert.ok(manifest.includes("logistics-readiness-renderer-handoff-pass"), "manifest should include logistics readiness status");
 assert.ok(manifest.includes("cavalry-logistics-readiness-domain-kit"), "manifest should list the logistics readiness domain kit");
-assert.ok(checks.includes("tests/cavalry-logistics-readiness-domain-kits-smoke.mjs"), "checks should include kit smoke");
-assert.ok(checks.includes("tests/cavalry-logistics-readiness-cdn-state-input-smoke.mjs"), "checks should include CDN/state smoke");
+assert.ok(routedDomainSmoke.includes("./cavalry-logistics-readiness-domain-kits-smoke.mjs"), "existing wired domain smoke should import logistics kit smoke");
+assert.ok(routedCdnSmoke.includes("./cavalry-logistics-readiness-cdn-state-input-smoke.mjs"), "existing wired CDN smoke should import logistics CDN/state smoke");
+assert.ok(checks.includes("tests/cavalry-battlefield-orders-domain-kits-smoke.mjs"), "full/deploy checks should still route Cavalry domain smoke");
+assert.ok(checks.includes("tests/cavalry-battlefield-orders-cdn-state-input-smoke.mjs"), "full/deploy checks should still route Cavalry CDN smoke");
 
 const inputCases = Array.from({ length: 10 }, (_, i) => ({
   sizeId: "logistics-cdn-smoke",
