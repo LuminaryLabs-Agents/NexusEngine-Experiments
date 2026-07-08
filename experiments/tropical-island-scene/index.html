@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="description" content="WebGL high-fidelity cel-shaded island terrain scene composed from horizontal NexusEngine descriptor domains, now with beachcomber and lagoon navigation readability overlays." />
+  <meta name="description" content="WebGL high-fidelity cel-shaded island terrain scene composed from horizontal NexusEngine descriptor domains, now with beachcomber, lagoon navigation, and weather shelter readability overlays." />
   <title>Tropical Island Scene — NexusEngine</title>
   <style>
     :root{color-scheme:dark;--text:#f5fff7;--muted:#b9d9cb;--gold:#ffe07b;--aqua:#84f5ff}
@@ -51,15 +51,16 @@
 </head>
 <body>
   <main id="app" aria-label="Tropical Island Scene">
-    <canvas id="game" role="application" aria-label="WebGL cel shaded island with lagoon shelves, reef blooms, beachcomber beacons, shoreline paths, coconut risk shadows, fish focus rings, drift lanes, tide windows, reef contours, swim cones, current vectors, snorkel scores, raft wakes, and glare timing bands"></canvas>
+    <canvas id="game" role="application" aria-label="WebGL cel shaded island with lagoon shelves, reef blooms, beachcomber beacons, shoreline paths, coconut risk shadows, fish focus rings, drift lanes, tide windows, reef contours, swim cones, current vectors, snorkel scores, raft wakes, glare timing bands, storm fronts, shelter canopies, tide escape windows, wave warnings, supply cache glints, and dusk return beacons"></canvas>
     <aside id="hud" aria-label="Minimal scene HUD">
-      <div id="title"><strong>Tropical Island Scene</strong> · lagoon + beachcomber + navigation descriptor handoff</div>
-      <div id="status">loading NexusEngine lagoon, beachcomber, and navigation descriptor composition…</div>
+      <div id="title"><strong>Tropical Island Scene</strong> · lagoon + beachcomber + navigation + weather shelter descriptor handoff</div>
+      <div id="status">loading NexusEngine lagoon, beachcomber, navigation, and weather shelter descriptor composition…</div>
     </aside>
     <section id="errorPanel" role="alert" hidden></section>
   </main>
   <script type="module" src="./src/main.js?v=tropical-island-scene-lagoon-fractal-20260708"></script>
   <script type="module" src="./src/beachcomber-readability-entry.js?v=tropical-island-beachcomber-20260708"></script>
   <script type="module" src="./src/lagoon-navigation-readability-entry.js?v=tropical-island-lagoon-navigation-20260708"></script>
+  <script type="module" src="./src/weather-shelter-readability-entry.js?v=tropical-island-weather-shelter-20260708"></script>
 </body>
 </html>
