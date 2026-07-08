@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import "./fogline-survivor-rescue-readiness-kits-smoke.mjs";
+import "./fogline-storm-evacuation-readiness-kits-smoke.mjs";
 import { createFoglineRelayLevel } from "../experiments/fogline-relay/src/level.js";
 import {
   FOGLINE_OPERATOR_RHYTHM_DOMAIN_TREE,
