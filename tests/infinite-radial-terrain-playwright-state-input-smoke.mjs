@@ -2,6 +2,8 @@ import "./infinite-radial-terrain-survey-contract-readiness-kits-smoke.mjs";
 import "./infinite-radial-terrain-survey-contract-cdn-state-input-smoke.mjs";
 import "./infinite-radial-terrain-basecamp-resupply-readiness-kits-smoke.mjs";
 import "./infinite-radial-terrain-basecamp-resupply-cdn-state-input-smoke.mjs";
+import "./infinite-radial-terrain-avalanche-rescue-readiness-kits-smoke.mjs";
+import "./infinite-radial-terrain-avalanche-rescue-cdn-state-input-smoke.mjs";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
@@ -13,6 +15,8 @@ const surveyContractKits = readFileSync("experiments/_kits/infinite-radial-terra
 const surveyContractEntry = readFileSync("experiments/infinite-radial-terrain/terrain-survey-contract-readiness-entry.js", "utf8");
 const basecampResupplyKits = readFileSync("experiments/_kits/infinite-radial-terrain/terrain-basecamp-resupply-readiness-kits.js", "utf8");
 const basecampResupplyEntry = readFileSync("experiments/infinite-radial-terrain/terrain-basecamp-resupply-readiness-entry.js", "utf8");
+const avalancheRescueKits = readFileSync("experiments/_kits/infinite-radial-terrain/terrain-avalanche-rescue-readiness-kits.js", "utf8");
+const avalancheRescueEntry = readFileSync("experiments/infinite-radial-terrain/terrain-avalanche-rescue-readiness-entry.js", "utf8");
 
 const nexusEngineCdn = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js";
 
@@ -21,10 +25,13 @@ assert.ok(!route.includes("LuminaryLabs-Dev/NexusRealtime@main/src/index.js"), "
 assert.ok(index.includes("infinite-radial-terrain-expedition-readability-v1"), "index should cache-bust the descriptor handoff route asset");
 assert.ok(index.includes("infinite-radial-terrain-survey-contract-readiness-v1"), "index should cache-bust the survey contract overlay asset");
 assert.ok(index.includes("infinite-radial-terrain-basecamp-resupply-readiness-v1"), "index should cache-bust the basecamp resupply overlay asset");
+assert.ok(index.includes("infinite-radial-terrain-avalanche-rescue-readiness-v1"), "index should cache-bust the avalanche rescue overlay asset");
 assert.ok(surveyContractEntry.includes(nexusEngineCdn), "survey contract overlay should import NexusEngine main via CDN");
 assert.ok(basecampResupplyEntry.includes(nexusEngineCdn), "basecamp resupply overlay should import NexusEngine main via CDN");
+assert.ok(avalancheRescueEntry.includes(nexusEngineCdn), "avalanche rescue overlay should import NexusEngine main via CDN");
 assert.ok(!surveyContractEntry.includes("LuminaryLabs-Dev/NexusRealtime@main/src/index.js"), "survey contract overlay should not import the old NexusRealtime runtime CDN");
 assert.ok(!basecampResupplyEntry.includes("LuminaryLabs-Dev/NexusRealtime@main/src/index.js"), "basecamp resupply overlay should not import the old NexusRealtime runtime CDN");
+assert.ok(!avalancheRescueEntry.includes("LuminaryLabs-Dev/NexusRealtime@main/src/index.js"), "avalanche rescue overlay should not import the old NexusRealtime runtime CDN");
 
 for (const expected of [
   "createInfiniteRadialTerrainVisualDomainKit",
@@ -123,6 +130,32 @@ for (const expected of [
   assert.ok(basecampResupplyEntry.includes(expected), expected);
 }
 
+for (const expected of [
+  "TERRAIN_AVALANCHE_RESCUE_READINESS_DOMAIN_TREE",
+  "createTerrainBuriedCampTransponderKit",
+  "createTerrainSnowfieldProbeLaneKit",
+  "createTerrainAvalancheCrownHazardKit",
+  "createTerrainRidgeShelterPocketKit",
+  "createTerrainRescueSledCorridorKit",
+  "createTerrainMedevacBeaconWindowKit",
+  "createTerrainAvalancheRescueRendererHandoffKit",
+  "createTerrainAvalancheRescueReadinessDomainKit"
+]) {
+  assert.ok(avalancheRescueKits.includes(expected), expected);
+}
+
+for (const expected of [
+  "getAvalancheRescueReadiness",
+  "getInfiniteRadialTerrainAvalancheRescueReadiness",
+  "getAvalancheRescueReadinessTree",
+  "infiniteRadialTerrainAvalancheRescue",
+  "rendererConsumes = \"descriptors-only\"",
+  "composeHandoff(originalGetRendererHandoff?.(), current)",
+  "document.body.dataset.terrainAvalancheRescueReadiness = \"enabled\""
+]) {
+  assert.ok(avalancheRescueEntry.includes(expected), expected);
+}
+
 const simulatedInputs = Array.from({ length: 10 }, (_, index) => ({
   dt: index % 2 ? 1 / 60 : 1 / 30,
   keys: {
@@ -152,6 +185,10 @@ const simulatedInputs = Array.from({ length: 10 }, (_, index) => ({
   basecampResupply: {
     expectedHandoffBuckets: ["basecampSupplyCaches", "landingZoneCertifications", "weatherWindowFlags", "sampleCrateRoutes", "emergencyBivouacShelters", "returnFuelBeacons"],
     expectedGameHostMethods: ["getBasecampResupplyReadiness", "getInfiniteRadialTerrainBasecampResupplyReadiness", "getRendererHandoff"]
+  },
+  avalancheRescue: {
+    expectedHandoffBuckets: ["buriedCampTransponders", "snowfieldProbeLanes", "avalancheCrownHazards", "ridgeShelterPockets", "rescueSledCorridors", "medevacBeaconWindows"],
+    expectedGameHostMethods: ["getAvalancheRescueReadiness", "getInfiniteRadialTerrainAvalancheRescueReadiness", "getRendererHandoff"]
   }
 }));
 
@@ -167,6 +204,8 @@ for (const intake of simulatedInputs) {
   assert.deepEqual(intake.surveyContract.expectedGameHostMethods, ["getSurveyContractReadiness", "getInfiniteRadialTerrainSurveyContractReadiness", "getRendererHandoff"]);
   assert.equal(intake.basecampResupply.expectedHandoffBuckets.length, 6);
   assert.deepEqual(intake.basecampResupply.expectedGameHostMethods, ["getBasecampResupplyReadiness", "getInfiniteRadialTerrainBasecampResupplyReadiness", "getRendererHandoff"]);
+  assert.equal(intake.avalancheRescue.expectedHandoffBuckets.length, 6);
+  assert.deepEqual(intake.avalancheRescue.expectedGameHostMethods, ["getAvalancheRescueReadiness", "getInfiniteRadialTerrainAvalancheRescueReadiness", "getRendererHandoff"]);
 }
 
-console.log("infinite radial terrain NexusEngine CDN/state-input smoke passed: 10 intake cases plus expedition, survey contract, and basecamp resupply handoffs");
+console.log("infinite radial terrain NexusEngine CDN/state-input smoke passed: 10 intake cases plus expedition, survey contract, basecamp resupply, and avalanche rescue handoffs");
