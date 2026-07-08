@@ -2,7 +2,7 @@
 
 ## Summary
 
-Upgraded `experiments/zombie-orchard/` with a renderer-neutral safehouse evacuation readiness domain. The latest completed upgrade before this run was `games/rogue-lite-hellscape-siege/`, so this run selected a different canonical experiment route and kept all work inside `LuminaryLabs-Agents/NexusEngine-Experiments` on `main`.
+Upgraded `experiments/zombie-orchard/` with a renderer-neutral safehouse evacuation readiness domain. The latest completed upgrade visible before this run was `experiments/cozy-island/` through the tidepool conservatory pass, so this run selected a different canonical experiment route and kept all work inside `LuminaryLabs-Agents/NexusEngine-Experiments` on `main`.
 
 ## Chosen experiment
 
@@ -19,13 +19,13 @@ It still read like a repeated survival arena more than a rescue scenario. The sa
 ## Last upgraded experiment
 
 ```txt
-games/rogue-lite-hellscape-siege/
+experiments/cozy-island/
 ```
 
 Latest prior completed ledger context:
 
 ```txt
-.agent/turn-ledger/2026-07-08-1813-hellscape-ash-caravan-upgrade.md
+.agent/turn-ledger/2026-07-08-1829-cozy-island-tidepool-conservatory-upgrade.md
 ```
 
 ## Experiment inventory
@@ -45,7 +45,7 @@ Latest prior completed ledger context:
 | `experiments/sora-the-infinite/` | Sora route-preview gateway | Very short gateway / rescue rehearsal | route preview, launch rehearsal, flightplan, sky negotiation, preflight challenge, microflight trial, sky rescue | No old NexusRealtime import in changed sky rescue files | Yes |
 | `experiments/zombie-orchard/` | Orchard survival wave route | Short survival loop now upgraded with safehouse evacuation | move, collect, waves, foraging, horde pathing, cure crafting, safehouse evacuation | Shared page-loader helper still has historical NexusRealtime name; changed safehouse entry imports NexusEngine main CDN | Yes for changed overlays |
 | `experiments/tropical-island-scene/` | Tropical lagoon exploration route | Passive / short salvage loop | orbit, fish, coconuts, lagoon navigation, reef rescue, tide salvage | Legacy local import map remains for old island/water stack | Yes for changed overlays |
-| `experiments/cozy-island/` | Cozy procedural island scene | Passive / short castaway comfort loop | cloudbar island, campfire, smoke, grass, clouds, castaway comfort | Legacy NexusRealtime ProtoKits remain in cloudbar generation | Yes for changed overlay |
+| `experiments/cozy-island/` | Cozy procedural island scene | Passive / short castaway comfort and tidepool conservatory loop | cloudbar island, campfire, smoke, grass, clouds, castaway comfort, tidepool conservatory | Legacy NexusRealtime ProtoKits remain in cloudbar generation | Yes for changed overlays |
 | `games/signal-bastion/` | 2.5D tower defense route | 30-wave defense loop | tower placement, upgrades, waves, command descriptors, evacuation corridor, reconstruction readiness | ProtoKits imports remain for generic defense bridges; changed reconstruction files do not import old NexusRealtime runtime CDN | Yes |
 | `games/rogue-lite-hellscape-siege/` | Hellscape defense roguelite | Medium survival and defense loop | harvesting, inventory, build, core defense, siegecraft, infernal contract, ash caravan readiness | Shared route shell still uses a historical page-loader helper name; changed runtime imports NexusEngine main CDN and not old NexusRealtime runtime CDN | Yes |
 
