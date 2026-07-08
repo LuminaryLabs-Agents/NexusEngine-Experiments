@@ -1,5 +1,7 @@
 import "./sora-sky-negotiation-readiness-domain-kits-smoke.mjs";
 import "./sora-sky-negotiation-readiness-cdn-state-input-smoke.mjs";
+import "./sora-preflight-challenge-readiness-domain-kits-smoke.mjs";
+import "./sora-preflight-challenge-readiness-cdn-state-input-smoke.mjs";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import { createSoraLaunchRehearsalDomainKit } from "../experiments/_kits/sora-the-infinite/sora-launch-rehearsal-domain-kits.js";
@@ -14,9 +16,10 @@ const kitSource = fs.readFileSync(new URL("../experiments/_kits/sora-the-infinit
 const cdn = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js";
 assert.ok(gateway.includes(cdn), "changed Sora gateway should import NexusEngine main CDN");
 assert.equal(gateway.includes("LuminaryLabs-Dev/NexusRealtime"), false, "changed gateway should not import old NexusRealtime runtime");
-assert.ok(indexHtml.includes("sky-negotiation-readiness-v1"), "route shell should cache-bust sky negotiation readiness entry");
+assert.ok(indexHtml.includes("preflight-challenge-readiness-v1"), "route shell should cache-bust preflight challenge readiness entry");
 assert.ok(indexHtml.includes("flightplan-list"), "route shell should expose flightplan telemetry");
 assert.ok(indexHtml.includes("sky-negotiation-list"), "route shell should expose sky negotiation telemetry");
+assert.ok(indexHtml.includes("sora-preflight-challenge-entry.js"), "route shell should load preflight challenge overlay");
 assert.ok(gateway.includes("createSoraFlightplanReadabilityDomainKit"), "gateway should import flightplan readability domain kit");
 assert.ok(gateway.includes("getFlightplanReadability"), "GameHost should expose flightplan readability state");
 assert.ok(gateway.includes("flightplanReadability"), "gateway should compose flightplan descriptors into renderer handoff");
