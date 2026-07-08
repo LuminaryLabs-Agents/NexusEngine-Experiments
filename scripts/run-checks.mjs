@@ -40,6 +40,7 @@ const fullCheckSuites = [
   "tests/high-fidelity-meadow-cutover-smoke.mjs",
   "tests/tropical-island-scene-static-smoke.mjs",
   "tests/peer-scene-transition-kits-smoke.mjs",
+  "tests/peer-scene-transition-playwright-smoke.mjs",
   "tests/experiment-flat-routes-smoke.mjs",
   "tests/gallery-coverage-smoke.mjs",
   "tests/contrast-token-smoke.mjs",
