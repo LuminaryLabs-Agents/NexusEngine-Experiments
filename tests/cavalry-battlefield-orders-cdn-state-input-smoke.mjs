@@ -1,4 +1,5 @@
 import "./cavalry-logistics-readiness-cdn-state-input-smoke.mjs";
+import "./cavalry-diplomatic-command-readiness-cdn-state-input-smoke.mjs";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { createCavalryBattlefieldOrdersDomainKit } from "../experiments/The Cavalry of Rome/src/cavalry-battlefield-orders-domain-kit.js";
@@ -23,7 +24,7 @@ assert.ok(ordersKit.includes("forbiddenOwnership"), "orders kit should document 
 assert.ok(experimentEntry.includes("cavalry-campaign-fractal-handoff-pass.js?v=campaign-035"), "experiment entry should load cache-busted handoff pass");
 assert.ok(liveEntry.includes("cavalry-campaign-fractal-handoff-pass.js?v=campaign-035"), "live entry should load cache-busted handoff pass");
 assert.ok(liveEntry.includes("Campaign 035"), "live route should expose the upgraded build stamp");
-assert.ok(manifest.includes("battlefield-orders-readability-handoff-pass") || manifest.includes("logistics-readiness-renderer-handoff-pass"), "manifest should include the Cavalry readability status");
+assert.ok(manifest.includes("battlefield-orders-readability-handoff-pass") || manifest.includes("logistics-readiness-renderer-handoff-pass") || manifest.includes("diplomatic-command-readiness-renderer-handoff-pass"), "manifest should include the Cavalry readability status");
 assert.ok(manifest.includes("cavalry-battlefield-orders-domain-kit"), "manifest should list the battlefield orders domain kit");
 assert.ok(checks.includes("tests/cavalry-battlefield-orders-domain-kits-smoke.mjs"), "full/deploy checks should include kit smoke");
 assert.ok(checks.includes("tests/cavalry-battlefield-orders-cdn-state-input-smoke.mjs"), "full/deploy checks should include CDN/state smoke");
