@@ -1,3 +1,5 @@
+import "./sora-sky-negotiation-readiness-domain-kits-smoke.mjs";
+import "./sora-sky-negotiation-readiness-cdn-state-input-smoke.mjs";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import { createSoraLaunchRehearsalDomainKit } from "../experiments/_kits/sora-the-infinite/sora-launch-rehearsal-domain-kits.js";
@@ -6,17 +8,21 @@ import { createSoraFlightplanReadabilityDomainKit } from "../experiments/_kits/s
 const indexHtml = fs.readFileSync(new URL("../experiments/sora-the-infinite/index.html", import.meta.url), "utf8");
 const gateway = fs.readFileSync(new URL("../experiments/sora-the-infinite/sora-compatibility-gateway.js", import.meta.url), "utf8");
 const style = fs.readFileSync(new URL("../experiments/sora-the-infinite/sora-compatibility-style.css", import.meta.url), "utf8");
+const skyNegotiationStyle = fs.readFileSync(new URL("../experiments/sora-the-infinite/sora-sky-negotiation-style.css", import.meta.url), "utf8");
 const kitSource = fs.readFileSync(new URL("../experiments/_kits/sora-the-infinite/sora-flightplan-readability-domain-kits.js", import.meta.url), "utf8");
 
 const cdn = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js";
 assert.ok(gateway.includes(cdn), "changed Sora gateway should import NexusEngine main CDN");
 assert.equal(gateway.includes("LuminaryLabs-Dev/NexusRealtime"), false, "changed gateway should not import old NexusRealtime runtime");
-assert.ok(indexHtml.includes("flightplan-readability-v1"), "route shell should cache-bust flightplan readability entry");
+assert.ok(indexHtml.includes("sky-negotiation-readiness-v1"), "route shell should cache-bust sky negotiation readiness entry");
 assert.ok(indexHtml.includes("flightplan-list"), "route shell should expose flightplan telemetry");
+assert.ok(indexHtml.includes("sky-negotiation-list"), "route shell should expose sky negotiation telemetry");
 assert.ok(gateway.includes("createSoraFlightplanReadabilityDomainKit"), "gateway should import flightplan readability domain kit");
 assert.ok(gateway.includes("getFlightplanReadability"), "GameHost should expose flightplan readability state");
 assert.ok(gateway.includes("flightplanReadability"), "gateway should compose flightplan descriptors into renderer handoff");
+assert.ok(gateway.includes("getSkyNegotiationReadiness"), "GameHost should expose sky negotiation readiness state");
 assert.ok(style.includes("runway-vector") && style.includes("cloud-cover-slit") && style.includes("risk-card"), "style should render flightplan descriptor buckets");
+assert.ok(skyNegotiationStyle.includes("jetstream-braid") && skyNegotiationStyle.includes("storm-shelf"), "style should render sky negotiation descriptor buckets");
 assert.ok(kitSource.includes("sora-flightplan-readability-domain"), "kit source should include domain tree");
 assert.ok(kitSource.includes("renderer consumes descriptors only"), "kit source should include renderer handoff contract");
 
