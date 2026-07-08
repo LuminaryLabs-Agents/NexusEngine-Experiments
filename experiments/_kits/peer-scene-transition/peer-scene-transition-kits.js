@@ -16,6 +16,21 @@ function missingTokens(state, requirements = []) {
   return stableArray(requirements).filter((token) => !hasToken(state, token));
 }
 
+function clamp01(value) {
+  return Math.max(0, Math.min(1, Number.isFinite(value) ? value : 0));
+}
+
+function hashText(value = "") {
+  let hash = 0;
+  for (const char of String(value)) hash = (hash * 31 + char.charCodeAt(0)) >>> 0;
+  return hash;
+}
+
+function seededUnit(seed, index = 0) {
+  const n = Math.sin((hashText(seed) + index * 101) * 12.9898) * 43758.5453;
+  return n - Math.floor(n);
+}
+
 export function createSceneManifestKit(manifest = {}) {
   const scenes = Object.fromEntries(
     Object.entries(manifest).map(([id, scene]) => [
@@ -43,7 +58,7 @@ export function createSceneManifestKit(manifest = {}) {
   };
 }
 
-export function createSceneStateKit({ storageKey = "nexus.peerSceneTransition.v2", initialSceneId = "camp" } = {}) {
+export function createSceneStateKit({ storageKey = "nexus.peerSceneTransition.v3", initialSceneId = "camp" } = {}) {
   return {
     id: "n-peer-scene-state-kit",
     domain: "scene-state",
@@ -198,6 +213,152 @@ export function createSceneTransitionKit({ inventoryKit = createSceneInventoryKi
   };
 }
 
+export function createSceneRouteGraphKit({ manifestKit } = {}) {
+  return {
+    id: "n-peer-scene-route-graph-kit",
+    domain: "scene-route-graph",
+    describe(state) {
+      const scenes = manifestKit?.list?.() ?? [];
+      const visited = new Set(stableArray(state?.visitedSceneIds));
+      const current = state?.currentSceneId;
+      const nodes = scenes.map((scene, index) => ({
+        id: scene.id,
+        title: scene.title,
+        mood: scene.mood,
+        visited: visited.has(scene.id),
+        current: scene.id === current,
+        orbit: index,
+        exitCount: Object.keys(scene.exits ?? {}).length
+      }));
+      const edges = scenes.flatMap((scene) =>
+        Object.entries(scene.exits ?? {}).map(([exitId, exit]) => ({
+          id: `${scene.id}:${exitId}:${exit.to}`,
+          from: scene.id,
+          to: exit.to,
+          label: exit.label,
+          requires: stableArray(exit.requires),
+          gated: stableArray(exit.requires).some((token) => !hasToken(state, token))
+        }))
+      );
+      return { nodes, edges, visitedCount: nodes.filter((node) => node.visited).length };
+    },
+    snapshot(state) {
+      const graph = this.describe(state);
+      return { nodes: graph.nodes.length, edges: graph.edges.length, visitedCount: graph.visitedCount };
+    }
+  };
+}
+
+export function createSceneGatePreviewKit({ manifestKit, inventoryKit = createSceneInventoryKit() } = {}) {
+  return {
+    id: "n-peer-scene-gate-preview-kit",
+    domain: "scene-gate-preview",
+    describe(sceneId, state) {
+      const scene = manifestKit?.get(sceneId) ?? {};
+      return Object.entries(scene.exits ?? {}).map(([exitId, exit], index) => {
+        const missing = inventoryKit.missing(state, exit.requires ?? []);
+        return {
+          id: `${sceneId}-${exitId}-gate`,
+          exitId,
+          to: exit.to,
+          label: exit.label,
+          open: missing.length === 0,
+          missing,
+          intensity: missing.length === 0 ? 1 : 0.34,
+          glyph: missing.length === 0 ? "open" : "sealed",
+          slot: index
+        };
+      });
+    },
+    snapshot(sceneId, state) {
+      const gates = this.describe(sceneId, state);
+      return { sceneId, gates: gates.length, open: gates.filter((gate) => gate.open).length, sealed: gates.filter((gate) => !gate.open).length };
+    }
+  };
+}
+
+export function createScenePuzzleHintKit({ actionKit = createSceneActionKit(), inventoryKit = createSceneInventoryKit() } = {}) {
+  return {
+    id: "n-peer-scene-puzzle-hint-kit",
+    domain: "scene-puzzle-hints",
+    describe(sceneId, state) {
+      return actionKit.list(sceneId, state).map((action, index) => ({
+        id: `${sceneId}-${action.id}-hint`,
+        actionId: action.id,
+        label: action.label,
+        state: action.done ? "done" : action.blocked ? "blocked" : "ready",
+        missing: stableArray(action.missing),
+        priority: action.done ? 0 : action.blocked ? 1 : 2,
+        pulse: action.done ? 0.22 : action.blocked ? 0.42 : 0.86,
+        ownedByInventory: Boolean(action.token && inventoryKit.has(state, action.token)),
+        slot: index
+      }));
+    },
+    next(sceneId, state) {
+      return this.describe(sceneId, state).sort((a, b) => b.priority - a.priority || a.slot - b.slot)[0] ?? null;
+    },
+    snapshot(sceneId, state) {
+      const hints = this.describe(sceneId, state);
+      return { sceneId, hints: hints.length, ready: hints.filter((hint) => hint.state === "ready").length, blocked: hints.filter((hint) => hint.state === "blocked").length };
+    }
+  };
+}
+
+export function createSceneAmbientVariationKit() {
+  return {
+    id: "n-peer-scene-ambient-variation-kit",
+    domain: "scene-ambient-variation",
+    describe(sceneId, state) {
+      const complexity = stableArray(state?.transitionLedger).length + stableArray(state?.actionLedger).length + stableArray(state?.blockedLedger).length;
+      const palette = paletteForScene(sceneId);
+      return Array.from({ length: 9 }, (_, index) => ({
+        id: `${sceneId}-ambient-${index}`,
+        layer: index % 3,
+        x: Math.round(seededUnit(sceneId, index) * 100),
+        y: Math.round(seededUnit(`${sceneId}:y`, index) * 78),
+        scale: Number((0.45 + seededUnit(`${sceneId}:s`, index) * 1.2 + complexity * 0.015).toFixed(2)),
+        drift: Number((0.18 + seededUnit(`${sceneId}:d`, index) * 0.82).toFixed(2)),
+        color: palette[index % palette.length],
+        active: index < 4 + Math.min(5, stableArray(state?.visitedSceneIds).length)
+      }));
+    },
+    snapshot(sceneId, state) {
+      const particles = this.describe(sceneId, state);
+      return { sceneId, particles: particles.length, active: particles.filter((particle) => particle.active).length };
+    }
+  };
+}
+
+export function createSceneCompletionConstellationKit() {
+  return {
+    id: "n-peer-scene-completion-constellation-kit",
+    domain: "scene-completion-constellation",
+    describe(state) {
+      const tokens = ["has-lantern", "has-rope", "forest-lit", "bridge-repaired", "shrine-open"];
+      const stars = tokens.map((token, index) => ({
+        id: `constellation-${token}`,
+        token,
+        lit: hasToken(state, token),
+        x: 12 + index * 18,
+        y: 18 + Math.round(seededUnit(token, index) * 48),
+        radius: hasToken(state, token) ? 6 : 3,
+        label: token.replace(/-/g, " ")
+      }));
+      const links = stars.slice(1).map((star, index) => ({
+        id: `link-${index}-${star.id}`,
+        from: stars[index].id,
+        to: star.id,
+        lit: stars[index].lit && star.lit
+      }));
+      return { stars, links, completion: completionForState(state) };
+    },
+    snapshot(state) {
+      const constellation = this.describe(state);
+      return { stars: constellation.stars.length, lit: constellation.stars.filter((star) => star.lit).length, completion: constellation.completion };
+    }
+  };
+}
+
 export function createSceneVisualDescriptorKit({ manifestKit } = {}) {
   return {
     id: "n-peer-scene-visual-descriptor-kit",
@@ -223,6 +384,40 @@ export function createSceneVisualDescriptorKit({ manifestKit } = {}) {
   };
 }
 
+export function createSceneRendererHandoffKit() {
+  return {
+    id: "n-peer-scene-renderer-handoff-kit",
+    domain: "scene-renderer-handoff",
+    describe({ sceneDescriptor, routeGraph, gatePreview, puzzleHints, ambientVariation, completionConstellation }) {
+      return {
+        id: `${sceneDescriptor.sceneId}-renderer-descriptor`,
+        sceneId: sceneDescriptor.sceneId,
+        rendererOwns: ["DOM insertion", "CSS variables", "button events", "page navigation"],
+        rendererMustNotOwn: ["scene state", "gate requirements", "inventory tokens", "puzzle progression", "descriptor generation"],
+        descriptors: {
+          scene: sceneDescriptor,
+          routeGraph,
+          gatePreview,
+          puzzleHints,
+          ambientVariation,
+          completionConstellation
+        },
+        descriptorCounts: {
+          routeNodes: routeGraph.nodes.length,
+          routeEdges: routeGraph.edges.length,
+          gates: gatePreview.length,
+          hints: puzzleHints.length,
+          ambientParticles: ambientVariation.length,
+          constellationStars: completionConstellation.stars.length
+        }
+      };
+    },
+    snapshot(handoff) {
+      return { sceneId: handoff.sceneId, ...handoff.descriptorCounts };
+    }
+  };
+}
+
 export function createScenePressureKit() {
   return {
     id: "n-peer-scene-pressure-kit",
@@ -236,6 +431,49 @@ export function createScenePressureKit() {
     },
     snapshot(state) {
       return this.evaluate(state);
+    }
+  };
+}
+
+export function createPeerSceneDomainKit({ manifestKit, inventoryKit, actionKit, visualKit } = {}) {
+  const routeGraphKit = createSceneRouteGraphKit({ manifestKit });
+  const gatePreviewKit = createSceneGatePreviewKit({ manifestKit, inventoryKit });
+  const puzzleHintKit = createScenePuzzleHintKit({ actionKit, inventoryKit });
+  const ambientVariationKit = createSceneAmbientVariationKit();
+  const completionConstellationKit = createSceneCompletionConstellationKit();
+  const rendererHandoffKit = createSceneRendererHandoffKit();
+  return {
+    id: "n-peer-scene-domain-kit",
+    domain: "peer-scene-domain",
+    kits: {
+      routeGraphKit,
+      gatePreviewKit,
+      puzzleHintKit,
+      ambientVariationKit,
+      completionConstellationKit,
+      rendererHandoffKit
+    },
+    describe(sceneId, state) {
+      const sceneDescriptor = visualKit.describe(sceneId, state);
+      const routeGraph = routeGraphKit.describe(state);
+      const gatePreview = gatePreviewKit.describe(sceneId, state);
+      const puzzleHints = puzzleHintKit.describe(sceneId, state);
+      const ambientVariation = ambientVariationKit.describe(sceneId, state);
+      const completionConstellation = completionConstellationKit.describe(state);
+      return rendererHandoffKit.describe({ sceneDescriptor, routeGraph, gatePreview, puzzleHints, ambientVariation, completionConstellation });
+    },
+    snapshot(sceneId, state) {
+      const handoff = this.describe(sceneId, state);
+      return {
+        kitCount: Object.keys(this.kits).length,
+        sceneId,
+        route: routeGraphKit.snapshot(state),
+        gates: gatePreviewKit.snapshot(sceneId, state),
+        hints: puzzleHintKit.snapshot(sceneId, state),
+        ambient: ambientVariationKit.snapshot(sceneId, state),
+        constellation: completionConstellationKit.snapshot(state),
+        handoff: rendererHandoffKit.snapshot(handoff)
+      };
     }
   };
 }
@@ -278,7 +516,7 @@ function buildStageLayers(sceneId, completion) {
     id: `${sceneId}-layer-${index}`,
     label,
     depth: index + 1,
-    glow: Math.min(1, 0.18 + completion / 140 + index * 0.08)
+    glow: clamp01(0.18 + completion / 140 + index * 0.08)
   }));
 }
 
