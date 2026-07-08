@@ -16,7 +16,7 @@ const kitSource = fs.readFileSync(new URL("../experiments/_kits/sora-the-infinit
 const cdn = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js";
 assert.ok(gateway.includes(cdn), "changed Sora gateway should import NexusEngine main CDN");
 assert.equal(gateway.includes("LuminaryLabs-Dev/NexusRealtime"), false, "changed gateway should not import old NexusRealtime runtime");
-assert.ok(indexHtml.includes("preflight-challenge-readiness-v1"), "route shell should cache-bust preflight challenge readiness entry");
+assert.ok(indexHtml.includes("sky-rescue-readiness-v1"), "route shell should cache-bust current Sora readiness entries");
 assert.ok(indexHtml.includes("flightplan-list"), "route shell should expose flightplan telemetry");
 assert.ok(indexHtml.includes("sky-negotiation-list"), "route shell should expose sky negotiation telemetry");
 assert.ok(indexHtml.includes("sora-preflight-challenge-entry.js"), "route shell should load preflight challenge overlay");
