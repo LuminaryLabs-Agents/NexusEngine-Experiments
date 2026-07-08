@@ -7,10 +7,10 @@
       "id": "third-person-follow-through",
       "kind": "experiment",
       "canonicalPath": "experiments/ThirdPersonFollowThrough/",
-      "status": "locomotion-readability-renderer-handoff-pass",
-      "domainCutover": ["third-person-follow-kit", "rigged-actor-kit", "three-debug-ray-adapter", "n-core-debug-kit", "third-person-arena-fractal-domain-kit", "third-person-locomotion-readability-domain-kit"],
-      "bridgeNeeded": "browser route imports NexusEngine main via CDN through an arena-fractal wrapper; controller math remains in runtime while arena and locomotion readability domain kits emit renderer-neutral descriptors",
-      "featureParity": ["WASD movement", "spring-arm camera", "core debug export", "arena fractal descriptors", "yaw alignment fans", "backpedal guard rails", "jump apex bands", "landing safety patches", "camera recenter leashes", "input cadence beats"]
+      "status": "camera-composition-readability-renderer-handoff-pass",
+      "domainCutover": ["third-person-follow-kit", "rigged-actor-kit", "three-debug-ray-adapter", "n-core-debug-kit", "third-person-arena-fractal-domain-kit", "third-person-locomotion-readability-domain-kit", "third-person-camera-composition-readability-domain-kit"],
+      "bridgeNeeded": "browser route imports NexusEngine main via CDN through an arena-fractal wrapper; controller math remains in runtime while arena, locomotion, and camera-composition readability domain kits emit renderer-neutral descriptors",
+      "featureParity": ["WASD movement", "spring-arm camera", "core debug export", "arena fractal descriptors", "yaw alignment fans", "backpedal guard rails", "jump apex bands", "landing safety patches", "camera recenter leashes", "input cadence beats", "focus target ribbons", "shoulder clearance wedges", "near clip cushions", "orbit intent rails", "occlusion risk veils", "camera comfort meters"]
     },
     {
       "id": "peer-scene-transition",
