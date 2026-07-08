@@ -3,11 +3,42 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta http-equiv="refresh" content="0; url=../the-open-above/" />
-  <title>Redirecting to The Open Above</title>
-  <script>location.replace("../the-open-above/" + location.search + location.hash);</script>
+  <title>Sora the Infinite</title>
+  <link rel="stylesheet" href="./sora-compatibility-style.css" />
 </head>
 <body>
-  <a href="../the-open-above/">The Open Above</a>
+  <main id="app" class="gateway-shell" aria-label="Sora the Infinite compatibility gateway">
+    <section id="gateway-stage" class="gateway-stage" aria-hidden="true"></section>
+    <section class="gateway-card">
+      <article class="panel hero">
+        <div>
+          <p class="eyebrow">Sora compatibility route</p>
+          <h1>Sora the Infinite</h1>
+          <p class="copy">This route now stays alive long enough to prove the alias, build flight readiness, preserve query/hash state, and hand off into The Open Above through renderer-neutral descriptors instead of a zero-frame redirect.</p>
+        </div>
+        <div class="actions">
+          <a id="launch-link" class="launch-link" href="../the-open-above/">Prime route</a>
+          <button id="prime-route" class="ghost-button" type="button">Build lift</button>
+        </div>
+      </article>
+      <aside class="panel telemetry">
+        <section class="readiness">
+          <span>Flight readiness</span>
+          <strong id="readiness-value">0%</strong>
+          <div id="readiness-bar" class="bar" style="--p:0"><i></i></div>
+        </section>
+        <section>
+          <h2>Coaching</h2>
+          <ul id="coaching-list" class="coaching-list"></ul>
+        </section>
+        <section>
+          <h2>Continuity gates</h2>
+          <ul id="gate-list" class="gate-list"></ul>
+        </section>
+        <pre id="debug-strip" class="debug-strip"></pre>
+      </aside>
+    </section>
+  </main>
+  <script type="module" src="./sora-compatibility-gateway.js"></script>
 </body>
 </html>
