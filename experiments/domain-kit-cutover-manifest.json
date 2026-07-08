@@ -43,10 +43,10 @@
       "id": "next-ledge",
       "kind": "experiment",
       "canonicalPath": "experiments/next-ledge/",
-      "status": "traversal-readability-renderer-handoff-pass",
-      "domainCutover": ["action-input-kit", "generic-route-cargo-extraction-kit", "next-ledge-visual-fractal-domain-kit", "next-ledge-route-cargo-domain-kit", "next-ledge-traversal-readability-domain-kit"],
-      "bridgeNeeded": "browser wrapper consumes NexusEngine main CDN and emits renderer-neutral route-cargo plus traversal-readability descriptors while the Three/diegetic renderer consumes descriptors only",
-      "featureParity": ["grapple", "swing", "sector advance", "cargo cache descriptors", "fall pressure descriptors", "traversal readability descriptors"]
+      "status": "anchor-timing-readability-renderer-handoff-pass",
+      "domainCutover": ["action-input-kit", "generic-route-cargo-extraction-kit", "next-ledge-visual-fractal-domain-kit", "next-ledge-route-cargo-domain-kit", "next-ledge-traversal-readability-domain-kit", "next-ledge-anchor-timing-readability-domain-kit"],
+      "bridgeNeeded": "browser wrapper consumes NexusEngine main CDN and emits renderer-neutral route-cargo, traversal-readability, and anchor-timing descriptors while the Three/diegetic renderer consumes descriptors only",
+      "featureParity": ["grapple", "swing", "sector advance", "cargo cache descriptors", "fall pressure descriptors", "traversal readability descriptors", "release timing dials", "grapple line-of-sight strips", "swing energy pockets", "wall bounce warnings", "route commitment stairs", "fail-floor proximity waves"]
     },
     {
       "id": "infinite-radial-terrain",
