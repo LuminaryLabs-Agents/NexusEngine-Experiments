@@ -209,6 +209,22 @@ export async function createSignalIslesRenderer({ canvas, level, preset }) {
     for (const ribbon of descriptors.cargoRibbons ?? []) addThread(ribbon);
   }
 
+  function drawExpeditionReadinessDescriptors(snapshot) {
+    const descriptors = snapshot.expeditionReadiness?.rendererHandoff?.descriptors ?? snapshot.domain?.signalIslesExpeditionReadiness?.rendererHandoff?.descriptors ?? {};
+    for (const sector of descriptors.scanSectors ?? []) if (!sector.complete) addGroundRing({ ...sector, intensity: sector.eligible ? 0.78 : 0.34 }, sector.eligible ? 0.28 : 0.12);
+    for (const window of descriptors.mastWindows ?? []) addGroundRing({ ...window, intensity: window.ready ? 0.82 : 0.38 }, window.placed ? 0.22 : 0.18 + Number(window.charge ?? 0) * 0.22);
+    for (const runway of descriptors.gateRunways ?? []) {
+      if (runway.from && runway.to) addThread(runway);
+      else addGroundRing({ ...runway, intensity: runway.unlocked ? 0.85 : 0.35 + Number(runway.progress ?? 0) * 0.4 }, runway.unlocked ? 0.36 : 0.16 + Number(runway.progress ?? 0) * 0.18);
+    }
+    for (const line of descriptors.shardFerryLines ?? []) addThread(line);
+    for (const lane of descriptors.retreatLanes ?? []) addThread(lane);
+    for (const forecast of descriptors.beaconForecasts ?? []) {
+      if (forecast.from && forecast.to) addThread(forecast);
+      else addGroundRing({ ...forecast, intensity: forecast.active ? 0.74 : 0.24 }, forecast.active ? 0.34 : 0.12);
+    }
+  }
+
   function drawVisualDescriptors(snapshot) {
     clearLayer(visualLayer);
     const descriptors = snapshot.visualFractal?.rendererHandoff?.descriptors ?? {};
@@ -219,6 +235,7 @@ export async function createSignalIslesRenderer({ canvas, level, preset }) {
     for (const shard of descriptors.resourceShards ?? []) addShard(shard);
     for (const compass of descriptors.compass ?? []) addThread({ from: compass.from, to: compass.to, strength: 0.65 + Number(compass.progress ?? 0) * 0.35, color: compass.color });
     drawObjectiveReadabilityDescriptors(snapshot);
+    drawExpeditionReadinessDescriptors(snapshot);
   }
 
   function draw(snapshot) {
