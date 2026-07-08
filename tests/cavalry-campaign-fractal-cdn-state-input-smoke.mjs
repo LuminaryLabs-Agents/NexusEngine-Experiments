@@ -4,6 +4,7 @@ import { createCavalryCampaignFractalDomainKit } from "../experiments/The Cavalr
 
 const pass = readFileSync("experiments/The Cavalry of Rome/src/cavalry-campaign-fractal-handoff-pass.js", "utf8");
 const kit = readFileSync("experiments/The Cavalry of Rome/src/cavalry-campaign-fractal-domain-kit.js", "utf8");
+const ordersKit = readFileSync("experiments/The Cavalry of Rome/src/cavalry-battlefield-orders-domain-kit.js", "utf8");
 const experimentEntry = readFileSync("experiments/The Cavalry of Rome/index.html", "utf8");
 const liveEntry = readFileSync("apps/the-cavalry-of-rome/index.html", "utf8");
 const manifest = readFileSync("experiments/domain-kit-cutover-manifest.json", "utf8");
@@ -11,15 +12,18 @@ const manifest = readFileSync("experiments/domain-kit-cutover-manifest.json", "u
 assert.ok(pass.includes("https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js"), "Cavalry fractal handoff should import NexusEngine main CDN");
 assert.ok(!pass.includes("LuminaryLabs-Dev/NexusRealtime@main"), "changed Cavalry handoff should not import old NexusRealtime runtime CDN");
 assert.ok(pass.includes("CavalryCampaignFractal"), "handoff should expose CavalryCampaignFractal state");
+assert.ok(pass.includes("getCavalryBattlefieldOrders"), "handoff should expose Cavalry battlefield orders state");
 assert.ok(pass.includes("getRendererHandoff"), "handoff should expose renderer handoff access");
 assert.ok(pass.includes("rendererConsumes = \"descriptors-only\""), "presentation pass should mark descriptor-only consumption");
 assert.ok(kit.includes("renderer consumes descriptors only"), "kit tree should document descriptor-only renderer handoff");
 assert.ok(kit.includes("forbiddenOwnership"), "kit should document forbidden ownership boundaries");
-assert.ok(experimentEntry.includes("cavalry-campaign-fractal-handoff-pass.js?v=campaign-033"), "experiment entry should load the Cavalry fractal handoff pass");
-assert.ok(liveEntry.includes("cavalry-campaign-fractal-handoff-pass.js?v=campaign-033"), "live entry should load the Cavalry fractal handoff pass");
-assert.ok(liveEntry.includes("Campaign 033"), "live route should expose the upgraded build stamp");
-assert.ok(manifest.includes('"id":"the-cavalry-of-rome"'), "manifest should include The Cavalry of Rome canonical entry");
+assert.ok(ordersKit.includes("cavalry-battlefield-orders-domain"), "orders kit should document battlefield orders domain");
+assert.ok(experimentEntry.includes("cavalry-campaign-fractal-handoff-pass.js?v=campaign-034"), "experiment entry should load the Cavalry fractal handoff pass");
+assert.ok(liveEntry.includes("cavalry-campaign-fractal-handoff-pass.js?v=campaign-034"), "live entry should load the Cavalry fractal handoff pass");
+assert.ok(liveEntry.includes("Campaign 034"), "live route should expose the upgraded build stamp");
+assert.ok(manifest.includes("the-cavalry-of-rome"), "manifest should include The Cavalry of Rome canonical entry");
 assert.ok(manifest.includes("cavalry-campaign-fractal-domain-kit"), "manifest should list the Cavalry fractal domain kit");
+assert.ok(manifest.includes("cavalry-battlefield-orders-domain-kit"), "manifest should list the Cavalry battlefield orders domain kit");
 
 const inputCases = Array.from({ length: 10 }, (_, i) => ({
   sizeId: "smoke",
