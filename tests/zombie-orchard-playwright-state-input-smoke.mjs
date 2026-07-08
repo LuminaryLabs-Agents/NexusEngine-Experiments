@@ -19,7 +19,8 @@ function safePath(urlPath) {
 }
 
 const kitStackSource = await readFile(join(root, "experiments/zombie-orchard/src/kit-stack.js"), "utf8");
-assert.ok(kitStackSource.includes("https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusRealtime@main/src/index.js"));
+assert.ok(kitStackSource.includes("https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js"));
+assert.ok(!kitStackSource.includes("https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusRealtime@main/src/index.js"));
 assert.ok(kitStackSource.includes("https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusRealtime-ProtoKits@0.0.1/protokits/generic-survival-domain-kits/index.js"));
 
 const server = createServer(async (request, response) => {
@@ -63,13 +64,21 @@ try {
 
   assert.ok(state.player?.position);
   assert.ok(state.visualDomains?.lighting);
+  assert.ok(state.visualDomains?.ground);
+  assert.ok(Array.isArray(state.visualDomains?.ground?.furrows));
+  assert.ok(Array.isArray(state.visualDomains?.ground?.leafPatches));
+  assert.ok(Array.isArray(state.visualDomains?.ground?.mudPatches));
   assert.ok(Array.isArray(state.visualDomains?.trees));
   assert.ok(Array.isArray(state.visualDomains?.lanes));
+  assert.ok(Array.isArray(state.visualDomains?.fogRibbons));
+  assert.ok(Array.isArray(state.visualDomains?.hauntZones));
+  assert.ok(Array.isArray(state.visualDomains?.pickups));
   assert.ok(Array.isArray(state.visualDomains?.apples));
   assert.ok(Array.isArray(state.visualDomains?.threats));
+  assert.ok(state.visualDomains?.combatCue?.playerRing);
   assert.ok(state.visualDomains.lighting.fogDensity > 0);
   assert.ok(state.stamina01 >= 0 && state.stamina01 <= 1);
-  console.log("zombie orchard CDN-backed Playwright state input smoke passed");
+  console.log("zombie orchard NexusEngine CDN-backed Playwright state input smoke passed");
 } finally {
   if (browser) await browser.close();
   await new Promise((resolve) => server.close(resolve));
