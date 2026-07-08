@@ -81,7 +81,7 @@
       "canonicalPath": "experiments/fogline-relay/",
       "status": "survivor-rescue-readiness-renderer-handoff-pass",
       "domainCutover": ["action-input-kit", "scan-survey-kit", "fogline-visual-fractal-domain-kit", "fogline-renderer-handoff-kit", "fogline-signal-cartography-domain-kit", "fogline-operator-rhythm-domain-kit", "fogline-survivor-rescue-readiness-domain-kit"],
-      "bridgeNeeded": "browser host imports NexusEngine main via CDN; visual, route-readability, signal-cartography, operator-rhythm, and survivor-rescue descriptors are consumed by presentation only",
+      "bridgeNeeded": "browser host imports NexusEngine main CDN; visual, route-readability, signal-cartography, operator-rhythm, and survivor-rescue descriptors are consumed by presentation only",
       "featureParity": ["first-person movement", "scan", "relays", "signal cartography", "operator rhythm", "survivor rescue readiness"]
     },
     {
@@ -90,7 +90,7 @@
       "canonicalPath": "experiments/nexus-frontier-signal-isles/",
       "status": "storm-anchor-readiness-renderer-handoff-pass",
       "domainCutover": ["foundation-kit", "action-input-kit", "scan-survey-kit", "resource-node-kit", "build-placement-kit", "route-checkpoint-kit", "cargo-delivery-kit", "signal-isles-visual-fractal-domain-kit", "signal-isles-objective-step-queue-kit", "signal-isles-proximity-action-cue-kit", "signal-isles-gate-dependency-thread-kit", "signal-isles-cargo-route-ribbon-kit", "signal-isles-pressure-safe-pocket-kit", "signal-isles-resource-build-delta-kit", "signal-isles-objective-renderer-handoff-kit", "signal-isles-objective-readability-domain-kit", "signal-isles-expedition-readiness-domain-kit", "signal-isles-storm-anchor-readiness-domain-kit"],
-      "bridgeNeeded": "browser host imports NexusEngine main via CDN; visual, objective readability, expedition readiness, and storm anchor readiness descriptors are consumed by Three presentation only",
+      "bridgeNeeded": "browser host imports NexusEngine main CDN; visual, objective readability, expedition readiness, and storm anchor readiness descriptors are consumed by Three presentation only",
       "featureParity": ["first-person movement", "harvest", "build mast", "objective readability", "expedition readiness", "storm anchor readiness"]
     },
     {
@@ -108,7 +108,7 @@
       "canonicalPath": "experiments/zombie-orchard/",
       "status": "horde-pathing-readiness-renderer-handoff-pass",
       "domainCutover": ["action-input-kit", "zombie-orchard-visual-fractal-domain-kit", "zombie-orchard-survival-readability-domain-kit", "zombie-orchard-foraging-readability-domain-kit", "zombie-orchard-horde-pathing-readiness-domain-kit"],
-      "bridgeNeeded": "browser host imports NexusEngine main via CDN through the existing kit stack and horde-pathing overlay; survival, foraging, and horde-pathing domains emit descriptors consumed by presentation only",
+      "bridgeNeeded": "browser host imports NexusEngine main CDN through the existing kit stack and horde-pathing overlay; survival, foraging, and horde-pathing domains emit descriptors consumed by presentation only",
       "featureParity": ["move", "collect", "survival waves", "foraging readability", "horde pathing readiness"]
     },
     {
@@ -117,17 +117,17 @@
       "canonicalPath": "experiments/tropical-island-scene/",
       "status": "reef-rescue-readiness-renderer-handoff-pass",
       "domainCutover": ["island-kit", "water-surface-kit", "tropical-lagoon-visual-fractal-domain-kit", "tropical-beachcomber-readability-domain-kit", "tropical-lagoon-navigation-readability-domain-kit", "tropical-weather-shelter-readability-domain-kit", "tropical-reef-rescue-readiness-domain-kit"],
-      "bridgeNeeded": "browser host imports NexusEngine main via CDN; existing local ProtoKit import-map remains for old island/water stack; beachcomber, lagoon navigation, weather shelter, and reef rescue readiness overlays import NexusEngine main CDN and consume descriptors only",
+      "bridgeNeeded": "browser host imports NexusEngine main CDN; existing local ProtoKit import-map remains for old island/water stack; beachcomber, lagoon navigation, weather shelter, and reef rescue readiness overlays import NexusEngine main CDN and consume descriptors only",
       "featureParity": ["drag orbit", "fish", "coconuts", "reef descriptors", "lagoon navigation", "weather shelter readability", "reef rescue readiness"]
     },
     {
       "id": "signal-bastion",
       "kind": "game",
       "canonicalPath": "games/signal-bastion/",
-      "status": "frontline-tactics-readability-handoff-pass",
-      "domainCutover": ["generic-defense-aaa-kits", "generic-defense-presentation-stack-kit", "signal-bastion-command-fractal-domain-kit", "signal-bastion-wave-choreography-domain-kit", "signal-bastion-frontline-tactics-domain-kit"],
-      "bridgeNeeded": "browser host imports NexusEngine main via CDN; command, wave choreography, and frontline tactics kits emit renderer-compatible descriptor groups consumed by presentation only",
-      "featureParity": ["2.5D oblique renderer", "placement ghost", "30 waves", "command fractal descriptors", "frontline tactics"]
+      "status": "evacuation-corridor-readiness-renderer-handoff-pass",
+      "domainCutover": ["generic-defense-aaa-kits", "generic-defense-presentation-stack-kit", "signal-bastion-command-fractal-domain-kit", "signal-bastion-wave-choreography-domain-kit", "signal-bastion-frontline-tactics-domain-kit", "signal-bastion-evacuation-corridor-readiness-domain-kit"],
+      "bridgeNeeded": "browser host imports NexusEngine main CDN; command, wave choreography, frontline tactics, and evacuation corridor readiness kits emit renderer-compatible descriptor groups consumed by presentation only",
+      "featureParity": ["2.5D oblique renderer", "placement ghost", "30 waves", "command fractal descriptors", "frontline tactics", "evacuation corridor readiness"]
     },
     {
       "id": "rogue-lite-hellscape-siege",
@@ -136,7 +136,7 @@
       "status": "siegecraft-readiness-renderer-handoff-pass",
       "removedLegacyPaths": ["games/rogue-lite-hellscape-siege-v2/"],
       "domainCutover": ["action-input-kit", "resource-pressure-kit", "hellscape-siege-fractal-domain-kit", "hellscape-expedition-readability-domain-kit", "hellscape-siegecraft-readiness-domain-kit"],
-      "bridgeNeeded": "browser host imports NexusEngine main via CDN; hellscape domains emit descriptors consumed by canvas presentation only",
+      "bridgeNeeded": "browser host imports NexusEngine main CDN; hellscape domains emit descriptors consumed by canvas presentation only",
       "featureParity": ["realm portals", "harvesting", "inventory", "build", "core defense", "siegecraft readiness"]
     }
   ],
