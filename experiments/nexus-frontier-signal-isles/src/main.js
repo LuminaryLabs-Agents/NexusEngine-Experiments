@@ -43,7 +43,9 @@ function formatStatus(snapshot) {
   const routeCount = snapshot.objectiveReadability?.rendererHandoff?.counts?.dependencyThreads ?? 0;
   const scanSectors = snapshot.expeditionReadiness?.rendererHandoff?.counts?.scanSectors ?? 0;
   const retreatLanes = snapshot.expeditionReadiness?.rendererHandoff?.counts?.retreatLanes ?? 0;
-  return `${objective} · ${mode} · scan ${scans}/3 · shards ${shards} · flow ${visualCount} · cues ${cueCount}/${routeCount} · expedition ${scanSectors}/${retreatLanes}`;
+  const stormCells = snapshot.stormAnchorReadiness?.rendererHandoff?.counts?.stormCells ?? 0;
+  const anchorCables = snapshot.stormAnchorReadiness?.rendererHandoff?.counts?.anchorCables ?? 0;
+  return `${objective} · ${mode} · scan ${scans}/3 · shards ${shards} · flow ${visualCount} · cues ${cueCount}/${routeCount} · expedition ${scanSectors}/${retreatLanes} · storm ${stormCells}/${anchorCables}`;
 }
 
 function updateHud(snapshot) {
@@ -51,7 +53,7 @@ function updateHud(snapshot) {
   const rejection = composition.getLastRejection();
   controlsEl.textContent = rejection
     ? `Blocked: ${rejection.reason} · F/Mouse scan · E interact · B build · R reset`
-    : "F/Mouse scan · E interact/harvest/cargo · B build · WASD move · R reset · follow expedition runways";
+    : "F/Mouse scan · E interact/harvest/cargo · B build · WASD move · R reset · follow storm anchor cables";
 }
 
 function frame(now) {
@@ -84,7 +86,7 @@ async function boot() {
   input = createSignalIslesInputAdapter({ canvas, composition, renderer });
 
   window.GameHost = createSignalIslesDebugHost({ composition, renderer, input, nexusRuntimeDescriptor });
-  statusEl.textContent = "Restore signal · expedition readiness online · NexusEngine CDN linked";
+  statusEl.textContent = "Restore signal · storm anchor readiness online · NexusEngine CDN linked";
   controlsEl.textContent = "Click for pointer lock · F/Mouse scan · E interact · B build · R reset";
 
   requestAnimationFrame(frame);
