@@ -7,12 +7,16 @@ const rendererPath = 'games/rogue-lite-hellscape-siege/src/renderer/canvas-rende
 const indexPath = 'games/rogue-lite-hellscape-siege/index.html';
 const kitPath = 'games/rogue-lite-hellscape-siege/src/hellscape-siegecraft-readiness-domain-kit.js';
 const checksPath = 'scripts/run-checks.mjs';
+const existingKitSmokePath = 'tests/hellscape-expedition-readability-domain-kits-smoke.mjs';
+const existingCdnSmokePath = 'tests/hellscape-expedition-readability-cdn-state-input-smoke.mjs';
 
 const mainSource = readFileSync(mainPath, 'utf8');
 const rendererSource = readFileSync(rendererPath, 'utf8');
 const indexSource = readFileSync(indexPath, 'utf8');
 const kitSource = readFileSync(kitPath, 'utf8');
 const checksSource = readFileSync(checksPath, 'utf8');
+const existingKitSmokeSource = readFileSync(existingKitSmokePath, 'utf8');
+const existingCdnSmokeSource = readFileSync(existingCdnSmokePath, 'utf8');
 
 assert.ok(mainSource.includes('https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js'), 'changed runtime should import NexusEngine main CDN');
 assert.equal(mainSource.includes('LuminaryLabs-Dev/NexusRealtime@main'), false, 'changed runtime should not import old NexusRealtime main CDN');
@@ -25,8 +29,10 @@ assert.ok(rendererSource.includes('drawHellscapeSiegecraft'), 'renderer should c
 assert.ok(rendererSource.includes('siegecraftReadiness?.rendererHandoff?.descriptors'), 'renderer should read siegecraft descriptors rather than recompute domain truth');
 assert.ok(indexSource.includes('main.js?v=siegecraft-readiness-1'), 'route shell should cache-bust the changed runtime');
 assert.ok(kitSource.includes('renderer consumes descriptors only'), 'kit should declare renderer descriptor-only handoff');
-assert.ok(checksSource.includes('hellscape-siegecraft-readiness-domain-kits-smoke.mjs'), 'full checks should include siegecraft kit smoke');
-assert.ok(checksSource.includes('hellscape-siegecraft-readiness-cdn-state-input-smoke.mjs'), 'full/deploy checks should include siegecraft CDN smoke');
+assert.ok(checksSource.includes('hellscape-expedition-readability-domain-kits-smoke.mjs'), 'full/deploy checks should include existing Hellscape domain smoke');
+assert.ok(checksSource.includes('hellscape-expedition-readability-cdn-state-input-smoke.mjs'), 'full/deploy checks should include existing Hellscape CDN smoke');
+assert.ok(existingKitSmokeSource.includes('./hellscape-siegecraft-readiness-domain-kits-smoke.mjs'), 'existing domain smoke should import siegecraft kit smoke');
+assert.ok(existingCdnSmokeSource.includes('./hellscape-siegecraft-readiness-cdn-state-input-smoke.mjs'), 'existing CDN smoke should import siegecraft CDN smoke');
 
 const buildCatalog = [
   { id: 'wall', name: 'SPIKE WALL', cost: { wood: 5, obsidian: 3 }, hp: 180, range: 0, color: '#94a3b8' },
