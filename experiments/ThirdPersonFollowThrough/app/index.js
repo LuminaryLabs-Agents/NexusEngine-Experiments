@@ -1,2 +1,2 @@
-import '../app.js?v=planar-camera-basis-v1';
+import '../app.js?v=core-debug-v1';
 export {};
