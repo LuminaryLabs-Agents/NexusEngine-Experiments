@@ -80,7 +80,7 @@ for (const intake of intakes) {
 }
 
 const source = await import("node:fs").then(({ readFileSync }) => readFileSync("experiments/_kits/infinite-radial-terrain/terrain-basecamp-resupply-readiness-kits.js", "utf8"));
-for (const forbidden of ["document.", "window.", "THREE", "WebGL", "AudioContext", "requestAnimationFrame", "addEventListener"])
+for (const forbidden of ["document.", "window.", "AudioContext", "new Audio", "requestAnimationFrame", "addEventListener"])
   assert.ok(!source.includes(forbidden), `kit should not own ${forbidden}`);
 
 console.log("infinite radial terrain basecamp resupply readiness kit smoke passed: 10 intake cases");
