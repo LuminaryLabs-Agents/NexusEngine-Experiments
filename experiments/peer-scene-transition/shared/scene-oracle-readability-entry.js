@@ -93,22 +93,26 @@ function renderOraclePanel(handoff) {
   `;
 }
 
-function patchGameHost(oracleDomainKit, handoff) {
+function patchGameHost(oracleDomainKit) {
   const host = globalThis.GameHost;
   if (!host || host.__oracleReadabilityPatched) return;
   const previousRendererHandoff = host.getRendererHandoff?.bind(host);
+  const describeLiveOracle = () => oracleDomainKit.describe(activeSceneId(), host.getState?.() ?? {});
   host.getOracleReadabilityDomain = () => oracleDomainKit.snapshot(activeSceneId(), host.getState?.() ?? {});
-  host.getOracleReadability = () => oracleDomainKit.describe(activeSceneId(), host.getState?.() ?? {});
-  host.getRendererHandoff = () => ({
-    ...(previousRendererHandoff?.() ?? {}),
-    oracleReadability: handoff.counts,
-    objectiveForecastThreads: handoff.counts.objectiveForecastThreads,
-    pressureClockRings: handoff.counts.pressureClockRings,
-    resourceRouteMaps: handoff.counts.resourceRouteMaps,
-    memoryBranchEchoes: handoff.counts.memoryBranchEchoes,
-    puzzleDebtStacks: handoff.counts.puzzleDebtStacks,
-    endingReadinessCrowns: handoff.counts.endingReadinessCrowns
-  });
+  host.getOracleReadability = () => describeLiveOracle();
+  host.getRendererHandoff = () => {
+    const handoff = describeLiveOracle();
+    return {
+      ...(previousRendererHandoff?.() ?? {}),
+      oracleReadability: handoff.counts,
+      objectiveForecastThreads: handoff.counts.objectiveForecastThreads,
+      pressureClockRings: handoff.counts.pressureClockRings,
+      resourceRouteMaps: handoff.counts.resourceRouteMaps,
+      memoryBranchEchoes: handoff.counts.memoryBranchEchoes,
+      puzzleDebtStacks: handoff.counts.puzzleDebtStacks,
+      endingReadinessCrowns: handoff.counts.endingReadinessCrowns
+    };
+  };
   host.nexusEngineCdn = host.nexusEngineCdn || NEXUS_ENGINE_CDN;
   host.__oracleReadabilityPatched = true;
 }
@@ -122,7 +126,7 @@ async function bootOracleReadability() {
     const handoff = oracleDomainKit.describe(activeSceneId(), state);
     renderOracleStage(handoff);
     renderOraclePanel(handoff);
-    patchGameHost(oracleDomainKit, handoff);
+    patchGameHost(oracleDomainKit);
     document.body.dataset.sceneOracle = "enabled";
   };
   const waitForHost = () => {
