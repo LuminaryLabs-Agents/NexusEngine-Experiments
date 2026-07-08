@@ -1,4 +1,4 @@
-import * as NexusRealtime from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusRealtime@main/src/index.js";
+import * as NexusRealtime from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js";
 import { createFoundGearKit, createGenericGridLayoutKit, createGenericNavigationGridAdapterKit, createGenericPlacementReservationKit, createGenericRowFieldLayoutKit, createGenericSpawnLaneKit, createGenericWalkabilityFieldKit, createPressureHordeDirectorKit, createSurvivalRoundKit, createThreatRosterKit } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusRealtime-ProtoKits@0.0.1/protokits/generic-survival-domain-kits/index.js";
 export { NexusRealtime };
 export function createKitStack(content) {
