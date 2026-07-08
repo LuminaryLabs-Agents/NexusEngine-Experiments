@@ -9,14 +9,15 @@ import { createAudioEngine } from "./aaa-audio.js?v=aaa-1";
 import { createExperimentMeadowKit, createMeadowShaderVfxKit, MEADOW_EXPERIMENT_SCENE_VERSION, pathMask, terrainHeight, yardMask } from "./meadow-experiment-scene.js?v=0.0.2-cutover-1";
 import { createMeadowVisualFractalDomainKit, MEADOW_VISUAL_FRACTAL_VERSION } from "./meadow-visual-fractal-domain-kit.js?v=20260707-depth-patch-1";
 import { createMeadowEcologyReadabilityDomainKit, MEADOW_ECOLOGY_READABILITY_VERSION } from "./meadow-ecology-readability-kits.js?v=20260708-ecology-1";
-import { createMeadowVisualFractalLayers, updateMeadowVisualFractalLayers } from "./meadow-visual-fractal-renderers.js?v=20260708-ecology-1";
+import { createMeadowPastureRouteReadabilityDomainKit, MEADOW_PASTURE_ROUTE_READABILITY_VERSION } from "./meadow-pasture-route-readability-kits.js?v=20260708-pasture-route-1";
+import { createMeadowVisualFractalLayers, updateMeadowVisualFractalLayers } from "./meadow-visual-fractal-renderers.js?v=20260708-pasture-route-1";
 
 const canvas = document.querySelector("#game");
 const statusEl = document.querySelector("#status");
 const errorPanel = document.querySelector("#errorPanel");
 const clock = new THREE.Clock();
 const NEXUS_ENGINE_CDN = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js";
-const BUILD_ID = `0.0.2-meadow-ecology-readability-${MEADOW_EXPERIMENT_SCENE_VERSION}`;
+const BUILD_ID = `0.0.2-meadow-pasture-route-readability-${MEADOW_EXPERIMENT_SCENE_VERSION}`;
 const PROTO_SEED = "high-fidelity-countryside-v0.0.2";
 const GOLDEN_HOUR_OFFSET_SECONDS = 420;
 
@@ -104,21 +105,24 @@ function applyCycle(cycle, world, renderer, lights, sky, post, time) {
 function composeRendererHandoff(desc) {
   const visual = desc.visualFractal?.rendererHandoff;
   const ecology = desc.ecologyReadability?.rendererHandoff;
+  const pasture = desc.pastureRouteReadability?.rendererHandoff;
   return Object.freeze({
     id: "meadow.composedRendererHandoff",
     kind: "renderer-handoff",
     contract: "renderer-consumes-serializable-descriptors-only",
-    descriptorKeys: Object.freeze(["visualFractal", "ecologyReadability"]),
+    descriptorKeys: Object.freeze(["visualFractal", "ecologyReadability", "pastureRouteReadability"]),
     descriptors: Object.freeze({
       visualFractal: desc.visualFractal?.descriptors ?? {},
-      ecologyReadability: desc.ecologyReadability?.descriptors ?? {}
+      ecologyReadability: desc.ecologyReadability?.descriptors ?? {},
+      pastureRouteReadability: desc.pastureRouteReadability?.descriptors ?? {}
     }),
     counts: Object.freeze({
       visualFractal: visual?.counts?.total ?? 0,
       ecologyReadability: ecology?.counts?.total ?? 0,
-      total: (visual?.counts?.total ?? 0) + (ecology?.counts?.total ?? 0)
+      pastureRouteReadability: pasture?.counts?.total ?? 0,
+      total: (visual?.counts?.total ?? 0) + (ecology?.counts?.total ?? 0) + (pasture?.counts?.total ?? 0)
     }),
-    forbiddenOwnership: ecology?.forbiddenOwnership ?? visual?.forbiddenOwnership ?? []
+    forbiddenOwnership: pasture?.forbiddenOwnership ?? ecology?.forbiddenOwnership ?? visual?.forbiddenOwnership ?? []
   });
 }
 
@@ -165,6 +169,23 @@ async function boot() {
     flowers: raw.flowers,
     visualFractal: raw.visualFractal
   });
+  const pastureRouteReadabilityKit = createMeadowPastureRouteReadabilityDomainKit(NexusEngine, {
+    seed: PROTO_SEED,
+    heightAt: terrainHeight,
+    pathMask,
+    yardMask
+  });
+  raw.pastureRouteReadability = pastureRouteReadabilityKit.describe({
+    seed: PROTO_SEED,
+    terrain: raw.terrain,
+    width: raw.terrain.width,
+    depth: raw.terrain.depth,
+    cycle: meadowKit.sampleCycle(GOLDEN_HOUR_OFFSET_SECONDS),
+    sheep: raw.sheep,
+    flowers: raw.flowers,
+    visualFractal: raw.visualFractal,
+    ecologyReadability: raw.ecologyReadability
+  });
   const visualTargetValidation = visualTargetKit.validateSceneDescriptor(raw);
   const desc = adapt(raw, createMeadowShaderVfxKit(NexusEngine, { seed: PROTO_SEED }).listShaders());
   const uniforms = createUniformRegistry();
@@ -192,7 +213,7 @@ async function boot() {
   world.add(sun, moon, hemi);
   const sky = createSky(uniforms.uniforms);
   const clouds = createHighCloudDeck({ y: 86, radius: 248, count: 22 });
-  const visualFractalLayers = createMeadowVisualFractalLayers(desc.visualFractal, desc.ecologyReadability);
+  const visualFractalLayers = createMeadowVisualFractalLayers(desc.visualFractal, desc.ecologyReadability, desc.pastureRouteReadability);
   world.add(
     sky,
     clouds,
@@ -224,9 +245,11 @@ async function boot() {
     visualTargetKit,
     visualFractalKit,
     ecologyReadabilityKit,
+    pastureRouteReadabilityKit,
     sceneDescriptor: raw,
     visualFractal: desc.visualFractal,
     ecologyReadability: desc.ecologyReadability,
+    pastureRouteReadability: desc.pastureRouteReadability,
     audio,
     nexusEngine: {
       source: NEXUS_ENGINE_CDN,
@@ -234,6 +257,7 @@ async function boot() {
     },
     build: BUILD_ID,
     getEcologyReadability: () => desc.ecologyReadability,
+    getPastureRouteReadability: () => desc.pastureRouteReadability,
     getRendererHandoff,
     getState: () => ({
       build: BUILD_ID,
@@ -252,6 +276,11 @@ async function boot() {
         version: MEADOW_ECOLOGY_READABILITY_VERSION,
         counts: desc.ecologyReadability.descriptorCounts,
         contract: desc.ecologyReadability.rendererHandoff.contract
+      },
+      pastureRouteReadability: {
+        version: MEADOW_PASTURE_ROUTE_READABILITY_VERSION,
+        counts: desc.pastureRouteReadability.descriptorCounts,
+        contract: desc.pastureRouteReadability.rendererHandoff.contract
       },
       rendererHandoff: getRendererHandoff(),
       visualTarget: {
@@ -276,7 +305,8 @@ async function boot() {
     const audioState = audio.getState();
     const visualCount = desc.visualFractal.descriptorCounts.total;
     const ecologyCount = desc.ecologyReadability.descriptorCounts.total;
-    statusEl.textContent = `${raw.grass.bladeCount.toLocaleString()} grass · ${raw.flowers.flowers.length.toLocaleString()} flowers · ${raw.sheep.count} sheep · ${clouds.children.length} high clouds · ${visualCount} visual descriptors · ${ecologyCount} ecology descriptors · target ${visualTargetValidation.score}/6 · ${cycle.time.phase} · ${audioState.enabled ? `audio ${audioState.section}` : "tap for 20m procedural audio"} · cutover ${MEADOW_ECOLOGY_READABILITY_VERSION}`;
+    const pastureCount = desc.pastureRouteReadability.descriptorCounts.total;
+    statusEl.textContent = `${raw.grass.bladeCount.toLocaleString()} grass · ${raw.flowers.flowers.length.toLocaleString()} flowers · ${raw.sheep.count} sheep · ${clouds.children.length} high clouds · ${visualCount} visual descriptors · ${ecologyCount} ecology descriptors · ${pastureCount} pasture route descriptors · target ${visualTargetValidation.score}/6 · ${cycle.time.phase} · ${audioState.enabled ? `audio ${audioState.section}` : "tap for 20m procedural audio"} · cutover ${MEADOW_PASTURE_ROUTE_READABILITY_VERSION}`;
     requestAnimationFrame(frame);
   }
   frame();
