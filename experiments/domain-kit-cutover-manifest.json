@@ -70,10 +70,10 @@
       "id": "high-fidelity-meadow",
       "kind": "experiment",
       "canonicalPath": "experiments/high-fidelity-meadow/",
-      "status": "pasture-route-readability-renderer-handoff-pass",
-      "domainCutover": ["terrain-field-domain-service-kit", "meadow-visual-fractal-domain-kit", "meadow-ecology-readability-domain-kit", "meadow-pasture-route-readability-domain-kit"],
-      "bridgeNeeded": "browser host imports NexusEngine main via CDN; meadow visual, ecology, and pasture route readability kits emit descriptors consumed by Three presentation only",
-      "featureParity": ["grass", "flowers", "sheep", "ecology descriptors", "pasture route readability"]
+      "status": "flock-safety-readiness-renderer-handoff-pass",
+      "domainCutover": ["terrain-field-domain-service-kit", "meadow-visual-fractal-domain-kit", "meadow-ecology-readability-domain-kit", "meadow-pasture-route-readability-domain-kit", "meadow-flock-safety-readiness-domain-kit"],
+      "bridgeNeeded": "browser host imports NexusEngine main via CDN; meadow visual, ecology, pasture route, and flock safety readiness kits emit descriptors consumed by Three presentation only",
+      "featureParity": ["grass", "flowers", "sheep", "ecology descriptors", "pasture route readability", "flock safety readiness"]
     },
     {
       "id": "fogline-relay",
