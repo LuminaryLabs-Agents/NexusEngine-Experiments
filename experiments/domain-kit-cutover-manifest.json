@@ -7,10 +7,10 @@
       "id": "third-person-follow-through",
       "kind": "experiment",
       "canonicalPath": "experiments/ThirdPersonFollowThrough/",
-      "status": "navigation-challenge-readiness-renderer-handoff-pass",
-      "domainCutover": ["third-person-follow-kit", "rigged-actor-kit", "three-debug-ray-adapter", "n-core-debug-kit", "third-person-arena-fractal-domain-kit", "third-person-locomotion-readability-domain-kit", "third-person-camera-composition-readability-domain-kit", "third-person-navigation-challenge-readiness-domain-kit"],
-      "bridgeNeeded": "browser route imports NexusEngine main via CDN through a wrapper; controller math remains in runtime while arena, locomotion, camera-composition, and navigation-challenge readiness domain kits emit renderer-neutral descriptors",
-      "featureParity": ["WASD movement", "spring-arm camera", "core debug export", "arena fractal descriptors", "locomotion readability", "camera composition readability", "navigation challenge readiness"]
+      "status": "stealth-extraction-readiness-renderer-handoff-pass",
+      "domainCutover": ["third-person-follow-kit", "rigged-actor-kit", "three-debug-ray-adapter", "n-core-debug-kit", "third-person-arena-fractal-domain-kit", "third-person-locomotion-readability-domain-kit", "third-person-camera-composition-readability-domain-kit", "third-person-navigation-challenge-readiness-domain-kit", "third-person-stealth-extraction-readiness-domain-kit"],
+      "bridgeNeeded": "browser route imports NexusEngine main via CDN through a wrapper; controller math remains in runtime while arena, locomotion, camera-composition, navigation-challenge, and stealth-extraction readiness domain kits emit renderer-neutral descriptors",
+      "featureParity": ["WASD movement", "spring-arm camera", "core debug export", "arena fractal descriptors", "locomotion readability", "camera composition readability", "navigation challenge readiness", "stealth extraction readiness"]
     },
     {
       "id": "peer-scene-transition",
