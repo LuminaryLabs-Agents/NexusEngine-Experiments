@@ -79,10 +79,10 @@
       "id": "fogline-relay",
       "kind": "experiment",
       "canonicalPath": "experiments/fogline-relay/",
-      "status": "survivor-rescue-readiness-renderer-handoff-pass",
-      "domainCutover": ["action-input-kit", "scan-survey-kit", "fogline-visual-fractal-domain-kit", "fogline-renderer-handoff-kit", "fogline-signal-cartography-domain-kit", "fogline-operator-rhythm-domain-kit", "fogline-survivor-rescue-readiness-domain-kit"],
-      "bridgeNeeded": "browser host imports NexusEngine main CDN; visual, route-readability, signal-cartography, operator-rhythm, and survivor-rescue descriptors are consumed by presentation only",
-      "featureParity": ["first-person movement", "scan", "relays", "signal cartography", "operator rhythm", "survivor rescue readiness"]
+      "status": "storm-evacuation-readiness-renderer-handoff-pass",
+      "domainCutover": ["action-input-kit", "scan-survey-kit", "fogline-visual-fractal-domain-kit", "fogline-renderer-handoff-kit", "fogline-signal-cartography-domain-kit", "fogline-operator-rhythm-domain-kit", "fogline-survivor-rescue-readiness-domain-kit", "fogline-storm-evacuation-readiness-domain-kit"],
+      "bridgeNeeded": "browser host imports NexusEngine main CDN; visual, route-readability, signal-cartography, operator-rhythm, survivor-rescue, and storm-evacuation descriptors are consumed by presentation only; previous survivor-rescue-readiness-renderer-handoff-pass remains loaded before the storm pass",
+      "featureParity": ["first-person movement", "scan", "relays", "signal cartography", "operator rhythm", "survivor rescue readiness", "storm evacuation readiness"]
     },
     {
       "id": "nexus-frontier-signal-isles",
