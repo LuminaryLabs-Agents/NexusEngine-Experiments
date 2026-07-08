@@ -25,6 +25,12 @@ export function createSignalIslesDebugHost({ composition, renderer, input, nexus
     getVisualFractalState() {
       return composition.getVisualFractalState();
     },
+    getObjectiveReadabilityState() {
+      return composition.getObjectiveReadabilityState();
+    },
+    getRendererHandoff() {
+      return composition.getRendererHandoff();
+    },
     getRecentEvents() {
       return composition.getRecentEvents();
     },
