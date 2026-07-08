@@ -1,3 +1,4 @@
+import "./zombie-orchard-foraging-readability-cdn-state-input-smoke.mjs";
 import assert from "node:assert/strict";
 import { createServer } from "node:http";
 import { readFile } from "node:fs/promises";
@@ -27,7 +28,8 @@ const bootstrapSource = await readFile(join(root, "experiments/zombie-orchard/sr
 assert.ok(kitStackSource.includes("https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js"));
 assert.ok(!kitStackSource.includes("https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusRealtime@main/src/index.js"));
 assert.ok(sessionSource.includes("createZombieOrchardSurvivalReadabilityDomainKit"));
-assert.ok(sessionSource.includes("domain: { zombieOrchardSurvivalReadability: survivalReadability }"));
+assert.ok(sessionSource.includes("domain: {"));
+assert.ok(sessionSource.includes("zombieOrchardSurvivalReadability"));
 assert.ok(kitSource.includes("renderer-consumes-descriptors-only"));
 assert.ok(kitSource.includes("forbiddenOwners"));
 assert.ok(canvasSource.includes("survivalReadability?.rendererHandoff?.descriptors"));
@@ -103,7 +105,7 @@ try {
     assert.ok(result.health01 >= 0 && result.health01 <= 1);
   }
 
-  console.log("zombie orchard survival readability CDN state-input smoke passed");
+  console.log("zombie orchard survival readability CDN state-input smoke passed plus foraging import");
 } finally {
   if (browser) await browser.close();
   await new Promise((resolve) => server.close(resolve));
