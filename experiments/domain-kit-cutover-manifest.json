@@ -97,10 +97,10 @@
       "id": "zombie-orchard",
       "kind": "experiment",
       "canonicalPath": "experiments/zombie-orchard/",
-      "status": "survival-readability-renderer-handoff-pass",
-      "domainCutover": ["action-input-kit", "zombie-orchard-visual-fractal-domain-kit", "zombie-orchard-survival-readability-domain-kit"],
-      "bridgeNeeded": "browser host imports NexusEngine main via CDN; survival readability domain emits descriptors consumed by canvas presentation only",
-      "featureParity": ["move", "collect", "survival waves", "orchard descriptors", "survival readability descriptors"]
+      "status": "foraging-readability-renderer-handoff-pass",
+      "domainCutover": ["action-input-kit", "zombie-orchard-visual-fractal-domain-kit", "zombie-orchard-survival-readability-domain-kit", "zombie-orchard-foraging-readability-domain-kit"],
+      "bridgeNeeded": "browser host imports NexusEngine main via CDN; survival and foraging readability domains emit apple rarity, gear choice, harvest streak, safe pocket, row memory, and boss omen descriptors consumed by Canvas and existing Three-compatible visual buckets only",
+      "featureParity": ["move", "collect", "survival waves", "orchard descriptors", "survival readability descriptors", "apple rarity heat", "gear choice arcs", "harvest streak trails", "safe harvest pockets", "row memory breadcrumbs", "boss omen branches", "GameHost composed renderer handoff"]
     },
     {
       "id": "tropical-island-scene",
