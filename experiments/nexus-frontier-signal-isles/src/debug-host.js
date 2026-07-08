@@ -28,6 +28,9 @@ export function createSignalIslesDebugHost({ composition, renderer, input, nexus
     getObjectiveReadabilityState() {
       return composition.getObjectiveReadabilityState();
     },
+    getExpeditionReadinessState() {
+      return composition.getExpeditionReadinessState();
+    },
     getRendererHandoff() {
       return composition.getRendererHandoff();
     },
