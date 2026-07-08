@@ -17,7 +17,7 @@ assert.ok(configSource.includes(CDN), "Open Above config uses NexusEngine main C
 assert.ok(!configSource.includes(OLD_CDN), "Open Above config no longer points at old NexusRealtime runtime CDN");
 assert.ok(entrySource.includes(CDN), "flight route overlay directly imports NexusEngine main CDN");
 assert.ok(!entrySource.includes(OLD_CDN), "flight route overlay avoids old NexusRealtime runtime CDN");
-assert.ok(htmlSource.includes("open-above-flight-route-readability-entry.js?v=flight-route-readability-20260708"), "route shell loads cache-busted flight route entry");
+assert.ok(htmlSource.includes("open-above-flight-route-readability-entry.js?v=aerial-courier-readiness-20260708"), "route shell loads cache-busted flight route entry");
 assert.ok(entrySource.includes("getFlightRouteReadability"), "GameHost exposes flight route readability");
 assert.ok(entrySource.includes("getRendererHandoff"), "GameHost exposes composed renderer handoff");
 assert.ok(entrySource.includes("rendererConsumes = \"descriptors-only\""), "overlay declares descriptor-only consumption");
