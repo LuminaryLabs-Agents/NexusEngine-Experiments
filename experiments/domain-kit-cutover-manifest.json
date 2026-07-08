@@ -61,10 +61,10 @@
       "id": "high-fidelity-meadow",
       "kind": "experiment",
       "canonicalPath": "experiments/high-fidelity-meadow/",
-      "status": "meadow-ecology-readability-handoff-pass",
-      "domainCutover": ["terrain-field-domain-service-kit", "meadow-visual-fractal-domain-kit", "meadow-ecology-readability-domain-kit"],
-      "bridgeNeeded": "browser host imports NexusEngine main via CDN; meadow visual and ecology readability kits emit living-scene descriptors consumed by Three presentation only",
-      "featureParity": ["grass", "flowers", "sheep", "pollinator route descriptors", "shepherd path descriptors", "GameHost renderer handoff"]
+      "status": "pasture-route-readability-renderer-handoff-pass",
+      "domainCutover": ["terrain-field-domain-service-kit", "meadow-visual-fractal-domain-kit", "meadow-ecology-readability-domain-kit", "meadow-pasture-route-readability-domain-kit"],
+      "bridgeNeeded": "browser host imports NexusEngine main via CDN; meadow visual, ecology, and pasture route readability kits emit living-scene, grazing route, forage priority, sheep comfort, water, gate return, and shelter descriptors consumed by Three presentation only",
+      "featureParity": ["grass", "flowers", "sheep", "pollinator route descriptors", "shepherd path descriptors", "grazing route scores", "forage patch priorities", "sheep comfort arcs", "water trough threads", "gate return cues", "weather shelter bands", "GameHost composed renderer handoff"]
     },
     {
       "id": "fogline-relay",
