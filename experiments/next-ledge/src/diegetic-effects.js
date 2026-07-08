@@ -51,6 +51,10 @@ function updateLayer(layer, snapshot, time) {
 
 function descriptorCenter(descriptor = {}) {
   if (descriptor.position) return { x: num(descriptor.position.x), y: num(descriptor.position.y), z: num(descriptor.position.z, 8) };
+  if (Array.isArray(descriptor.points) && descriptor.points.length) {
+    const point = descriptor.points[Math.floor(descriptor.points.length * 0.55)] ?? descriptor.points[0];
+    return { x: num(point.x), y: num(point.y), z: num(point.z, 8) };
+  }
   if (descriptor.start && descriptor.end) {
     return {
       x: (num(descriptor.start.x) + num(descriptor.end.x)) * 0.5,
@@ -61,14 +65,9 @@ function descriptorCenter(descriptor = {}) {
   return null;
 }
 
-function createCargoDescriptorLayer(scene) {
-  const configs = [
-    { name: "cargo", color: 0x3dffa3, size: 4.1, opacity: 0.48, filter: /cargo-cache|cargo-route|cargo-status|extraction-summit/ },
-    { name: "pressure", color: 0xff3858, size: 3.2, opacity: 0.38, filter: /pressure/ },
-    { name: "delivery", color: 0xffd65a, size: 5.4, opacity: 0.42, filter: /extraction-summit|cargo-status/ }
-  ];
+function createDescriptorParticleLayer(scene, configs) {
   return configs.map((config) => {
-    const count = 96;
+    const count = config.count ?? 96;
     const positions = new Float32Array(count * 3);
     const geometry = new THREE.BufferGeometry();
     geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
@@ -80,8 +79,23 @@ function createCargoDescriptorLayer(scene) {
   });
 }
 
-function updateCargoDescriptorLayer(layers, snapshot, time) {
-  const descriptors = snapshot.domain?.routeCargoVisual?.rendererHandoff?.descriptors ?? [];
+function createCargoDescriptorLayer(scene) {
+  return createDescriptorParticleLayer(scene, [
+    { name: "cargo", color: 0x3dffa3, size: 4.1, opacity: 0.48, filter: /cargo-cache|cargo-route|cargo-status|extraction-summit/ },
+    { name: "pressure", color: 0xff3858, size: 3.2, opacity: 0.38, filter: /pressure/ },
+    { name: "delivery", color: 0xffd65a, size: 5.4, opacity: 0.42, filter: /extraction-summit|cargo-status/ }
+  ]);
+}
+
+function createTraversalReadabilityLayer(scene) {
+  return createDescriptorParticleLayer(scene, [
+    { name: "arc", color: 0xfff3bd, size: 3.4, opacity: 0.46, count: 120, filter: /swing-arc|momentum-window/ },
+    { name: "anchor", color: 0x00f0ff, size: 3.8, opacity: 0.38, count: 100, filter: /anchor-confidence|summit-route-beat/ },
+    { name: "recovery", color: 0x3dffa3, size: 4.6, opacity: 0.34, count: 84, filter: /recovery-vector|stamina-risk/ }
+  ]);
+}
+
+function updateDescriptorLayer(layers, descriptors, time) {
   for (const layer of layers) {
     const selected = descriptors.filter((descriptor) => layer.filter.test(descriptor.kind ?? descriptor.id ?? ""));
     for (let i = 0; i < layer.count; i += 1) {
@@ -93,8 +107,8 @@ function updateCargoDescriptorLayer(layers, snapshot, time) {
         layer.positions[i * 3 + 2] = 999999;
         continue;
       }
-      const orbit = i * 2.399963 + time * (layer.name === "pressure" ? 2.1 : 1.2);
-      const radius = layer.name === "pressure" ? 26 + (i % 9) * 3 : 10 + (i % 7) * 2.5;
+      const orbit = i * 2.399963 + time * (layer.name === "pressure" ? 2.1 : layer.name === "arc" ? 2.6 : 1.2);
+      const radius = layer.name === "pressure" ? 26 + (i % 9) * 3 : layer.name === "arc" ? 7 + (i % 11) * 2.1 : 10 + (i % 7) * 2.5;
       layer.positions[i * 3] = center.x + Math.cos(orbit) * radius;
       layer.positions[i * 3 + 1] = center.y + Math.sin(orbit * 0.83) * radius;
       layer.positions[i * 3 + 2] = center.z + Math.sin(orbit) * 4;
@@ -104,6 +118,16 @@ function updateCargoDescriptorLayer(layers, snapshot, time) {
   }
 }
 
+function updateCargoDescriptorLayer(layers, snapshot, time) {
+  const descriptors = snapshot.domain?.routeCargoVisual?.rendererHandoff?.descriptors ?? [];
+  updateDescriptorLayer(layers, descriptors, time);
+}
+
+function updateTraversalReadabilityLayer(layers, snapshot, time) {
+  const descriptors = snapshot.domain?.traversalReadability?.rendererHandoff?.descriptors ?? [];
+  updateDescriptorLayer(layers, descriptors, time);
+}
+
 export function createDiegeticEffects({ scene }) {
   const layers = [
     createLayer(scene, { count: 240, color: 0x00f0ff, opacity: 0.18, size: 2.8, seed: 15, z: 24, spreadX: 720, spreadY: 980, speed: 0.055, driftX: 4, driftY: 0.75, wobble: 32 }),
@@ -111,6 +135,7 @@ export function createDiegeticEffects({ scene }) {
     createLayer(scene, { count: 90, color: 0x3dffa3, opacity: 0.16, size: 1.7, seed: 108, z: 10, spreadX: 520, spreadY: 620, speed: 0.13, driftX: 1, driftY: 1.35, wobble: 11 })
   ];
   const cargoDescriptorLayers = createCargoDescriptorLayer(scene);
+  const traversalReadabilityLayers = createTraversalReadabilityLayer(scene);
   const seen = new Set();
   const root = new THREE.Group();
   const geometry = new THREE.SphereGeometry(1, 8, 8);
@@ -151,6 +176,7 @@ export function createDiegeticEffects({ scene }) {
       const time = (snapshot.frame ?? 0) / 60;
       for (const layer of layers) updateLayer(layer, snapshot, time);
       updateCargoDescriptorLayer(cargoDescriptorLayers, snapshot, time);
+      updateTraversalReadabilityLayer(traversalReadabilityLayers, snapshot, time);
       for (const evt of snapshot.recentEvents ?? []) {
         const key = eventKey(evt);
         if (seen.has(key)) continue;
@@ -173,7 +199,7 @@ export function createDiegeticEffects({ scene }) {
     },
     dispose() {
       root.clear();
-      for (const layer of cargoDescriptorLayers) {
+      for (const layer of [...cargoDescriptorLayers, ...traversalReadabilityLayers]) {
         scene.remove(layer.points);
         layer.geometry.dispose?.();
         layer.material.dispose?.();
@@ -187,19 +213,20 @@ export function updateDiegeticPlayerSignals({ snapshot, playerMaterial, staminaH
   const staminaPct = clamp((snapshot.stamina ?? 0) / Math.max(1, snapshot.constants?.maxStamina ?? 100), 0, 1);
   const cargoValue = snapshot.domain?.routeCargoExtraction?.cargo?.resources?.[0]?.value ?? 0;
   const pressureValue = snapshot.domain?.routeCargoExtraction?.pressure?.channels?.[0]?.value ?? 0;
-  playerMaterial.emissiveIntensity = 0.7 + staminaPct * 1.8 + (snapshot.mode === "falling" ? 0.9 : 0) + Math.min(0.7, cargoValue * 0.08);
+  const readabilityRisk = snapshot.domain?.traversalReadability?.staminaRiskBands?.[0]?.risk ?? 0;
+  playerMaterial.emissiveIntensity = 0.7 + staminaPct * 1.8 + (snapshot.mode === "falling" ? 0.9 : 0) + Math.min(0.7, cargoValue * 0.08) + readabilityRisk * 0.35;
   staminaHalo.position.set(snapshot.player.x, snapshot.player.y, (snapshot.player.z ?? 1) + 1.5);
-  staminaHalo.scale.setScalar(0.62 + staminaPct * 0.78 + Math.sin(time * 6) * 0.025 + Math.min(0.22, cargoValue * 0.025));
+  staminaHalo.scale.setScalar(0.62 + staminaPct * 0.78 + Math.sin(time * 6) * 0.025 + Math.min(0.22, cargoValue * 0.025) + readabilityRisk * 0.18);
   staminaHalo.material.opacity = 0.15 + staminaPct * 0.62;
-  staminaHalo.material.color.set(staminaPct < 0.18 || pressureValue > 70 ? 0xff3858 : cargoValue > 0 ? 0x3dffa3 : staminaPct < 0.45 ? 0xffb83d : 0x00f0ff);
+  staminaHalo.material.color.set(staminaPct < 0.18 || pressureValue > 70 || readabilityRisk > 0.72 ? 0xff3858 : cargoValue > 0 ? 0x3dffa3 : staminaPct < 0.45 ? 0xffb83d : 0x00f0ff);
   staminaHalo.rotation.z += 0.025 + (1 - staminaPct) * 0.03;
   dangerHalo.position.set(snapshot.player.x, snapshot.player.y, (snapshot.player.z ?? 1) + 1.25);
-  dangerHalo.visible = staminaPct < 0.2 || pressureValue > 45 || snapshot.mode === "dead";
-  dangerHalo.material.opacity = dangerHalo.visible ? 0.2 + pressureValue / 180 + Math.sin(time * 12) * 0.14 : 0;
-  dangerHalo.scale.setScalar(1.1 + Math.sin(time * 10) * 0.12 + pressureValue / 240);
+  dangerHalo.visible = staminaPct < 0.2 || pressureValue > 45 || readabilityRisk > 0.58 || snapshot.mode === "dead";
+  dangerHalo.material.opacity = dangerHalo.visible ? 0.2 + pressureValue / 180 + readabilityRisk * 0.18 + Math.sin(time * 12) * 0.14 : 0;
+  dangerHalo.scale.setScalar(1.1 + Math.sin(time * 10) * 0.12 + pressureValue / 240 + readabilityRisk * 0.24);
   dangerHalo.rotation.z -= 0.04;
   modeLight.position.set(snapshot.player.x, snapshot.player.y, 24);
   modeLight.intensity = snapshot.mode === "swinging" ? 1.9 + cargoValue * 0.04 : 2.8 + cargoValue * 0.05;
   dangerLight.position.set(snapshot.player.x, snapshot.player.y - 20, 32);
-  dangerLight.intensity = snapshot.mode === "dead" ? 5 : pressureValue > 60 ? 2.8 : staminaPct < 0.2 ? 2.2 : 0;
+  dangerLight.intensity = snapshot.mode === "dead" ? 5 : pressureValue > 60 ? 2.8 : readabilityRisk > 0.65 ? 2.4 : staminaPct < 0.2 ? 2.2 : 0;
 }
