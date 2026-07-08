@@ -1,5 +1,7 @@
 import "./infinite-radial-terrain-survey-contract-readiness-kits-smoke.mjs";
 import "./infinite-radial-terrain-survey-contract-cdn-state-input-smoke.mjs";
+import "./infinite-radial-terrain-basecamp-resupply-readiness-kits-smoke.mjs";
+import "./infinite-radial-terrain-basecamp-resupply-cdn-state-input-smoke.mjs";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
@@ -9,6 +11,8 @@ const kits = readFileSync("experiments/_kits/infinite-radial-terrain/infinite-ra
 const expeditionKits = readFileSync("experiments/_kits/infinite-radial-terrain/terrain-expedition-readability-kits.js", "utf8");
 const surveyContractKits = readFileSync("experiments/_kits/infinite-radial-terrain/terrain-survey-contract-readiness-kits.js", "utf8");
 const surveyContractEntry = readFileSync("experiments/infinite-radial-terrain/terrain-survey-contract-readiness-entry.js", "utf8");
+const basecampResupplyKits = readFileSync("experiments/_kits/infinite-radial-terrain/terrain-basecamp-resupply-readiness-kits.js", "utf8");
+const basecampResupplyEntry = readFileSync("experiments/infinite-radial-terrain/terrain-basecamp-resupply-readiness-entry.js", "utf8");
 
 const nexusEngineCdn = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js";
 
@@ -16,8 +20,11 @@ assert.ok(route.includes(nexusEngineCdn), "route should pull NexusEngine main th
 assert.ok(!route.includes("LuminaryLabs-Dev/NexusRealtime@main/src/index.js"), "route should not import the old NexusRealtime runtime CDN");
 assert.ok(index.includes("infinite-radial-terrain-expedition-readability-v1"), "index should cache-bust the descriptor handoff route asset");
 assert.ok(index.includes("infinite-radial-terrain-survey-contract-readiness-v1"), "index should cache-bust the survey contract overlay asset");
+assert.ok(index.includes("infinite-radial-terrain-basecamp-resupply-readiness-v1"), "index should cache-bust the basecamp resupply overlay asset");
 assert.ok(surveyContractEntry.includes(nexusEngineCdn), "survey contract overlay should import NexusEngine main via CDN");
+assert.ok(basecampResupplyEntry.includes(nexusEngineCdn), "basecamp resupply overlay should import NexusEngine main via CDN");
 assert.ok(!surveyContractEntry.includes("LuminaryLabs-Dev/NexusRealtime@main/src/index.js"), "survey contract overlay should not import the old NexusRealtime runtime CDN");
+assert.ok(!basecampResupplyEntry.includes("LuminaryLabs-Dev/NexusRealtime@main/src/index.js"), "basecamp resupply overlay should not import the old NexusRealtime runtime CDN");
 
 for (const expected of [
   "createInfiniteRadialTerrainVisualDomainKit",
@@ -90,6 +97,32 @@ for (const expected of [
   assert.ok(surveyContractEntry.includes(expected), expected);
 }
 
+for (const expected of [
+  "TERRAIN_BASECAMP_RESUPPLY_READINESS_DOMAIN_TREE",
+  "createTerrainBasecampSupplyCacheKit",
+  "createTerrainLandingZoneCertificationKit",
+  "createTerrainWeatherWindowFlagKit",
+  "createTerrainSampleCrateRouteKit",
+  "createTerrainEmergencyBivouacShelterKit",
+  "createTerrainReturnFuelBeaconKit",
+  "createTerrainBasecampResupplyRendererHandoffKit",
+  "createTerrainBasecampResupplyReadinessDomainKit"
+]) {
+  assert.ok(basecampResupplyKits.includes(expected), expected);
+}
+
+for (const expected of [
+  "getBasecampResupplyReadiness",
+  "getInfiniteRadialTerrainBasecampResupplyReadiness",
+  "getBasecampResupplyReadinessTree",
+  "infiniteRadialTerrainBasecampResupply",
+  "rendererConsumes = \"descriptors-only\"",
+  "composeHandoff(originalGetRendererHandoff?.(), current)",
+  "document.body.dataset.terrainBasecampResupplyReadiness = \"enabled\""
+]) {
+  assert.ok(basecampResupplyEntry.includes(expected), expected);
+}
+
 const simulatedInputs = Array.from({ length: 10 }, (_, index) => ({
   dt: index % 2 ? 1 / 60 : 1 / 30,
   keys: {
@@ -115,6 +148,10 @@ const simulatedInputs = Array.from({ length: 10 }, (_, index) => ({
   surveyContract: {
     expectedHandoffBuckets: ["surveyContractSteps", "waypointTempoRings", "riskRewardForks", "altitudePledgeBands", "sampleChainGhosts", "returnConfidenceCompass"],
     expectedGameHostMethods: ["getSurveyContractReadiness", "getInfiniteRadialTerrainSurveyContractReadiness", "getRendererHandoff"]
+  },
+  basecampResupply: {
+    expectedHandoffBuckets: ["basecampSupplyCaches", "landingZoneCertifications", "weatherWindowFlags", "sampleCrateRoutes", "emergencyBivouacShelters", "returnFuelBeacons"],
+    expectedGameHostMethods: ["getBasecampResupplyReadiness", "getInfiniteRadialTerrainBasecampResupplyReadiness", "getRendererHandoff"]
   }
 }));
 
@@ -128,6 +165,8 @@ for (const intake of simulatedInputs) {
   assert.deepEqual(intake.expedition.expectedGameHostMethods, ["getExpeditionReadability", "getRendererHandoff"]);
   assert.equal(intake.surveyContract.expectedHandoffBuckets.length, 6);
   assert.deepEqual(intake.surveyContract.expectedGameHostMethods, ["getSurveyContractReadiness", "getInfiniteRadialTerrainSurveyContractReadiness", "getRendererHandoff"]);
+  assert.equal(intake.basecampResupply.expectedHandoffBuckets.length, 6);
+  assert.deepEqual(intake.basecampResupply.expectedGameHostMethods, ["getBasecampResupplyReadiness", "getInfiniteRadialTerrainBasecampResupplyReadiness", "getRendererHandoff"]);
 }
 
-console.log("infinite radial terrain NexusEngine CDN/state-input smoke passed: 10 intake cases plus expedition and survey contract readability handoffs");
+console.log("infinite radial terrain NexusEngine CDN/state-input smoke passed: 10 intake cases plus expedition, survey contract, and basecamp resupply handoffs");
