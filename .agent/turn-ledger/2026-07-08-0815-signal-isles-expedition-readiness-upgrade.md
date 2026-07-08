@@ -4,30 +4,30 @@
 
 - Chosen experiment: `experiments/nexus-frontier-signal-isles/`
 - Upgrade: added renderer-neutral expedition readiness kits and integrated their descriptor handoff into the existing WebGL Signal Isles route.
-- Last upgraded experiment avoided: `experiments/high-fidelity-meadow/`
+- Last upgraded experiment avoided: `experiments/ThirdPersonFollowThrough/`
 - Push target: `LuminaryLabs-Agents/NexusEngine-Experiments` `main`
 
 ## Why this experiment was chosen
 
-The previous completed upgrade was `experiments/high-fidelity-meadow/`, so this run selected a different route. `nexus-frontier-signal-isles` already had objective readability, but the active field-engineer loop still made the next expedition decision too implicit: where to sweep next, how shards should ferry into the mast, when the mast is charge-ready, which retreat lane is safest under pressure, how the gate runway opens, and what remains in the beacon activation chain. This pass keeps gameplay truth in the composition layer and makes those decisions readable through atomic descriptor kits.
+The latest completed upgrade ledger on `main` before this run was `.agent/turn-ledger/2026-07-08-0802-third-person-camera-composition-upgrade.md`, which chose `experiments/ThirdPersonFollowThrough/`, so this run selected a different route. `nexus-frontier-signal-isles` already had objective readability, but the active field-engineer loop still made the next expedition decision too implicit: where to sweep next, how shards should ferry into the mast, when the mast is charge-ready, which retreat lane is safest under pressure, how the gate runway opens, and what remains in the beacon activation chain. This pass keeps gameplay truth in the composition layer and makes those decisions readable through atomic descriptor kits.
 
 ## Last upgraded experiment
 
 ```txt
-experiments/high-fidelity-meadow/
+experiments/ThirdPersonFollowThrough/
 ```
 
-Latest prior commit marker:
+Latest prior ledger marker:
 
 ```txt
-d53988091603c901ace5f29e9930c278e994a9f4 Log meadow pasture route readability upgrade
+.agent/turn-ledger/2026-07-08-0802-third-person-camera-composition-upgrade.md
 ```
 
 ## Experiment inventory
 
 | Route | Description | Gameplay length | Gameplay mechanics | Old NexusRealtime import | NexusEngine main CDN |
 | --- | --- | --- | --- | --- | --- |
-| `experiments/ThirdPersonFollowThrough/` | Third-person controller and locomotion debug sandbox. | Short sandbox, continuous. | WASD, spring camera, jump/backpedal/yaw/camera readability. | No changed-runtime old CDN. | Yes. |
+| `experiments/ThirdPersonFollowThrough/` | Third-person controller and camera diagnostic sandbox upgraded with arena, locomotion, and camera composition readability. | Short sandbox, continuous. | WASD, spring camera, jump/backpedal/yaw, landing patches, focus ribbons, shoulder wedges, occlusion veils, comfort meters. | No changed-runtime old CDN. | Yes. |
 | `experiments/peer-scene-transition/` | Scene transition and puzzle decision demo. | Short puzzle loop. | Scene actions, exits, inventory, gates, decision cues. | No changed-runtime old CDN. | Yes. |
 | `apps/the-cavalry-of-rome/` | Strategy/campaign map prototype. | Medium campaign loop. | World actions, scouting, reinforcement, objectives. | No changed-runtime old CDN. | Yes. |
 | `experiments/vr-platformer-board/` | Flat board platformer with VR-style comfort constraints. | Short platformer loop. | Move, jump, coins, hazards, exit, route risk. | No changed-runtime old CDN. | Yes. |
