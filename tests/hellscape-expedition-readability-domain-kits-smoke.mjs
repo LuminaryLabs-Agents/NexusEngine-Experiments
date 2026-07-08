@@ -1,3 +1,4 @@
+import './hellscape-siegecraft-readiness-domain-kits-smoke.mjs';
 import assert from 'node:assert/strict';
 import {
   createHellscapeExtractionRouteKit,
