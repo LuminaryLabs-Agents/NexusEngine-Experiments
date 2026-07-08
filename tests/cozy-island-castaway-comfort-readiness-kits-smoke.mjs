@@ -26,12 +26,13 @@ const cases = [
 ];
 
 const source = readFileSync("experiments/cozy-island/cozy-island-castaway-comfort-kits.js", "utf8");
+const implementationSource = source.replace(/export const COZY_ISLAND_CASTAWAY_FORBIDDEN_OWNERSHIP = \[[\s\S]*?\];/, "");
 const domain = createCozyIslandCastawayComfortReadinessDomainKit();
 
 assert.ok(COZY_ISLAND_CASTAWAY_COMFORT_DOMAIN_TREE.includes("survival-resource-domain"), "domain tree keeps survival resource split");
 assert.ok(COZY_ISLAND_CASTAWAY_COMFORT_DOMAIN_TREE.includes("renderer consumes descriptors only"), "domain tree declares handoff policy");
 for (const marker of COZY_ISLAND_CASTAWAY_FORBIDDEN_OWNERSHIP) {
-  assert.equal(source.includes(marker), false, `kit source must not own ${marker}`);
+  assert.equal(implementationSource.includes(marker), false, `kit source must not own ${marker}`);
 }
 
 for (const input of cases) {
