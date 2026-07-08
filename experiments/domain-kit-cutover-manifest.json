@@ -124,10 +124,10 @@
       "id": "cozy-island",
       "kind": "experiment",
       "canonicalPath": "experiments/cozy-island/",
-      "status": "castaway-comfort-readiness-renderer-handoff-pass",
-      "domainCutover": ["ocean-island-landform-domain", "island-foliage-domain", "mattatz-clouds-domain", "campfire-object-domain", "smoke-particle-domain", "cozy-island-castaway-comfort-readiness-domain-kit"],
-      "bridgeNeeded": "legacy cloudbar route still consumes older NexusRealtime ProtoKits for island generation; the changed castaway comfort overlay imports NexusEngine main CDN and emits renderer-neutral survival, shelter, signal, storm, and canoe descriptors consumed by presentation only",
-      "featureParity": ["cloudbar island generation", "campfire", "smoke", "grass", "clouds", "castaway comfort readiness"]
+      "status": "tidepool-conservatory-readiness-renderer-handoff-pass",
+      "domainCutover": ["ocean-island-landform-domain", "island-foliage-domain", "mattatz-clouds-domain", "campfire-object-domain", "smoke-particle-domain", "cozy-island-castaway-comfort-readiness-domain-kit", "cozy-island-tidepool-conservatory-readiness-domain-kit"],
+      "bridgeNeeded": "legacy cloudbar route still consumes older NexusRealtime ProtoKits for island generation; the changed castaway comfort and tidepool conservatory overlays import NexusEngine main CDN and emit renderer-neutral survival, shorelife, reef stewardship, moon tide, and conservation descriptors consumed by presentation only",
+      "featureParity": ["cloudbar island generation", "campfire", "smoke", "grass", "clouds", "castaway comfort readiness", "tidepool conservatory readiness"]
     },
     {
       "id": "signal-bastion",
