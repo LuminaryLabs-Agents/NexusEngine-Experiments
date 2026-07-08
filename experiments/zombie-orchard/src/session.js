@@ -1,6 +1,7 @@
 import { CONTENT, appleEffect, equippedLabel, weaponRange } from "./content.js";
 import { createKitStack, NexusRealtime } from "./kit-stack.js";
 import { createOrchardWalkabilitySnapshot } from "./navigation-content.js";
+import { createZombieOrchardVisualFractalDomainKit } from "./visual-fractal-kits.js";
 const n = (v, f = 0) => Number.isFinite(Number(v)) ? Number(v) : f;
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const dist = (a = {}, b = {}) => Math.hypot(n(a.x) - n(b.x), n(a.z ?? a.y) - n(b.z ?? b.y));
@@ -11,6 +12,7 @@ function equipped(state) { return (state?.inventory ?? []).find((w) => w.instanc
 
 export function createZombieOrchardSession(content = CONTENT) {
   const { kits, refs } = createKitStack(content);
+  const visualDomain = createZombieOrchardVisualFractalDomainKit(content.visualFractal);
   const engine = NexusRealtime.createRealtimeGame({ kits, renderer: NexusRealtime.createRenderer("headless") });
   engine.world.setResource(NexusRealtime.CommonGameResources.ProceduralSnapshot, createOrchardWalkabilitySnapshot(engine.zombieOrchard.orchardBiome.snapshot(), content.navigation));
   const state = { health: 1, stamina: 1, score: 0, apples: 0, clears: 0, recentHits: 0, recentClears: 0, recentApples: 0, scoreMomentum: 0, message: "The orchard wakes. Collect apples, scavenge gear, survive the rows.", messageTime: 6, paused: false, gameOver: false, nextPath: 0, nextContact: 0, bossWarned: false };
@@ -51,7 +53,7 @@ export function createZombieOrchardSession(content = CONTENT) {
   function decay(dt) { state.messageTime = Math.max(0, state.messageTime - dt); state.recentHits *= Math.exp(-dt * 0.9); state.recentClears *= Math.exp(-dt * 0.45); state.recentApples *= Math.exp(-dt * 0.42); state.scoreMomentum *= Math.exp(-dt * 0.65); if (state.messageTime <= 0) state.message = ""; }
 
   function update(delta, input = {}) { if (input.pause) state.paused = !state.paused; if (state.paused) return snapshot(); const dt = clamp(n(delta, 1 / 60), 0, 1 / 20); if (!state.gameOver) { movement(input, dt); prompt(input); roundKey(input); interact(input); swap(input.swapSlot); useGear(input); feed(); paths(); engine.tick(dt); contact(); feed(); const r = engine.zombieOrchard.survivalRounds.getState(); if (r?.bossWave && !state.bossWarned) { objective("boss-warning", { round: r }); state.bossWarned = true; } } else engine.tick(0); decay(dt); return snapshot(); }
-  function snapshot() { const w = weaponState(), aw = equipped(w), h = engine.zombieOrchard.hordeDirector.getState(); return { clock: { ...engine.clock }, player: player(), orchard: engine.zombieOrchard.orchardBiome.snapshot() ?? {}, weapons: w, weaponLabel: equippedLabel(w), round: engine.zombieOrchard.survivalRounds.getState(), horde: h, objective: engine.objectiveFlow?.getState?.(), monsters: monsters(), targetMonster: nearMonster(weaponRange(aw)), nearestApple: nearApple(), nearestWeapon: nearPickup(), health01: state.health, stamina01: state.stamina, score: state.score, appleCount: state.apples, clears: state.clears, message: state.message, paused: state.paused, gameOver: state.gameOver, danger: state.health < 0.32 || h?.mode === "panic", cameraZoom: state.health < 0.32 ? 10.2 : 8.4 }; }
+  function snapshot() { const w = weaponState(), aw = equipped(w), h = engine.zombieOrchard.hordeDirector.getState(); const base = { clock: { ...engine.clock }, player: player(), orchard: engine.zombieOrchard.orchardBiome.snapshot() ?? {}, weapons: w, weaponLabel: equippedLabel(w), round: engine.zombieOrchard.survivalRounds.getState(), horde: h, objective: engine.objectiveFlow?.getState?.(), monsters: monsters(), targetMonster: nearMonster(weaponRange(aw)), nearestApple: nearApple(), nearestWeapon: nearPickup(), health01: state.health, stamina01: state.stamina, score: state.score, appleCount: state.apples, clears: state.clears, message: state.message, paused: state.paused, gameOver: state.gameOver, danger: state.health < 0.32 || h?.mode === "panic", cameraZoom: state.health < 0.32 ? 10.2 : 8.4 }; return { ...base, visualDomains: visualDomain.compose(base) }; }
   function destroy() { engine.unregisterSurface(spawns); engine.unregisterSurface(boss); }
-  return { engine, refs, update, snapshot, destroy };
+  return { engine, refs, visualDomain, update, snapshot, destroy };
 }
