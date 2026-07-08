@@ -173,6 +173,40 @@ function drawHellscapeSiegecraft(ctx, siegecraftReadiness) {
   }
 }
 
+function drawHellscapeInfernalContract(ctx, infernalContractReadiness) {
+  const descriptors = infernalContractReadiness?.rendererHandoff?.descriptors ?? {};
+
+  for (const seal of descriptors.portalSealPriorities || []) {
+    line(ctx, seal.from, seal.center, seal.color, 0.05 + seal.priority * 0.14, 0.8 + seal.priority * 1.8);
+    ring(ctx, seal.center, seal.radius, seal.color, 0.06 + seal.priority * 0.18, 1.2 + seal.priority * 1.6);
+    if (seal.priority > 0.68) circle(ctx, seal.center.x, seal.center.y, 4 + seal.priority * 4, seal.color, 0.2 + seal.priority * 0.2);
+  }
+
+  for (const debt of descriptors.curseDebtLedgers || []) {
+    ring(ctx, debt.anchor, debt.radius, debt.color, debt.paid ? 0.08 : 0.1 + debt.severity * 0.18, debt.paid ? 1 : 1.6 + debt.severity * 1.2);
+  }
+
+  for (const thread of descriptors.relicRouteThreads || []) {
+    line(ctx, thread.from, thread.to, thread.color, 0.08 + thread.urgency * 0.16, 1 + thread.urgency * 2);
+    ring(ctx, thread.to, 11 + thread.urgency * 18 + Math.sin(thread.pulse || 0) * 2, thread.color, 0.08 + thread.urgency * 0.12, 1.1);
+  }
+
+  for (const aura of descriptors.sacrificeRiskAuras || []) {
+    ring(ctx, aura.center, aura.radius, aura.color, 0.04 + aura.risk * 0.12, 0.8 + aura.risk * 1.7);
+    ring(ctx, aura.center, aura.radius * 0.55, aura.color, 0.03 + aura.risk * 0.1, 0.8);
+  }
+
+  for (const wake of descriptors.demonChampionWakes || []) {
+    ring(ctx, wake.center, wake.radius, wake.color, 0.07 + wake.threat * 0.16, 1.2 + wake.threat * 1.8);
+    if (wake.target) line(ctx, wake.center, wake.target, wake.color, 0.05 + wake.threat * 0.14, 1 + wake.threat * 1.5);
+  }
+
+  for (const pact of descriptors.finalPactWindows || []) {
+    line(ctx, pact.from, pact.anchor, pact.color, pact.open ? 0.18 : 0.07 + pact.readiness * 0.1, pact.open ? 2.4 : 1.1 + pact.readiness);
+    ring(ctx, pact.anchor, pact.radius, pact.color, pact.open ? 0.24 : 0.07 + pact.readiness * 0.12, pact.open ? 2.4 : 1.2);
+  }
+}
+
 function resizeCanvas(canvas, ctx) {
   const dpr = Math.min(globalThis.devicePixelRatio || 1, 2);
   const width = Math.max(320, globalThis.innerWidth || 960);
@@ -206,6 +240,7 @@ export function createCanvasRenderer(canvas) {
     drawHellscapeFractal(ctx, state.visualFractal);
     drawHellscapeExpedition(ctx, state.expeditionReadability);
     drawHellscapeSiegecraft(ctx, state.siegecraftReadiness);
+    drawHellscapeInfernalContract(ctx, state.infernalContractReadiness);
     if (state.realm?.id === 'lobby') {
       const coreColor = state.wave?.active ? '#ff3300' : '#38bdf8';
       circle(ctx, state.core.x, state.core.y, 46, coreColor, 0.72);
