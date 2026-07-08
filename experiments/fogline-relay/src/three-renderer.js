@@ -187,6 +187,59 @@ function makeDenseForest(THREE, environment) {
   return group;
 }
 
+function makeFractalMaterial(THREE, color, opacity) {
+  return new THREE.MeshBasicMaterial({ color, transparent: true, opacity, depthWrite: false, side: THREE.DoubleSide });
+}
+
+function makeFractalMesh(THREE, descriptor) {
+  if (descriptor.archetype === "fogline.route.thread") {
+    return new THREE.Mesh(new THREE.BoxGeometry(1, 0.025, 1), makeFractalMaterial(THREE, descriptor.color, descriptor.opacity));
+  }
+  if (descriptor.archetype === "fogline.ground.mottle") {
+    const mesh = new THREE.Mesh(new THREE.CircleGeometry(1, 20), makeFractalMaterial(THREE, descriptor.color, descriptor.opacity));
+    mesh.rotation.x = -Math.PI / 2;
+    return mesh;
+  }
+  if (descriptor.archetype === "fogline.canopy.shaft") {
+    return new THREE.Mesh(new THREE.CylinderGeometry(1, 0.35, 1, 18, 1, true), makeFractalMaterial(THREE, descriptor.color, descriptor.opacity));
+  }
+  if (descriptor.archetype === "fogline.wraith.echo") {
+    return new THREE.Mesh(new THREE.SphereGeometry(1, 20, 10), makeFractalMaterial(THREE, descriptor.color, descriptor.opacity));
+  }
+  return new THREE.Mesh(new THREE.TorusGeometry(1, 0.025, 8, 48), makeFractalMaterial(THREE, descriptor.color, descriptor.opacity));
+}
+
+function syncFractalMesh(THREE, mesh, descriptor, environment) {
+  const pos = positionOf(descriptor);
+  const groundY = environment?.terrain?.heightAt?.(pos.x, pos.z) ?? 0;
+  mesh.material.color.set(descriptor.color ?? "#77f3ff");
+  mesh.material.opacity = clamp(descriptor.opacity ?? 0.1, 0, 0.9);
+  mesh.visible = mesh.material.opacity > 0.01;
+  if (descriptor.archetype === "fogline.route.thread") {
+    mesh.position.set(pos.x, groundY + 0.035, pos.z);
+    mesh.rotation.set(0, descriptor.yaw ?? 0, 0);
+    mesh.scale.set(clamp(descriptor.width ?? 1, 0.1, 10), 1, clamp(descriptor.length ?? 1, 0.1, 200));
+  } else if (descriptor.archetype === "fogline.ground.mottle") {
+    mesh.position.set(pos.x, groundY + 0.04, pos.z);
+    mesh.rotation.set(-Math.PI / 2, 0, descriptor.rotation ?? 0);
+    mesh.scale.setScalar(clamp(descriptor.radius ?? 1, 0.1, 12));
+  } else if (descriptor.archetype === "fogline.canopy.shaft") {
+    const height = clamp(descriptor.height ?? 8, 1, 32);
+    const radius = clamp(descriptor.radius ?? 2, 0.2, 10);
+    mesh.position.set(pos.x, groundY + height / 2, pos.z);
+    mesh.rotation.set(0, 0, 0);
+    mesh.scale.set(radius, height, radius);
+  } else if (descriptor.archetype === "fogline.wraith.echo") {
+    const radius = clamp(descriptor.radius ?? 2, 0.2, 10);
+    mesh.position.set(pos.x, groundY + clamp(descriptor.height ?? 2.5, 1, 8) * 0.45, pos.z);
+    mesh.scale.set(radius * 0.72, clamp(descriptor.height ?? 2.5, 0.5, 8), radius * 0.72);
+  } else {
+    mesh.position.set(pos.x, groundY + 0.08, pos.z);
+    mesh.rotation.set(Math.PI / 2, 0, descriptor.rotation ?? 0);
+    mesh.scale.setScalar(clamp(descriptor.radius ?? 1, 0.1, 14));
+  }
+}
+
 export async function createThreeRenderer(canvas, options = {}) {
   const THREE = options.THREE ?? await import(THREE_URL);
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference: "high-performance" });
@@ -212,6 +265,7 @@ export async function createThreeRenderer(canvas, options = {}) {
   const relays = new Map();
   const wraiths = new Map();
   const props = new Map();
+  const fractalMeshes = new Map();
   let gate = null;
   let terrain = null;
   let environment = null;
@@ -315,6 +369,23 @@ export async function createThreeRenderer(canvas, options = {}) {
     for (const [id, mesh] of props) if (!seen.has(id)) setObjectVisible(mesh, false);
   }
 
+  function syncVisualFractal(snapshot) {
+    const seen = new Set();
+    for (const descriptor of snapshot.visualFractal?.drawOrder ?? []) {
+      const id = descriptor.id;
+      if (!id) continue;
+      let mesh = fractalMeshes.get(id);
+      if (!mesh) {
+        mesh = makeFractalMesh(THREE, descriptor);
+        fractalMeshes.set(id, mesh);
+        root.add(mesh);
+      }
+      seen.add(id);
+      syncFractalMesh(THREE, mesh, descriptor, environment);
+    }
+    for (const [id, mesh] of fractalMeshes) if (!seen.has(id)) setObjectVisible(mesh, false);
+  }
+
   return {
     kind: "three",
     renderer,
@@ -326,6 +397,7 @@ export async function createThreeRenderer(canvas, options = {}) {
       syncCamera(snapshot);
       syncTerrain(snapshot);
       syncObjects(snapshot);
+      syncVisualFractal(snapshot);
       const fog = snapshot.visual?.fog?.atmosphere ?? {};
       scene.fog.density = clamp(Number(fog.haze ?? 0.045), 0.018, 0.07);
       renderer.render(scene, camera);
