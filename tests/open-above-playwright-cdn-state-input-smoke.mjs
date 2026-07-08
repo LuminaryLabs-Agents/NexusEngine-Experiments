@@ -1,5 +1,7 @@
 import "./open-above-flight-route-readability-kits-smoke.mjs";
 import "./open-above-flight-route-readability-cdn-state-input-smoke.mjs";
+import "./open-above-aerial-courier-readiness-domain-kits-smoke.mjs";
+import "./open-above-aerial-courier-cdn-state-input-smoke.mjs";
 
 import assert from "node:assert/strict";
 import { createServer } from "node:http";
@@ -47,7 +49,7 @@ try {
   browser = await chromium.launch({ headless: true });
   const page = await browser.newPage();
   await page.goto(`http://127.0.0.1:${port}/experiments/the-open-above/`, { waitUntil: "domcontentloaded" });
-  await page.waitForFunction(() => Boolean(globalThis.GameHost?.getState && globalThis.GameHost?.getVisualDomains && globalThis.GameHost?.getFlightRouteReadability), null, { timeout: 20000 });
+  await page.waitForFunction(() => Boolean(globalThis.GameHost?.getState && globalThis.GameHost?.getVisualDomains && globalThis.GameHost?.getFlightRouteReadability && globalThis.GameHost?.getAerialCourierReadiness), null, { timeout: 20000 });
   const state = await page.evaluate(() => {
     globalThis.GameHost.stop();
     globalThis.GameHost.setInput({ pitch: 0.2, bank: -0.4, boost: true });
@@ -56,8 +58,10 @@ try {
     return {
       state: currentState,
       route: globalThis.GameHost.getFlightRouteReadability(),
+      courier: globalThis.GameHost.getAerialCourierReadiness(),
       handoff: globalThis.GameHost.getRendererHandoff(),
-      overlay: document.querySelector("#open-above-flight-route-readability-overlay")?.dataset ?? {}
+      routeOverlay: document.querySelector("#open-above-flight-route-readability-overlay")?.dataset ?? {},
+      courierOverlay: document.querySelector("#open-above-aerial-courier-overlay")?.dataset ?? {}
     };
   });
   assert.ok(state.state.validation?.booted);
@@ -69,8 +73,12 @@ try {
   assert.ok(state.state.input.boost);
   assert.ok(state.route?.summary?.descriptorCount >= 20);
   assert.equal(state.route.rendererHandoff.contract, "renderer-consumes-descriptors-only");
+  assert.ok(state.courier?.summary?.descriptorCount >= 24);
+  assert.equal(state.courier.rendererHandoff.contract, "renderer-consumes-descriptors-only");
   assert.ok(state.handoff?.counts?.openAboveFlightRoute >= 20);
-  assert.equal(state.overlay.rendererConsumes, "descriptors-only");
+  assert.ok(state.handoff?.counts?.openAboveAerialCourier >= 24);
+  assert.equal(state.routeOverlay.rendererConsumes, "descriptors-only");
+  assert.equal(state.courierOverlay.rendererConsumes, "descriptors-only");
   console.log("The Open Above CDN-backed Playwright state input smoke passed.");
 } finally {
   if (browser) await browser.close();
