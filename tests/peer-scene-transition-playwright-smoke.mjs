@@ -45,11 +45,12 @@ try {
   await page.getByRole("button", { name: /Enter the lantern forest/i }).click();
   await page.waitForURL(/forest\.html$/);
   const state = await page.evaluate(() => globalThis.GameHost.getState());
+  const mood = await page.evaluate(() => document.body.dataset.sceneMood);
   assert.equal(state.currentScene, "forest");
   assert.ok(state.inventory.includes("Lantern"));
   assert.ok(state.inventory.includes("Bridge rope"));
   assert.ok(state.visitedScenes.includes("crossroads"));
-  assert.ok(document.body.dataset.sceneMood !== "");
+  assert.ok(mood !== "");
   console.log("peer scene transition playwright smoke passed");
 } finally {
   if (browser) await browser.close();
