@@ -4,6 +4,7 @@ import { createFoglineRelayLevel } from "./level.js";
 import { createVisualSignals } from "./visual-signals.js";
 import { createFoglineVisualFractalDomain } from "./fogline-visual-fractal-kits.js";
 import { createFoglineSignalCartographyDomain } from "./fogline-signal-cartography-kits.js";
+import { createFoglineOperatorRhythmDomain } from "./fogline-operator-rhythm-kits.js";
 import { DOMAIN_KITS_URL, createUnifiedDomainKits, syncUnifiedDomainState } from "../../_shared/domain-foundation.js";
 
 const CARTOGRAPHY_BUCKET_ARCHETYPES = Object.freeze({
@@ -14,6 +15,16 @@ const CARTOGRAPHY_BUCKET_ARCHETYPES = Object.freeze({
   objectiveNeedles: "fogline.objective.needle",
   gateSigils: "fogline.gate.sigil",
   safePockets: "fogline.safe.pocket"
+});
+
+const OPERATOR_RHYTHM_BUCKET_ARCHETYPES = Object.freeze({
+  routeThreads: "fogline.route.thread",
+  relayAuras: "fogline.relay.aura",
+  scanCones: "fogline.scan.cone",
+  objectiveNeedles: "fogline.objective.needle",
+  gateSigils: "fogline.gate.sigil",
+  safePockets: "fogline.safe.pocket",
+  pressureVignettes: "fogline.pressure.vignette"
 });
 
 function domainSnapshot(engine) {
@@ -35,21 +46,22 @@ function domainSnapshot(engine) {
   };
 }
 
-function asPresentationDescriptor(descriptor = {}) {
+function asPresentationDescriptor(descriptor = {}, sourceKey = "descriptor", bucketMap = {}) {
   const bucket = descriptor.compatibleBucket;
-  const compatibleArchetype = descriptor.compatibleArchetype ?? CARTOGRAPHY_BUCKET_ARCHETYPES[bucket];
+  const compatibleArchetype = descriptor.compatibleArchetype ?? bucketMap[bucket];
   return {
     ...descriptor,
-    id: `cartography-${descriptor.id ?? descriptor.archetype}`,
+    id: `${sourceKey}-${descriptor.id ?? descriptor.archetype}`,
     originalArchetype: descriptor.archetype,
     archetype: compatibleArchetype ?? descriptor.archetype,
-    cartography: true
+    [sourceKey]: true
   };
 }
 
-function createComposedRendererHandoff(visualFractal = {}, signalCartography = {}) {
+function createComposedRendererHandoff(visualFractal = {}, signalCartography = {}, operatorRhythm = {}) {
   const descriptors = visualFractal.drawOrder ?? [];
   const cartographyDescriptors = signalCartography.drawOrder ?? [];
+  const operatorRhythmDescriptors = operatorRhythm.drawOrder ?? [];
   const counts = descriptors.reduce((acc, descriptor) => {
     acc[descriptor.originalArchetype ?? descriptor.archetype] = (acc[descriptor.originalArchetype ?? descriptor.archetype] ?? 0) + 1;
     return acc;
@@ -60,8 +72,9 @@ function createComposedRendererHandoff(visualFractal = {}, signalCartography = {
     policy: "renderer-consumes-descriptors-only",
     descriptorCount: descriptors.length,
     cartographyDescriptorCount: cartographyDescriptors.length,
+    operatorRhythmDescriptorCount: operatorRhythmDescriptors.length,
     descriptors,
-    sourceHandoffs: [visualFractal.rendererHandoff, signalCartography.rendererHandoff].filter(Boolean),
+    sourceHandoffs: [visualFractal.rendererHandoff, signalCartography.rendererHandoff, operatorRhythm.rendererHandoff].filter(Boolean),
     counts,
     ownership: {
       renderer: "consume-only",
@@ -84,7 +97,7 @@ function mergeSignalCartographyIntoVisualFractal(visualFractal = {}, signalCarto
   for (const descriptor of signalCartography.drawOrder ?? []) {
     const bucket = descriptor.compatibleBucket;
     if (!bucket || !CARTOGRAPHY_BUCKET_ARCHETYPES[bucket]) continue;
-    merged[bucket] = [...(merged[bucket] ?? []), asPresentationDescriptor(descriptor)];
+    merged[bucket] = [...(merged[bucket] ?? []), asPresentationDescriptor(descriptor, "cartography", CARTOGRAPHY_BUCKET_ARCHETYPES)];
   }
   merged.drawOrder = [
     ...(visualFractal.drawOrder ?? []),
@@ -92,6 +105,33 @@ function mergeSignalCartographyIntoVisualFractal(visualFractal = {}, signalCarto
   ];
   merged.rendererHandoff = createComposedRendererHandoff(merged, signalCartography);
   return merged;
+}
+
+function mergeOperatorRhythmIntoVisualFractal(visualFractal = {}, signalCartography = {}, operatorRhythm = {}) {
+  const merged = {
+    ...visualFractal,
+    operatorRhythm
+  };
+  for (const descriptor of operatorRhythm.drawOrder ?? []) {
+    const bucket = descriptor.compatibleBucket;
+    if (!bucket || !OPERATOR_RHYTHM_BUCKET_ARCHETYPES[bucket]) continue;
+    merged[bucket] = [...(merged[bucket] ?? []), asPresentationDescriptor(descriptor, "operatorRhythm", OPERATOR_RHYTHM_BUCKET_ARCHETYPES)];
+  }
+  merged.drawOrder = [
+    ...(visualFractal.drawOrder ?? []),
+    ...Object.keys(OPERATOR_RHYTHM_BUCKET_ARCHETYPES).flatMap((bucket) => (merged[bucket] ?? []).filter((descriptor) => descriptor.operatorRhythm))
+  ];
+  merged.rendererHandoff = createComposedRendererHandoff(merged, signalCartography, operatorRhythm);
+  return merged;
+}
+
+function composeReadabilityDomains({ level, route, game }) {
+  const signalCartography = createFoglineSignalCartographyDomain({ level, route, game });
+  const operatorRhythm = createFoglineOperatorRhythmDomain({ level, route, game });
+  let visualFractal = createFoglineVisualFractalDomain({ level, route, game });
+  visualFractal = mergeSignalCartographyIntoVisualFractal(visualFractal, signalCartography);
+  visualFractal = mergeOperatorRhythmIntoVisualFractal(visualFractal, signalCartography, operatorRhythm);
+  return { visualFractal, signalCartography, operatorRhythm };
 }
 
 export async function createFoglineRelaySession() {
@@ -103,9 +143,11 @@ export async function createFoglineRelaySession() {
 
   const level = createFoglineRelayLevel();
   const visualPreset = VisualPipeline.createFoglineVisualPreset();
-  let visualFractal = createFoglineVisualFractalDomain({ level, route: level.route, game: { player: level.spawn, relays: level.relays, wraiths: level.wraiths, gate: level.gate, stats: { scanned: 0 } } });
-  let signalCartography = createFoglineSignalCartographyDomain({ level, route: level.route, game: { player: level.spawn, relays: level.relays, wraiths: level.wraiths, gate: level.gate, stats: { scanned: 0 } } });
-  visualFractal = mergeSignalCartographyIntoVisualFractal(visualFractal, signalCartography);
+  let { visualFractal, signalCartography, operatorRhythm } = composeReadabilityDomains({
+    level,
+    route: level.route,
+    game: { player: level.spawn, relays: level.relays, wraiths: level.wraiths, gate: level.gate, stats: { scanned: 0 } }
+  });
   const domainKits = createUnifiedDomainKits(NexusRealtime, DomainKits, {
     prefix: "fogline-relay",
     presetId: level.id,
@@ -173,9 +215,7 @@ export async function createFoglineRelaySession() {
 
   function prepareFrame() {
     const game = engine.foglineRelay.getState();
-    visualFractal = createFoglineVisualFractalDomain({ level, route: level.route, game });
-    signalCartography = createFoglineSignalCartographyDomain({ level, route: level.route, game });
-    visualFractal = mergeSignalCartographyIntoVisualFractal(visualFractal, signalCartography);
+    ({ visualFractal, signalCartography, operatorRhythm } = composeReadabilityDomains({ level, route: level.route, game }));
     syncUnifiedDomainState(engine, { level, game }, {
       label: "fogline-relay",
       scanRadius: 4,
@@ -195,9 +235,7 @@ export async function createFoglineRelaySession() {
 
   function snapshot() {
     const game = engine.foglineRelay.getState();
-    visualFractal = createFoglineVisualFractalDomain({ level, route: level.route, game });
-    signalCartography = createFoglineSignalCartographyDomain({ level, route: level.route, game });
-    visualFractal = mergeSignalCartographyIntoVisualFractal(visualFractal, signalCartography);
+    ({ visualFractal, signalCartography, operatorRhythm } = composeReadabilityDomains({ level, route: level.route, game }));
     return {
       level,
       clock: engine.clock,
@@ -207,12 +245,14 @@ export async function createFoglineRelaySession() {
       visual: engine.visualPipeline.snapshot(),
       visualFractal,
       signalCartography,
+      operatorRhythm,
       rendererHandoff: visualFractal.rendererHandoff,
       render: engine.renderDescriptors?.getState?.(),
       domain: {
         ...domainSnapshot(engine),
         foglineVisualFractal: visualFractal,
-        foglineSignalCartography: signalCartography
+        foglineSignalCartography: signalCartography,
+        foglineOperatorRhythm: operatorRhythm
       }
     };
   }
