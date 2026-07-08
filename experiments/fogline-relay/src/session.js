@@ -2,6 +2,7 @@ import { NEXUS_URL, RENDER_LAYER_URL } from "./urls.js";
 import { createFoglineRelayKit } from "./fogline-relay-kit.js";
 import { createFoglineRelayLevel } from "./level.js";
 import { createVisualSignals } from "./visual-signals.js";
+import { createFoglineVisualFractalDomain } from "./fogline-visual-fractal-kits.js";
 import { DOMAIN_KITS_URL, createUnifiedDomainKits, syncUnifiedDomainState } from "../../_shared/domain-foundation.js";
 
 function domainSnapshot(engine) {
@@ -32,6 +33,7 @@ export async function createFoglineRelaySession() {
 
   const level = createFoglineRelayLevel();
   const visualPreset = VisualPipeline.createFoglineVisualPreset();
+  let visualFractal = createFoglineVisualFractalDomain({ level, route: level.route, game: { player: level.spawn, relays: level.relays, wraiths: level.wraiths, gate: level.gate, stats: { scanned: 0 } } });
   const domainKits = createUnifiedDomainKits(NexusRealtime, DomainKits, {
     prefix: "fogline-relay",
     presetId: level.id,
@@ -99,6 +101,7 @@ export async function createFoglineRelaySession() {
 
   function prepareFrame() {
     const game = engine.foglineRelay.getState();
+    visualFractal = createFoglineVisualFractalDomain({ level, route: level.route, game });
     syncUnifiedDomainState(engine, { level, game }, {
       label: "fogline-relay",
       scanRadius: 4,
@@ -117,15 +120,21 @@ export async function createFoglineRelaySession() {
   }
 
   function snapshot() {
+    const game = engine.foglineRelay.getState();
+    visualFractal = createFoglineVisualFractalDomain({ level, route: level.route, game });
     return {
       level,
       clock: engine.clock,
-      game: engine.foglineRelay.getState(),
+      game,
       objective: engine.objectiveFlow?.getState?.(),
       interactions: engine.interactionTargets?.getState?.(),
       visual: engine.visualPipeline.snapshot(),
+      visualFractal,
       render: engine.renderDescriptors?.getState?.(),
-      domain: domainSnapshot(engine)
+      domain: {
+        ...domainSnapshot(engine),
+        foglineVisualFractal: visualFractal
+      }
     };
   }
 
