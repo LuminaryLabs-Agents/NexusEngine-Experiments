@@ -88,6 +88,8 @@ Changed:
 third-person route wrapper
 third-person route shell
 third-person domain registry
+third-person arena smoke marker
+third-person locomotion smoke marker
 third-person camera composition smoke routing
 third-person domain cutover manifest registration
 ```
@@ -104,6 +106,8 @@ tests/third-person-navigation-challenge-readiness-kits-smoke.mjs
 tests/third-person-navigation-challenge-readiness-cdn-state-input-smoke.mjs
 tests/third-person-camera-composition-readability-kits-smoke.mjs
 tests/third-person-camera-composition-readability-cdn-state-input-smoke.mjs
+tests/third-person-arena-cdn-state-input-smoke.mjs
+tests/third-person-locomotion-readability-cdn-state-input-smoke.mjs
 experiments/domain-kit-cutover-manifest.json
 .agent/turn-ledger/2026-07-08-1216-third-person-navigation-challenge-upgrade.md
 ```
@@ -143,6 +147,7 @@ Route shell cache-busts navigation-challenge-readiness-v1.
 Route shell exposes Navigation Challenge: ON.
 New kit smoke is routed through the existing third-person camera composition kit smoke.
 New CDN/state-input smoke is routed through the existing third-person camera composition CDN smoke.
+Arena and locomotion CDN smoke markers were refreshed to the latest route shell version.
 Manifest records navigation-challenge-readiness-renderer-handoff-pass.
 ```
 
@@ -176,6 +181,7 @@ The lower-level third-person runtime still imports Three.js and NexusEngine util
 - Kept DOM overlay rendering in `navigation-challenge-readiness-entry.js` only.
 - Kept controller, input, Three.js scene, and frame-loop ownership in `app.js` only.
 - Routed smoke tests through existing third-person validation instead of expanding the global check runner.
+- Updated older third-person CDN smoke cache markers so the latest route shell does not break prior arena/locomotion validation.
 - Updated the manifest without adding a new versioned route.
 - No destructive deletion was performed.
 
