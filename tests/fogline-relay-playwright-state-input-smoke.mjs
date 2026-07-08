@@ -1,3 +1,5 @@
+import "./fogline-blackout-recovery-readiness-kits-smoke.mjs";
+import "./fogline-blackout-recovery-cdn-state-input-smoke.mjs";
 import assert from "node:assert/strict";
 import { createServer } from "node:http";
 import { readFile } from "node:fs/promises";
@@ -25,6 +27,15 @@ assert.ok(!urlsSource.includes("https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/Nex
 const sessionSource = await readFile(join(root, "experiments/fogline-relay/src/session.js"), "utf8");
 assert.ok(sessionSource.includes("createFoglineVisualFractalDomain"));
 assert.ok(sessionSource.includes("foglineVisualFractal"));
+
+const indexSource = await readFile(join(root, "experiments/fogline-relay/index.html"), "utf8");
+assert.ok(indexSource.includes("blackout-recovery-readiness-renderer-handoff-pass"), "route should advertise blackout recovery upgrade");
+assert.ok(indexSource.includes("blackout-recovery-readiness-entry.js?v=fogline-blackout-recovery-readiness-1"), "route should load blackout recovery entry");
+
+const blackoutEntrySource = await readFile(join(root, "experiments/fogline-relay/src/blackout-recovery-readiness-entry.js"), "utf8");
+assert.ok(blackoutEntrySource.includes("https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js"), "blackout entry should use NexusEngine main CDN");
+assert.equal(blackoutEntrySource.includes("NexusRealtime@main"), false, "blackout entry should not import old NexusRealtime runtime CDN");
+assert.ok(blackoutEntrySource.includes("getFoglineBlackoutRecoveryReadiness"), "blackout entry should expose GameHost readiness accessor");
 
 const mainSource = await readFile(join(root, "experiments/fogline-relay/src/main.js"), "utf8");
 assert.ok(mainSource.includes("getRendererHandoff"), "GameHost should expose renderer handoff descriptors");
