@@ -4,20 +4,26 @@
 
 - Chosen experiment: `experiments/the-open-above/`
 - Upgrade: added renderer-neutral flight route readability kits for updraft corridors, ridge hazard shelves, landing meadow ghosts, flock draft wakes, altitude reserve meters, and homeward bearing threads.
-- Last upgraded experiment avoided: `experiments/zombie-orchard/`
+- Last upgraded experiment avoided: `experiments/sora-the-infinite/`
 - Push target: `LuminaryLabs-Agents/NexusEngine-Experiments` `main`
 
 ## Why this experiment was chosen
 
-The latest completed upgrade on `main` before this run was `.agent/turn-ledger/2026-07-08-1016-zombie-orchard-horde-pathing-upgrade.md`, which chose `experiments/zombie-orchard/`. This run picked a different route. `experiments/the-open-above/` was still an attractive but low-objective flight sandbox: it had terrain streaming, flock agents, and visual atmosphere descriptors, but the route decisions were implicit. The most meaningful upgrade was to make the flying readable as a micro-route loop: choose lift, avoid ridge shelves, preserve altitude reserve, line up landing meadows, use flock draft wakes, and keep a homeward bearing.
+The latest completed upgrade on `main` before this run was `.agent/turn-ledger/2026-07-08-1031-sora-preflight-challenge-upgrade.md`, which chose `experiments/sora-the-infinite/`. This run picked a different route. `experiments/the-open-above/` was still an attractive but low-objective flight sandbox: it had terrain streaming, flock agents, and visual atmosphere descriptors, but the route decisions were implicit. The most meaningful upgrade was to make the flying readable as a micro-route loop: choose lift, avoid ridge shelves, preserve altitude reserve, line up landing meadows, use flock draft wakes, and keep a homeward bearing.
 
 ## Last upgraded experiment
 
 ```txt
-experiments/zombie-orchard/
+experiments/sora-the-infinite/
 ```
 
 Latest prior ledger marker:
+
+```txt
+.agent/turn-ledger/2026-07-08-1031-sora-preflight-challenge-upgrade.md
+```
+
+Earlier prior ledger checked:
 
 ```txt
 .agent/turn-ledger/2026-07-08-1016-zombie-orchard-horde-pathing-upgrade.md
