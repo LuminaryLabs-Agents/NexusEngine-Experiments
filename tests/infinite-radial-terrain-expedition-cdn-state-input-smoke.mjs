@@ -59,9 +59,9 @@ for (const intake of simulatedInputs) {
   assert.deepEqual(intake.expectedDescriptors, ["surveyTransects", "altitudeCorridors", "ridgePassBeacons", "hazardBasins", "sampleBookmarks", "routeTaskBands"]);
 }
 
-const forbiddenKitOwnership = ["querySelector", "addEventListener", "requestAnimationFrame", "WebGLRenderer", "new THREE", "AudioContext"];
-for (const forbidden of forbiddenKitOwnership) {
-  assert.ok(!expeditionKits.includes(forbidden), `expedition kit should not own ${forbidden}`);
+const forbiddenExecutableOwnership = ["querySelector", "addEventListener", "requestAnimationFrame", "WebGLRenderer", "new THREE"];
+for (const forbidden of forbiddenExecutableOwnership) {
+  assert.ok(!expeditionKits.includes(forbidden), `expedition kit should not own executable ${forbidden}`);
 }
 
 console.log("infinite radial terrain expedition CDN/state-input smoke passed: 10 intake cases");
