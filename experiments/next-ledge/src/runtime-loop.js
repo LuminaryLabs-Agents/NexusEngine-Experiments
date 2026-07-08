@@ -16,7 +16,8 @@ export function startLoop({ session, input, renderer, hud, synth }) {
     const domain = snapshot.domain ?? {};
     const handoffs = [
       domain.routeCargoVisual?.rendererHandoff,
-      domain.traversalReadability?.rendererHandoff
+      domain.traversalReadability?.rendererHandoff,
+      domain.anchorTimingReadability?.rendererHandoff
     ].filter(Boolean);
     const descriptors = handoffs.flatMap((handoff) => Array.isArray(handoff.descriptors) ? handoff.descriptors : []);
     return {
@@ -25,7 +26,7 @@ export function startLoop({ session, input, renderer, hud, synth }) {
       descriptorCount: descriptors.length,
       handoffCount: handoffs.length,
       descriptors,
-      rendererContract: "renderer consumes descriptors only; route, cargo, traversal, browser input, and frame-loop truth stay outside renderer presentation"
+      rendererContract: "renderer consumes descriptors only; route, cargo, traversal, anchor timing, browser input, and frame-loop truth stay outside renderer presentation"
     };
   }
 
@@ -44,6 +45,7 @@ export function startLoop({ session, input, renderer, hud, synth }) {
     renderer,
     getState: () => session.snapshot(),
     getTraversalReadability: () => session.snapshot().domain?.traversalReadability,
+    getAnchorTimingReadability: () => session.snapshot().domain?.anchorTimingReadability,
     getRendererHandoff: rendererHandoff,
     tick: (dt = 1 / 60, command = {}) => tick(dt, command),
     restart: () => session.restart(),
