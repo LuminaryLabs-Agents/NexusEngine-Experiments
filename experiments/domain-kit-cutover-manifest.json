@@ -133,10 +133,10 @@
       "id": "signal-bastion",
       "kind": "game",
       "canonicalPath": "games/signal-bastion/",
-      "status": "evacuation-corridor-readiness-renderer-handoff-pass",
-      "domainCutover": ["generic-defense-aaa-kits", "generic-defense-presentation-stack-kit", "signal-bastion-command-fractal-domain-kit", "signal-bastion-wave-choreography-domain-kit", "signal-bastion-frontline-tactics-domain-kit", "signal-bastion-evacuation-corridor-readiness-domain-kit"],
-      "bridgeNeeded": "browser host imports NexusEngine main CDN; command, wave choreography, frontline tactics, and evacuation corridor readiness kits emit renderer-compatible descriptor groups consumed by presentation only",
-      "featureParity": ["2.5D oblique renderer", "placement ghost", "30 waves", "command fractal descriptors", "frontline tactics", "evacuation corridor readiness"]
+      "status": "reconstruction-readiness-renderer-handoff-pass",
+      "domainCutover": ["generic-defense-aaa-kits", "generic-defense-presentation-stack-kit", "signal-bastion-command-fractal-domain-kit", "signal-bastion-wave-choreography-domain-kit", "signal-bastion-frontline-tactics-domain-kit", "signal-bastion-evacuation-corridor-readiness-domain-kit", "signal-bastion-reconstruction-readiness-domain-kit"],
+      "bridgeNeeded": "browser host imports NexusEngine main CDN; command, wave choreography, frontline tactics, evacuation corridor readiness, and reconstruction readiness kits emit renderer-compatible descriptor groups consumed by presentation only",
+      "featureParity": ["2.5D oblique renderer", "placement ghost", "30 waves", "command fractal descriptors", "frontline tactics", "evacuation corridor readiness", "reconstruction readiness"]
     },
     {
       "id": "rogue-lite-hellscape-siege",
