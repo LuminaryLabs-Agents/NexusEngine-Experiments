@@ -20,7 +20,18 @@ async function boot() {
   const view = await createPreferredView(document.querySelector("#orchard-canvas"));
   const hud = createHud();
   const loop = startLoop(game, input, view, hud);
-  globalThis.GameHost = { game, engine: game.engine, input, view, hud, loop, getState: game.snapshot, tick: game.update };
+  globalThis.GameHost = {
+    game,
+    engine: game.engine,
+    input,
+    view,
+    hud,
+    loop,
+    getState: game.snapshot,
+    tick: game.update,
+    getSurvivalReadability: () => game.snapshot().survivalReadability,
+    getRendererHandoff: () => game.snapshot().survivalReadability?.rendererHandoff
+  };
 }
 
 boot().catch((error) => {
