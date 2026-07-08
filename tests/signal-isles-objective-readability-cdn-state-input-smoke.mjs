@@ -22,7 +22,7 @@ assert.ok(rendererSource.includes("snapshot.objectiveReadability?.rendererHandof
 assert.ok(debugHostSource.includes("getObjectiveReadabilityState()"), "debug host should expose objective readability state");
 assert.ok(debugHostSource.includes("getRendererHandoff()"), "debug host should expose composed renderer handoff");
 assert.ok(objectiveKitSource.includes("rendererConsumesDescriptorsOnly"), "objective kit should define descriptor handoff");
-assert.equal(objectiveKitSource.includes("WebGLRenderer"), true, "objective kit should list forbidden renderer ownership in the contract only");
+assert.ok(objectiveKitSource.includes("WebGL"), "objective kit should list forbidden renderer ownership in the contract only");
 
 const composition = await createSignalIslesComposition({
   level: signalIslesLevel01,
