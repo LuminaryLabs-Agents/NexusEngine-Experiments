@@ -124,11 +124,11 @@
       "id": "rogue-lite-hellscape-siege",
       "kind": "game",
       "canonicalPath": "games/rogue-lite-hellscape-siege/",
-      "status": "hellscape-siege-fractal-readability-handoff-pass",
+      "status": "expedition-readability-renderer-handoff-pass",
       "removedLegacyPaths": ["games/rogue-lite-hellscape-siege-v2/"],
-      "domainCutover": ["action-input-kit", "resource-pressure-kit", "hellscape-siege-fractal-domain-kit"],
-      "bridgeNeeded": "browser host imports NexusEngine main via CDN; hellscape siege fractal domain emits descriptors consumed by canvas presentation only",
-      "featureParity": ["realm portals", "harvesting", "inventory", "build", "core defense", "hellscape readability descriptors"]
+      "domainCutover": ["action-input-kit", "resource-pressure-kit", "hellscape-siege-fractal-domain-kit", "hellscape-expedition-readability-domain-kit"],
+      "bridgeNeeded": "browser host imports NexusEngine main via CDN; hellscape siege fractal and expedition readability domains emit route, safe-zone, survival-vector, crafting-window, boss-wake, and exit-compass descriptors consumed by canvas presentation only",
+      "featureParity": ["realm portals", "harvesting", "inventory", "build", "core defense", "hellscape readability descriptors", "extraction route descriptors", "safe zone beacons", "survival vectors", "crafting windows", "boss wake signatures", "realm exit compass"]
     }
   ],
   "versionedRoutePolicy": {
