@@ -34,10 +34,10 @@
       "id": "vr-platformer-board",
       "kind": "experiment",
       "canonicalPath": "experiments/vr-platformer-board/",
-      "status": "skill-rhythm-readiness-renderer-handoff-pass",
-      "domainCutover": ["platformer-level-domain-kit", "spatial-game-board-domain-kit", "vr-board-renderer-handoff-kit", "vr-board-traversal-readability-domain-kit", "vr-board-objective-readability-domain-kit", "vr-board-skill-rhythm-readiness-domain-kit"],
-      "bridgeNeeded": "browser host imports NexusEngine main via CDN; traversal readability now composes objective-readability and skill-rhythm readiness descriptors while existing Canvas presentation consumes folded checkpoint, beacon, tempo, jump-gate, air-control, combo, hesitation, save-echo, and exit-commitment descriptor buckets only",
-      "featureParity": ["A/D movement", "Space jump", "R reset", "coins", "hazards", "exit", "traversal readability descriptors", "collectible priority orbits", "hazard approach funnels", "momentum lanes", "exit readiness gates", "head comfort corridors", "route risk scorecards", "jump timing gates", "air control vectors", "coin combo lanes", "hazard hesitation fields", "checkpoint save echoes", "exit commitment crests"]
+      "status": "companion-rescue-readiness-renderer-handoff-pass",
+      "domainCutover": ["platformer-level-domain-kit", "spatial-game-board-domain-kit", "vr-board-renderer-handoff-kit", "vr-board-traversal-readability-domain-kit", "vr-board-objective-readability-domain-kit", "vr-board-skill-rhythm-readiness-domain-kit", "vr-board-companion-rescue-readiness-domain-kit"],
+      "bridgeNeeded": "browser host imports NexusEngine main via CDN; traversal readability now composes objective-readability, skill-rhythm readiness, and companion-rescue readiness descriptors while Canvas presentation consumes descriptor buckets only",
+      "featureParity": ["A/D movement", "Space jump", "R reset", "coins", "hazards", "exit", "traversal readability descriptors", "collectible priority orbits", "hazard approach funnels", "momentum lanes", "exit readiness gates", "head comfort corridors", "route risk scorecards", "jump timing gates", "air control vectors", "coin combo lanes", "hazard hesitation fields", "checkpoint save echoes", "exit commitment crests", "lost companion beacons", "escort lane ribbons", "rescue net anchors", "shield bubble timing", "medal cache signals", "exit stretcher commitment"]
     },
     {
       "id": "next-ledge",
@@ -63,7 +63,7 @@
       "canonicalPath": "experiments/the-open-above/",
       "status": "aerial-courier-readiness-renderer-handoff-pass",
       "domainCutover": ["open-above-visual-fractal-domain-kit", "open-above-flight-route-readability-domain-kit", "open-above-aerial-courier-readiness-domain-kit"],
-      "bridgeNeeded": "browser host imports NexusEngine main via CDN; visual, flight-route readability, and aerial-courier readiness domains emit descriptors consumed by WebGL and DOM presentation only",
+      "bridgeNeeded": "browser host imports NexusEngine main CDN; visual, flight-route readability, and aerial-courier readiness domains emit descriptors consumed by WebGL and DOM presentation only",
       "featureParity": ["bird flight", "terrain streaming", "visual sky descriptors", "flight route readability", "aerial courier readiness"]
     },
     {
