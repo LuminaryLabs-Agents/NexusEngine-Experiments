@@ -1,5 +1,6 @@
 import * as NexusEngineRuntime from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js";
 import { createSoraCompatibilityDomainKit } from "../_kits/sora-the-infinite/sora-compatibility-domain-kits.js";
+import { createSoraLaunchRehearsalDomainKit } from "../_kits/sora-the-infinite/sora-launch-rehearsal-domain-kits.js";
 
 const NEXUS_ENGINE_CDN = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js";
 const TARGET_PATH = "../the-open-above/";
@@ -13,8 +14,10 @@ const launchLink = document.querySelector("#launch-link");
 const primeButton = document.querySelector("#prime-route");
 const debugStrip = document.querySelector("#debug-strip");
 const packetList = document.querySelector("#packet-list");
+const rehearsalList = document.querySelector("#rehearsal-list");
 
 const domainKit = createSoraCompatibilityDomainKit({ targetPath: TARGET_PATH });
+const launchRehearsalKit = createSoraLaunchRehearsalDomainKit({ targetRouteId: "the-open-above" });
 const state = {
   tick: 0,
   readiness: 0.24,
@@ -32,14 +35,48 @@ const state = {
 const routeQuery = globalThis.location.search || "";
 const routeHash = globalThis.location.hash || "";
 
+function composeRendererHandoff(routePreview, launchRehearsal) {
+  const forbiddenOwnership = Array.from(new Set([
+    ...(routePreview.rendererHandoff?.forbiddenOwnership ?? []),
+    ...(launchRehearsal.rendererHandoff?.forbiddenOwnership ?? [])
+  ]));
+  return {
+    kind: "sora-composed-renderer-handoff",
+    contract: "renderer consumes descriptors only",
+    forbiddenOwnership,
+    descriptors: {
+      ...routePreview.rendererHandoff.descriptors,
+      launchRehearsal: launchRehearsal.rendererHandoff.descriptors
+    },
+    descriptorCounts: {
+      ...routePreview.rendererHandoff.descriptorCounts,
+      ...launchRehearsal.rendererHandoff.descriptorCounts
+    }
+  };
+}
+
 function describe() {
-  return domainKit.describe({
+  const routePreview = domainKit.describe({
     tick: state.tick,
     readiness: state.readiness,
     input: state.input,
     query: routeQuery,
     hash: routeHash
   });
+  const launchRehearsal = launchRehearsalKit.describe({
+    tick: state.tick,
+    readiness: routePreview.readiness,
+    input: state.input,
+    query: routeQuery,
+    hash: routeHash,
+    routePreview
+  });
+  const rendererHandoff = composeRendererHandoff(routePreview, launchRehearsal);
+  return {
+    ...routePreview,
+    launchRehearsal,
+    rendererHandoff
+  };
 }
 
 function setKey(event, active) {
@@ -80,7 +117,8 @@ function renderStage(handoff) {
     windShearForecast,
     waypointRibbon,
     altitudeEnvelope,
-    handoffPackets
+    handoffPackets,
+    launchRehearsal
   } = handoff.descriptors;
   stage.innerHTML = `
     <div class="horizon-arc"></div>
@@ -90,6 +128,11 @@ function renderStage(handoff) {
     ${waypointRibbon.waypoints.map((point) => `<i class="waypoint-node ${point.open ? "open" : "sealed"}" style="--x:${point.x};--y:${point.y};--r:${point.radius};--p:${point.progress}" title="${point.label}"></i>`).join("")}
     ${launchVectors.lanes.map((lane) => `<i class="launch-vector ${lane.active ? "active" : ""}" style="--bearing:${lane.bearingDeg};--lift:${lane.lift};--drift:${lane.drift}" title="climb ${lane.climbDeg}°"></i>`).join("")}
     ${handoffPackets.packets.map((packet, index) => `<i class="handoff-packet ${packet.ready ? "ready" : "pending"}" style="--i:${index};--ready:${packet.ready ? 1 : 0}" title="${packet.label}: ${packet.value}"></i>`).join("")}
+    ${launchRehearsal.thermalSlots.slots.map((slot) => `<i class="thermal-slot ${slot.usable ? "usable" : "weak"}" style="--x:${slot.x};--y:${slot.y};--h:${slot.height};--lift:${slot.lift}" title="${slot.label}"></i>`).join("")}
+    ${launchRehearsal.driftWarnings.warnings.map((warning, index) => `<i class="drift-warning ${warning.active ? "active" : "quiet"} ${warning.side}" style="--i:${index};--s:${warning.severity}" title="${warning.label}"></i>`).join("")}
+    ${launchRehearsal.targetGhosts.ghosts.map((ghost) => `<i class="target-ghost ${ghost.linked ? "linked" : "pending"}" style="--x:${ghost.x};--y:${ghost.y};--o:${ghost.opacity}" title="${ghost.label}"></i>`).join("")}
+    ${launchRehearsal.entryCountdown.rings.map((ring) => `<i class="countdown-ring ${ring.open ? "open" : "sealed"}" style="--r:${ring.radius};--i:${ring.index}" title="${ring.label} ${ring.threshold}"></i>`).join("")}
+    ${launchRehearsal.controlConfidence.axes.map((axis, index) => `<i class="control-confidence" style="--i:${index};--v:${axis.value}" title="${axis.label}"></i>`).join("")}
   `;
 }
 
@@ -103,10 +146,15 @@ function renderTelemetry(domain) {
   coachingList.innerHTML = domain.inputCoaching.coaching.map((cue) => `<li class="${cue.active ? "active" : ""}">${cue.label}</li>`).join("");
   gateList.innerHTML = domain.continuityGate.gates.map((gate) => `<li class="${gate.open ? "open" : "sealed"}"><strong>${gate.open ? "✓" : "·"}</strong> ${gate.label}</li>`).join("");
   packetList.innerHTML = domain.handoffPackets.packets.map((packet) => `<li class="${packet.ready ? "open" : "sealed"}"><strong>${packet.ready ? "✓" : "·"}</strong> ${packet.label}</li>`).join("");
+  rehearsalList.innerHTML = [
+    ...domain.launchRehearsal.preflightChecklist.steps.map((step) => `<li class="${step.complete ? "open" : "sealed"}"><strong>${step.complete ? "✓" : "·"}</strong> ${step.label}</li>`),
+    ...domain.launchRehearsal.entryCountdown.rings.slice(-2).map((ring) => `<li class="${ring.open ? "open" : "sealed"}"><strong>${ring.open ? "✓" : "·"}</strong> countdown ${ring.index + 1}</li>`)
+  ].join("");
   debugStrip.textContent = JSON.stringify({
     nexusEngineCdn: NEXUS_ENGINE_CDN,
     nexusEngineExportCount: Object.keys(NexusEngineRuntime).length,
     descriptorCounts: domain.rendererHandoff.descriptorCounts,
+    launchRehearsal: domain.launchRehearsal.summary,
     readiness: domain.readiness,
     href: domain.continuityGate.href
   }, null, 2);
@@ -160,6 +208,7 @@ globalThis.GameHost = {
       altitudeEnvelope: domain.altitudeEnvelope
     };
   },
+  getLaunchRehearsal: () => describe().launchRehearsal,
   launch: () => { globalThis.location.href = describe().continuityGate.href; },
   reset: resetGateway
 };
