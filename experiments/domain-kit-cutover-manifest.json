@@ -16,10 +16,10 @@
       "id": "peer-scene-transition",
       "kind": "experiment",
       "canonicalPath": "experiments/peer-scene-transition/",
-      "status": "clue-pressure-readiness-renderer-handoff-pass",
-      "domainCutover": ["core-scene-kit", "scene-host-contract", "peer-scene-domain-kit", "scene-renderer-handoff-kit", "scene-chronicle-domain-kit", "scene-consequence-domain-kit", "scene-decision-readability-domain-kit", "scene-oracle-readability-domain-kit", "scene-clue-pressure-readiness-domain-kit"],
-      "bridgeNeeded": "browser host imports NexusEngine main via CDN; renderer consumes base, atmospheric, chronicle, consequence, decision, oracle-readability, and clue-pressure readiness descriptors only",
-      "featureParity": ["scene routes", "inventory", "gates", "chronicle descriptors", "consequence descriptors", "oracle route forecast", "clue pressure readiness"]
+      "status": "evidence-ritual-readiness-renderer-handoff-pass",
+      "domainCutover": ["core-scene-kit", "scene-host-contract", "peer-scene-domain-kit", "scene-renderer-handoff-kit", "scene-chronicle-domain-kit", "scene-consequence-domain-kit", "scene-decision-readability-domain-kit", "scene-oracle-readability-domain-kit", "scene-clue-pressure-readiness-domain-kit", "peer-scene-evidence-ritual-readiness-domain-kit"],
+      "bridgeNeeded": "browser host imports NexusEngine main via CDN; renderer consumes base, atmospheric, chronicle, consequence, decision, oracle-readability, clue-pressure, and evidence-ritual readiness descriptors only",
+      "featureParity": ["scene routes", "inventory", "gates", "chronicle descriptors", "consequence descriptors", "oracle route forecast", "clue pressure readiness", "evidence ritual readiness"]
     },
     {
       "id": "the-cavalry-of-rome",
