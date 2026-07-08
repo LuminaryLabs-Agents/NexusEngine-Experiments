@@ -52,10 +52,10 @@
       "id": "infinite-radial-terrain",
       "kind": "experiment",
       "canonicalPath": "experiments/infinite-radial-terrain/",
-      "status": "survey-contract-readiness-renderer-handoff-pass",
-      "domainCutover": ["infinite-radial-terrain-visual-domain-kit", "terrain-expedition-readability-domain-kit", "terrain-wayfinding-readability-domain-kit", "terrain-survey-contract-readiness-domain-kit"],
-      "bridgeNeeded": "browser host imports NexusEngine main via CDN; terrain domains emit visual, expedition, wayfinding, and survey contract descriptors consumed by presentation-only overlays",
-      "featureParity": ["camera flight", "radial LOD rings", "survey descriptors", "wayfinding descriptors", "survey contract readiness"]
+      "status": "basecamp-resupply-readiness-renderer-handoff-pass",
+      "domainCutover": ["infinite-radial-terrain-visual-domain-kit", "terrain-expedition-readability-domain-kit", "terrain-wayfinding-readability-domain-kit", "terrain-survey-contract-readiness-domain-kit", "terrain-basecamp-resupply-readiness-domain-kit"],
+      "bridgeNeeded": "browser host imports NexusEngine main via CDN; terrain domains emit visual, expedition, wayfinding, survey contract, and basecamp resupply descriptors consumed by presentation-only overlays",
+      "featureParity": ["camera flight", "radial LOD rings", "survey descriptors", "wayfinding descriptors", "survey contract readiness", "basecamp resupply readiness"]
     },
     {
       "id": "the-open-above",
