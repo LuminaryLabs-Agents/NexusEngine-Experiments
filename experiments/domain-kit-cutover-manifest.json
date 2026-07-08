@@ -115,10 +115,10 @@
       "id": "tropical-island-scene",
       "kind": "experiment",
       "canonicalPath": "experiments/tropical-island-scene/",
-      "status": "reef-rescue-readiness-renderer-handoff-pass",
-      "domainCutover": ["island-kit", "water-surface-kit", "tropical-lagoon-visual-fractal-domain-kit", "tropical-beachcomber-readability-domain-kit", "tropical-lagoon-navigation-readability-domain-kit", "tropical-weather-shelter-readability-domain-kit", "tropical-reef-rescue-readiness-domain-kit"],
-      "bridgeNeeded": "browser host imports NexusEngine main CDN; existing local ProtoKit import-map remains for old island/water stack; beachcomber, lagoon navigation, weather shelter, and reef rescue readiness overlays import NexusEngine main CDN and consume descriptors only",
-      "featureParity": ["drag orbit", "fish", "coconuts", "reef descriptors", "lagoon navigation", "weather shelter readability", "reef rescue readiness"]
+      "status": "tide-salvage-readiness-renderer-handoff-pass",
+      "domainCutover": ["island-kit", "water-surface-kit", "tropical-lagoon-visual-fractal-domain-kit", "tropical-beachcomber-readability-domain-kit", "tropical-lagoon-navigation-readability-domain-kit", "tropical-weather-shelter-readability-domain-kit", "tropical-reef-rescue-readiness-domain-kit", "tropical-tide-salvage-readiness-domain-kit"],
+      "bridgeNeeded": "browser host imports NexusEngine main CDN; existing local ProtoKit import-map remains for old island/water stack; beachcomber, lagoon navigation, weather shelter, reef rescue, and tide salvage readiness overlays import NexusEngine main CDN and consume descriptors only",
+      "featureParity": ["drag orbit", "fish", "coconuts", "reef descriptors", "lagoon navigation", "weather shelter readability", "reef rescue readiness", "tide salvage readiness"]
     },
     {
       "id": "cozy-island",
