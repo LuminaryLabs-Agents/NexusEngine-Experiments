@@ -1,5 +1,7 @@
 import "./zombie-orchard-cure-crafting-readiness-kits-smoke.mjs";
 import "./zombie-orchard-cure-crafting-cdn-state-input-smoke.mjs";
+import "./zombie-orchard-safehouse-evacuation-readiness-kits-smoke.mjs";
+import "./zombie-orchard-safehouse-evacuation-cdn-state-input-smoke.mjs";
 import assert from "node:assert/strict";
 import { createServer } from "node:http";
 import { readFile } from "node:fs/promises";
@@ -48,6 +50,7 @@ try {
   await page.goto(`${baseUrl}/experiments/zombie-orchard/`, { waitUntil: "domcontentloaded" });
   await page.waitForFunction(() => Boolean(globalThis.GameHost?.getState), null, { timeout: 15000 });
   await page.waitForFunction(() => Boolean(globalThis.GameHost?.getZombieOrchardCureCraftingReadiness), null, { timeout: 15000 });
+  await page.waitForFunction(() => Boolean(globalThis.GameHost?.getZombieOrchardSafehouseEvacuationReadiness), null, { timeout: 15000 });
   await page.keyboard.press("KeyW");
   await page.keyboard.press("KeyE");
   await page.keyboard.press("KeyJ");
@@ -65,8 +68,10 @@ try {
     return {
       state: globalThis.GameHost.getState(),
       cure: globalThis.GameHost.getZombieOrchardCureCraftingReadiness(),
+      safehouse: globalThis.GameHost.getZombieOrchardSafehouseEvacuationReadiness(),
       handoff: globalThis.GameHost.getRendererHandoff(),
-      marker: document.documentElement.dataset.zombieCureCraftingReadiness
+      marker: document.documentElement.dataset.zombieCureCraftingReadiness,
+      safehouseMarker: document.documentElement.dataset.zombieSafehouseEvacuationReadiness
     };
   });
 
@@ -87,13 +92,21 @@ try {
   assert.ok(state.state.visualDomains.lighting.fogDensity > 0);
   assert.ok(state.state.stamina01 >= 0 && state.state.stamina01 <= 1);
   assert.equal(state.marker, "active");
+  assert.equal(state.safehouseMarker, "active");
   assert.ok(Array.isArray(state.cure.rendererHandoff.descriptors.infectedRootSamples));
   assert.ok(Array.isArray(state.cure.rendererHandoff.descriptors.antidotePressQueues));
   assert.ok(Array.isArray(state.cure.rendererHandoff.descriptors.sapDistillerNodes));
   assert.ok(Array.isArray(state.cure.rendererHandoff.descriptors.barricadeGraftPlans));
   assert.ok(Array.isArray(state.cure.rendererHandoff.descriptors.survivorSignalGlyphs));
   assert.ok(Array.isArray(state.cure.rendererHandoff.descriptors.dawnCureRitualWindows));
+  assert.ok(Array.isArray(state.safehouse.rendererHandoff.descriptors.safehouseBeacons));
+  assert.ok(Array.isArray(state.safehouse.rendererHandoff.descriptors.laneClearances));
+  assert.ok(Array.isArray(state.safehouse.rendererHandoff.descriptors.barricadeReinforcements));
+  assert.ok(Array.isArray(state.safehouse.rendererHandoff.descriptors.antidoteRunners));
+  assert.ok(Array.isArray(state.safehouse.rendererHandoff.descriptors.dawnWagonRallies));
+  assert.ok(Array.isArray(state.safehouse.rendererHandoff.descriptors.radioTowerSignals));
   assert.ok(state.handoff.cureCraftingDescriptorCount >= 6);
+  assert.ok(state.handoff.safehouseEvacuationDescriptorCount >= 14);
   console.log("zombie orchard NexusEngine CDN-backed Playwright state input smoke passed");
 } finally {
   if (browser) await browser.close();
