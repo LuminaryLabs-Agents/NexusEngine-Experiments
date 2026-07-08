@@ -34,8 +34,8 @@ assert.ok(
 
 assert.match(
   boot,
-  /PresentationKits\.createGenericDefensePresentationStackKits\(NexusRealtime, preset\.presentationStack \?\? \{\}\)/,
-  "boot should compose presentation stack kits from ProtoKits"
+  /PresentationKits\.createGenericDefensePresentationStackKits\(NexusEngine, preset\.presentationStack \?\? \{\}\)/,
+  "boot should compose presentation stack kits from ProtoKits through NexusEngine"
 );
 assert.match(boot, /function getSignalBastionPresentation\(engine\)/, "boot should keep a single presentation bridge helper");
 assert.match(
@@ -53,6 +53,7 @@ assert.match(
   /render: getSignalBastionRenderDescriptors\(engine\)\?\.getSnapshot\?\.\(\)/,
   "presentation fallback should read render descriptors through the namespaced descriptor boundary"
 );
+assert.match(boot, /createSignalBastionFrontlineTacticsDomainKit/, "boot should compose the frontline tactics domain beside presentation stack data");
 
 assert.match(inputHost, /function presentation\(\)/, "input host should centralize presentation reads for hit testing");
 assert.match(
