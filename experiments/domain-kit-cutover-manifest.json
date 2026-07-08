@@ -106,10 +106,10 @@
       "id": "tropical-island-scene",
       "kind": "experiment",
       "canonicalPath": "experiments/tropical-island-scene/",
-      "status": "lagoon-visual-fractal-descriptor-handoff-pass",
-      "domainCutover": ["island-kit", "palm-tree-kit", "coconut-prop-kit", "timer-kit", "fall-motion-kit", "fish-school-kit", "fish-motion-kit", "float-prop-kit", "float-motion-kit", "orbit-camera-kit", "cel-shading-kit", "outline-sobel-kit", "normal-style-kit", "reflect-probe-kit", "fluid-field-kit", "fluid-motion-kit", "fluid-shading-kit", "fluid-effects-kit", "water-mode-kit", "water-data-kit", "water-stream-kit", "water-surface-kit", "water-mesh-kit", "water-shading-kit", "water-physics-kit", "water-effects-kit", "lagoon-depth-shelf-kit", "reef-bloom-cluster-kit", "current-ribbon-field-kit", "palm-canopy-motion-kit", "horizon-cloud-bank-kit", "wildlife-wake-trail-kit", "tropical-lagoon-renderer-handoff-kit", "tropical-lagoon-visual-fractal-domain-kit"],
-      "bridgeNeeded": "browser host imports NexusEngine main via CDN; existing local ProtoKit import-map remains for old island/water stack",
-      "featureParity": ["drag orbit", "fish", "coconuts", "reef descriptors", "wake descriptors"]
+      "status": "beachcomber-readability-renderer-handoff-pass",
+      "domainCutover": ["island-kit", "palm-tree-kit", "coconut-prop-kit", "timer-kit", "fall-motion-kit", "fish-school-kit", "fish-motion-kit", "float-prop-kit", "float-motion-kit", "orbit-camera-kit", "cel-shading-kit", "outline-sobel-kit", "normal-style-kit", "reflect-probe-kit", "fluid-field-kit", "fluid-motion-kit", "fluid-shading-kit", "fluid-effects-kit", "water-mode-kit", "water-data-kit", "water-stream-kit", "water-surface-kit", "water-mesh-kit", "water-shading-kit", "water-physics-kit", "water-effects-kit", "lagoon-depth-shelf-kit", "reef-bloom-cluster-kit", "current-ribbon-field-kit", "palm-canopy-motion-kit", "horizon-cloud-bank-kit", "wildlife-wake-trail-kit", "tropical-lagoon-renderer-handoff-kit", "tropical-lagoon-visual-fractal-domain-kit", "beachcomber-task-beacon-kit", "shoreline-path-ribbon-kit", "coconut-risk-shadow-kit", "fish-school-focus-ring-kit", "drift-collection-lane-kit", "tide-window-pulse-kit", "beachcomber-renderer-handoff-kit", "tropical-beachcomber-readability-domain-kit"],
+      "bridgeNeeded": "browser host imports NexusEngine main via CDN; existing local ProtoKit import-map remains for old island/water stack; beachcomber readability overlay imports NexusEngine main CDN and consumes task, shoreline, coconut-risk, fish-focus, drift, and tide descriptors only",
+      "featureParity": ["drag orbit", "fish", "coconuts", "reef descriptors", "wake descriptors", "task beacons", "shoreline path ribbons", "coconut risk shadows", "fish focus rings", "drift collection lanes", "tide windows", "GameHost beachcomber readability handoff"]
     },
     {
       "id": "signal-bastion",
