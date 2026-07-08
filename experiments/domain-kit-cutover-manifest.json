@@ -25,10 +25,10 @@
       "id": "the-cavalry-of-rome",
       "kind": "experiment",
       "canonicalPath": "apps/the-cavalry-of-rome/",
-      "status": "battlefield-orders-readability-handoff-pass",
-      "domainCutover": ["cavalry-campaign-map-kit", "cavalry-world-actions-kit", "cavalry-campaign-fractal-domain-kit", "cavalry-battlefield-orders-domain-kit"],
-      "bridgeNeeded": "live and experiment routes load a NexusEngine main CDN campaign handoff pass; reusable campaign and battlefield-orders logic emits supply line, march corridor, cohesion, morale, maneuver choice, scout, flank, reinforcement, attrition, tempo, and objective pressure descriptors while the overlay consumes descriptors only",
-      "featureParity": ["large campaign map", "one world action cadence", "Rome territory movement", "AI pressure", "campaign fractal descriptors", "scouting vector descriptors", "flank risk arcs", "reinforcement callouts", "attrition forecast chips", "turn tempo standards", "objective pressure banner"]
+      "status": "logistics-readiness-renderer-handoff-pass",
+      "domainCutover": ["cavalry-campaign-map-kit", "cavalry-world-actions-kit", "cavalry-campaign-fractal-domain-kit", "cavalry-battlefield-orders-domain-kit", "cavalry-logistics-readiness-domain-kit"],
+      "bridgeNeeded": "live and experiment routes load NexusEngine main CDN handoff passes; reusable campaign, battlefield-orders, and logistics-readiness kits emit supply line, march corridor, cohesion, morale, maneuver, scout, flank, reinforcement, attrition, tempo, objective pressure, depot, forage, road strain, siege, courier, and winter descriptors while overlays consume descriptors only",
+      "featureParity": ["large campaign map", "one world action cadence", "Rome territory movement", "AI pressure", "campaign fractal descriptors", "scouting vector descriptors", "flank risk arcs", "reinforcement callouts", "attrition forecast chips", "turn tempo standards", "objective pressure banner", "supply depot radii", "forage corridors", "road strain threads", "siege readiness signals", "courier order pulses", "winter attrition warnings"]
     },
     {
       "id": "vr-platformer-board",
