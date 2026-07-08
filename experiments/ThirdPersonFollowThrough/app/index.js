@@ -1,2 +1,2 @@
-import '../app.js?v=core-debug-v1';
+import './arena-fractal-entry.js?v=arena-fractal-v1';
 export {};
