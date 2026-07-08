@@ -2,6 +2,10 @@ import {
   VR_BOARD_OBJECTIVE_READABILITY_DOMAIN_TREE,
   createVrBoardObjectiveReadabilityDomainKit
 } from "./vr-board-objective-readability-kits.js";
+import {
+  VR_BOARD_SKILL_RHYTHM_READINESS_DOMAIN_TREE,
+  createVrBoardSkillRhythmReadinessDomainKit
+} from "./vr-board-skill-rhythm-readiness-kits.js";
 
 function stableArray(value) {
   return Array.isArray(value) ? [...value] : [];
@@ -125,6 +129,100 @@ function mergeObjectiveTempoBands(baseBands = [], objectiveReadability = {}) {
   return [...stableArray(baseBands), ...laneBands];
 }
 
+function mergeSkillRhythmCheckpointThread(baseThread = {}, skillRhythmReadiness = {}) {
+  const skillDescriptors = skillRhythmReadiness.rendererHandoff?.descriptors ?? {};
+  const echoNodes = stableArray(skillDescriptors.checkpointSaveEchoes).map((echo, index) => ({
+    id: `skill-checkpoint-echo-node-${echo.platformId ?? index}`,
+    kind: "checkpoint",
+    role: echo.saved ? "saved-echo" : "next-save-echo",
+    x: round(Number(echo.x ?? 0), 3),
+    y: round(Number(echo.y ?? 0), 3),
+    active: Boolean(echo.saved),
+    priority: round(Number(echo.confidence ?? 0), 3)
+  }));
+  const crest = skillDescriptors.exitCommitmentCrest;
+  const crestNode = crest ? [{
+    id: "skill-exit-commitment-crest-node",
+    kind: "checkpoint",
+    role: "exit-commitment-crest",
+    x: round(Number(crest.x ?? 0), 3),
+    y: round(Number(crest.y ?? 0), 3),
+    active: crest.phase === "commit",
+    priority: round(Number(crest.readiness ?? 0), 3)
+  }] : [];
+  const nodes = [...stableArray(baseThread.nodes), ...echoNodes, ...crestNode]
+    .sort((a, b) => Number(a.x ?? 0) - Number(b.x ?? 0))
+    .map((node, index) => ({ ...node, order: index }));
+  const links = nodes.slice(1).map((node, index) => ({
+    id: `skill-checkpoint-link-${index}`,
+    kind: "checkpoint-link",
+    from: nodes[index].id,
+    to: node.id,
+    progress: round(Number(node.priority ?? 0), 3)
+  }));
+  return { ...baseThread, nodes, links };
+}
+
+function mergeSkillRhythmRecoveryBeacons(baseRecovery = {}, skillRhythmReadiness = {}) {
+  const skillDescriptors = skillRhythmReadiness.rendererHandoff?.descriptors ?? {};
+  const hazardBeacons = stableArray(skillDescriptors.hazardHesitationFields).map((field) => ({
+    id: `skill-hazard-hesitation-beacon-${field.hazardId}`,
+    kind: "fail-recovery-beacon",
+    role: "hesitation-field",
+    x: round(Number(field.x ?? 0), 3),
+    y: round(Number(field.y ?? 0), 3),
+    radius: round(Number(field.radius ?? 0.6), 3),
+    urgency: round(Number(field.hesitation ?? 0), 3)
+  }));
+  return {
+    ...baseRecovery,
+    beacons: [...stableArray(baseRecovery.beacons), ...hazardBeacons]
+  };
+}
+
+function mergeSkillRhythmTempoBands(baseBands = [], skillRhythmReadiness = {}) {
+  const skillDescriptors = skillRhythmReadiness.rendererHandoff?.descriptors ?? {};
+  const gate = skillDescriptors.jumpTimingGate;
+  const gateBands = gate ? [{
+    id: "skill-jump-timing-tempo-band",
+    kind: "tempo-pulse-band",
+    x: round(Number(gate.x ?? 0), 3),
+    y: round(Number(gate.y ?? 0), 3),
+    pulse: round(Number(gate.pulse ?? gate.readiness ?? 0), 3),
+    progress: round(Number(gate.readiness ?? 0), 3),
+    rendererContract: notOwnRendererContract("vr-board-skill-jump-gate-tempo-fold")
+  }] : [];
+  const airBands = stableArray(skillDescriptors.airControlVectors).map((vector, index) => ({
+    id: `skill-air-control-tempo-band-${index}`,
+    kind: "tempo-pulse-band",
+    x: round(Number(vector.x ?? 0), 3),
+    y: round(Number(vector.y ?? 0), 3),
+    pulse: round(Number(vector.strength ?? 0), 3),
+    progress: round(index / Math.max(1, stableArray(skillDescriptors.airControlVectors).length - 1), 3),
+    rendererContract: notOwnRendererContract("vr-board-skill-air-control-tempo-fold")
+  }));
+  const comboBands = stableArray(skillDescriptors.coinComboLanes).map((lane, index) => ({
+    id: `skill-coin-combo-tempo-band-${index}`,
+    kind: "tempo-pulse-band",
+    x: round(Number(lane.x ?? 0), 3),
+    y: round(Number(lane.y ?? 0), 3),
+    pulse: round(Number(lane.comboValue ?? 0), 3),
+    progress: round((index + 1) / Math.max(1, stableArray(skillDescriptors.coinComboLanes).length), 3),
+    rendererContract: notOwnRendererContract("vr-board-skill-coin-combo-tempo-fold")
+  }));
+  const crest = skillDescriptors.exitCommitmentCrest;
+  const crestBands = crest ? [{
+    id: "skill-exit-commitment-tempo-band",
+    kind: "tempo-pulse-band",
+    x: round(Number(crest.x ?? 0), 3),
+    y: round(Number(crest.y ?? 0), 3),
+    pulse: round(Number(crest.pulse ?? crest.readiness ?? 0), 3),
+    progress: round(Number(crest.readiness ?? 0), 3),
+    rendererContract: notOwnRendererContract("vr-board-skill-exit-crest-tempo-fold")
+  }] : [];
+  return [...stableArray(baseBands), ...gateBands, ...airBands, ...comboBands, ...crestBands];
+}
+
 export const VR_BOARD_TRAVERSAL_READABILITY_DOMAIN_TREE = Object.freeze({
   root: "vr-board-traversal-readability-domain",
   subdomains: [
@@ -152,6 +250,10 @@ export const VR_BOARD_TRAVERSAL_READABILITY_DOMAIN_TREE = Object.freeze({
     {
       id: "objective-readability",
       subdomains: VR_BOARD_OBJECTIVE_READABILITY_DOMAIN_TREE.subdomains
+    },
+    {
+      id: "skill-rhythm-readiness",
+      subdomains: VR_BOARD_SKILL_RHYTHM_READINESS_DOMAIN_TREE.subdomains
     },
     {
       id: "renderer-handoff",
@@ -378,12 +480,13 @@ export function createVrBoardTraversalRendererHandoffKit({
   failRecoveryBeaconKit = createVrBoardFailRecoveryBeaconKit(),
   tempoPulseBandKit = createVrBoardTempoPulseBandKit(),
   controlCoachingStripKit = createVrBoardControlCoachingStripKit(),
-  objectiveReadabilityDomainKit = createVrBoardObjectiveReadabilityDomainKit()
+  objectiveReadabilityDomainKit = createVrBoardObjectiveReadabilityDomainKit(),
+  skillRhythmReadinessDomainKit = createVrBoardSkillRhythmReadinessDomainKit()
 } = {}) {
   return {
     id: "n-vr-board-traversal-renderer-handoff-kit",
     domain: "vr-board-traversal-readability/renderer-handoff",
-    kits: { jumpArcForecastKit, landingZoneHeatKit, checkpointThreadKit, failRecoveryBeaconKit, tempoPulseBandKit, controlCoachingStripKit, objectiveReadabilityDomainKit },
+    kits: { jumpArcForecastKit, landingZoneHeatKit, checkpointThreadKit, failRecoveryBeaconKit, tempoPulseBandKit, controlCoachingStripKit, objectiveReadabilityDomainKit, skillRhythmReadinessDomainKit },
     describe(input = {}) {
       const jumpArcForecast = jumpArcForecastKit.describe(input);
       const landingZoneHeat = landingZoneHeatKit.describe(input);
@@ -392,10 +495,15 @@ export function createVrBoardTraversalRendererHandoffKit({
       const baseTempoPulseBands = tempoPulseBandKit.describe(input);
       const controlCoachingStrip = controlCoachingStripKit.describe(input);
       const objectiveReadability = objectiveReadabilityDomainKit.describe(input);
-      const checkpointThread = mergeObjectiveCheckpointThread(baseCheckpointThread, objectiveReadability, input.avatar, input.level);
-      const failRecoveryBeacons = mergeObjectiveRecoveryBeacons(baseFailRecoveryBeacons, objectiveReadability);
-      const tempoPulseBands = mergeObjectiveTempoBands(baseTempoPulseBands, objectiveReadability);
+      const skillRhythmReadiness = skillRhythmReadinessDomainKit.describe(input);
+      const objectiveCheckpointThread = mergeObjectiveCheckpointThread(baseCheckpointThread, objectiveReadability, input.avatar, input.level);
+      const objectiveFailRecoveryBeacons = mergeObjectiveRecoveryBeacons(baseFailRecoveryBeacons, objectiveReadability);
+      const objectiveTempoPulseBands = mergeObjectiveTempoBands(baseTempoPulseBands, objectiveReadability);
+      const checkpointThread = mergeSkillRhythmCheckpointThread(objectiveCheckpointThread, skillRhythmReadiness);
+      const failRecoveryBeacons = mergeSkillRhythmRecoveryBeacons(objectiveFailRecoveryBeacons, skillRhythmReadiness);
+      const tempoPulseBands = mergeSkillRhythmTempoBands(objectiveTempoPulseBands, skillRhythmReadiness);
       const objectiveCounts = objectiveReadability.rendererHandoff?.counts ?? {};
+      const skillCounts = skillRhythmReadiness.rendererHandoff?.counts ?? {};
       const counts = {
         jumpArcPoints: jumpArcForecast.points.length,
         landingZones: landingZoneHeat.length,
@@ -409,7 +517,13 @@ export function createVrBoardTraversalRendererHandoffKit({
         objectiveLanes: Number(objectiveCounts.momentumLanes ?? 0),
         objectiveExitGate: Number(objectiveCounts.exitReadinessGate ?? 0),
         objectiveComfortBands: Number(objectiveCounts.headComfortBands ?? 0),
-        objectiveRiskChips: Number(objectiveCounts.riskChips ?? 0)
+        objectiveRiskChips: Number(objectiveCounts.riskChips ?? 0),
+        skillJumpGates: Number(skillCounts.jumpTimingGates ?? 0),
+        skillAirVectors: Number(skillCounts.airControlVectors ?? 0),
+        skillComboLanes: Number(skillCounts.coinComboLanes ?? 0),
+        skillHazardFields: Number(skillCounts.hazardHesitationFields ?? 0),
+        skillCheckpointEchoes: Number(skillCounts.checkpointSaveEchoes ?? 0),
+        skillExitCrests: Number(skillCounts.exitCommitmentCrests ?? 0)
       };
       counts.total = Object.values(counts).reduce((sum, value) => sum + value, 0);
       return {
@@ -424,14 +538,15 @@ export function createVrBoardTraversalRendererHandoffKit({
           failRecoveryBeacons,
           tempoPulseBands,
           controlCoachingStrip,
-          objectiveReadability
+          objectiveReadability,
+          skillRhythmReadiness
         },
         counts
       };
     },
     snapshot(input) {
       const handoff = this.describe(input);
-      return { total: handoff.counts.total, landingZones: handoff.counts.landingZones, tone: handoff.descriptors.controlCoachingStrip.tone, objectiveOrbits: handoff.counts.objectiveOrbits };
+      return { total: handoff.counts.total, landingZones: handoff.counts.landingZones, tone: handoff.descriptors.controlCoachingStrip.tone, objectiveOrbits: handoff.counts.objectiveOrbits, skillRhythmDescriptors: handoff.counts.skillJumpGates + handoff.counts.skillAirVectors + handoff.counts.skillComboLanes };
     }
   };
 }
@@ -455,6 +570,7 @@ export function createVrBoardTraversalReadabilityDomainKit(options = {}) {
         tempoPulseBands: rendererHandoff.descriptors.tempoPulseBands,
         controlCoachingStrip: rendererHandoff.descriptors.controlCoachingStrip,
         objectiveReadability: rendererHandoff.descriptors.objectiveReadability,
+        skillRhythmReadiness: rendererHandoff.descriptors.skillRhythmReadiness,
         rendererContract: notOwnRendererContract("vr-board-traversal-readability-domain-kit")
       };
     },
@@ -466,7 +582,8 @@ export function createVrBoardTraversalReadabilityDomainKit(options = {}) {
         landingZones: descriptor.landingZoneHeat.length,
         checkpointNodes: descriptor.checkpointThread.nodes.length,
         coachingTone: descriptor.controlCoachingStrip.tone,
-        objectiveOrbits: descriptor.objectiveReadability?.collectiblePriorityOrbits?.length ?? 0
+        objectiveOrbits: descriptor.objectiveReadability?.collectiblePriorityOrbits?.length ?? 0,
+        skillRhythmDescriptors: descriptor.skillRhythmReadiness?.rendererHandoff?.counts?.total ?? 0
       };
     }
   };
