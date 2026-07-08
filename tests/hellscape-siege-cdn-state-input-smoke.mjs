@@ -1,0 +1,71 @@
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { createHellscapeSiegeFractalDomainKit } from '../games/rogue-lite-hellscape-siege/src/hellscape-siege-fractal-domain-kit.js';
+
+const mainPath = 'games/rogue-lite-hellscape-siege/src/main.js';
+const rendererPath = 'games/rogue-lite-hellscape-siege/src/renderer/canvas-renderer.js';
+const indexPath = 'games/rogue-lite-hellscape-siege/index.html';
+const kitPath = 'games/rogue-lite-hellscape-siege/src/hellscape-siege-fractal-domain-kit.js';
+
+const mainSource = readFileSync(mainPath, 'utf8');
+const rendererSource = readFileSync(rendererPath, 'utf8');
+const indexSource = readFileSync(indexPath, 'utf8');
+const kitSource = readFileSync(kitPath, 'utf8');
+
+assert.ok(mainSource.includes('https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js'), 'changed runtime should import NexusEngine main CDN');
+assert.equal(mainSource.includes('LuminaryLabs-Dev/NexusRealtime@main'), false, 'changed runtime should not import old NexusRealtime main CDN');
+assert.ok(mainSource.includes('createHellscapeSiegeFractalDomainKit'), 'main route should install the hellscape fractal domain');
+assert.ok(mainSource.includes('visualFractal'), 'main route should expose visualFractal state');
+assert.ok(mainSource.includes('getRendererHandoff'), 'GameHost should expose renderer handoff');
+assert.ok(rendererSource.includes('drawHellscapeFractal'), 'renderer should consume hellscape descriptor handoff');
+assert.ok(rendererSource.includes('rendererHandoff?.descriptors'), 'renderer should read descriptors rather than recompute domain truth');
+assert.ok(indexSource.includes('./src/main.js'), 'route shell should boot the changed runtime');
+assert.ok(kitSource.includes('renderer consumes descriptors only'), 'kit should declare renderer descriptor-only handoff');
+
+function stateCase(index) {
+  const move = [
+    { x: 0, y: 0 },
+    { x: 1, y: 0 },
+    { x: -1, y: 0 },
+    { x: 0, y: -1 },
+    { x: 0.7071, y: 0.7071 }
+  ][index % 5];
+  return {
+    time: index / 2,
+    input: { move, primary: index % 2 === 0, interact: index % 3 === 0, build: index % 4 === 0, confirm: false, cycle: index % 2 ? 1 : 0, select: index % 3 },
+    player: { x: move.x * 100 + index * 20, y: 180 + move.y * 80, hp: 100 - index, maxHp: 100, hurt: index % 2 },
+    core: { x: 0, y: -60, hp: 300 - index * 20, maxHp: 300 },
+    realm: { id: ['lobby', 'grove', 'crystal', 'ashes'][index % 4], prompt: 'state case' },
+    wave: { n: index, active: index % 2 === 0, queue: Array.from({ length: index % 4 }, () => 'crawler'), timer: 0 },
+    portals: [
+      { x: -350, y: -150, id: 'grove', label: 'GROVE', color: '#10b981' },
+      { x: 0, y: -320, id: 'crystal', label: 'CRYSTAL', color: '#a855f7' },
+      { x: 350, y: -150, id: 'ashes', label: 'ASHES', color: '#f97316' }
+    ],
+    resources: [{ x: index * 10, y: -index * 20, kind: 'oak', item: 'wood', color: '#22543d', hp: 80, maxHp: 90 }],
+    drops: index % 2 ? [{ x: 12, y: 18, item: 'energy', color: '#e9d5ff' }] : [],
+    structures: [{ kind: 'turret', x: 35, y: 20, hp: 100, maxHp: 100, range: 310, color: '#38bdf8' }],
+    enemies: Array.from({ length: 1 + (index % 5) }, (_, n) => ({ type: n % 2 ? 'crawler' : 'brute', x: 420 - n * 40, y: -320 + n * 35, hp: 42, maxHp: 42 })),
+    inventory: { items: { wood: 10, obsidian: index, crystal: 5, energy: 4, spore: 2, sulfur: 2 } },
+    build: { selected: index % 3 },
+    buildCatalog: [
+      { id: 'wall', name: 'SPIKE WALL', cost: { wood: 5, obsidian: 3 }, range: 0, color: '#94a3b8' },
+      { id: 'turret', name: 'SENTRY', cost: { wood: 2, crystal: 5, energy: 3 }, range: 310, color: '#38bdf8' },
+      { id: 'pylon', name: 'REGEN', cost: { spore: 6, sulfur: 3, energy: 2 }, range: 160, color: '#10b981' }
+    ]
+  };
+}
+
+const domainKit = createHellscapeSiegeFractalDomainKit();
+const cases = Array.from({ length: 10 }, (_, index) => stateCase(index));
+
+for (const [index, state] of cases.entries()) {
+  const domain = domainKit.describe(state);
+  assert.equal(domain.rendererHandoff.policy.rendererConsumesDescriptorsOnly, true, `case ${index} should have descriptor-only policy`);
+  assert.ok(domain.rendererHandoff.counts.realmPressure >= 1, `case ${index} should expose realm pressure`);
+  assert.ok(domain.rendererHandoff.counts.buildOptions >= 3, `case ${index} should expose build affordances`);
+  assert.ok(domain.rendererHandoff.counts.threatLanes >= 1, `case ${index} should expose threat lanes`);
+  assert.doesNotThrow(() => JSON.stringify(domain), `case ${index} should be serializable`);
+}
+
+console.log(`hellscape-siege-cdn-state-input-smoke: ${cases.length} state/input cases passed`);
