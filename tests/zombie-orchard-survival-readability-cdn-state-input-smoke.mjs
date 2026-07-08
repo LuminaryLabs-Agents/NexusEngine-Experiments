@@ -1,4 +1,5 @@
 import "./zombie-orchard-foraging-readability-cdn-state-input-smoke.mjs";
+import "./zombie-orchard-horde-pathing-cdn-state-input-smoke.mjs";
 import assert from "node:assert/strict";
 import { createServer } from "node:http";
 import { readFile } from "node:fs/promises";
@@ -24,6 +25,7 @@ const sessionSource = await readFile(join(root, "experiments/zombie-orchard/src/
 const kitSource = await readFile(join(root, "experiments/zombie-orchard/src/survival-readability-kits.js"), "utf8");
 const canvasSource = await readFile(join(root, "experiments/zombie-orchard/src/canvas-view.js"), "utf8");
 const bootstrapSource = await readFile(join(root, "experiments/zombie-orchard/src/bootstrap.js"), "utf8");
+const hordeEntrySource = await readFile(join(root, "experiments/zombie-orchard/src/horde-pathing-readiness-entry.js"), "utf8");
 
 assert.ok(kitStackSource.includes("https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js"));
 assert.ok(!kitStackSource.includes("https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusRealtime@main/src/index.js"));
@@ -34,6 +36,8 @@ assert.ok(kitSource.includes("renderer-consumes-descriptors-only"));
 assert.ok(kitSource.includes("forbiddenOwners"));
 assert.ok(canvasSource.includes("survivalReadability?.rendererHandoff?.descriptors"));
 assert.ok(bootstrapSource.includes("getRendererHandoff"));
+assert.ok(hordeEntrySource.includes("getHordePathingReadiness"));
+assert.ok(hordeEntrySource.includes("zombie-orchard-composed-horde-pathing-renderer-handoff"));
 
 const server = createServer(async (request, response) => {
   try {
@@ -57,6 +61,7 @@ try {
   const page = await browser.newPage();
   await page.goto(`${baseUrl}/experiments/zombie-orchard/`, { waitUntil: "domcontentloaded" });
   await page.waitForFunction(() => Boolean(globalThis.GameHost?.getRendererHandoff), null, { timeout: 15000 });
+  await page.waitForFunction(() => Boolean(globalThis.GameHost?.getHordePathingReadiness), null, { timeout: 15000 });
 
   const stateCases = Array.from({ length: 10 }, (_, index) => ({
     moveX: index % 2 ? 0.5 : -0.25,
@@ -73,12 +78,14 @@ try {
     const state = globalThis.GameHost.tick(1 / 30, input);
     const handoff = globalThis.GameHost.getRendererHandoff();
     const readability = globalThis.GameHost.getSurvivalReadability();
+    const hordePathing = globalThis.GameHost.getHordePathingReadiness();
     return {
       index,
       player: state.player,
       domain: state.domain,
       handoff,
       readability,
+      hordePathing,
       visualReadability: state.visualDomains?.survivalReadability,
       stamina01: state.stamina01,
       health01: state.health01
@@ -97,15 +104,20 @@ try {
     assert.ok(Array.isArray(result.handoff?.descriptors?.roundPressureBands));
     assert.ok(Array.isArray(result.handoff?.descriptors?.escapeLanes));
     assert.ok(Array.isArray(result.handoff?.descriptors?.meleeWindows));
+    assert.ok(Array.isArray(result.handoff?.descriptors?.spawnLaneForecasts));
+    assert.ok(Array.isArray(result.handoff?.descriptors?.chokeRowPriorities));
+    assert.ok(Array.isArray(result.handoff?.descriptors?.panicRetreatThreads));
     assert.equal(result.handoff.descriptorCounts.staminaBreath, 1);
     assert.equal(result.handoff.descriptorCounts.roundPressureBands, 1);
+    assert.equal(result.hordePathing.rendererHandoff.policy, "renderer-consumes-descriptors-only");
+    assert.ok(result.hordePathing.summary.descriptorCount >= 6);
     assert.ok(result.handoff.ownership.forbiddenOwners.includes("renderer"));
     assert.ok(result.handoff.ownership.forbiddenOwners.includes("browser-input"));
     assert.ok(result.stamina01 >= 0 && result.stamina01 <= 1);
     assert.ok(result.health01 >= 0 && result.health01 <= 1);
   }
 
-  console.log("zombie orchard survival readability CDN state-input smoke passed plus foraging import");
+  console.log("zombie orchard survival readability CDN state-input smoke passed plus foraging and horde pathing imports");
 } finally {
   if (browser) await browser.close();
   await new Promise((resolve) => server.close(resolve));
