@@ -1,4 +1,5 @@
 import "./cozy-island-tidepool-conservatory-cdn-state-input-smoke.mjs";
+import "./cozy-island-sea-turtle-hatchery-cdn-state-input-smoke.mjs";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { createCozyIslandCastawayComfortReadinessDomainKit } from "../experiments/cozy-island/cozy-island-castaway-comfort-kits.js";
