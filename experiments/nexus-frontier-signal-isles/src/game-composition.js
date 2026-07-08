@@ -1,3 +1,5 @@
+import { createSignalIslesVisualFractalDomainKit } from "../../_kits/nexus-frontier-signal-isles/signal-isles-visual-fractal-domain-kits.js";
+
 // Signal Isles keeps gameplay truth in this runtime-style bridge, not in the renderer.
 // Compatibility markers for static audit: createRealtimeGame createActionInputKit createScanSurveyKit createTimedPressureDirectorKit createGamehostStandardKit.
 const clone = (value) => JSON.parse(JSON.stringify(value));
@@ -35,6 +37,7 @@ function addFact(session, kits, level, fact, type = "completion.recorded") {
 export async function createSignalIslesComposition({ level, preset, sequences }) {
   const kits = makeKitState();
   const session = createSession(level);
+  const visualFractal = createSignalIslesVisualFractalDomainKit();
 
   function reset() {
     Object.assign(session, createSession(level));
@@ -91,11 +94,12 @@ export async function createSignalIslesComposition({ level, preset, sequences })
   function flushInput(intent = {}, delta = 1 / 60) { if (intent.restart) return reset(); move(intent, delta); if (intent.scan) scan(delta); if (intent.interact || intent.build) interact(); return getState(); }
   function getObjectiveState() { return { current: level.objectives[session.objectiveIndex] ?? null, completedFacts: [...session.completedFacts], completedObjectives: [...session.completedObjectives], completed: session.completed }; }
   function getSequenceState() { return { activeSequenceId: session.activeSequenceId, sequences: sequences.map((s) => s.id), prompt: session.lastPrompt, waitingFor: level.objectives[session.objectiveIndex]?.requires.filter((fact) => !session.completedFacts.includes(fact)) ?? [] }; }
-  function getState() { return { session: clone(session), objective: getObjectiveState(), sequence: getSequenceState(), input: kits.actionInput, scan: kits.scanSurvey, agents: kits.agentGroup, pressure: kits.timedPressure, lastRejection: session.lastRejection }; }
+  function getVisualFractalState() { return visualFractal.describe({ level, preset, session: clone(session), objective: getObjectiveState(), sequence: getSequenceState(), kitStates: clone(kits), elapsed: session.elapsed }); }
+  function getState() { const signalIslesVisualFractal = getVisualFractalState(); return { session: clone(session), objective: getObjectiveState(), sequence: getSequenceState(), input: kits.actionInput, scan: kits.scanSurvey, agents: kits.agentGroup, pressure: kits.timedPressure, lastRejection: session.lastRejection, visualFractal: signalIslesVisualFractal, domain: { signalIslesVisualFractal } }; }
   function getReplaySnapshot() { return JSON.stringify({ frame: session.frame, facts: session.completedFacts, player: { x: Number(session.player.x.toFixed(3)), z: Number(session.player.z.toFixed(3)) }, completed: session.completed }); }
-  function getRenderSnapshot() { return { level, preset, session, kitStates: kits, objective: getObjectiveState(), sequence: getSequenceState(), scanCompletedCount: kits.scanSurvey.completedTargetIds.length, replayDigest: getReplaySnapshot() }; }
+  function getRenderSnapshot() { const signalIslesVisualFractal = getVisualFractalState(); return { level, preset, session, kitStates: kits, objective: getObjectiveState(), sequence: getSequenceState(), scanCompletedCount: kits.scanSurvey.completedTargetIds.length, replayDigest: getReplaySnapshot(), visualFractal: signalIslesVisualFractal, domain: { signalIslesVisualFractal } }; }
 
-  return { engine: kits, start() { session.running = true; }, stop() { session.running = false; }, reset, tick, flushInput, setKey: (key, down) => { kits.actionInput[key] = down; }, clearInput: () => { kits.actionInput = {}; }, requestInteract: interact, requestBuild: interact, requestScan: scan, stopScan() {}, getState, getKitStates: () => clone(kits), getObjectiveState, getSequenceState, getInputState: () => clone(kits.actionInput), getRecentEvents: () => [...session.recentEvents], getLastRejection: () => session.lastRejection, getReplaySnapshot, getRenderSnapshot };
+  return { engine: kits, start() { session.running = true; }, stop() { session.running = false; }, reset, tick, flushInput, setKey: (key, down) => { kits.actionInput[key] = down; }, clearInput: () => { kits.actionInput = {}; }, requestInteract: interact, requestBuild: interact, requestScan: scan, stopScan() {}, getState, getKitStates: () => clone(kits), getObjectiveState, getSequenceState, getVisualFractalState, getInputState: () => clone(kits.actionInput), getRecentEvents: () => [...session.recentEvents], getLastRejection: () => session.lastRejection, getReplaySnapshot, getRenderSnapshot };
 }
 
 export default createSignalIslesComposition;
