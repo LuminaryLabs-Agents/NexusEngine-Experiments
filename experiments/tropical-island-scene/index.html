@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="description" content="WebGL high-fidelity cel-shaded island terrain scene composed from horizontal NexusEngine and ProtoKit descriptor domains." />
+  <meta name="description" content="WebGL high-fidelity cel-shaded island terrain scene composed from horizontal NexusEngine descriptor domains, now with beachcomber readability overlays." />
   <title>Tropical Island Scene — NexusEngine</title>
   <style>
     :root{color-scheme:dark;--text:#f5fff7;--muted:#b9d9cb;--gold:#ffe07b;--aqua:#84f5ff}
@@ -51,13 +51,14 @@
 </head>
 <body>
   <main id="app" aria-label="Tropical Island Scene">
-    <canvas id="game" role="application" aria-label="WebGL cel shaded island with lagoon shelves, reef blooms, palm tree, falling coconuts, fish, reflective ocean props, and horizon water"></canvas>
+    <canvas id="game" role="application" aria-label="WebGL cel shaded island with lagoon shelves, reef blooms, beachcomber beacons, shoreline paths, coconut risk shadows, fish focus rings, drift lanes, and tide windows"></canvas>
     <aside id="hud" aria-label="Minimal scene HUD">
-      <div id="title"><strong>Tropical Island Scene</strong> · lagoon visual-fractal handoff</div>
-      <div id="status">loading NexusEngine lagoon descriptor composition…</div>
+      <div id="title"><strong>Tropical Island Scene</strong> · lagoon + beachcomber descriptor handoff</div>
+      <div id="status">loading NexusEngine lagoon and beachcomber descriptor composition…</div>
     </aside>
     <section id="errorPanel" role="alert" hidden></section>
   </main>
   <script type="module" src="./src/main.js?v=tropical-island-scene-lagoon-fractal-20260708"></script>
+  <script type="module" src="./src/beachcomber-readability-entry.js?v=tropical-island-beachcomber-20260708"></script>
 </body>
 </html>
