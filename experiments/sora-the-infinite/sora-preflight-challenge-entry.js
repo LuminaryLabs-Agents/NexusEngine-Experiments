@@ -50,7 +50,7 @@ function renderRings(container, challenge) {
   const tempos = descriptors.routeTempoScores?.scores ?? [];
   const oaths = descriptors.landingOathSeals?.seals ?? [];
   container.innerHTML = `
-    ${rings.map((ring) => `<i class="preflight-gust-ring ${ring.open ? "open" : "offbeat"}" style="--x:${cssPercent(ring.x)};--y:${cssPercent(ring.y)};--r:${ring.radius}px;--v:${ring.sync}" title="${ring.label}"></i>`).join("")}
+    ${rings.map((ring) => `<i class="preflight-gust-ring ${ring.open ? "open" : "offbeat"}" style="--x:${cssPercent(ring.x)};--y:${cssPercent(ring.y)};--d:${ring.radius * 2}px;--v:${ring.sync}" title="${ring.label}"></i>`).join("")}
     ${beads.map((bead) => `<i class="preflight-tether-bead ${bead.linked ? "linked" : "slack"}" style="--x:${cssPercent(bead.x)};--y:${cssPercent(bead.y)};--v:${bead.tension}" title="${bead.label}"></i>`).join("")}
     ${bands.map((band) => `<i class="preflight-altitude-band ${band.signed ? "signed" : "thin"}" style="--y:${cssPercent(band.y)};--w:${cssPercent(band.width)};--v:${band.contract}" title="${band.label}"></i>`).join("")}
     ${locks.map((lock) => `<i class="preflight-cloud-lock ${lock.open ? "open" : "locked"}" style="--x:${cssPercent(lock.x)};--y:${cssPercent(lock.y)};--v:${lock.lock}" title="${lock.label}"></i>`).join("")}
