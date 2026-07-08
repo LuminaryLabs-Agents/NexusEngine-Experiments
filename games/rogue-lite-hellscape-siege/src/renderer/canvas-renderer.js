@@ -103,6 +103,43 @@ function drawHellscapeFractal(ctx, visualFractal) {
   }
 }
 
+function drawHellscapeExpedition(ctx, expeditionReadability) {
+  const descriptors = expeditionReadability?.rendererHandoff?.descriptors ?? {};
+
+  for (const zone of descriptors.safeZones || []) {
+    ring(ctx, zone.center, zone.radius, zone.color, 0.07 + zone.safety * 0.16, 1.4 + zone.safety * 1.2);
+    ring(ctx, zone.center, zone.radius * 0.62, zone.color, 0.06 + zone.safety * 0.1, 1);
+  }
+
+  for (const route of descriptors.extractionRoutes || []) {
+    line(ctx, route.from, route.to, route.color, 0.12 + route.priority * 0.18, 1.2 + route.priority * 2.2);
+    ring(ctx, route.to, 16 + route.priority * 10, route.color, 0.1 + route.priority * 0.14, 1.4);
+  }
+
+  for (const vector of descriptors.survivalVectors || []) {
+    line(ctx, vector.from, vector.to, vector.color, 0.1 + vector.strength * 0.18, 1.4 + vector.strength * 2.4);
+    circle(ctx, vector.to.x, vector.to.y, 4 + vector.strength * 5, vector.color, 0.2 + vector.strength * 0.24);
+  }
+
+  for (const window of descriptors.craftingWindows || []) {
+    ring(ctx, window.anchor, window.radius, window.color, window.canAfford ? 0.16 + window.urgency * 0.15 : 0.05, window.selected ? 2.2 : 1.1);
+    if (window.selected) {
+      ring(ctx, window.anchor, window.radius + 14 + window.urgency * 10, window.color, 0.08 + window.urgency * 0.1, 1);
+    }
+  }
+
+  for (const wake of descriptors.bossWake || []) {
+    ring(ctx, wake.center, wake.radius, wake.color, 0.08 + wake.severity * 0.18, 1.5 + wake.severity * 1.8);
+    if (wake.target) line(ctx, wake.center, wake.target, wake.color, 0.07 + wake.severity * 0.12, 1.2);
+  }
+
+  const compass = descriptors.exitCompass;
+  if (compass) {
+    line(ctx, compass.from, compass.to, compass.color, 0.18, 2);
+    ring(ctx, compass.to, 28 + Math.sin(compass.pulse || 0) * 5, compass.color, 0.2, 2);
+  }
+}
+
 function resizeCanvas(canvas, ctx) {
   const dpr = Math.min(globalThis.devicePixelRatio || 1, 2);
   const width = Math.max(320, globalThis.innerWidth || 960);
@@ -134,6 +171,7 @@ export function createCanvasRenderer(canvas) {
       ctx.stroke();
     }
     drawHellscapeFractal(ctx, state.visualFractal);
+    drawHellscapeExpedition(ctx, state.expeditionReadability);
     if (state.realm?.id === 'lobby') {
       const coreColor = state.wave?.active ? '#ff3300' : '#38bdf8';
       circle(ctx, state.core.x, state.core.y, 46, coreColor, 0.72);
