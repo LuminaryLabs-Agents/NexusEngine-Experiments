@@ -38,6 +38,7 @@ async function boot() {
     renderer,
     loop,
     getState: session.snapshot,
+    getRendererHandoff: () => session.snapshot().visualFractal?.rendererHandoff,
     tick: loop.tick,
     stop: loop.stop,
     start: loop.start
