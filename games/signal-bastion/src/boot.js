@@ -1,8 +1,9 @@
 import { resolveSignalBastionPreset } from "../presets/index.js";
 import { createSignalBastionCanvasRenderer } from "./renderer-canvas.js";
 import { createSignalBastionInputHost } from "./input-host.js";
+import { createSignalBastionCommandFractalDomainKit } from "./signal-bastion-command-fractal-domain-kit.js";
 
-const NEXUS_URL = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusRealtime@main/src/index.js";
+const NEXUS_URL = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js";
 const DEFENSE_KITS_URL = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusRealtime-ProtoKits@main/protokits/generic-defense-aaa-dsk-bridge/index.js";
 const SESSION_COMMAND_KIT_URL = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusRealtime-ProtoKits@main/protokits/generic-defense-session-command-kit/index.js";
 const PRESENTATION_KITS_URL = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusRealtime-ProtoKits@main/protokits/generic-defense-presentation-stack-kit/index.js";
@@ -65,6 +66,16 @@ function getSignalBastionBudgetSnapshot(engine) {
   };
 }
 
+function getSignalBastionCommandFractal(commandFractalKit, presentation, activeBlueprint, preset) {
+  return commandFractalKit.describe({
+    presentation,
+    rawSnapshot: presentation?.rawSnapshot ?? {},
+    activeBlueprint,
+    preset,
+    buildCatalog: preset?.level?.buildOrder ?? []
+  });
+}
+
 function assertDefenseDskBridge(DefenseKits) {
   const requiredExports = [
     "createGenericDefenseDskBundle",
@@ -82,14 +93,14 @@ function assertSessionCommandKit(SessionCommandKits) {
   }
 }
 
-function createSignalBastionDefenseDskKits(NexusRealtime, DefenseKits, SessionCommandKits, preset) {
+function createSignalBastionDefenseDskKits(NexusEngine, DefenseKits, SessionCommandKits, preset) {
   return [
     ...DefenseKits.createGenericDefenseDskBundle(
-      NexusRealtime,
+      NexusEngine,
       preset,
       SIGNAL_BASTION_DEFENSE_DSK_BOUNDARY_IDS
     ),
-    SessionCommandKits.createGenericDefenseSessionCommandKit(NexusRealtime, preset.sessionCommands ?? {})
+    SessionCommandKits.createGenericDefenseSessionCommandKit(NexusEngine, preset.sessionCommands ?? {})
   ];
 }
 
@@ -104,7 +115,7 @@ export async function bootSignalBastion(documentRef = document) {
   const renderer = createSignalBastionCanvasRenderer({ canvas, statStripEl, towerPanelEl, contextPanelEl, errorPanel, errorText });
 
   try {
-    const [NexusRealtime, DefenseKits, SessionCommandKits, PresentationKits] = await Promise.all([
+    const [NexusEngine, DefenseKits, SessionCommandKits, PresentationKits] = await Promise.all([
       import(NEXUS_URL),
       import(DEFENSE_KITS_URL),
       import(SESSION_COMMAND_KIT_URL),
@@ -112,16 +123,17 @@ export async function bootSignalBastion(documentRef = document) {
     ]);
     assertDefenseDskBridge(DefenseKits);
     assertSessionCommandKit(SessionCommandKits);
-    const validationKit = DefenseKits.createGenericDefenseAuthoringQaKit(NexusRealtime);
+    const validationKit = DefenseKits.createGenericDefenseAuthoringQaKit(NexusEngine);
     const validation = validationKit.metadata ? { valid: true, errors: [] } : { valid: true, errors: [] };
     if (!validation.valid) throw new Error(validation.errors.join("\n"));
 
-    const engine = NexusRealtime.createRealtimeGame({
+    const engine = NexusEngine.createRealtimeGame({
       kits: [
-        ...createSignalBastionDefenseDskKits(NexusRealtime, DefenseKits, SessionCommandKits, preset),
-        ...PresentationKits.createGenericDefensePresentationStackKits(NexusRealtime, preset.presentationStack ?? {})
+        ...createSignalBastionDefenseDskKits(NexusEngine, DefenseKits, SessionCommandKits, preset),
+        ...PresentationKits.createGenericDefensePresentationStackKits(NexusEngine, preset.presentationStack ?? {})
       ]
     });
+    const commandFractalKit = createSignalBastionCommandFractalDomainKit();
     engine.tick(0);
 
     const input = createSignalBastionInputHost({
@@ -135,13 +147,20 @@ export async function bootSignalBastion(documentRef = document) {
     let running = true;
     let last = performance.now();
 
+    function createPresentationSnapshot() {
+      const activeBlueprint = input.getActiveBlueprint();
+      const presentation = getSignalBastionPresentation(engine);
+      const commandFractal = getSignalBastionCommandFractal(commandFractalKit, presentation, activeBlueprint, preset);
+      return { ...presentation, commandFractal, domain: { ...(presentation.domain ?? {}), signalBastionCommandFractal: commandFractal } };
+    }
+
     function frame(now) {
       if (!running) return;
       const dt = Math.min(1 / 30, (now - last) / 1000 || 1 / 60);
       last = now;
       engine.tick(dt);
-      const presentation = getSignalBastionPresentation(engine);
-      renderer.draw(presentation, input.getActiveBlueprint());
+      const activeBlueprint = input.getActiveBlueprint();
+      renderer.draw(createPresentationSnapshot(), activeBlueprint);
       requestAnimationFrame(frame);
     }
 
@@ -151,7 +170,9 @@ export async function bootSignalBastion(documentRef = document) {
       renderer,
       preset,
       getState: () => getSignalBastionSessionFacade(engine)?.getSnapshot?.(),
-      getPresentation: () => getSignalBastionPresentation(engine),
+      getPresentation: () => createPresentationSnapshot(),
+      getCommandFractal: () => createPresentationSnapshot().commandFractal,
+      getRendererHandoff: () => createPresentationSnapshot().commandFractal?.rendererHandoff,
       getFoundation: () => getSignalBastionFoundationSnapshot(engine),
       getScale: () => getSignalBastionBudgetSnapshot(engine),
       getWavePreview: () => getSignalBastionWavePreview(engine),
