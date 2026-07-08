@@ -13,6 +13,7 @@ import {
   createHellscapeSiegeKit
 } from './protokits/hellscape-kits.js';
 import { createHellscapeSiegeFractalDomainKit } from './hellscape-siege-fractal-domain-kit.js';
+import { createHellscapeExpeditionReadabilityDomainKit } from './hellscape-expedition-readability-domain-kit.js';
 import { createCanvasRenderer } from './renderer/canvas-renderer.js';
 
 const NEXUS_ENGINE_RUNTIME = Object.freeze({
@@ -24,6 +25,7 @@ const canvas = document.querySelector('#game');
 const errorPanel = document.querySelector('#errorPanel');
 const renderer = createCanvasRenderer(canvas);
 const visualFractalDomain = createHellscapeSiegeFractalDomainKit();
+const expeditionReadabilityDomain = createHellscapeExpeditionReadabilityDomainKit();
 const down = new Set();
 const pressed = new Set();
 
@@ -113,6 +115,36 @@ function describeVisualFractal(state) {
   });
 }
 
+function describeExpeditionReadability(state) {
+  return expeditionReadabilityDomain.describe({
+    ...state,
+    buildCatalog: config.builds,
+    time: engine.world.clock.elapsed
+  });
+}
+
+function composeRendererHandoff(visualFractal, expeditionReadability) {
+  return {
+    id: 'hellscape-composed-renderer-handoff',
+    kit: 'hellscape-composed-renderer-handoff',
+    kind: 'renderer-handoff',
+    policy: visualFractal?.rendererHandoff?.policy ?? expeditionReadability?.rendererHandoff?.policy,
+    descriptors: {
+      ...(visualFractal?.rendererHandoff?.descriptors ?? {}),
+      hellscapeExpedition: expeditionReadability?.rendererHandoff?.descriptors ?? {}
+    },
+    counts: {
+      ...(visualFractal?.rendererHandoff?.counts ?? {}),
+      expeditionRoutes: expeditionReadability?.rendererHandoff?.counts?.extractionRoutes ?? 0,
+      safeZones: expeditionReadability?.rendererHandoff?.counts?.safeZones ?? 0,
+      survivalVectors: expeditionReadability?.rendererHandoff?.counts?.survivalVectors ?? 0,
+      craftingWindows: expeditionReadability?.rendererHandoff?.counts?.craftingWindows ?? 0,
+      bossWake: expeditionReadability?.rendererHandoff?.counts?.bossWake ?? 0,
+      exitCompass: expeditionReadability?.rendererHandoff?.counts?.exitCompass ?? 0
+    }
+  };
+}
+
 function snapshot() {
   const state = engine.getState();
   state.clock = engine.world.clock;
@@ -121,9 +153,12 @@ function snapshot() {
     loaded: Boolean(NEXUS_ENGINE_RUNTIME.module)
   };
   state.visualFractal = describeVisualFractal(state);
+  state.expeditionReadability = describeExpeditionReadability(state);
+  state.rendererHandoff = composeRendererHandoff(state.visualFractal, state.expeditionReadability);
   state.domain = {
     ...(state.domain ?? {}),
-    hellscapeSiegeFractal: state.visualFractal
+    hellscapeSiegeFractal: state.visualFractal,
+    hellscapeExpeditionReadability: state.expeditionReadability
   };
   return state;
 }
@@ -165,9 +200,14 @@ window.GameHost = {
   engine,
   nexusEngineRuntime: NEXUS_ENGINE_RUNTIME,
   visualFractalDomain,
+  expeditionReadabilityDomain,
   getState: snapshot,
   getVisualFractal: () => describeVisualFractal(engine.getState()),
-  getRendererHandoff: () => describeVisualFractal(engine.getState()).rendererHandoff,
+  getExpeditionReadability: () => describeExpeditionReadability(engine.getState()),
+  getRendererHandoff: () => {
+    const state = engine.getState();
+    return composeRendererHandoff(describeVisualFractal(state), describeExpeditionReadability(state));
+  },
   startWave: () => engine.waves.start(),
   add: (id, n = 10) => engine.inventory.add(id, n),
   selectBuild: (index = 0) => engine.build.select(index),
