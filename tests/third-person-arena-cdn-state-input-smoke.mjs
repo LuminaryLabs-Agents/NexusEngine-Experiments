@@ -9,12 +9,13 @@ const app = fs.readFileSync(new URL('../experiments/ThirdPersonFollowThrough/app
 const domain = fs.readFileSync(new URL('../experiments/ThirdPersonFollowThrough/domain/third-person-follow-through-domain.js', import.meta.url), 'utf8');
 
 const cdn = 'https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js';
-assert.ok(indexHtml.includes('arena-fractal-v1'), 'route shell should cache-bust through arena fractal entry');
+assert.ok(indexHtml.includes('locomotion-readability-v1'), 'route shell should cache-bust through locomotion readability entry');
 assert.ok(routeIndex.includes('arena-fractal-entry.js'), 'route index should import arena fractal wrapper');
 assert.ok(entry.includes(cdn), 'arena fractal entry should import NexusEngine main CDN');
 assert.equal(entry.includes('LuminaryLabs-Dev/NexusRealtime'), false, 'changed wrapper should not import old NexusRealtime runtime');
 assert.ok(app.includes('LuminaryLabs-Dev/NexusEngine@main'), 'base app should still use NexusEngine main runtime files');
-assert.ok(domain.includes('third-person-arena-fractal-domain-kit'), 'domain file should record the new kit');
+assert.ok(domain.includes('third-person-arena-fractal-domain-kit'), 'domain file should record the arena kit');
+assert.ok(domain.includes('third-person-locomotion-readability-domain-kit'), 'domain file should record the locomotion kit');
 assert.ok(entry.includes('__thirdPersonArenaFractal'), 'entry should expose state export');
 assert.ok(entry.includes('rendererHandoff'), 'entry should expose renderer handoff');
 
