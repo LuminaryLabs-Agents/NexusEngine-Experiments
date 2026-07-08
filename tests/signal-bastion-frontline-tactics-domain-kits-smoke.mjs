@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
+import "./signal-bastion-evacuation-corridor-readiness-kits-smoke.mjs";
+
 import {
   createBastionBossFocusLensKit,
   createBastionBuildSlotValueFieldKit,
