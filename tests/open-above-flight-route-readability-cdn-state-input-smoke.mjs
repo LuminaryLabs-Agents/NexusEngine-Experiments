@@ -10,7 +10,7 @@ const configSource = readFileSync("experiments/the-open-above/open-above.config.
 const htmlSource = readFileSync("experiments/the-open-above/index.html", "utf8");
 const entrySource = readFileSync("experiments/the-open-above/open-above-flight-route-readability-entry.js", "utf8");
 const kitSource = readFileSync("experiments/the-open-above/open-above-flight-route-readability-kits.js", "utf8");
-const runChecksSource = readFileSync("scripts/run-checks.mjs", "utf8");
+const existingPlaywrightSmokeSource = readFileSync("tests/open-above-playwright-cdn-state-input-smoke.mjs", "utf8");
 const manifestSource = readFileSync("experiments/domain-kit-cutover-manifest.json", "utf8");
 
 assert.ok(configSource.includes(CDN), "Open Above config uses NexusEngine main CDN");
@@ -21,8 +21,8 @@ assert.ok(htmlSource.includes("open-above-flight-route-readability-entry.js?v=fl
 assert.ok(entrySource.includes("getFlightRouteReadability"), "GameHost exposes flight route readability");
 assert.ok(entrySource.includes("getRendererHandoff"), "GameHost exposes composed renderer handoff");
 assert.ok(entrySource.includes("rendererConsumes = \"descriptors-only\""), "overlay declares descriptor-only consumption");
-assert.ok(runChecksSource.includes("tests/open-above-flight-route-readability-kits-smoke.mjs"), "full/deploy checks include kit smoke");
-assert.ok(runChecksSource.includes("tests/open-above-flight-route-readability-cdn-state-input-smoke.mjs"), "full/deploy checks include CDN state smoke");
+assert.ok(existingPlaywrightSmokeSource.includes("./open-above-flight-route-readability-kits-smoke.mjs"), "existing Open Above Playwright smoke imports kit smoke");
+assert.ok(existingPlaywrightSmokeSource.includes("./open-above-flight-route-readability-cdn-state-input-smoke.mjs"), "existing Open Above Playwright smoke imports CDN state smoke");
 assert.ok(manifestSource.includes("the-open-above"), "manifest records The Open Above canonical route");
 assert.ok(manifestSource.includes("open-above-flight-route-readability-domain-kit"), "manifest records the flight route domain kit");
 
