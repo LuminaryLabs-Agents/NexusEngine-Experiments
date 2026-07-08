@@ -23,6 +23,8 @@ assert.ok(threeRenderer.includes("makeDenseForest"), "Three renderer should crea
 assert.ok(threeRenderer.includes("InstancedMesh"), "Three renderer should use instanced meshes for dense trees");
 assert.ok(threeRenderer.includes("createFoglineEnvironmentContent"), "Three renderer should consume Fogline environment content data");
 assert.ok(threeRenderer.includes("syncEnvironment"), "Three renderer should sync the dense environment once per level");
+assert.ok(threeRenderer.includes("syncVisualFractal"), "Three renderer should consume Fogline visual fractal descriptors");
+assert.ok(threeRenderer.includes("fractalMeshes"), "Three renderer should retain descriptor mesh instances between frames");
 assert.ok(threeRenderer.includes("player.pitch"), "Three renderer should use vertical player pitch");
 assert.ok(threeRenderer.includes("player.eyeHeight"), "Three renderer should use player eye height");
 assert.ok(threeRenderer.includes("tiltX"), "Three renderer should apply vegetation x tilt");
@@ -30,6 +32,9 @@ assert.ok(threeRenderer.includes("tiltZ"), "Three renderer should apply vegetati
 assert.ok(threeRenderer.includes("forwardFromYaw"), "Three renderer should drive camera direction from player yaw");
 
 assert.ok(canvasRenderer.includes('canvas.getContext("2d")'), "legacy Canvas renderer should remain as fallback");
+assert.ok(canvasRenderer.includes("drawGroundFractals"), "Canvas renderer should consume ground/thread descriptor handoff");
+assert.ok(canvasRenderer.includes("drawSignalFractals"), "Canvas renderer should consume aura/gate/wraith descriptor handoff");
 assert.ok(html.includes('<canvas id="game"'), "Fogline page should keep the same canvas host");
+assert.ok(html.includes("Nexus Engine Experiment"), "Fogline page should use Nexus Engine branding");
 
 console.log("Fogline Three renderer smoke passed.");
