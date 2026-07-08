@@ -113,8 +113,8 @@ export const games = Object.freeze([
     kind: "experiment",
     visual: "sora",
     playLabel: "Play experiment",
-    tags: [{ label: "Air Race", tone: "gold" }, { label: "Checkpoint", tone: "green" }, { label: "World", tone: "blue" }],
-    description: "Aerial checkpoint validation for terrain patches, updraft volumes, checkpoints, render descriptors, and racing camera state."
+    tags: [{ label: "Open Flight", tone: "gold" }, { label: "Visual Domains", tone: "green" }, { label: "World", tone: "blue" }],
+    description: "Open aerial traversal route that redirects into The Open Above and now exposes visualDomains for cloud strata, horizon ridgelines, thermal markers, speed ribbons, wingtip contrails, and flight mood readability."
   },
   {
     id: "zombie-orchard",
