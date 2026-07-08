@@ -1,3 +1,8 @@
+import {
+  VR_BOARD_OBJECTIVE_READABILITY_DOMAIN_TREE,
+  createVrBoardObjectiveReadabilityDomainKit
+} from "./vr-board-objective-readability-kits.js";
+
 function stableArray(value) {
   return Array.isArray(value) ? [...value] : [];
 }
@@ -44,6 +49,82 @@ function distanceToNearestHazard(x, level = {}) {
   return hazards.reduce((best, hazard) => Math.min(best, Math.abs(Number(hazard.x ?? 0) - x)), 99);
 }
 
+function mergeObjectiveCheckpointThread(baseThread = {}, objectiveReadability = {}, avatar = {}, level = {}) {
+  const objectiveDescriptors = objectiveReadability.rendererHandoff?.descriptors ?? {};
+  const orbitNodes = stableArray(objectiveDescriptors.collectiblePriorityOrbits).map((orbit, index) => ({
+    id: `objective-orbit-node-${orbit.coinId ?? index}`,
+    kind: "checkpoint",
+    role: "objective-orbit",
+    x: round(Number(orbit.x ?? 0), 3),
+    y: round(Number(orbit.y ?? 0), 3),
+    active: Boolean(orbit.active),
+    priority: round(orbit.priority ?? 0, 3)
+  }));
+  const gate = objectiveDescriptors.exitReadinessGate;
+  const exitNode = gate ? [{
+    id: "objective-exit-readiness-node",
+    kind: "checkpoint",
+    role: "exit-readiness",
+    x: round(Number(gate.x ?? level.exit?.x ?? 12), 3),
+    y: round(Number(gate.y ?? level.exit?.y ?? 2), 3),
+    active: gate.readiness >= 0.72,
+    priority: round(gate.readiness ?? 0, 3)
+  }] : [];
+  const nodes = [...stableArray(baseThread.nodes), ...orbitNodes, ...exitNode]
+    .sort((a, b) => Number(a.x ?? 0) - Number(b.x ?? 0))
+    .map((node, index) => ({ ...node, order: index }));
+  const progress = round(avatarProgress(avatar, level), 3);
+  const links = nodes.slice(1).map((node, index) => ({
+    id: `objective-checkpoint-link-${index}`,
+    kind: "checkpoint-link",
+    from: nodes[index].id,
+    to: node.id,
+    progress
+  }));
+  return { ...baseThread, nodes, links };
+}
+
+function mergeObjectiveRecoveryBeacons(baseRecovery = {}, objectiveReadability = {}) {
+  const objectiveDescriptors = objectiveReadability.rendererHandoff?.descriptors ?? {};
+  const hazardBeacons = stableArray(objectiveDescriptors.hazardApproachFunnels).map((funnel) => ({
+    id: `objective-hazard-funnel-beacon-${funnel.hazardId}`,
+    kind: "fail-recovery-beacon",
+    role: "hazard-funnel",
+    x: round(Number(funnel.x ?? 0), 3),
+    y: round(Number(funnel.y ?? 0), 3),
+    radius: round(0.52 + Number(funnel.urgency ?? 0) * 0.52, 3),
+    urgency: round(Number(funnel.urgency ?? 0), 3)
+  }));
+  const comfort = objectiveDescriptors.headComfortCorridor;
+  const comfortBeacons = comfort?.tone === "warning" ? [{
+    id: "objective-head-comfort-beacon",
+    kind: "fail-recovery-beacon",
+    role: "comfort-warning",
+    x: round(Number(baseRecovery.recoveryAnchor?.x ?? 0), 3),
+    y: round(Number(baseRecovery.recoveryAnchor?.y ?? 1), 3),
+    radius: round(0.44 + Number(comfort.drift ?? 0) * 0.34, 3),
+    urgency: round(clamp01(0.42 + Number(comfort.drift ?? 0) * 0.48), 3)
+  }] : [];
+  return {
+    ...baseRecovery,
+    beacons: [...stableArray(baseRecovery.beacons), ...hazardBeacons, ...comfortBeacons]
+  };
+}
+
+function mergeObjectiveTempoBands(baseBands = [], objectiveReadability = {}) {
+  const objectiveDescriptors = objectiveReadability.rendererHandoff?.descriptors ?? {};
+  const laneBands = stableArray(objectiveDescriptors.momentumLanes).map((lane, index) => ({
+    id: `objective-momentum-tempo-band-${index}`,
+    kind: "tempo-pulse-band",
+    x: round(Number(lane.x ?? 0), 3),
+    y: round(Number(lane.y ?? 0), 3),
+    pulse: round(Number(lane.pulse ?? 0), 3),
+    progress: round(Number(lane.progress ?? 0), 3),
+    rendererContract: notOwnRendererContract("vr-board-objective-tempo-fold")
+  }));
+  return [...stableArray(baseBands), ...laneBands];
+}
+
 export const VR_BOARD_TRAVERSAL_READABILITY_DOMAIN_TREE = Object.freeze({
   root: "vr-board-traversal-readability-domain",
   subdomains: [
@@ -67,6 +148,10 @@ export const VR_BOARD_TRAVERSAL_READABILITY_DOMAIN_TREE = Object.freeze({
         { id: "tempo-pulse-band", kits: ["vr-board-tempo-pulse-band-kit"] },
         { id: "control-coaching-strip", kits: ["vr-board-control-coaching-strip-kit"] }
       ]
+    },
+    {
+      id: "objective-readability",
+      subdomains: VR_BOARD_OBJECTIVE_READABILITY_DOMAIN_TREE.subdomains
     },
     {
       id: "renderer-handoff",
@@ -292,19 +377,25 @@ export function createVrBoardTraversalRendererHandoffKit({
   checkpointThreadKit = createVrBoardCheckpointThreadKit(),
   failRecoveryBeaconKit = createVrBoardFailRecoveryBeaconKit(),
   tempoPulseBandKit = createVrBoardTempoPulseBandKit(),
-  controlCoachingStripKit = createVrBoardControlCoachingStripKit()
+  controlCoachingStripKit = createVrBoardControlCoachingStripKit(),
+  objectiveReadabilityDomainKit = createVrBoardObjectiveReadabilityDomainKit()
 } = {}) {
   return {
     id: "n-vr-board-traversal-renderer-handoff-kit",
     domain: "vr-board-traversal-readability/renderer-handoff",
-    kits: { jumpArcForecastKit, landingZoneHeatKit, checkpointThreadKit, failRecoveryBeaconKit, tempoPulseBandKit, controlCoachingStripKit },
+    kits: { jumpArcForecastKit, landingZoneHeatKit, checkpointThreadKit, failRecoveryBeaconKit, tempoPulseBandKit, controlCoachingStripKit, objectiveReadabilityDomainKit },
     describe(input = {}) {
       const jumpArcForecast = jumpArcForecastKit.describe(input);
       const landingZoneHeat = landingZoneHeatKit.describe(input);
-      const checkpointThread = checkpointThreadKit.describe(input);
-      const failRecoveryBeacons = failRecoveryBeaconKit.describe(input);
-      const tempoPulseBands = tempoPulseBandKit.describe(input);
+      const baseCheckpointThread = checkpointThreadKit.describe(input);
+      const baseFailRecoveryBeacons = failRecoveryBeaconKit.describe(input);
+      const baseTempoPulseBands = tempoPulseBandKit.describe(input);
       const controlCoachingStrip = controlCoachingStripKit.describe(input);
+      const objectiveReadability = objectiveReadabilityDomainKit.describe(input);
+      const checkpointThread = mergeObjectiveCheckpointThread(baseCheckpointThread, objectiveReadability, input.avatar, input.level);
+      const failRecoveryBeacons = mergeObjectiveRecoveryBeacons(baseFailRecoveryBeacons, objectiveReadability);
+      const tempoPulseBands = mergeObjectiveTempoBands(baseTempoPulseBands, objectiveReadability);
+      const objectiveCounts = objectiveReadability.rendererHandoff?.counts ?? {};
       const counts = {
         jumpArcPoints: jumpArcForecast.points.length,
         landingZones: landingZoneHeat.length,
@@ -312,7 +403,13 @@ export function createVrBoardTraversalRendererHandoffKit({
         checkpointLinks: checkpointThread.links.length,
         recoveryBeacons: failRecoveryBeacons.beacons.length,
         tempoBands: tempoPulseBands.length,
-        coachingChips: controlCoachingStrip.chips.length
+        coachingChips: controlCoachingStrip.chips.length,
+        objectiveOrbits: Number(objectiveCounts.collectiblePriorityOrbits ?? 0),
+        objectiveFunnels: Number(objectiveCounts.hazardApproachFunnels ?? 0),
+        objectiveLanes: Number(objectiveCounts.momentumLanes ?? 0),
+        objectiveExitGate: Number(objectiveCounts.exitReadinessGate ?? 0),
+        objectiveComfortBands: Number(objectiveCounts.headComfortBands ?? 0),
+        objectiveRiskChips: Number(objectiveCounts.riskChips ?? 0)
       };
       counts.total = Object.values(counts).reduce((sum, value) => sum + value, 0);
       return {
@@ -326,14 +423,15 @@ export function createVrBoardTraversalRendererHandoffKit({
           checkpointThread,
           failRecoveryBeacons,
           tempoPulseBands,
-          controlCoachingStrip
+          controlCoachingStrip,
+          objectiveReadability
         },
         counts
       };
     },
     snapshot(input) {
       const handoff = this.describe(input);
-      return { total: handoff.counts.total, landingZones: handoff.counts.landingZones, tone: handoff.descriptors.controlCoachingStrip.tone };
+      return { total: handoff.counts.total, landingZones: handoff.counts.landingZones, tone: handoff.descriptors.controlCoachingStrip.tone, objectiveOrbits: handoff.counts.objectiveOrbits };
     }
   };
 }
@@ -356,6 +454,7 @@ export function createVrBoardTraversalReadabilityDomainKit(options = {}) {
         failRecoveryBeacons: rendererHandoff.descriptors.failRecoveryBeacons,
         tempoPulseBands: rendererHandoff.descriptors.tempoPulseBands,
         controlCoachingStrip: rendererHandoff.descriptors.controlCoachingStrip,
+        objectiveReadability: rendererHandoff.descriptors.objectiveReadability,
         rendererContract: notOwnRendererContract("vr-board-traversal-readability-domain-kit")
       };
     },
@@ -366,7 +465,8 @@ export function createVrBoardTraversalReadabilityDomainKit(options = {}) {
         arcPoints: descriptor.jumpArcForecast.points.length,
         landingZones: descriptor.landingZoneHeat.length,
         checkpointNodes: descriptor.checkpointThread.nodes.length,
-        coachingTone: descriptor.controlCoachingStrip.tone
+        coachingTone: descriptor.controlCoachingStrip.tone,
+        objectiveOrbits: descriptor.objectiveReadability?.collectiblePriorityOrbits?.length ?? 0
       };
     }
   };
