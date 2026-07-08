@@ -9,9 +9,9 @@ const domain = fs.readFileSync(new URL('../experiments/ThirdPersonFollowThrough/
 const kitSource = fs.readFileSync(new URL('../experiments/ThirdPersonFollowThrough/kits/third-person-locomotion-readability-domain-kit.js', import.meta.url), 'utf8');
 
 const cdn = 'https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js';
-assert.ok(indexHtml.includes('locomotion-readability-v1'), 'route shell should cache-bust locomotion readability entry');
+assert.ok(indexHtml.includes('camera-composition-readability-v1'), 'route shell should cache-bust through the latest composed readability entry');
 assert.ok(indexHtml.includes('Locomotion Readability: ON'), 'route shell should expose locomotion readability status');
-assert.ok(routeIndex.includes('locomotion-readability-v1'), 'route index should import cache-busted wrapper');
+assert.ok(routeIndex.includes('camera-composition-readability-v1'), 'route index should import cache-busted wrapper');
 assert.ok(entry.includes(cdn), 'changed wrapper should import NexusEngine main CDN');
 assert.equal(entry.includes('LuminaryLabs-Dev/NexusRealtime'), false, 'changed wrapper should not import old NexusRealtime runtime');
 assert.ok(entry.includes('third-person-locomotion-readability-domain-kit'), 'entry should import locomotion readability domain kit');
@@ -19,8 +19,8 @@ assert.ok(entry.includes('getLocomotionReadability'), 'entry should expose locom
 assert.ok(entry.includes('getRendererHandoff'), 'entry should expose composed renderer handoff');
 assert.ok(entry.includes('landingSafetyPatches'), 'entry renderer should consume landing safety descriptors');
 assert.ok(entry.includes('cameraRecenterLeashes'), 'entry renderer should consume recenter leash descriptors');
-assert.ok(domain.includes('third-person-locomotion-readability-domain-kit'), 'domain file should record the new kit');
-assert.equal(kitSource.includes('LuminaryLabs-Dev/NexusRealtime'), false, 'new kit should not import old runtime');
+assert.ok(domain.includes('third-person-locomotion-readability-domain-kit'), 'domain file should record the locomotion kit');
+assert.equal(kitSource.includes('LuminaryLabs-Dev/NexusRealtime'), false, 'locomotion kit should not import old runtime');
 
 const kit = createThirdPersonLocomotionReadabilityDomainKit();
 const stateInputCases = [
