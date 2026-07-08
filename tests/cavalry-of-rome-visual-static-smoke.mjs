@@ -13,6 +13,7 @@ const campaignGrid = readFileSync("experiments/The Cavalry of Rome/src/cavalry-c
 const campaignSelect = readFileSync("experiments/The Cavalry of Rome/src/cavalry-campaign-space-select-pass.js", "utf8");
 const campaignActions = readFileSync("experiments/The Cavalry of Rome/src/cavalry-campaign-world-actions-pass.js", "utf8");
 const campaignFractal = readFileSync("experiments/The Cavalry of Rome/src/cavalry-campaign-fractal-domain-kit.js", "utf8");
+const campaignOrders = readFileSync("experiments/The Cavalry of Rome/src/cavalry-battlefield-orders-domain-kit.js", "utf8");
 const campaignFractalHandoff = readFileSync("experiments/The Cavalry of Rome/src/cavalry-campaign-fractal-handoff-pass.js", "utf8");
 const endpoint = readFileSync("apps/the-cavalry-of-rome/index.html", "utf8");
 const experimentEntry = readFileSync("experiments/The Cavalry of Rome/index.html", "utf8");
@@ -105,24 +106,41 @@ for (const kitName of [
   assert.ok(campaignFractal.includes(kitName), `campaign fractal kit file should include ${kitName}`);
   assert.ok(plan.existingDskStack.includes(kitName), `domain plan should list ${kitName}`);
 }
+
+for (const kitName of [
+  "cavalry-scouting-vector-kit",
+  "cavalry-flank-risk-arc-kit",
+  "cavalry-reinforcement-callout-kit",
+  "cavalry-attrition-forecast-chip-kit",
+  "cavalry-turn-tempo-standard-kit",
+  "cavalry-objective-pressure-banner-kit",
+  "cavalry-battlefield-orders-renderer-handoff-kit",
+  "cavalry-battlefield-orders-domain-kit"
+]) {
+  assert.ok(campaignOrders.includes(kitName), `campaign orders kit file should include ${kitName}`);
+  assert.ok(plan.existingDskStack.includes(kitName), `domain plan should list ${kitName}`);
+}
+
 assert.ok(campaignFractal.includes("renderer consumes descriptors only"), "campaign fractal tree should declare descriptor-only renderer handoff");
+assert.ok(campaignOrders.includes("renderer consumes descriptors only"), "campaign orders tree should declare descriptor-only renderer handoff");
 assert.ok(campaignFractalHandoff.includes("https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js"), "campaign fractal handoff should import NexusEngine main CDN");
 assert.ok(campaignFractalHandoff.includes("CavalryCampaignFractal"), "campaign fractal handoff should expose global state");
+assert.ok(campaignFractalHandoff.includes("getCavalryBattlefieldOrders"), "campaign handoff should expose battlefield order descriptors");
 assert.ok(campaignFractalHandoff.includes("rendererConsumes = \"descriptors-only\""), "handoff pass should mark descriptor-only consumption");
 assert.ok(!campaignFractalHandoff.includes("LuminaryLabs-Dev/NexusRealtime@main"), "changed handoff should not import old NexusRealtime runtime CDN");
 
-assert.ok(endpoint.includes("cavalry-campaign-3d-terrain-pass.js?v=campaign-033"), "live endpoint should load the campaign terrain pass");
-assert.ok(endpoint.includes("cavalry-campaign-tactical-grid-pass.js?v=campaign-033"), "live endpoint should load the tactical grid pass");
-assert.ok(endpoint.includes("cavalry-campaign-space-select-pass.js?v=campaign-033"), "live endpoint should load the space select pass");
-assert.ok(endpoint.includes("cavalry-campaign-world-actions-pass.js?v=campaign-033"), "live endpoint should load the world action pass");
-assert.ok(endpoint.includes("cavalry-campaign-fractal-handoff-pass.js?v=campaign-033"), "live endpoint should load the campaign fractal handoff pass");
-assert.ok(endpoint.includes("Campaign 033"), "live endpoint should identify the upgraded build");
+assert.ok(endpoint.includes("cavalry-campaign-3d-terrain-pass.js?v=campaign-034"), "live endpoint should load the campaign terrain pass");
+assert.ok(endpoint.includes("cavalry-campaign-tactical-grid-pass.js?v=campaign-034"), "live endpoint should load the tactical grid pass");
+assert.ok(endpoint.includes("cavalry-campaign-space-select-pass.js?v=campaign-034"), "live endpoint should load the space select pass");
+assert.ok(endpoint.includes("cavalry-campaign-world-actions-pass.js?v=campaign-034"), "live endpoint should load the world action pass");
+assert.ok(endpoint.includes("cavalry-campaign-fractal-handoff-pass.js?v=campaign-034"), "live endpoint should load the campaign fractal handoff pass");
+assert.ok(endpoint.includes("Campaign 034"), "live endpoint should identify the upgraded build");
 assert.ok(!endpoint.includes("attachNexusRealtimePageLoader"), "live endpoint should not attach shared page-loader UI");
 assert.ok(!endpoint.includes("nexus-realtime-page-loader.js"), "live endpoint should not import shared page-loader UI");
 
 assert.ok(experimentEntry.includes("./src/main-realistic.js"), "experiment entry should retain the realistic Cavalry module");
 assert.ok(experimentEntry.includes("./src/cavalry-campaign-map-pass.js"), "experiment entry should load the campaign map pass");
-assert.ok(experimentEntry.includes("./src/cavalry-campaign-fractal-handoff-pass.js?v=campaign-033"), "experiment entry should load the campaign fractal handoff pass");
+assert.ok(experimentEntry.includes("./src/cavalry-campaign-fractal-handoff-pass.js?v=campaign-034"), "experiment entry should load the campaign fractal handoff pass");
 assert.ok(experimentEntry.includes("CavalryUiSinkShim"), "experiment entry should provide non-DOM status sinks for runtime compatibility");
 assert.ok(!experimentEntry.includes("attachNexusRealtimePageLoader"), "experiment entry should not attach shared page-loader UI");
 assert.ok(!experimentEntry.includes("nexus-realtime-page-loader.js"), "experiment entry should not import shared page-loader UI");
@@ -134,9 +152,13 @@ assert.equal(plan.canonicalRouteClaim, true, "Cavalry should now claim the canon
 assert.equal(plan.deterministicReplayClaim, false, "Cavalry should not claim deterministic replay yet");
 assert.equal(plan.fidelityFocus.mapNavigation.includes("campaign"), true, "domain plan should record campaign map navigation");
 assert.ok(plan.fidelityFocus.campaignReadability, "domain plan should record campaign readability fidelity");
+assert.ok(plan.fidelityFocus.orderReadability, "domain plan should record order readability fidelity");
 assert.ok(plan.campaignFractalDomain, "domain plan should record the campaign fractal domain");
+assert.ok(plan.battlefieldOrdersDomain, "domain plan should record the battlefield orders domain");
 assert.ok(plan.currentLocalSurfaces.includes("campaign fractal supply-line descriptors"), "domain plan should list supply-line descriptors");
+assert.ok(plan.currentLocalSurfaces.includes("battlefield orders scouting-vector descriptors"), "domain plan should list scouting-vector descriptors");
 assert.ok(plan.futureProtoKitCandidatesFromCustomLogic.some((entry) => entry.id === "campaign-supply-line-kit"), "supply line kit should be mapped to a future ProtoKit candidate");
 assert.ok(plan.futureProtoKitCandidatesFromCustomLogic.some((entry) => entry.id === "campaign-command-choice-kit"), "command choice kit should be mapped to a future ProtoKit candidate");
+assert.ok(plan.futureProtoKitCandidatesFromCustomLogic.some((entry) => entry.id === "campaign-scouting-vector-kit"), "scouting vector kit should be mapped to a future ProtoKit candidate");
 
 console.log("Cavalry of Rome visual DSK static smoke passed.");
