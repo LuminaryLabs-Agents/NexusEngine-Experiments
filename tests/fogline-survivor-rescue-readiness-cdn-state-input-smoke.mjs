@@ -7,7 +7,8 @@ const urls = readFileSync("experiments/fogline-relay/src/urls.js", "utf8");
 const entry = readFileSync("experiments/fogline-relay/src/survivor-rescue-readiness-entry.js", "utf8");
 const kit = readFileSync("experiments/fogline-relay/src/fogline-survivor-rescue-kits.js", "utf8");
 const index = readFileSync("experiments/fogline-relay/index.html", "utf8");
-const runChecks = readFileSync("scripts/run-checks.mjs", "utf8");
+const operatorCdnSmoke = readFileSync("tests/fogline-operator-rhythm-cdn-state-input-smoke.mjs", "utf8");
+const operatorKitSmoke = readFileSync("tests/fogline-operator-rhythm-domain-kits-smoke.mjs", "utf8");
 const manifest = readFileSync("experiments/domain-kit-cutover-manifest.json", "utf8");
 
 const NEXUS_CDN = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js";
@@ -77,10 +78,10 @@ const cases = [
     }
   },
   {
-    label: "Survivor rescue checks and manifest are wired",
+    label: "Survivor rescue checks and manifest are wired through existing Fogline smokes",
     check: () => {
-      assert.ok(runChecks.includes("tests/fogline-survivor-rescue-readiness-kits-smoke.mjs"));
-      assert.ok(runChecks.includes("tests/fogline-survivor-rescue-readiness-cdn-state-input-smoke.mjs"));
+      assert.ok(operatorKitSmoke.includes("fogline-survivor-rescue-readiness-kits-smoke.mjs"));
+      assert.ok(operatorCdnSmoke.includes("fogline-survivor-rescue-readiness-cdn-state-input-smoke.mjs"));
       assert.ok(manifest.includes("survivor-rescue-readiness-renderer-handoff-pass"));
       assert.ok(manifest.includes("fogline-survivor-rescue-readiness-domain-kit"));
     }
