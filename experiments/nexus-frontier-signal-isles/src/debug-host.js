@@ -1,8 +1,9 @@
-export function createSignalIslesDebugHost({ composition, renderer, input }) {
+export function createSignalIslesDebugHost({ composition, renderer, input, nexusRuntimeDescriptor = null }) {
   return {
     engine: composition.engine,
     renderer,
     input,
+    nexusRuntimeDescriptor,
     tick(dt = 1 / 60) {
       return composition.tick(dt);
     },
@@ -20,6 +21,9 @@ export function createSignalIslesDebugHost({ composition, renderer, input }) {
     },
     getKitStates() {
       return composition.getKitStates();
+    },
+    getVisualFractalState() {
+      return composition.getVisualFractalState();
     },
     getRecentEvents() {
       return composition.getRecentEvents();
