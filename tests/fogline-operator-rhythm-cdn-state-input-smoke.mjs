@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import "./fogline-survivor-rescue-readiness-cdn-state-input-smoke.mjs";
+import "./fogline-storm-evacuation-cdn-state-input-smoke.mjs";
 import { readFileSync } from "node:fs";
 
 const urls = readFileSync("experiments/fogline-relay/src/urls.js", "utf8");
@@ -54,8 +55,8 @@ const cases = [
     }
   },
   {
-    label: "Route shell cache-busts survivor rescue upgrade while preserving operator rhythm baseline",
-    check: () => assert.ok(index.includes("fogline-survivor-rescue-readiness-1") && index.includes("survivor-rescue-readiness-renderer-handoff-pass"))
+    label: "Route shell cache-busts survivor and storm evacuation upgrades while preserving operator rhythm baseline",
+    check: () => assert.ok(index.includes("fogline-survivor-rescue-readiness-1") && index.includes("storm-evacuation-readiness-renderer-handoff-pass"))
   },
   {
     label: "New operator rhythm checks are wired",
