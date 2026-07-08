@@ -79,10 +79,10 @@
       "id": "fogline-relay",
       "kind": "experiment",
       "canonicalPath": "experiments/fogline-relay/",
-      "status": "radio-repair-readiness-renderer-handoff-pass",
-      "domainCutover": ["action-input-kit", "scan-survey-kit", "fogline-visual-fractal-domain-kit", "fogline-renderer-handoff-kit", "fogline-signal-cartography-domain-kit", "fogline-operator-rhythm-domain-kit", "fogline-survivor-rescue-readiness-domain-kit", "fogline-storm-evacuation-readiness-domain-kit", "fogline-radio-repair-readiness-domain-kit"],
-      "bridgeNeeded": "browser host imports NexusEngine main CDN; visual, route-readability, signal-cartography, operator-rhythm, survivor-rescue, storm-evacuation, and radio-repair descriptors are consumed by presentation only; previous rescue and storm readiness passes remain loaded before radio repair",
-      "featureParity": ["first-person movement", "scan", "relays", "signal cartography", "operator rhythm", "survivor rescue readiness", "storm evacuation readiness", "radio repair readiness"]
+      "status": "blackout-recovery-readiness-renderer-handoff-pass",
+      "domainCutover": ["action-input-kit", "scan-survey-kit", "fogline-visual-fractal-domain-kit", "fogline-renderer-handoff-kit", "fogline-signal-cartography-domain-kit", "fogline-operator-rhythm-domain-kit", "fogline-survivor-rescue-readiness-domain-kit", "fogline-storm-evacuation-readiness-domain-kit", "fogline-radio-repair-readiness-domain-kit", "fogline-blackout-recovery-readiness-domain-kit"],
+      "bridgeNeeded": "browser host imports NexusEngine main CDN; visual, route-readability, signal-cartography, operator-rhythm, survivor-rescue, storm-evacuation, radio-repair, and blackout-recovery descriptors are consumed by presentation only; previous readiness passes remain loaded before the blackout pass",
+      "featureParity": ["first-person movement", "scan", "relays", "signal cartography", "operator rhythm", "survivor rescue readiness", "storm evacuation readiness", "radio repair readiness", "blackout recovery readiness"]
     },
     {
       "id": "nexus-frontier-signal-isles",
