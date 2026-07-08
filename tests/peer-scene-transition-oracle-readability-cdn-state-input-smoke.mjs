@@ -5,6 +5,7 @@ import { createSceneOracleReadabilityDomainKit } from "../experiments/_kits/peer
 const entryPath = "experiments/peer-scene-transition/shared/scene-oracle-readability-entry.js";
 const kitPath = "experiments/_kits/peer-scene-transition/peer-scene-oracle-readability-handoff-kits.js";
 const checksPath = "scripts/run-checks.mjs";
+const playwrightSmokePath = "tests/peer-scene-transition-playwright-smoke.mjs";
 const htmlPaths = [
   "experiments/peer-scene-transition/index.html",
   "experiments/peer-scene-transition/camp.html",
@@ -16,6 +17,7 @@ const htmlPaths = [
 const entry = readFileSync(entryPath, "utf8");
 const kitSource = readFileSync(kitPath, "utf8");
 const checks = readFileSync(checksPath, "utf8");
+const playwrightSmoke = readFileSync(playwrightSmokePath, "utf8");
 
 assert.ok(entry.includes("https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js"), "oracle entry should import NexusEngine main CDN");
 assert.ok(!entry.includes("LuminaryLabs-Dev/NexusRealtime@main/src/index.js"), "oracle entry should not import old NexusRealtime runtime CDN");
@@ -25,8 +27,9 @@ assert.ok(entry.includes("getRendererHandoff"), "entry should compose renderer h
 assert.ok(entry.includes("rendererHandoff") || entry.includes("oracleReadability"), "entry should expose renderer handoff descriptors");
 assert.ok(kitSource.includes("rendererMustNotOwn"), "kit should declare renderer ownership boundary");
 assert.ok(!kitSource.includes("document.") && !kitSource.includes("window.") && !kitSource.includes("THREE"), "kit should stay renderer and DOM neutral");
-assert.ok(checks.includes("tests/peer-scene-transition-oracle-readability-handoff-smoke.mjs"), "full/deploy checks should include oracle kit smoke");
-assert.ok(checks.includes("tests/peer-scene-transition-oracle-readability-cdn-state-input-smoke.mjs"), "full/deploy checks should include oracle CDN state smoke");
+assert.ok(checks.includes("tests/peer-scene-transition-playwright-smoke.mjs"), "full/deploy checks should run the existing peer scene smoke");
+assert.ok(playwrightSmoke.includes("./peer-scene-transition-oracle-readability-handoff-smoke.mjs"), "existing peer scene smoke should import oracle kit smoke");
+assert.ok(playwrightSmoke.includes("./peer-scene-transition-oracle-readability-cdn-state-input-smoke.mjs"), "existing peer scene smoke should import oracle CDN state smoke");
 
 for (const path of htmlPaths) {
   const html = readFileSync(path, "utf8");
