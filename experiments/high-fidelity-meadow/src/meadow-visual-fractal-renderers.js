@@ -31,6 +31,11 @@ function makeSoftPlane(width, height, color, opacity) {
   return new THREE.Mesh(geometry, material);
 }
 
+function makeLine(points, color, opacity) {
+  const material = new THREE.LineBasicMaterial({ color, transparent: true, opacity, depthWrite: false });
+  return new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), material);
+}
+
 function addGrassPatches(group, grassPatches = {}) {
   const layer = new THREE.Group();
   layer.name = "meadow.visual.grassPatches";
@@ -119,20 +124,111 @@ function addDepthStrata(group, depthStrata = {}) {
   group.add(layer);
 }
 
-export function createMeadowVisualFractalLayers(visualFractal = {}) {
+function addPollinatorRoutes(group, pollinatorRoutes = {}) {
+  const layer = new THREE.Group();
+  layer.name = "meadow.ecology.pollinatorRoutes";
+  for (const route of pollinatorRoutes.routes ?? []) {
+    const points = [new THREE.Vector3(route.from.x, route.from.y, route.from.z), new THREE.Vector3((route.from.x + route.to.x) * 0.5, Math.max(route.from.y, route.to.y) + 0.7 + route.arc, (route.from.z + route.to.z) * 0.5), new THREE.Vector3(route.to.x, route.to.y, route.to.z)];
+    const line = makeLine(points, 0xffdf74, 0.12 + route.density * 0.26);
+    line.name = route.id;
+    line.userData = { descriptor: route, baseOpacity: line.material.opacity };
+    layer.add(line);
+  }
+  group.add(layer);
+}
+
+function addShepherdPaths(group, shepherdPaths = {}) {
+  const layer = new THREE.Group();
+  layer.name = "meadow.ecology.shepherdPaths";
+  for (const path of shepherdPaths.paths ?? []) {
+    const line = makeLine((path.points ?? []).map((point) => new THREE.Vector3(point.x, point.y + 0.03, point.z)), 0x6b5d31, 0.22 + path.urgency * 0.24);
+    line.name = path.id;
+    line.userData = { descriptor: path, baseOpacity: line.material.opacity };
+    layer.add(line);
+  }
+  group.add(layer);
+}
+
+function addRestSpots(group, restSpots = {}) {
+  const layer = new THREE.Group();
+  layer.name = "meadow.ecology.restSpots";
+  for (const spot of restSpots.spots ?? []) {
+    const disc = makeDisc(spot.radius, new THREE.Color(0.32, 0.45 + spot.calm * 0.12, 0.22), 0.08 + spot.calm * 0.1);
+    disc.name = spot.id;
+    disc.position.set(spot.x, spot.y + 0.012, spot.z);
+    disc.scale.set(1.2, 1, 0.62);
+    disc.rotation.z = spot.phase;
+    disc.userData = { descriptor: spot, baseOpacity: disc.material.opacity };
+    layer.add(disc);
+  }
+  group.add(layer);
+}
+
+function addWindLanes(group, windLanes = {}) {
+  const layer = new THREE.Group();
+  layer.name = "meadow.ecology.windLanes";
+  for (const lane of windLanes.lanes ?? []) {
+    const line = makeLine([new THREE.Vector3(lane.from.x, lane.from.y, lane.from.z), new THREE.Vector3(lane.to.x, lane.to.y, lane.to.z)], 0xcbe9b2, 0.07 + lane.speed * 0.16);
+    line.name = lane.id;
+    line.userData = { descriptor: lane, baseOpacity: line.material.opacity };
+    layer.add(line);
+  }
+  group.add(layer);
+}
+
+function addSeasonalBloomQueue(group, seasonalBloomQueue = {}) {
+  const layer = new THREE.Group();
+  layer.name = "meadow.ecology.seasonalBloomQueue";
+  for (const bloom of seasonalBloomQueue.blooms ?? []) {
+    const ring = new THREE.RingGeometry(Math.max(0.05, bloom.radius * 0.72), Math.max(0.1, bloom.radius), 28, 1);
+    ring.rotateX(-Math.PI / 2);
+    const mesh = new THREE.Mesh(ring, new THREE.MeshBasicMaterial({ color: rgb(bloom.color), transparent: true, opacity: 0.12 + bloom.openness * 0.18, depthWrite: false, side: THREE.DoubleSide, blending: THREE.AdditiveBlending }));
+    mesh.name = bloom.id;
+    mesh.position.set(bloom.x, bloom.y + 0.02, bloom.z);
+    mesh.userData = { descriptor: bloom, baseOpacity: mesh.material.opacity };
+    layer.add(mesh);
+  }
+  group.add(layer);
+}
+
+function addAttentionBeacons(group, attentionBeacons = {}) {
+  const layer = new THREE.Group();
+  layer.name = "meadow.ecology.attentionBeacons";
+  for (const beacon of attentionBeacons.beacons ?? []) {
+    const plane = makeSoftPlane(beacon.radius * 0.42, beacon.radius * 1.6, new THREE.Color(1.0, 0.86, 0.52), 0.055 + beacon.priority * 0.06);
+    plane.name = beacon.id;
+    plane.position.set(beacon.x, beacon.y + beacon.radius * 0.5, beacon.z);
+    plane.rotation.set(0, beacon.phase * Math.PI * 2, 0);
+    plane.userData = { descriptor: beacon, baseOpacity: plane.material.opacity };
+    layer.add(plane);
+  }
+  group.add(layer);
+}
+
+export function createMeadowVisualFractalLayers(visualFractal = {}, ecologyReadability = {}) {
   const group = new THREE.Group();
   group.name = "meadow.visualFractal.layers";
   const descriptors = visualFractal.descriptors ?? {};
+  const ecologyDescriptors = ecologyReadability.descriptors ?? {};
   addDepthStrata(group, descriptors.depthStrata);
   addGrassPatches(group, descriptors.grassPatches);
   addFlowerDrifts(group, descriptors.flowerDrifts);
   addGrazingTrails(group, descriptors.grazingTrails);
   addLightShafts(group, descriptors.lightShafts);
   addAtmosphericParallax(group, descriptors.atmosphericParallax);
+  addPollinatorRoutes(group, ecologyDescriptors.pollinatorRoutes);
+  addShepherdPaths(group, ecologyDescriptors.shepherdPaths);
+  addRestSpots(group, ecologyDescriptors.restSpots);
+  addWindLanes(group, ecologyDescriptors.windLanes);
+  addSeasonalBloomQueue(group, ecologyDescriptors.seasonalBloomQueue);
+  addAttentionBeacons(group, ecologyDescriptors.attentionBeacons);
   group.userData = {
-    source: "meadow-visual-fractal-domain-kit",
-    rendererContract: visualFractal.rendererHandoff?.contract ?? "descriptors-only",
-    counts: visualFractal.descriptorCounts ?? {}
+    source: "meadow-visual-fractal-and-ecology-readability-domain-kits",
+    rendererContract: ecologyReadability.rendererHandoff?.contract ?? visualFractal.rendererHandoff?.contract ?? "descriptors-only",
+    counts: {
+      visualFractal: visualFractal.descriptorCounts ?? {},
+      ecologyReadability: ecologyReadability.descriptorCounts ?? {}
+    }
   };
   return group;
 }
@@ -147,6 +243,9 @@ export function updateMeadowVisualFractalLayers(group, cycle = {}, time = 0) {
     const pulse = Math.sin(time * 0.35 + Number(node.userData.descriptor?.phase ?? node.userData.descriptor?.pulse ?? 0)) * 0.08;
     if (node.name.includes("lightShaft")) node.material.opacity = Math.max(0.01, base * (0.72 + warm * 0.9 + pulse));
     else if (node.name.includes("mistLayer")) node.material.opacity = Math.max(0.008, base * (1.18 - day * 0.45 + pulse));
+    else if (node.name.includes("pollinatorRoute")) node.material.opacity = Math.max(0.01, base * (0.82 + day * 0.34 + pulse));
+    else if (node.name.includes("windLane")) node.material.opacity = Math.max(0.008, base * (0.85 + warm * 0.22 + pulse));
+    else if (node.name.includes("attentionBeacon")) node.material.opacity = Math.max(0.01, base * (0.9 + warm * 0.38 + pulse));
     else node.material.opacity = Math.max(0.01, base * (0.92 + warm * 0.16 + pulse));
   });
 }
