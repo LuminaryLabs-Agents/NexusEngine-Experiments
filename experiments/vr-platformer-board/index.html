@@ -9,7 +9,9 @@
     main, canvas { position: fixed; inset: 0; width: 100vw; height: 100vh; }
     canvas { display: block; }
     #hud { position: fixed; left: 16px; top: 14px; right: 16px; display: flex; justify-content: space-between; gap: 12px; pointer-events: none; font-size: 12px; letter-spacing: 0.04em; text-transform: uppercase; color: rgba(255,255,255,0.78); }
-    #hud span { background: rgba(0,0,0,0.24); border: 1px solid rgba(255,255,255,0.12); border-radius: 999px; padding: 7px 10px; backdrop-filter: blur(10px); }
+    #hud span { background: rgba(0,0,0,0.24); border: 1px solid rgba(255,255,255,0.12); border-radius: 999px; padding: 7px 10px; backdrop-filter: blur(10px); box-shadow: 0 0 26px rgba(97, 186, 255, 0.12); }
+    #hud[data-tone="warning"] span { border-color: rgba(255, 200, 120, 0.42); color: #ffe6b0; }
+    #hud[data-tone="success"] span { border-color: rgba(142, 255, 173, 0.44); color: #d9ffe3; }
     #errorPanel { position: fixed; left: 16px; right: 16px; bottom: 16px; padding: 14px; border-radius: 14px; background: rgba(80, 0, 0, 0.86); color: white; white-space: pre-wrap; font-size: 13px; }
     #errorPanel[hidden] { display: none; }
   </style>
@@ -17,7 +19,7 @@
 <body>
   <main id="app">
     <canvas id="game" role="application" aria-label="VR platformer board experiment"></canvas>
-    <aside id="hud" aria-label="Game HUD">
+    <aside id="hud" aria-label="Game HUD" data-tone="neutral">
       <span id="objective">Booting kits…</span>
       <span id="controls">A/D move · Space jump · R reset · drag head</span>
     </aside>
@@ -25,13 +27,36 @@
   </main>
 
   <script type="module">
+    import {
+      createVrBoardChallengeDirectorKit,
+      createVrBoardCompositionKit,
+      createVrBoardDepthLaneKit,
+      createVrBoardHudDescriptorKit,
+      createVrBoardWorldSeedKit
+    } from "../_kits/vr-platformer-board/vr-platformer-board-kits.js";
+
     const NEXUS_URL = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusRealtime@main/src/index.js";
     const PROTOKITS = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusRealtime-ProtoKits@main/protokits";
 
     const canvas = document.querySelector("#game");
     const ctx = canvas.getContext("2d");
     const objective = document.querySelector("#objective");
+    const controls = document.querySelector("#controls");
+    const hud = document.querySelector("#hud");
     const errorPanel = document.querySelector("#errorPanel");
+
+    const boardWorldSeedKit = createVrBoardWorldSeedKit();
+    const boardChallengeDirectorKit = createVrBoardChallengeDirectorKit();
+    const boardDepthLaneKit = createVrBoardDepthLaneKit({ laneCount: 7 });
+    const boardHudDescriptorKit = createVrBoardHudDescriptorKit();
+    const boardCompositionKit = createVrBoardCompositionKit({
+      worldSeedKit: boardWorldSeedKit,
+      challengeDirectorKit: boardChallengeDirectorKit,
+      depthLaneKit: boardDepthLaneKit,
+      hudDescriptorKit: boardHudDescriptorKit
+    });
+
+    let latestBoardComposition = null;
 
     function showFatal(error) {
       errorPanel.hidden = false;
@@ -81,6 +106,7 @@
       const cy = h * 0.52 + (1.6 - headY) * 120;
       const left = cx - bw / 2;
       const top = cy - bh / 2;
+      const composition = snapshot.boardComposition ?? { world: null, depthLanes: [], challenge: null };
 
       const gradient = ctx.createRadialGradient(cx, cy - bh * 0.8, 20, cx, cy, Math.max(bw, bh));
       gradient.addColorStop(0, "rgba(91, 159, 255, 0.26)");
@@ -106,19 +132,75 @@
       ctx.fillRect(0, 0, 320, 180);
       ctx.fillStyle = "#1f3155";
       ctx.fillRect(0, 120, 320, 60);
+
+      drawBoardDepth(composition);
+      drawBoardSkyline(composition);
+
       ctx.fillStyle = "rgba(255,255,255,0.05)";
       for (let i = 0; i < 14; i++) ctx.fillRect(i * 28 - (snapshot.camera?.position?.x ?? 0) * 2 % 28, 24 + Math.sin(i) * 8, 20, 80);
 
       const render = snapshot.render?.descriptors ?? [];
       const cameraX = snapshot.camera?.position?.x ?? 0;
       const cameraY = snapshot.camera?.position?.y ?? 0;
+      drawPlatformAuras(composition, cameraX, cameraY);
       for (const item of render) drawDescriptor(item, cameraX, cameraY);
+      drawCollectibleOrbits(composition, cameraX, cameraY);
+      drawChallengeStrip(composition);
       ctx.restore();
 
       ctx.fillStyle = "rgba(255,255,255,0.8)";
       ctx.font = "5px ui-sans-serif";
-      ctx.fillText(`board ${board.sizeMeters?.x ?? 1.6}m · stereo eyes ${snapshot.stereo?.views?.length ?? 0}`, 4, 192);
+      ctx.fillText(`board ${board.sizeMeters?.x ?? 1.6}m · stereo eyes ${snapshot.stereo?.views?.length ?? 0} · ${composition.challenge?.stage ?? "launch"}`, 4, 192);
       ctx.restore();
+    }
+
+    function drawBoardDepth(composition) {
+      for (const lane of composition.depthLanes ?? []) {
+        ctx.strokeStyle = `rgba(130, 190, 255, ${lane.opacity})`;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.ellipse(160 + lane.offset * 42, 124 + lane.depth * 5, lane.width * 24, 14 + lane.depth * 2, 0, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+    }
+
+    function drawBoardSkyline(composition) {
+      const skyline = composition.world?.skyline ?? [];
+      for (const tower of skyline) {
+        ctx.fillStyle = `rgba(150, 190, 255, ${tower.alpha})`;
+        ctx.fillRect(tower.x, tower.y, 16, tower.h);
+      }
+    }
+
+    function drawPlatformAuras(composition, cameraX, cameraY) {
+      for (const aura of composition.world?.platformAuras ?? []) {
+        const p = worldToScreen(aura.x, aura.y, cameraX, cameraY);
+        ctx.fillStyle = `rgba(88, 231, 255, ${aura.pulse * 0.16})`;
+        roundRect(ctx, p.x - 3, p.y - aura.h * 18 - 5, aura.w * 18 + 6, aura.h * 18 + 10, 4);
+        ctx.fill();
+      }
+    }
+
+    function drawCollectibleOrbits(composition, cameraX, cameraY) {
+      for (const orbit of composition.world?.collectibleOrbits ?? []) {
+        const p = worldToScreen(orbit.x, orbit.y, cameraX, cameraY);
+        ctx.strokeStyle = "rgba(255, 230, 120, 0.42)";
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, orbit.radius * 18, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+    }
+
+    function drawChallengeStrip(composition) {
+      const progress = composition.challenge?.progress ?? 0;
+      const intensity = composition.challenge?.intensity ?? 0;
+      ctx.fillStyle = "rgba(0,0,0,0.34)";
+      roundRect(ctx, 8, 8, 116, 11, 6);
+      ctx.fill();
+      ctx.fillStyle = intensity > 70 ? "#ffbf6b" : "#78ffd6";
+      roundRect(ctx, 10, 10, 112 * progress, 7, 4);
+      ctx.fill();
     }
 
     function worldToScreen(x, y, cameraX, cameraY) {
@@ -210,7 +292,17 @@
 
       window.GameHost = {
         engine,
-        getState: () => ({ avatar, level: engine.platformerLevel.getState(), board: engine.spatialGameBoard.getState(), sequence: engine.platformerSequence.getState() })
+        getState: () => ({ avatar, level: engine.platformerLevel.getState(), board: engine.spatialGameBoard.getState(), sequence: engine.platformerSequence.getState(), boardComposition: latestBoardComposition }),
+        getBoardComposition: () => latestBoardComposition,
+        getBoardDomainSnapshot: () => boardCompositionKit.snapshot({
+          avatar,
+          level: engine.platformerLevel.getState().level,
+          objects: engine.platformerObjects.getState(),
+          camera: engine.platformerCamera.updateFromAvatar(avatar, engine.platformerLevel.getState().level),
+          board: engine.spatialGameBoard.getState(),
+          comfort: { warnings: [] },
+          sequence: engine.platformerSequence.getState()
+        })
       };
 
       function frame(now) {
@@ -247,9 +339,12 @@
         const stereo = engine.stereoscopicRender.updateFromCamera(head, dt);
         const comfort = engine.xrComfort.evaluate({ head, board });
         const adapter = engine.xrPlatformerRenderAdapter.compose({ render, board, stereo, parallax, effects: engine.platformerEffects.getState().effects, sequence });
+        latestBoardComposition = boardCompositionKit.describe({ avatar, level, objects: engine.platformerObjects.getState(), camera, board, comfort, sequence, time: now / 1000 });
 
-        objective.textContent = `${sequence.hint} · ${comfort.warnings.join(",") || "comfort ok"}`;
-        drawBoard({ avatar, camera, render, sequence, board, stereo, comfort, adapter, xrPose: engine.xrPose.getState() });
+        objective.textContent = latestBoardComposition.hud.objective;
+        controls.textContent = latestBoardComposition.hud.controls;
+        hud.dataset.tone = latestBoardComposition.hud.statusTone;
+        drawBoard({ avatar, camera, render, sequence, board, stereo, comfort, adapter, xrPose: engine.xrPose.getState(), boardComposition: latestBoardComposition });
         requestAnimationFrame(frame);
       }
       requestAnimationFrame(frame);
