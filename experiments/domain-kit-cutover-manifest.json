@@ -61,10 +61,10 @@
       "id": "high-fidelity-meadow",
       "kind": "experiment",
       "canonicalPath": "experiments/high-fidelity-meadow/",
-      "status": "meadow-depth-patch-visual-fractal-pass",
-      "domainCutover": ["terrain-field-domain-service-kit", "wind-field-domain-service-kit", "grass-field-system-kit", "procedural-structure-domain-service-kit", "particle-vfx-domain-service-kit", "creature-domain-service-kit", "creature-animation-domain-service-kit", "fur-wool-hair-domain-service-kit", "sky-atmosphere-domain-service-kit", "meadow-visual-target-kit", "meadow-simulation-mode-kit", "meadow-depth-strata-kit", "meadow-grass-patch-cluster-kit", "meadow-flower-drift-patch-kit", "meadow-grazing-trail-kit", "meadow-light-shaft-kit", "meadow-atmospheric-parallax-kit", "meadow-renderer-handoff-kit", "meadow-visual-fractal-domain-kit"],
-      "bridgeNeeded": "browser host imports NexusEngine main via CDN; meadow kits emit serializable descriptors consumed by presentation only",
-      "featureParity": ["grass", "flowers", "sheep", "depth strata", "patch grass descriptors"]
+      "status": "meadow-ecology-readability-handoff-pass",
+      "domainCutover": ["terrain-field-domain-service-kit", "wind-field-domain-service-kit", "grass-field-system-kit", "procedural-structure-domain-service-kit", "particle-vfx-domain-service-kit", "creature-domain-service-kit", "creature-animation-domain-service-kit", "fur-wool-hair-domain-service-kit", "sky-atmosphere-domain-service-kit", "meadow-visual-target-kit", "meadow-simulation-mode-kit", "meadow-depth-strata-kit", "meadow-grass-patch-cluster-kit", "meadow-flower-drift-patch-kit", "meadow-grazing-trail-kit", "meadow-light-shaft-kit", "meadow-atmospheric-parallax-kit", "meadow-renderer-handoff-kit", "meadow-visual-fractal-domain-kit", "meadow-pollinator-route-kit", "meadow-shepherd-path-kit", "meadow-rest-spot-kit", "meadow-wind-lane-kit", "meadow-seasonal-bloom-queue-kit", "meadow-attention-beacon-kit", "meadow-ecology-renderer-handoff-kit", "meadow-ecology-readability-domain-kit"],
+      "bridgeNeeded": "browser host imports NexusEngine main via CDN; meadow visual and ecology readability kits emit pollinator, shepherd path, rest spot, wind lane, bloom queue, and attention beacon descriptors consumed by Three presentation only",
+      "featureParity": ["grass", "flowers", "sheep", "depth strata", "patch grass descriptors", "pollinator route descriptors", "shepherd path descriptors", "wind lane descriptors", "bloom queue descriptors", "GameHost renderer handoff"]
     },
     {
       "id": "fogline-relay",
