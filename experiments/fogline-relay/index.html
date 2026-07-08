@@ -21,11 +21,11 @@
   </style>
 </head>
 <body>
-  <main id="app" data-upgrade="survivor-rescue-readiness-renderer-handoff-pass">
+  <main id="app" data-upgrade="survivor-rescue-readiness-renderer-handoff-pass storm-evacuation-readiness-renderer-handoff-pass">
     <canvas id="game" role="application" aria-label="Fogline Relay game canvas"></canvas>
     <aside id="hud" aria-label="Game HUD">
-      <header id="status" aria-live="polite">Loading survivor rescue readiness…</header>
-      <section id="prompt" aria-live="polite">Booting Nexus Engine kits with survivor distress, triage cache, blackout, and extraction descriptors…</section>
+      <header id="status" aria-live="polite">Loading survivor rescue and storm evacuation readiness…</header>
+      <section id="prompt" aria-live="polite">Booting Nexus Engine kits with survivor distress, storm warning, battery cache, stretcher lane, convoy, and extraction flare descriptors…</section>
       <footer id="controls">WASD move · mouse/←→ look · hold E scan · R restart · click canvas to lock</footer>
     </aside>
     <section id="errorPanel" role="alert" hidden>
@@ -39,5 +39,6 @@
   </script>
   <script type="module" src="./src/main.js?v=fogline-survivor-rescue-readiness-1"></script>
   <script type="module" src="./src/survivor-rescue-readiness-entry.js?v=fogline-survivor-rescue-readiness-1"></script>
+  <script type="module" src="./src/storm-evacuation-readiness-entry.js?v=fogline-storm-evacuation-readiness-1"></script>
 </body>
 </html>
