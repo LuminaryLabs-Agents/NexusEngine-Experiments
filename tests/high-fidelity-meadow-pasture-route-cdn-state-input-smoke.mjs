@@ -20,7 +20,7 @@ assert.ok(files.main.includes("createMeadowPastureRouteReadabilityDomainKit"), "
 assert.ok(files.main.includes("getPastureRouteReadability"), "GameHost should expose pasture route readability state");
 assert.ok(files.main.includes("pastureRouteReadability"), "main should compose pasture route descriptors into state");
 assert.ok(files.main.includes("getRendererHandoff"), "GameHost should expose composed renderer handoff");
-assert.ok(files.index.includes("20260708-pasture-route-readability-1"), "entrypoint should cache-bust the pasture route upgrade");
+assert.ok(files.index.includes("20260708-flock-safety-readiness-1"), "entrypoint should cache-bust the latest meadow upgrade while preserving pasture wiring");
 assert.ok(files.renderer.includes("grazingRouteScores"), "renderer should consume grazing route descriptors");
 assert.ok(files.renderer.includes("foragePatchPriorities"), "renderer should consume forage patch descriptors");
 assert.ok(files.renderer.includes("weatherShelterBands"), "renderer should consume weather shelter descriptors");
