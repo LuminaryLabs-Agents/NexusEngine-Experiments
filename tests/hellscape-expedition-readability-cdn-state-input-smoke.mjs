@@ -1,3 +1,4 @@
+import './hellscape-siegecraft-readiness-cdn-state-input-smoke.mjs';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { createHellscapeExpeditionReadabilityDomainKit } from '../games/rogue-lite-hellscape-siege/src/hellscape-expedition-readability-domain-kit.js';
