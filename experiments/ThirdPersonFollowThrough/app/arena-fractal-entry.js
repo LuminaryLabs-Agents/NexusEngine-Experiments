@@ -1,11 +1,13 @@
 import * as NexusEngineRuntime from 'https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js';
-import '../app.js?v=locomotion-readability-v1';
+import '../app.js?v=camera-composition-readability-v1';
 import { createThirdPersonArenaFractalDomainKit } from '../kits/third-person-arena-fractal-domain-kit.js';
 import { createThirdPersonLocomotionReadabilityDomainKit } from '../kits/third-person-locomotion-readability-domain-kit.js';
+import { createThirdPersonCameraCompositionReadabilityDomainKit } from '../kits/third-person-camera-composition-readability-domain-kit.js';
 
 const NEXUS_ENGINE_CDN = 'https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js';
 const arenaFractalDomainKit = createThirdPersonArenaFractalDomainKit();
 const locomotionReadabilityDomainKit = createThirdPersonLocomotionReadabilityDomainKit();
+const cameraCompositionReadabilityDomainKit = createThirdPersonCameraCompositionReadabilityDomainKit();
 let overlay;
 let style;
 
@@ -14,13 +16,13 @@ function ensureOverlay() {
     style = document.createElement('style');
     style.dataset.thirdPersonArenaFractal = 'true';
     style.textContent = `
-      .arena-fractal-overlay{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden;font-family:Inter,system-ui,sans-serif;color:white}.arena-band{position:absolute;left:var(--x);top:var(--z);width:var(--d);height:var(--d);border:1px solid rgba(120,210,255,var(--o));border-radius:999px;transform:translate(-50%,-50%) rotateX(66deg);box-shadow:0 0 22px rgba(120,210,255,.2);opacity:var(--o)}.movement-trail{position:absolute;left:var(--x);top:var(--z);width:calc(24px * var(--s));height:calc(12px * var(--s));border-radius:999px;background:rgba(80,255,150,var(--o));box-shadow:0 0 18px rgba(80,255,150,.45);transform:translate(-50%,-50%) rotate(var(--yaw))}.camera-arc{position:absolute;right:calc(18px + var(--i) * 12px);bottom:calc(122px + var(--i) * 18px);width:calc(80px + var(--i) * 22px);height:calc(80px + var(--i) * 22px);border-radius:999px;border:2px solid rgba(54,162,255,var(--o));border-left-color:transparent;border-bottom-color:transparent;filter:drop-shadow(0 0 10px rgba(54,162,255,.3));transform:rotate(calc(var(--side) * 24deg))}.camera-arc.engaged{border-top-color:#fff;border-right-color:#28a4ff}.collider-halo{position:absolute;left:var(--x);top:var(--z);width:var(--d);height:var(--d);border-radius:999px;transform:translate(-50%,-50%) rotateX(66deg);border:1px solid rgba(255,194,80,.28);background:rgba(255,194,80,calc(var(--risk) * .08));box-shadow:0 0 calc(16px + var(--risk) * 34px) rgba(255,132,48,.32)}.collider-halo.near{border-color:rgba(255,80,80,.75);background:rgba(255,80,80,.1)}.rig-bead{position:absolute;left:var(--x);top:var(--y);width:calc(10px + var(--i) * 4px);height:calc(10px + var(--i) * 4px);border-radius:999px;background:#ffffffdd;box-shadow:0 0 16px #ffffff88;transform:translate(-50%,-50%)}.yaw-fan{position:absolute;left:var(--x);top:var(--z);width:64px;height:4px;border-radius:999px;background:rgba(160,255,215,var(--o));box-shadow:0 0 14px rgba(160,255,215,.45);transform:translate(-50%,-50%) rotate(var(--yaw))}.backpedal-rail{position:absolute;left:var(--x);top:var(--z);width:38px;height:7px;border-radius:999px;border:1px solid rgba(255,234,128,var(--o));background:rgba(255,204,80,calc(var(--o) * .18));transform:translate(-50%,-50%) rotate(-12deg)}.jump-band{position:absolute;left:var(--x);top:var(--y);width:calc(44px + var(--i) * 22px);height:calc(18px + var(--i) * 8px);border-radius:999px;border:1px solid rgba(255,255,255,var(--o));box-shadow:0 0 18px rgba(255,255,255,.28);transform:translate(-50%,-50%)}.landing-patch{position:absolute;left:var(--x);top:var(--z);width:calc(20px + var(--i) * 3px);height:calc(20px + var(--i) * 3px);border-radius:999px;transform:translate(-50%,-50%) rotateX(66deg);border:1px solid rgba(130,255,210,var(--o));background:rgba(130,255,210,calc(var(--o) * .1))}.landing-patch.caution{border-color:rgba(255,210,90,var(--o));background:rgba(255,210,90,calc(var(--o) * .13))}.landing-patch.danger{border-color:rgba(255,76,96,var(--o));background:rgba(255,76,96,calc(var(--o) * .16))}.recenter-leash{position:fixed;left:var(--x);top:var(--y);width:58px;height:3px;border-radius:999px;background:rgba(80,170,255,var(--o));box-shadow:0 0 16px rgba(80,170,255,.44);transform:translate(-50%,-50%) rotate(calc(var(--side) * 16deg))}.cue-stack{position:fixed;left:24px;bottom:22px;display:flex;flex-wrap:wrap;gap:8px;max-width:min(620px,calc(100vw - 48px))}.cue-chip,.cadence-chip{border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:7px 10px;background:rgba(4,9,18,.72);backdrop-filter:blur(10px);box-shadow:inset 0 1px rgba(255,255,255,.12);font-size:11px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;opacity:var(--o)}.cue-chip.handoff{border-color:rgba(40,164,255,.72);color:#bde3ff}.cue-chip.airborne{border-color:rgba(255,255,255,.72);color:#fff}.cue-chip.collision{border-color:rgba(255,194,80,.65);color:#ffe3a2}.cue-chip.idle{color:#cfe0ff}.cadence-chip{border-color:rgba(160,255,215,.46);color:#ccffef}.cadence-chip.active{border-color:rgba(80,255,150,.88);background:rgba(34,118,78,.72)}@media(max-width:780px){.arena-fractal-overlay{display:none}}`;
+      .arena-fractal-overlay{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden;font-family:Inter,system-ui,sans-serif;color:white}.arena-band{position:absolute;left:var(--x);top:var(--z);width:var(--d);height:var(--d);border:1px solid rgba(120,210,255,var(--o));border-radius:999px;transform:translate(-50%,-50%) rotateX(66deg);box-shadow:0 0 22px rgba(120,210,255,.2);opacity:var(--o)}.movement-trail{position:absolute;left:var(--x);top:var(--z);width:calc(24px * var(--s));height:calc(12px * var(--s));border-radius:999px;background:rgba(80,255,150,var(--o));box-shadow:0 0 18px rgba(80,255,150,.45);transform:translate(-50%,-50%) rotate(var(--yaw))}.camera-arc{position:absolute;right:calc(18px + var(--i) * 12px);bottom:calc(122px + var(--i) * 18px);width:calc(80px + var(--i) * 22px);height:calc(80px + var(--i) * 22px);border-radius:999px;border:2px solid rgba(54,162,255,var(--o));border-left-color:transparent;border-bottom-color:transparent;filter:drop-shadow(0 0 10px rgba(54,162,255,.3));transform:rotate(calc(var(--side) * 24deg))}.camera-arc.engaged{border-top-color:#fff;border-right-color:#28a4ff}.collider-halo,.occlusion-veil{position:absolute;left:var(--x);top:var(--z);width:var(--d);height:var(--d);border-radius:999px;transform:translate(-50%,-50%) rotateX(66deg);border:1px solid rgba(255,194,80,.28);background:rgba(255,194,80,calc(var(--risk) * .08));box-shadow:0 0 calc(16px + var(--risk) * 34px) rgba(255,132,48,.32)}.collider-halo.near,.occlusion-veil.occluding{border-color:rgba(255,80,80,.75);background:rgba(255,80,80,.12)}.occlusion-veil.near-line{border-color:rgba(255,214,102,.72);background:rgba(255,214,102,.1)}.rig-bead{position:absolute;left:var(--x);top:var(--y);width:calc(10px + var(--i) * 4px);height:calc(10px + var(--i) * 4px);border-radius:999px;background:#ffffffdd;box-shadow:0 0 16px #ffffff88;transform:translate(-50%,-50%)}.yaw-fan{position:absolute;left:var(--x);top:var(--z);width:64px;height:4px;border-radius:999px;background:rgba(160,255,215,var(--o));box-shadow:0 0 14px rgba(160,255,215,.45);transform:translate(-50%,-50%) rotate(var(--yaw))}.backpedal-rail{position:absolute;left:var(--x);top:var(--z);width:38px;height:7px;border-radius:999px;border:1px solid rgba(255,234,128,var(--o));background:rgba(255,204,80,calc(var(--o) * .18));transform:translate(-50%,-50%) rotate(-12deg)}.jump-band{position:absolute;left:var(--x);top:var(--y);width:calc(44px + var(--i) * 22px);height:calc(18px + var(--i) * 8px);border-radius:999px;border:1px solid rgba(255,255,255,var(--o));box-shadow:0 0 18px rgba(255,255,255,.28);transform:translate(-50%,-50%)}.landing-patch,.near-clip-cushion{position:absolute;left:var(--x);top:var(--z);width:calc(20px + var(--i) * 3px);height:calc(20px + var(--i) * 3px);border-radius:999px;transform:translate(-50%,-50%) rotateX(66deg);border:1px solid rgba(130,255,210,var(--o));background:rgba(130,255,210,calc(var(--o) * .1))}.landing-patch.caution,.near-clip-cushion.watch{border-color:rgba(255,210,90,var(--o));background:rgba(255,210,90,calc(var(--o) * .13))}.landing-patch.danger,.near-clip-cushion.too-close{border-color:rgba(255,76,96,var(--o));background:rgba(255,76,96,calc(var(--o) * .16))}.recenter-leash,.orbit-rail{position:fixed;left:var(--x);top:var(--y);width:58px;height:3px;border-radius:999px;background:rgba(80,170,255,var(--o));box-shadow:0 0 16px rgba(80,170,255,.44);transform:translate(-50%,-50%) rotate(calc(var(--side) * 16deg))}.orbit-rail{width:72px;background:linear-gradient(90deg,rgba(194,235,255,0),rgba(194,235,255,var(--o)),rgba(194,235,255,0));transform:translate(-50%,-50%) rotate(calc(var(--side) * -18deg))}.focus-ribbon{position:fixed;left:var(--x);top:var(--y);width:calc(70px + var(--i) * 18px);height:5px;border-radius:999px;background:rgba(255,255,255,var(--o));box-shadow:0 0 18px rgba(150,215,255,.52);transform:translate(-50%,-50%) rotate(var(--yaw))}.shoulder-wedge{position:fixed;left:var(--x);top:var(--y);width:42px;height:26px;border-radius:6px 999px 999px 6px;border:1px solid rgba(147,231,255,var(--o));background:rgba(31,135,190,calc(var(--o)*.13));clip-path:polygon(0 50%,100% 0,100% 100%);transform:translate(-50%,-50%) rotate(calc(var(--side) * 22deg))}.shoulder-wedge.tight{border-color:rgba(255,210,90,var(--o));background:rgba(255,210,90,calc(var(--o)*.13))}.shoulder-wedge.blocked{border-color:rgba(255,80,100,var(--o));background:rgba(255,80,100,calc(var(--o)*.16))}.cue-stack{position:fixed;left:24px;bottom:22px;display:flex;flex-wrap:wrap;gap:8px;max-width:min(720px,calc(100vw - 48px))}.cue-chip,.cadence-chip,.comfort-meter{border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:7px 10px;background:rgba(4,9,18,.72);backdrop-filter:blur(10px);box-shadow:inset 0 1px rgba(255,255,255,.12);font-size:11px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;opacity:var(--o)}.cue-chip.handoff{border-color:rgba(40,164,255,.72);color:#bde3ff}.cue-chip.airborne{border-color:rgba(255,255,255,.72);color:#fff}.cue-chip.collision{border-color:rgba(255,194,80,.65);color:#ffe3a2}.cue-chip.idle{color:#cfe0ff}.cadence-chip{border-color:rgba(160,255,215,.46);color:#ccffef}.cadence-chip.active{border-color:rgba(80,255,150,.88);background:rgba(34,118,78,.72)}.comfort-meter{border-color:rgba(194,235,255,.46);color:#d7f2ff}.comfort-meter.watch{border-color:rgba(255,210,90,.78);color:#ffe3a2}.comfort-meter.strained{border-color:rgba(255,80,100,.88);color:#ffc9d0}@media(max-width:780px){.arena-fractal-overlay{display:none}}`;
     document.head.append(style);
   }
   if (!overlay) {
     overlay = document.createElement('div');
     overlay.className = 'arena-fractal-overlay';
-    overlay.dataset.domain = 'third-person-locomotion-readability-domain';
+    overlay.dataset.domain = 'third-person-camera-composition-readability-domain';
     document.body.append(overlay);
   }
   return overlay;
@@ -36,16 +38,23 @@ function headToScreenPercent(position, axis) {
   return axis === 'x' ? Math.max(5, Math.min(95, 50 + value * 2.3)) : Math.max(14, Math.min(78, 58 - value * 12));
 }
 
-function renderArenaFractal(arenaDescription, locomotionDescription) {
+function renderArenaFractal(arenaDescription, locomotionDescription, cameraCompositionDescription) {
   const target = ensureOverlay();
   const descriptors = arenaDescription.rendererHandoff.descriptors;
   const locomotion = locomotionDescription.rendererHandoff.descriptors;
+  const cameraComposition = cameraCompositionDescription.rendererHandoff.descriptors;
   target.innerHTML = `
     <div class="arena-bands">
       ${descriptors.surfaceBands.map((band) => `<i class="arena-band" style="--x:${worldToScreenPercent(band.center, 'x')}%;--z:${worldToScreenPercent(band.center, 'z')}%;--d:${band.radius * 16}px;--o:${band.opacity}"></i>`).join('')}
     </div>
+    <div class="occlusion-veils">
+      ${cameraComposition.occlusionRiskVeils.map((veil) => `<i class="occlusion-veil ${veil.state}" title="${veil.occluderId}" style="--x:${worldToScreenPercent(veil.position, 'x')}%;--z:${worldToScreenPercent(veil.position, 'z')}%;--d:${veil.radius * 13}px;--risk:${veil.risk}"></i>`).join('')}
+    </div>
     <div class="landing-patches">
       ${locomotion.landingSafetyPatches.map((patch) => `<i class="landing-patch ${patch.state}" style="--x:${worldToScreenPercent(patch.position, 'x')}%;--z:${worldToScreenPercent(patch.position, 'z')}%;--i:${patch.index};--o:${patch.opacity}"></i>`).join('')}
+    </div>
+    <div class="near-clip-cushions">
+      ${cameraComposition.nearClipCushions.map((cushion) => `<i class="near-clip-cushion ${cushion.state}" style="--x:${worldToScreenPercent(cushion.center, 'x')}%;--z:${worldToScreenPercent(cushion.center, 'z')}%;--i:${cushion.index};--o:${cushion.opacity}"></i>`).join('')}
     </div>
     <div class="movement-trails">
       ${descriptors.movementTrails.map((trail) => `<i class="movement-trail" style="--x:${worldToScreenPercent(trail.position, 'x')}%;--z:${worldToScreenPercent(trail.position, 'z')}%;--s:${trail.scale};--o:${trail.opacity};--yaw:${trail.movementYawDeg}deg"></i>`).join('')}
@@ -65,6 +74,15 @@ function renderArenaFractal(arenaDescription, locomotionDescription) {
     <div class="recenter-leashes">
       ${locomotion.cameraRecenterLeashes.map((leash) => `<i class="recenter-leash" style="--x:${leash.screenAnchor.xPercent}%;--y:${leash.screenAnchor.yPercent}%;--side:${leash.side === 'left' ? -1 : 1};--o:${leash.opacity}"></i>`).join('')}
     </div>
+    <div class="orbit-rails">
+      ${cameraComposition.orbitIntentRails.map((rail) => `<i class="orbit-rail" style="--x:${rail.screenAnchor.xPercent}%;--y:${rail.screenAnchor.yPercent}%;--side:${rail.side === 'left' ? -1 : 1};--o:${rail.opacity}"></i>`).join('')}
+    </div>
+    <div class="focus-ribbons">
+      ${cameraComposition.focusTargetRibbons.map((ribbon) => `<i class="focus-ribbon" style="--x:${headToScreenPercent(ribbon.center, 'x')}%;--y:${headToScreenPercent(ribbon.center, 'y')}%;--i:${ribbon.index};--yaw:${ribbon.focusYawDeg}deg;--o:${ribbon.opacity}"></i>`).join('')}
+    </div>
+    <div class="shoulder-wedges">
+      ${cameraComposition.shoulderClearanceWedges.map((wedge) => `<i class="shoulder-wedge ${wedge.state}" title="${wedge.side} shoulder ${wedge.state}" style="--x:${headToScreenPercent(wedge.anchor, 'x')}%;--y:${headToScreenPercent(wedge.anchor, 'y')}%;--side:${wedge.side === 'left' ? -1 : 1};--o:${wedge.opacity}"></i>`).join('')}
+    </div>
     <div class="collider-halos">
       ${descriptors.colliderHalos.map((halo) => `<i class="collider-halo ${halo.state}" title="${halo.obstacleId}" style="--x:${worldToScreenPercent(halo.position, 'x')}%;--z:${worldToScreenPercent(halo.position, 'z')}%;--d:${halo.radius * 13}px;--risk:${halo.risk}"></i>`).join('')}
     </div>
@@ -74,6 +92,7 @@ function renderArenaFractal(arenaDescription, locomotionDescription) {
     <div class="cue-stack">
       ${descriptors.trainingCues.map((cue) => `<b class="cue-chip ${cue.state}" style="--o:${cue.opacity}">${cue.label}</b>`).join('')}
       ${locomotion.inputCadenceBeats.map((beat) => `<b class="cadence-chip ${beat.active ? 'active' : ''}" style="--o:${beat.opacity}">${beat.label}</b>`).join('')}
+      ${cameraComposition.cameraComfortMeters.map((meter) => `<b class="comfort-meter ${meter.state}" style="--o:${meter.opacity}">${meter.label}:${meter.state}</b>`).join('')}
     </div>`;
 }
 
@@ -81,9 +100,12 @@ function readControllerSnapshot() {
   return globalThis.__thirdPersonFollowThrough ?? {
     targetPosition: [0, 0, 8],
     cameraPosition: [0, 3.2, 15],
+    cameraPivotWorld: [0, 1.45, 8],
     headWorld: [0, 1.6, 8],
+    lookAheadWorld: [0, 1.6, 5.6],
     movementBasisForwardWorld: [0, 0, -1],
     actorForwardWorld: [0, 0, -1],
+    cameraForwardWorld: [0, 0, -1],
     movementWishWorld: [0, 0, 0],
     colliderCount: 6,
     grounded: true,
@@ -91,48 +113,61 @@ function readControllerSnapshot() {
   };
 }
 
-function composeRendererHandoff(arenaDescription, locomotionDescription) {
+function composeRendererHandoff(arenaDescription, locomotionDescription, cameraCompositionDescription) {
   return {
     id: 'third-person-follow-through-composed-renderer-handoff',
     policy: 'renderer-consumes-descriptors-only',
-    domains: [arenaDescription.id, locomotionDescription.id],
+    domains: [arenaDescription.id, locomotionDescription.id, cameraCompositionDescription.id],
     counts: {
       arena: arenaDescription.counts,
-      locomotion: locomotionDescription.counts
+      locomotion: locomotionDescription.counts,
+      cameraComposition: cameraCompositionDescription.counts
     },
     descriptors: {
       arena: arenaDescription.rendererHandoff.descriptors,
-      locomotion: locomotionDescription.rendererHandoff.descriptors
+      locomotion: locomotionDescription.rendererHandoff.descriptors,
+      cameraComposition: cameraCompositionDescription.rendererHandoff.descriptors
     }
   };
 }
 
-function tickArenaFractal() {
+function describeCurrent() {
   const controllerSnapshot = readControllerSnapshot();
   const arenaDescription = arenaFractalDomainKit.describe(controllerSnapshot);
   const locomotionDescription = locomotionReadabilityDomainKit.describe(controllerSnapshot);
-  const rendererHandoff = composeRendererHandoff(arenaDescription, locomotionDescription);
-  renderArenaFractal(arenaDescription, locomotionDescription);
+  const cameraCompositionDescription = cameraCompositionReadabilityDomainKit.describe(controllerSnapshot);
+  return { controllerSnapshot, arenaDescription, locomotionDescription, cameraCompositionDescription, rendererHandoff: composeRendererHandoff(arenaDescription, locomotionDescription, cameraCompositionDescription) };
+}
+
+function tickArenaFractal() {
+  const current = describeCurrent();
+  renderArenaFractal(current.arenaDescription, current.locomotionDescription, current.cameraCompositionDescription);
   const host = globalThis.GameHost ?? {};
   host.getArenaFractal = () => arenaFractalDomainKit.snapshot(readControllerSnapshot());
   host.getLocomotionReadability = () => locomotionReadabilityDomainKit.snapshot(readControllerSnapshot());
-  host.getRendererHandoff = () => composeRendererHandoff(arenaFractalDomainKit.describe(readControllerSnapshot()), locomotionReadabilityDomainKit.describe(readControllerSnapshot()));
+  host.getCameraCompositionReadability = () => cameraCompositionReadabilityDomainKit.snapshot(readControllerSnapshot());
+  host.getRendererHandoff = () => describeCurrent().rendererHandoff;
   globalThis.GameHost = host;
   globalThis.__thirdPersonArenaFractal = {
     nexusEngineCdn: NEXUS_ENGINE_CDN,
     nexusEngineExportCount: Object.keys(NexusEngineRuntime).length,
     domainId: arenaFractalDomainKit.id,
     locomotionDomainId: locomotionReadabilityDomainKit.id,
-    controllerSnapshot,
-    counts: arenaDescription.counts,
-    locomotionCounts: locomotionDescription.counts,
-    rendererHandoff,
-    arenaRendererHandoff: arenaDescription.rendererHandoff,
-    locomotionRendererHandoff: locomotionDescription.rendererHandoff,
+    cameraCompositionDomainId: cameraCompositionReadabilityDomainKit.id,
+    controllerSnapshot: current.controllerSnapshot,
+    counts: current.arenaDescription.counts,
+    locomotionCounts: current.locomotionDescription.counts,
+    cameraCompositionCounts: current.cameraCompositionDescription.counts,
+    rendererHandoff: current.rendererHandoff,
+    arenaRendererHandoff: current.arenaDescription.rendererHandoff,
+    locomotionRendererHandoff: current.locomotionDescription.rendererHandoff,
+    cameraCompositionRendererHandoff: current.cameraCompositionDescription.rendererHandoff,
     getState: () => arenaFractalDomainKit.snapshot(readControllerSnapshot()),
     getLocomotionState: () => locomotionReadabilityDomainKit.snapshot(readControllerSnapshot()),
+    getCameraCompositionState: () => cameraCompositionReadabilityDomainKit.snapshot(readControllerSnapshot()),
     describe: () => arenaFractalDomainKit.describe(readControllerSnapshot()),
-    describeLocomotion: () => locomotionReadabilityDomainKit.describe(readControllerSnapshot())
+    describeLocomotion: () => locomotionReadabilityDomainKit.describe(readControllerSnapshot()),
+    describeCameraComposition: () => cameraCompositionReadabilityDomainKit.describe(readControllerSnapshot())
   };
   requestAnimationFrame(tickArenaFractal);
 }
