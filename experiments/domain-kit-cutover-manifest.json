@@ -133,11 +133,11 @@
       "id": "rogue-lite-hellscape-siege",
       "kind": "game",
       "canonicalPath": "games/rogue-lite-hellscape-siege/",
-      "status": "siegecraft-readiness-renderer-handoff-pass",
+      "status": "infernal-contract-readiness-renderer-handoff-pass",
       "removedLegacyPaths": ["games/rogue-lite-hellscape-siege-v2/"],
-      "domainCutover": ["action-input-kit", "resource-pressure-kit", "hellscape-siege-fractal-domain-kit", "hellscape-expedition-readability-domain-kit", "hellscape-siegecraft-readiness-domain-kit"],
-      "bridgeNeeded": "browser host imports NexusEngine main CDN; hellscape domains emit descriptors consumed by canvas presentation only",
-      "featureParity": ["realm portals", "harvesting", "inventory", "build", "core defense", "siegecraft readiness"]
+      "domainCutover": ["action-input-kit", "resource-pressure-kit", "hellscape-siege-fractal-domain-kit", "hellscape-expedition-readability-domain-kit", "hellscape-siegecraft-readiness-domain-kit", "hellscape-infernal-contract-readiness-domain-kit"],
+      "bridgeNeeded": "browser host imports NexusEngine main CDN; hellscape visual, expedition, siegecraft, and infernal contract domains emit descriptors consumed by canvas presentation only",
+      "featureParity": ["realm portals", "harvesting", "inventory", "build", "core defense", "siegecraft readiness", "infernal contract readiness"]
     }
   ],
   "versionedRoutePolicy": {
