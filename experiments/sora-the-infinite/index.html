@@ -4,17 +4,17 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Sora the Infinite</title>
-  <link rel="stylesheet" href="./sora-compatibility-style.css" />
+  <link rel="stylesheet" href="./sora-compatibility-style.css?v=launch-rehearsal-v1" />
 </head>
 <body>
-  <main id="app" class="gateway-shell" aria-label="Sora the Infinite compatibility gateway">
+  <main id="app" class="gateway-shell" aria-label="Sora the Infinite launch rehearsal gateway">
     <section id="gateway-stage" class="gateway-stage" aria-hidden="true"></section>
     <section class="gateway-card">
       <article class="panel hero">
         <div>
-          <p class="eyebrow">Sora route-preview gateway</p>
+          <p class="eyebrow">Sora launch-rehearsal gateway</p>
           <h1>Sora the Infinite</h1>
-          <p class="copy">This route now stays alive long enough to prove the alias, build flight readiness, preview wind, altitude, waypoints, handoff packets, preserve query/hash state, and hand off into The Open Above through renderer-neutral descriptors.</p>
+          <p class="copy">This route now stays alive long enough to prove the alias, build flight readiness, rehearse controls, preview thermals, read drift risk, arm countdown rings, preserve query/hash state, and hand off into The Open Above through renderer-neutral descriptors.</p>
         </div>
         <div class="actions">
           <a id="launch-link" class="launch-link" href="../the-open-above/">Prime route</a>
@@ -39,10 +39,14 @@
           <h2>Handoff packets</h2>
           <ul id="packet-list" class="packet-list"></ul>
         </section>
+        <section>
+          <h2>Launch rehearsal</h2>
+          <ul id="rehearsal-list" class="rehearsal-list"></ul>
+        </section>
         <pre id="debug-strip" class="debug-strip"></pre>
       </aside>
     </section>
   </main>
-  <script type="module" src="./sora-compatibility-gateway.js"></script>
+  <script type="module" src="./sora-compatibility-gateway.js?v=launch-rehearsal-v1"></script>
 </body>
 </html>
