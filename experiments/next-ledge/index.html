@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
-  <title>Next Ledge — NexusRealtime Experiment</title>
+  <title>Next Ledge — NexusEngine Experiment</title>
   <style>
     :root { --ink:#03070b; --danger:#ff5a5a; color-scheme:dark; }
     *{box-sizing:border-box}
@@ -17,15 +17,15 @@
   </style>
 </head>
 <body>
-  <main id="app">
+  <main id="app" data-upgrade="traversal-readability-renderer-handoff-pass">
     <canvas id="game" role="application" aria-label="Next Ledge game canvas"></canvas>
-    <aside id="hud" aria-label="Game state for screen readers"><header id="status" aria-live="polite">Loading Next Ledge</header><footer id="readout"></footer></aside>
+    <aside id="hud" aria-label="Game state for screen readers"><header id="status" aria-live="polite">Loading Next Ledge traversal readability</header><footer id="readout"></footer></aside>
     <section id="errorPanel" role="alert" hidden></section>
   </main>
   <script type="module">
     import { attachNexusRealtimePageLoader } from "../_shared/nexus-realtime-page-loader.js";
-    attachNexusRealtimePageLoader({ title: "Next Ledge", loadingLabel: "Loading Next Ledge" });
+    attachNexusRealtimePageLoader({ title: "Next Ledge", loadingLabel: "Loading Next Ledge traversal readability" });
   </script>
-  <script type="module" src="./src/main.js"></script>
+  <script type="module" src="./src/main.js?v=traversal-readability-1"></script>
 </body>
 </html>
