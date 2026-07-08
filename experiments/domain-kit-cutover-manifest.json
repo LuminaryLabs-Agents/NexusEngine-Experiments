@@ -106,10 +106,10 @@
       "id": "zombie-orchard",
       "kind": "experiment",
       "canonicalPath": "experiments/zombie-orchard/",
-      "status": "cure-crafting-readiness-renderer-handoff-pass",
-      "domainCutover": ["action-input-kit", "zombie-orchard-visual-fractal-domain-kit", "zombie-orchard-survival-readability-domain-kit", "zombie-orchard-foraging-readability-domain-kit", "zombie-orchard-horde-pathing-readiness-domain-kit", "zombie-orchard-cure-crafting-readiness-domain-kit"],
-      "bridgeNeeded": "browser host imports NexusEngine main CDN through the existing kit stack plus horde-pathing and cure-crafting overlays; survival, foraging, horde-pathing, and cure-crafting domains emit descriptors consumed by presentation only",
-      "featureParity": ["move", "collect", "survival waves", "foraging readability", "horde pathing readiness", "cure crafting readiness"]
+      "status": "safehouse-evacuation-readiness-renderer-handoff-pass",
+      "domainCutover": ["action-input-kit", "zombie-orchard-visual-fractal-domain-kit", "zombie-orchard-survival-readability-domain-kit", "zombie-orchard-foraging-readability-domain-kit", "zombie-orchard-horde-pathing-readiness-domain-kit", "zombie-orchard-cure-crafting-readiness-domain-kit", "zombie-orchard-safehouse-evacuation-readiness-domain-kit"],
+      "bridgeNeeded": "browser host imports NexusEngine main CDN through the existing kit stack plus horde-pathing, cure-crafting, and safehouse-evacuation overlays; survival, foraging, horde-pathing, cure-crafting, and safehouse-evacuation domains emit descriptors consumed by presentation only",
+      "featureParity": ["move", "collect", "survival waves", "foraging readability", "horde pathing readiness", "cure crafting readiness", "safehouse evacuation readiness"]
     },
     {
       "id": "tropical-island-scene",
@@ -124,10 +124,10 @@
       "id": "cozy-island",
       "kind": "experiment",
       "canonicalPath": "experiments/cozy-island/",
-      "status": "tidepool-conservatory-readiness-renderer-handoff-pass",
-      "domainCutover": ["ocean-island-landform-domain", "island-foliage-domain", "mattatz-clouds-domain", "campfire-object-domain", "smoke-particle-domain", "cozy-island-castaway-comfort-readiness-domain-kit", "cozy-island-tidepool-conservatory-readiness-domain-kit"],
-      "bridgeNeeded": "legacy cloudbar route still consumes older NexusRealtime ProtoKits for island generation; the changed castaway comfort and tidepool conservatory overlays import NexusEngine main CDN and emit renderer-neutral survival, shorelife, reef stewardship, moon tide, and conservation descriptors consumed by presentation only",
-      "featureParity": ["cloudbar island generation", "campfire", "smoke", "grass", "clouds", "castaway comfort readiness", "tidepool conservatory readiness"]
+      "status": "castaway-comfort-readiness-renderer-handoff-pass",
+      "domainCutover": ["ocean-island-landform-domain", "island-foliage-domain", "mattatz-clouds-domain", "campfire-object-domain", "smoke-particle-domain", "cozy-island-castaway-comfort-readiness-domain-kit"],
+      "bridgeNeeded": "legacy cloudbar route still consumes older NexusRealtime ProtoKits for island generation; the changed castaway comfort overlay imports NexusEngine main CDN and emits renderer-neutral survival, shelter, signal, storm, and canoe descriptors consumed by presentation only",
+      "featureParity": ["cloudbar island generation", "campfire", "smoke", "grass", "clouds", "castaway comfort readiness"]
     },
     {
       "id": "signal-bastion",
