@@ -2,6 +2,7 @@ import * as NexusEngine from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/Nexus
 import { createGenericRouteCargoExtractionKit } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusRealtime-ProtoKits@main/protokits/generic-route-cargo-extraction-kit/index.js";
 import { createNextLedgeSession as createVisualNextLedgeSession } from "./session-visual-upgrade.js";
 import { createNextLedgeRouteCargoDomainKit } from "./route-cargo-fractal-kits.js";
+import { createNextLedgeTraversalReadabilityDomainKit } from "./traversal-readability-kits.js";
 
 function createRuntimeEngine(options = {}) {
   const createEngine = NexusEngine.createRealtimeGame ?? NexusEngine.createRealtimeEngine ?? NexusEngine.createEngine;
@@ -42,6 +43,7 @@ function createCargoRuntime(snapshot = {}, cargoDomain) {
 export function createNextLedgeSession(options = {}) {
   const base = createVisualNextLedgeSession(options);
   const cargoDomain = createNextLedgeRouteCargoDomainKit(options.routeCargo ?? {});
+  const traversalReadabilityDomain = createNextLedgeTraversalReadabilityDomainKit(options.traversalReadability ?? {});
   let runtime = createCargoRuntime(base.snapshot(), cargoDomain);
   const syncedEvents = new Set();
 
@@ -111,6 +113,7 @@ export function createNextLedgeSession(options = {}) {
   function decorate(snapshot = {}) {
     const cargoSnapshot = syncCargoEvents(snapshot);
     const routeCargoVisual = cargoDomain.describe(snapshot, cargoSnapshot);
+    const traversalReadability = traversalReadabilityDomain.describe(snapshot, cargoSnapshot);
     const visualQuality = snapshot.domain?.visualQuality ?? {};
     return {
       ...snapshot,
@@ -118,6 +121,7 @@ export function createNextLedgeSession(options = {}) {
         ...(snapshot.domain ?? {}),
         routeCargoExtraction: cargoSnapshot,
         routeCargoVisual,
+        traversalReadability,
         visualQuality: {
           ...visualQuality,
           uses: [
@@ -131,9 +135,18 @@ export function createNextLedgeSession(options = {}) {
             "extraction-pressure-channel-kit",
             "extraction-summit-handoff-kit",
             "cargo-status-descriptor-kit",
-            "route-cargo-renderer-handoff-kit"
+            "route-cargo-renderer-handoff-kit",
+            "next-ledge-traversal-readability-domain-kit",
+            "swing-arc-forecast-kit",
+            "anchor-confidence-field-kit",
+            "stamina-risk-band-kit",
+            "recovery-vector-kit",
+            "momentum-window-kit",
+            "summit-route-beat-kit",
+            "traversal-readability-renderer-handoff-kit"
           ],
-          routeCargoDescriptors: routeCargoVisual.rendererHandoff.descriptorCount
+          routeCargoDescriptors: routeCargoVisual.rendererHandoff.descriptorCount,
+          traversalReadabilityDescriptors: traversalReadability.rendererHandoff.descriptorCount
         }
       }
     };
@@ -163,6 +176,7 @@ export function createNextLedgeSession(options = {}) {
     ...base,
     cargoEngine: runtime.engine,
     routeCargoDomain: cargoDomain,
+    traversalReadabilityDomain,
     update,
     snapshot,
     restart,
