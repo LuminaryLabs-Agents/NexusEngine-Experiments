@@ -1,3 +1,5 @@
+import "./sora-sky-rescue-readiness-domain-kits-smoke.mjs";
+import "./sora-sky-rescue-cdn-state-input-smoke.mjs";
 import "./sora-microflight-trial-readiness-domain-kits-smoke.mjs";
 import "./sora-microflight-trial-cdn-state-input-smoke.mjs";
 import assert from "node:assert/strict";
@@ -14,7 +16,9 @@ const oldRuntimeCdn = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusRealtim
 assert.ok(routeHtml.includes("sora-compatibility-gateway.js"), "route boots Sora compatibility gateway runtime");
 assert.ok(routeHtml.includes("sora-compatibility-style.css"), "route includes gateway style");
 assert.ok(routeHtml.includes("sora-microflight-trial-entry.js"), "route includes microflight trial readiness overlay");
-assert.ok(routeHtml.includes("microflight-trial-readiness-v1"), "route cache-busts microflight trial readiness overlay");
+assert.ok(routeHtml.includes("sora-sky-rescue-entry.js?v=sky-rescue-readiness-v1"), "route includes sky rescue readiness overlay");
+assert.ok(routeHtml.includes("sora-sky-rescue-style.css?v=sky-rescue-readiness-v1"), "route includes sky rescue readiness style");
+assert.ok(routeHtml.includes("sky-rescue-readiness-v1"), "route cache-busts sky rescue readiness overlay");
 assert.ok(!routeHtml.includes("http-equiv=\"refresh\""), "zero-frame redirect removed");
 assert.ok(routeRuntime.includes(nexusEngineCdn), "gateway imports NexusEngine main CDN");
 assert.ok(!routeRuntime.includes(oldRuntimeCdn), "changed route runtime does not import old NexusRealtime CDN");
