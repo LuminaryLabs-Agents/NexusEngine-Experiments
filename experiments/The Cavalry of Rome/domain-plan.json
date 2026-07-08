@@ -1,10 +1,10 @@
 {
   "id": "the-cavalry-of-rome",
   "title": "The Cavalry of Rome",
-  "status": "battlefield-orders-readability-handoff-pass",
+  "status": "diplomatic-command-readiness-renderer-handoff-pass",
   "canonicalRouteClaim": true,
   "deterministicReplayClaim": false,
-  "designIntent": "DSK-composed WebGPU/WebGL-first Roman strategy route: scan over a large procedural campaign map, issue one world action at a time, read supply pressure, march corridors, morale fronts, unit cohesion, command choices, scouting vectors, flank risk, reinforcement needs, attrition forecasts, turn tempo, and objective pressure through renderer-neutral descriptors, then preserve the older battlefield and tactical maneuver surfaces without moving reusable logic into the renderer.",
+  "designIntent": "DSK-composed WebGPU/WebGL-first Roman strategy route: scan over a large procedural campaign map, issue one world action at a time, read supply pressure, march corridors, morale fronts, unit cohesion, command choices, scouting vectors, flank risk, reinforcement needs, attrition forecasts, turn tempo, objective pressure, logistics readiness, and diplomatic command pressure through renderer-neutral descriptors, then preserve the older battlefield and tactical maneuver surfaces without moving reusable logic into the renderer.",
   "liveEndpoint": "apps/the-cavalry-of-rome/",
   "activeModules": [
     "experiments/The Cavalry of Rome/src/cavalry-campaign-3d-terrain-pass.js",
@@ -13,14 +13,18 @@
     "experiments/The Cavalry of Rome/src/cavalry-campaign-world-actions-pass.js",
     "experiments/The Cavalry of Rome/src/cavalry-campaign-fractal-domain-kit.js",
     "experiments/The Cavalry of Rome/src/cavalry-battlefield-orders-domain-kit.js",
-    "experiments/The Cavalry of Rome/src/cavalry-campaign-fractal-handoff-pass.js"
+    "experiments/The Cavalry of Rome/src/cavalry-logistics-readiness-domain-kit.js",
+    "experiments/The Cavalry of Rome/src/cavalry-diplomatic-command-readiness-domain-kit.js",
+    "experiments/The Cavalry of Rome/src/cavalry-campaign-fractal-handoff-pass.js",
+    "experiments/The Cavalry of Rome/src/cavalry-logistics-readiness-pass.js",
+    "experiments/The Cavalry of Rome/src/cavalry-diplomatic-command-readiness-pass.js"
   ],
-  "standingIterationRule": "Every future gameplay iteration should improve visual fidelity as a secondary goal and should not regress terrain density, vegetation descriptors, lighting mood, region readability, soldier fidelity, hex readability, maneuver feedback, command readability, order readability, or cinematic composition.",
+  "standingIterationRule": "Every future gameplay iteration should improve visual fidelity as a secondary goal and should not regress terrain density, vegetation descriptors, lighting mood, region readability, soldier fidelity, hex readability, maneuver feedback, command readability, order readability, logistics readiness, diplomatic command pressure, or cinematic composition.",
   "currentGameplayStep": {
-    "id": "battlefield-orders-readability",
+    "id": "diplomatic-command-readiness",
     "status": "implemented-as-renderer-neutral-descriptor-handoff",
-    "intent": "Add a tactical orders layer over the campaign map so players can read scout direction, exposed flanks, reinforcement needs, attrition risk, remaining order tempo, and high-level objective pressure without putting campaign truth into the renderer.",
-    "implementation": "cavalry-battlefield-orders-domain-kit.js emits scouting-vector, flank-risk-arc, reinforcement-callout, attrition-forecast-chip, turn-tempo-standard, objective-pressure-banner, and renderer-handoff descriptors from the current campaign state. cavalry-campaign-fractal-handoff-pass.js imports NexusEngine main via CDN, computes campaign fractal plus battlefield orders domains each frame, exposes GameHost campaignFractal and campaignBattlefieldOrders state, and renders a presentation-only overlay that consumes descriptors without owning campaign simulation, input, WebGL, audio, assets, or frame-loop truth."
+    "intent": "Add a political campaign layer over the map so players can read senate mandates, tribute obligations, ally loyalty, rebellion sparks, province pacification, and triumph windows without putting campaign truth into the renderer.",
+    "implementation": "cavalry-diplomatic-command-readiness-domain-kit.js emits senate-decree-mandate, tribute-obligation-ledger, ally-loyalty-banner, rebellion-spark, province-pacification-band, triumph-window-standard, and renderer-handoff descriptors from the current campaign state. cavalry-diplomatic-command-readiness-pass.js imports NexusEngine main via CDN, computes diplomatic command readiness each frame, exposes GameHost diplomatic command state, and renders a presentation-only overlay that consumes descriptors without owning campaign simulation, input, WebGL, audio, assets, or frame-loop truth."
   },
   "existingDskStack": [
     "gamehost-standard-kit",
@@ -45,7 +49,22 @@
     "cavalry-turn-tempo-standard-kit",
     "cavalry-objective-pressure-banner-kit",
     "cavalry-battlefield-orders-renderer-handoff-kit",
-    "cavalry-battlefield-orders-domain-kit"
+    "cavalry-battlefield-orders-domain-kit",
+    "cavalry-supply-depot-radius-kit",
+    "cavalry-forage-corridor-kit",
+    "cavalry-road-strain-thread-kit",
+    "cavalry-siege-readiness-signal-kit",
+    "cavalry-courier-order-pulse-kit",
+    "cavalry-winter-attrition-warning-kit",
+    "cavalry-logistics-readiness-domain-kit",
+    "cavalry-senate-decree-mandate-kit",
+    "cavalry-tribute-obligation-ledger-kit",
+    "cavalry-ally-loyalty-banner-kit",
+    "cavalry-rebellion-spark-kit",
+    "cavalry-province-pacification-band-kit",
+    "cavalry-triumph-window-standard-kit",
+    "cavalry-diplomatic-command-renderer-handoff-kit",
+    "cavalry-diplomatic-command-readiness-domain-kit"
   ],
   "maneuvers": {
     "advanceLeft": { "cost": 1, "effect": "Roll 1d6 and move that many eligible Rome units from the left third." },
@@ -58,36 +77,35 @@
   },
   "campaignFractalDomain": {
     "tree": "cavalry-campaign-fractal-domain -> campaign-readability/supply-line + march-corridor -> battlefield-readability/unit-cohesion + morale-weather + maneuver-choice -> renderer-handoff/descriptors-only",
-    "atomicKits": [
-      "cavalry-supply-line-kit",
-      "cavalry-march-corridor-kit",
-      "cavalry-unit-cohesion-field-kit",
-      "cavalry-morale-weather-front-kit",
-      "cavalry-maneuver-choice-band-kit",
-      "cavalry-fractal-renderer-handoff-kit"
-    ],
+    "atomicKits": ["cavalry-supply-line-kit", "cavalry-march-corridor-kit", "cavalry-unit-cohesion-field-kit", "cavalry-morale-weather-front-kit", "cavalry-maneuver-choice-band-kit", "cavalry-fractal-renderer-handoff-kit"],
     "compositeKit": "cavalry-campaign-fractal-domain-kit",
     "handoff": "renderer consumes descriptor buckets only: supplyLines, marchCorridors, cohesionFields, moraleFronts, maneuverChoices"
   },
   "battlefieldOrdersDomain": {
     "tree": "cavalry-battlefield-orders-domain -> reconnaissance/scouting-vector + flank-risk -> formation-response/reinforcement + attrition -> campaign-tempo/turn-tempo + objective-pressure -> renderer-handoff/descriptors-only",
-    "atomicKits": [
-      "cavalry-scouting-vector-kit",
-      "cavalry-flank-risk-arc-kit",
-      "cavalry-reinforcement-callout-kit",
-      "cavalry-attrition-forecast-chip-kit",
-      "cavalry-turn-tempo-standard-kit",
-      "cavalry-objective-pressure-banner-kit",
-      "cavalry-battlefield-orders-renderer-handoff-kit"
-    ],
+    "atomicKits": ["cavalry-scouting-vector-kit", "cavalry-flank-risk-arc-kit", "cavalry-reinforcement-callout-kit", "cavalry-attrition-forecast-chip-kit", "cavalry-turn-tempo-standard-kit", "cavalry-objective-pressure-banner-kit", "cavalry-battlefield-orders-renderer-handoff-kit"],
     "compositeKit": "cavalry-battlefield-orders-domain-kit",
     "handoff": "renderer consumes descriptor buckets only: scoutingVectors, flankRiskArcs, reinforcementCallouts, attritionForecastChips, turnTempoStandards, objectivePressureBanners"
+  },
+  "logisticsReadinessDomain": {
+    "tree": "cavalry-logistics-readiness-domain -> sustainment/depot-radius + forage-corridor -> campaign-route/road-strain + courier-order -> seasonal-siege/siege-readiness + winter-attrition -> renderer-handoff/descriptors-only",
+    "atomicKits": ["cavalry-supply-depot-radius-kit", "cavalry-forage-corridor-kit", "cavalry-road-strain-thread-kit", "cavalry-courier-order-pulse-kit", "cavalry-siege-readiness-signal-kit", "cavalry-winter-attrition-warning-kit", "cavalry-logistics-readiness-renderer-handoff-kit"],
+    "compositeKit": "cavalry-logistics-readiness-domain-kit",
+    "handoff": "renderer consumes descriptor buckets only: supplyDepotRadii, forageCorridors, roadStrainThreads, siegeReadinessSignals, courierOrderPulses, winterAttritionWarnings"
+  },
+  "diplomaticCommandReadinessDomain": {
+    "tree": "cavalry-diplomatic-command-readiness-domain -> senate-pressure/decree-mandate + tribute-obligation -> ally-frontier/ally-loyalty + rebellion-spark -> campaign-legitimacy/province-pacification + triumph-window -> renderer-handoff/descriptors-only",
+    "atomicKits": ["cavalry-senate-decree-mandate-kit", "cavalry-tribute-obligation-ledger-kit", "cavalry-ally-loyalty-banner-kit", "cavalry-rebellion-spark-kit", "cavalry-province-pacification-band-kit", "cavalry-triumph-window-standard-kit", "cavalry-diplomatic-command-renderer-handoff-kit"],
+    "compositeKit": "cavalry-diplomatic-command-readiness-domain-kit",
+    "handoff": "renderer consumes descriptor buckets only: senateDecreeMandates, tributeObligationLedgers, allyLoyaltyBanners, rebellionSparks, provincePacificationBands, triumphWindowStandards"
   },
   "fidelityFocus": {
     "terrain": "realistic low-poly terrain with domain warping, FBM/ridged noise, blended biome colors, moisture/slope/river masks, and non-repeating landforms",
     "mapNavigation": "large pannable campaign surface with keyboard/drag pan and wheel zoom",
     "campaignReadability": "descriptor-driven supply lines, march corridors, unit cohesion fields, morale-weather fronts, and command choice bands over the campaign map",
     "orderReadability": "descriptor-driven scout vectors, flank arcs, reinforcement bars, attrition chips, order tempo standards, and objective pressure banners over the campaign map",
+    "logisticsReadiness": "descriptor-driven supply depots, forage corridors, road strain, courier order tempo, siege readiness, and winter attrition warnings over the campaign map",
+    "diplomaticCommandReadiness": "descriptor-driven senate mandates, tribute obligations, ally loyalty, rebellion sparks, province pacification, and triumph windows over the campaign map",
     "regions": "oversized highlighted region meshes with glow, wobble borders, and DSK affordance descriptors",
     "visibleUi": "minimal route chrome; reusable command/readability logic remains descriptor-owned",
     "uiDom": "presentation-only sinks and command surfaces; campaign truth stays in the campaign state and domain descriptors",
@@ -127,6 +145,16 @@
     "battlefield orders attrition-forecast descriptors",
     "battlefield orders turn-tempo descriptors",
     "battlefield orders objective-pressure descriptors",
+    "logistics readiness depot-radius descriptors",
+    "logistics readiness forage-corridor descriptors",
+    "logistics readiness road-strain descriptors",
+    "logistics readiness siege-readiness descriptors",
+    "diplomatic command senate-mandate descriptors",
+    "diplomatic command tribute-obligation descriptors",
+    "diplomatic command ally-loyalty descriptors",
+    "diplomatic command rebellion-spark descriptors",
+    "diplomatic command province-pacification descriptors",
+    "diplomatic command triumph-window descriptors",
     "NexusEngine CDN handoff pass"
   ],
   "rendererOwnership": {
@@ -135,6 +163,8 @@
     "hexGameplayOverlay": "scene-native movement/highlight/squad renderer and first playable interaction layer",
     "hexDiceWebGl": "scene-native WebGL2 dice renderer",
     "campaignFractalOverlay": "presentation-only Canvas2D consumer of renderer-neutral descriptors",
+    "logisticsReadinessOverlay": "presentation-only Canvas2D consumer of renderer-neutral logistics descriptors",
+    "diplomaticCommandOverlay": "presentation-only Canvas2D consumer of renderer-neutral diplomatic command descriptors",
     "vegetationOverlay": "disabled until terrain-anchored instancing exists",
     "dskOwned": [
       "route progress descriptors",
@@ -148,7 +178,9 @@
       "hex battlefield snapshot via local DSK candidate",
       "tactical gameplay snapshot via local DSK candidate",
       "campaign fractal descriptor snapshot via local DSK candidate",
-      "battlefield orders descriptor snapshot via local DSK candidate"
+      "battlefield orders descriptor snapshot via local DSK candidate",
+      "logistics readiness descriptor snapshot via local DSK candidate",
+      "diplomatic command descriptor snapshot via local DSK candidate"
     ]
   },
   "futureProtoKitCandidatesFromCustomLogic": [
@@ -159,12 +191,14 @@
     { "id": "campaign-command-choice-kit", "source": "cavalry-maneuver-choice-band-kit", "reason": "Reusable command availability descriptors independent of DOM buttons." },
     { "id": "campaign-scouting-vector-kit", "source": "cavalry-scouting-vector-kit", "reason": "Reusable scouting and next-neighbor intent descriptors for strategy maps." },
     { "id": "campaign-flank-risk-kit", "source": "cavalry-flank-risk-arc-kit", "reason": "Reusable exposed-edge risk descriptors for territory and formation games." },
-    { "id": "campaign-attrition-forecast-kit", "source": "cavalry-attrition-forecast-chip-kit", "reason": "Reusable attack/defense outcome readability independent of the renderer." }
+    { "id": "campaign-attrition-forecast-kit", "source": "cavalry-attrition-forecast-chip-kit", "reason": "Reusable attack/defense outcome readability independent of the renderer." },
+    { "id": "campaign-logistics-readiness-kit", "source": "cavalry-logistics-readiness-domain-kit", "reason": "Reusable supply, forage, road strain, courier, siege, and winter-readiness descriptors for strategy maps." },
+    { "id": "campaign-diplomatic-command-kit", "source": "cavalry-diplomatic-command-readiness-domain-kit", "reason": "Reusable senate mandate, ally loyalty, rebellion, pacification, and triumph-window descriptors for strategy maps." }
   ],
   "intentionallyOmitted": [
     "full combat resolution",
     "unit stat tables beyond visual class and terrain metadata",
-    "campaign economy",
+    "campaign economy beyond descriptor-only tribute pressure",
     "large JSON datasets",
     "vegetation harvesting",
     "tree collision",
@@ -172,5 +206,5 @@
     "screen-space vegetation rendering",
     "shared page-loader UI"
   ],
-  "nextLedge": "Add a deterministic campaign replay that chooses a Roman cell, previews scout vectors, commits one march, ends a world turn, and snapshot-hashes campaign plus battlefield-orders renderer handoff descriptors."
+  "nextLedge": "Add a deterministic campaign replay that chooses a Roman cell, previews scout vectors, checks senate pressure, commits one march or envoy move, ends a world turn, and snapshot-hashes campaign, logistics, diplomatic command, and battlefield-orders renderer handoff descriptors."
 }
