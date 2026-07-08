@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>VR Platformer Board · NexusRealtime</title>
+  <title>VR Platformer Board · NexusEngine</title>
   <style>
     html, body { margin: 0; height: 100%; overflow: hidden; background: radial-gradient(circle at 50% 30%, #24324f, #070a11 58%, #020306); color: white; font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
     main, canvas { position: fixed; inset: 0; width: 100vw; height: 100vh; }
@@ -28,14 +28,21 @@
 
   <script type="module">
     import {
+      createVrBoardAtmosphericDomeKit,
       createVrBoardChallengeDirectorKit,
+      createVrBoardCollectibleConstellationKit,
+      createVrBoardComfortFocusKit,
       createVrBoardCompositionKit,
       createVrBoardDepthLaneKit,
+      createVrBoardHazardTelemetryKit,
       createVrBoardHudDescriptorKit,
+      createVrBoardMotionTrailKit,
+      createVrBoardPlatformReliefKit,
+      createVrBoardRendererHandoffKit,
       createVrBoardWorldSeedKit
     } from "../_kits/vr-platformer-board/vr-platformer-board-kits.js";
 
-    const NEXUS_URL = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusRealtime@main/src/index.js";
+    const NEXUS_URL = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js";
     const PROTOKITS = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusRealtime-ProtoKits@main/protokits";
 
     const canvas = document.querySelector("#game");
@@ -48,11 +55,32 @@
     const boardWorldSeedKit = createVrBoardWorldSeedKit();
     const boardChallengeDirectorKit = createVrBoardChallengeDirectorKit();
     const boardDepthLaneKit = createVrBoardDepthLaneKit({ laneCount: 7 });
+    const boardAtmosphericDomeKit = createVrBoardAtmosphericDomeKit({ bandCount: 7, moteCount: 22 });
+    const boardPlatformReliefKit = createVrBoardPlatformReliefKit();
+    const boardHazardTelemetryKit = createVrBoardHazardTelemetryKit();
+    const boardCollectibleConstellationKit = createVrBoardCollectibleConstellationKit();
+    const boardComfortFocusKit = createVrBoardComfortFocusKit();
+    const boardMotionTrailKit = createVrBoardMotionTrailKit({ ghostCount: 8 });
+    const boardRendererHandoffKit = createVrBoardRendererHandoffKit({
+      atmosphericDomeKit: boardAtmosphericDomeKit,
+      platformReliefKit: boardPlatformReliefKit,
+      hazardTelemetryKit: boardHazardTelemetryKit,
+      collectibleConstellationKit: boardCollectibleConstellationKit,
+      comfortFocusKit: boardComfortFocusKit,
+      motionTrailKit: boardMotionTrailKit
+    });
     const boardHudDescriptorKit = createVrBoardHudDescriptorKit();
     const boardCompositionKit = createVrBoardCompositionKit({
       worldSeedKit: boardWorldSeedKit,
       challengeDirectorKit: boardChallengeDirectorKit,
       depthLaneKit: boardDepthLaneKit,
+      atmosphericDomeKit: boardAtmosphericDomeKit,
+      platformReliefKit: boardPlatformReliefKit,
+      hazardTelemetryKit: boardHazardTelemetryKit,
+      collectibleConstellationKit: boardCollectibleConstellationKit,
+      comfortFocusKit: boardComfortFocusKit,
+      motionTrailKit: boardMotionTrailKit,
+      rendererHandoffKit: boardRendererHandoffKit,
       hudDescriptorKit: boardHudDescriptorKit
     });
 
@@ -95,7 +123,6 @@
       const w = innerWidth;
       const h = innerHeight;
       ctx.clearRect(0, 0, w, h);
-
       const headX = snapshot.xrPose?.head?.position?.x ?? 0;
       const headY = snapshot.xrPose?.head?.position?.y ?? 1.6;
       const board = snapshot.board ?? { sizeMeters: { x: 1.6, y: 0.9 } };
@@ -106,13 +133,9 @@
       const cy = h * 0.52 + (1.6 - headY) * 120;
       const left = cx - bw / 2;
       const top = cy - bh / 2;
-      const composition = snapshot.boardComposition ?? { world: null, depthLanes: [], challenge: null };
+      const composition = snapshot.boardComposition ?? { world: null, depthLanes: [], challenge: null, visual: {} };
 
-      const gradient = ctx.createRadialGradient(cx, cy - bh * 0.8, 20, cx, cy, Math.max(bw, bh));
-      gradient.addColorStop(0, "rgba(91, 159, 255, 0.26)");
-      gradient.addColorStop(1, "rgba(0,0,0,0)");
-      ctx.fillStyle = gradient;
-      ctx.fillRect(0, 0, w, h);
+      drawRoomGlow(composition, cx, cy, bw, bh);
 
       ctx.save();
       ctx.translate(left, top);
@@ -133,6 +156,7 @@
       ctx.fillStyle = "#1f3155";
       ctx.fillRect(0, 120, 320, 60);
 
+      drawAtmosphericDome(composition);
       drawBoardDepth(composition);
       drawBoardSkyline(composition);
 
@@ -142,16 +166,48 @@
       const render = snapshot.render?.descriptors ?? [];
       const cameraX = snapshot.camera?.position?.x ?? 0;
       const cameraY = snapshot.camera?.position?.y ?? 0;
+      drawPlatformRelief(composition, cameraX, cameraY);
+      drawCollectibleConstellation(composition, cameraX, cameraY);
       drawPlatformAuras(composition, cameraX, cameraY);
+      drawMotionTrail(composition, cameraX, cameraY);
       for (const item of render) drawDescriptor(item, cameraX, cameraY);
       drawCollectibleOrbits(composition, cameraX, cameraY);
+      drawHazardTelemetry(composition, cameraX, cameraY);
       drawChallengeStrip(composition);
+      drawComfortFocus(composition);
       ctx.restore();
 
       ctx.fillStyle = "rgba(255,255,255,0.8)";
       ctx.font = "5px ui-sans-serif";
-      ctx.fillText(`board ${board.sizeMeters?.x ?? 1.6}m · stereo eyes ${snapshot.stereo?.views?.length ?? 0} · ${composition.challenge?.stage ?? "launch"}`, 4, 192);
+      const descriptorCount = composition.visual?.rendererHandoff?.counts?.total ?? 0;
+      ctx.fillText(`board ${board.sizeMeters?.x ?? 1.6}m · stereo eyes ${snapshot.stereo?.views?.length ?? 0} · ${descriptorCount} descriptors`, 4, 192);
       ctx.restore();
+    }
+
+    function drawRoomGlow(composition, cx, cy, bw, bh) {
+      const pressure = composition.visual?.atmosphericDome?.pressure ?? 0.2;
+      const gradient = ctx.createRadialGradient(cx, cy - bh * 0.8, 20, cx, cy, Math.max(bw, bh));
+      gradient.addColorStop(0, `rgba(91, 159, 255, ${0.22 + pressure * 0.16})`);
+      gradient.addColorStop(0.6, `rgba(157, 106, 255, ${0.08 + pressure * 0.08})`);
+      gradient.addColorStop(1, "rgba(0,0,0,0)");
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, innerWidth, innerHeight);
+    }
+
+    function drawAtmosphericDome(composition) {
+      const dome = composition.visual?.atmosphericDome;
+      if (!dome) return;
+      for (const band of dome.skyBands ?? []) {
+        ctx.fillStyle = band.hue === "cyan" ? `rgba(90, 222, 255, ${band.opacity})` : `rgba(166, 118, 255, ${band.opacity})`;
+        roundRect(ctx, -20 + band.drift * 12, band.y, 360, band.height, 18);
+        ctx.fill();
+      }
+      for (const mote of dome.motes ?? []) {
+        ctx.fillStyle = `rgba(220, 245, 255, ${mote.alpha})`;
+        ctx.beginPath();
+        ctx.arc(mote.x, mote.y, mote.radius, 0, Math.PI * 2);
+        ctx.fill();
+      }
     }
 
     function drawBoardDepth(composition) {
@@ -172,11 +228,59 @@
       }
     }
 
+    function drawPlatformRelief(composition, cameraX, cameraY) {
+      for (const relief of composition.visual?.platformRelief ?? []) {
+        const p = worldToScreen(relief.x, relief.y, cameraX, cameraY);
+        ctx.fillStyle = `rgba(0, 0, 0, ${0.18 + relief.shadowDrop})`;
+        roundRect(ctx, p.x + 4, p.y - relief.h * 18 + 5, relief.w * 18, relief.h * 18 + 6, 3);
+        ctx.fill();
+        ctx.strokeStyle = `rgba(160, 226, 255, ${Math.min(0.78, relief.rim)})`;
+        ctx.lineWidth = 1;
+        ctx.strokeRect(p.x, p.y - relief.h * 18 - 1, relief.w * 18, 2);
+      }
+    }
+
     function drawPlatformAuras(composition, cameraX, cameraY) {
       for (const aura of composition.world?.platformAuras ?? []) {
         const p = worldToScreen(aura.x, aura.y, cameraX, cameraY);
         ctx.fillStyle = `rgba(88, 231, 255, ${aura.pulse * 0.16})`;
         roundRect(ctx, p.x - 3, p.y - aura.h * 18 - 5, aura.w * 18 + 6, aura.h * 18 + 10, 4);
+        ctx.fill();
+      }
+    }
+
+    function drawMotionTrail(composition, cameraX, cameraY) {
+      for (const ghost of composition.visual?.motionTrail?.ghosts ?? []) {
+        const p = worldToScreen(ghost.x, ghost.y, cameraX, cameraY);
+        ctx.fillStyle = `rgba(255, 255, 255, ${ghost.alpha})`;
+        roundRect(ctx, p.x - 3 * ghost.scale, p.y - 11 * ghost.scale, 8 * ghost.scale, 13 * ghost.scale, 3);
+        ctx.fill();
+      }
+    }
+
+    function drawCollectibleConstellation(composition, cameraX, cameraY) {
+      const constellation = composition.visual?.collectibleConstellation;
+      if (!constellation) return;
+      const byId = new Map((constellation.nodes ?? []).map((node) => [node.id, node]));
+      ctx.strokeStyle = "rgba(255, 226, 119, 0.22)";
+      for (const link of constellation.links ?? []) {
+        const a = byId.get(link.from);
+        const b = byId.get(link.to);
+        if (!a || !b) continue;
+        const pa = worldToScreen(a.x, a.y, cameraX, cameraY);
+        const pb = worldToScreen(b.x, b.y, cameraX, cameraY);
+        ctx.globalAlpha = link.alpha;
+        ctx.beginPath();
+        ctx.moveTo(pa.x, pa.y);
+        ctx.lineTo(pb.x, pb.y);
+        ctx.stroke();
+        ctx.globalAlpha = 1;
+      }
+      for (const node of constellation.nodes ?? []) {
+        const p = worldToScreen(node.x, node.y, cameraX, cameraY);
+        ctx.fillStyle = `rgba(255, 226, 119, ${node.sparkle})`;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 2.5 + node.orbit * 5, 0, Math.PI * 2);
         ctx.fill();
       }
     }
@@ -192,6 +296,17 @@
       }
     }
 
+    function drawHazardTelemetry(composition, cameraX, cameraY) {
+      for (const hazard of composition.visual?.hazardTelemetry ?? []) {
+        const p = worldToScreen(hazard.x, hazard.y, cameraX, cameraY);
+        ctx.strokeStyle = `rgba(255, 95, 118, ${hazard.pulse})`;
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.arc(p.x + hazard.w * 9, p.y - hazard.h * 9, hazard.warningRadius * 16, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+    }
+
     function drawChallengeStrip(composition) {
       const progress = composition.challenge?.progress ?? 0;
       const intensity = composition.challenge?.intensity ?? 0;
@@ -201,6 +316,17 @@
       ctx.fillStyle = intensity > 70 ? "#ffbf6b" : "#78ffd6";
       roundRect(ctx, 10, 10, 112 * progress, 7, 4);
       ctx.fill();
+    }
+
+    function drawComfortFocus(composition) {
+      const focus = composition.visual?.comfortFocus;
+      if (!focus) return;
+      const alpha = focus.vignette * 0.42;
+      ctx.fillStyle = `rgba(0, 0, 0, ${alpha})`;
+      ctx.fillRect(0, 0, 320, 8);
+      ctx.fillRect(0, 172, 320, 8);
+      ctx.fillRect(0, 0, 8, 180);
+      ctx.fillRect(312, 0, 8, 180);
     }
 
     function worldToScreen(x, y, cameraX, cameraY) {
@@ -263,7 +389,9 @@
       const { createXrPlatformerRenderAdapterKit } = await import(`${PROTOKITS}/xr-platformer-render-adapter-kit/index.js`);
       const { createStereoscopicRenderDomainKit } = await import(`${PROTOKITS}/stereoscopic-render-domain-kit/index.js`);
 
-      const engine = NexusRealtime.createRealtimeGame({
+      const createEngine = NexusRealtime.createRealtimeGame ?? NexusRealtime.createRealtimeEngine ?? NexusRealtime.createEngine;
+      if (typeof createEngine !== "function") throw new Error("NexusEngine CDN runtime did not expose createRealtimeGame/createRealtimeEngine/createEngine.");
+      const engine = createEngine({
         kits: [
           createPlatformerLevelDomainKit(NexusRealtime),
           createPlatformerAvatarDomainKit(NexusRealtime),
@@ -301,7 +429,9 @@
           camera: engine.platformerCamera.updateFromAvatar(avatar, engine.platformerLevel.getState().level),
           board: engine.spatialGameBoard.getState(),
           comfort: { warnings: [] },
-          sequence: engine.platformerSequence.getState()
+          sequence: engine.platformerSequence.getState(),
+          xrPose: engine.xrPose.getState(),
+          time: performance.now() / 1000
         })
       };
 
@@ -339,7 +469,7 @@
         const stereo = engine.stereoscopicRender.updateFromCamera(head, dt);
         const comfort = engine.xrComfort.evaluate({ head, board });
         const adapter = engine.xrPlatformerRenderAdapter.compose({ render, board, stereo, parallax, effects: engine.platformerEffects.getState().effects, sequence });
-        latestBoardComposition = boardCompositionKit.describe({ avatar, level, objects: engine.platformerObjects.getState(), camera, board, comfort, sequence, time: now / 1000 });
+        latestBoardComposition = boardCompositionKit.describe({ avatar, level, objects: engine.platformerObjects.getState(), camera, board, comfort, sequence, xrPose: engine.xrPose.getState(), time: now / 1000 });
 
         objective.textContent = latestBoardComposition.hud.objective;
         controls.textContent = latestBoardComposition.hud.controls;
