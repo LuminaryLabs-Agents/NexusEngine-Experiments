@@ -106,10 +106,10 @@
       "id": "tropical-island-scene",
       "kind": "experiment",
       "canonicalPath": "experiments/tropical-island-scene/",
-      "status": "beachcomber-readability-renderer-handoff-pass",
-      "domainCutover": ["island-kit", "water-surface-kit", "tropical-lagoon-visual-fractal-domain-kit", "tropical-beachcomber-readability-domain-kit"],
-      "bridgeNeeded": "browser host imports NexusEngine main via CDN; existing local ProtoKit import-map remains for old island/water stack; beachcomber readability overlay imports NexusEngine main CDN and consumes descriptors only",
-      "featureParity": ["drag orbit", "fish", "coconuts", "reef descriptors", "task beacons", "shoreline path ribbons", "tide windows"]
+      "status": "lagoon-navigation-readability-renderer-handoff-pass",
+      "domainCutover": ["island-kit", "water-surface-kit", "tropical-lagoon-visual-fractal-domain-kit", "tropical-beachcomber-readability-domain-kit", "tropical-lagoon-navigation-readability-domain-kit"],
+      "bridgeNeeded": "browser host imports NexusEngine main via CDN; existing local ProtoKit import-map remains for old island/water stack; beachcomber and lagoon navigation readability overlays import NexusEngine main CDN and consume descriptors only",
+      "featureParity": ["drag orbit", "fish", "coconuts", "reef descriptors", "task beacons", "shoreline path ribbons", "tide windows", "reef depth contours", "swim safety cones", "current vector fans", "snorkel point scores", "raft return wakes", "sun glare timing bands"]
     },
     {
       "id": "signal-bastion",
