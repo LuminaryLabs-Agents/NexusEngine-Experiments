@@ -34,6 +34,9 @@ export function createSignalIslesDebugHost({ composition, renderer, input, nexus
     getStormAnchorReadinessState() {
       return composition.getStormAnchorReadinessState();
     },
+    getHarborReliefReadinessState() {
+      return composition.getHarborReliefReadinessState();
+    },
     getRendererHandoff() {
       return composition.getRendererHandoff();
     },
