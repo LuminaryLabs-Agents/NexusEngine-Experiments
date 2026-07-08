@@ -2,6 +2,7 @@ const params = new URLSearchParams(location.search);
 const canvas = document.querySelector("#game");
 const hud = document.querySelector("#hud");
 const errorPanel = document.querySelector("#error");
+const NEXUS_ENGINE_URL = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js";
 
 function fail(error) {
   errorPanel.hidden = false;
@@ -12,11 +13,25 @@ function fail(error) {
 async function boot() {
   const corePath = "./" + "terrain-world-stack" + "." + "js";
   const domainPath = "./" + "hifi-radial-domain" + "." + "js";
+  const visualPath = "../_kits/infinite-radial-terrain/infinite-radial-terrain-kits.js";
   const core = await import(corePath);
   const domain = await import(domainPath);
+  const visualDomain = await import(visualPath);
+  let NexusEngine = null;
+  try {
+    NexusEngine = await import(params.get("nexusEngine") || NEXUS_ENGINE_URL);
+  } catch (error) {
+    console.warn("NexusEngine CDN unavailable; continuing with terrain host descriptors", error);
+  }
+  const runtimeDescriptor = {
+    source: NEXUS_ENGINE_URL,
+    ok: Boolean(NexusEngine),
+    exports: NexusEngine ? Object.keys(NexusEngine).slice(0, 24) : []
+  };
   const THREE = await import(params.get("three") || core.THREE_URL);
   const erosionSolver = await core.loadErosionSolver(params);
   const radialTerrain = domain.createRadialTerrainDomain({ originSnap: 250 });
+  const radialVisualDomain = visualDomain.createInfiniteRadialTerrainVisualDomainKit();
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: "high-performance" });
   renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
   renderer.setSize(innerWidth, innerHeight);
@@ -37,13 +52,68 @@ async function boot() {
   scene.add(sun);
 
   const terrainMat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.94, metalness: 0.01, flatShading: false, side: THREE.FrontSide });
+  const visualGroup = new THREE.Group();
+  visualGroup.name = "radial-terrain-descriptor-handoff";
+  scene.add(visualGroup);
+  const materialCache = new Map();
   const bandMeshes = new Map();
   const keys = new Set();
   const rig = { yaw: 0, pitch: -0.32, speed: 320 };
   let descriptors = radialTerrain.getDescriptors();
+  let visualDescriptors = null;
   let lastVersion = -1;
+  let lastVisualVersion = "";
   let lastSample = null;
   let frame = 0;
+
+  function getLineMaterial(color, opacity = 0.6) {
+    const key = `line:${color}:${opacity}`;
+    if (!materialCache.has(key)) materialCache.set(key, new THREE.LineBasicMaterial({ color, transparent: true, opacity, depthWrite: false }));
+    return materialCache.get(key);
+  }
+
+  function getMeshMaterial(color, opacity = 0.32) {
+    const key = `mesh:${color}:${opacity}`;
+    if (!materialCache.has(key)) materialCache.set(key, new THREE.MeshBasicMaterial({ color, transparent: true, opacity, depthWrite: false, side: THREE.DoubleSide }));
+    return materialCache.get(key);
+  }
+
+  function clearVisualGroup() {
+    for (const child of [...visualGroup.children]) {
+      visualGroup.remove(child);
+      child.geometry?.dispose?.();
+    }
+  }
+
+  function ringPoints(center, radius, segments = 96) {
+    return Array.from({ length: segments }, (_, index) => {
+      const angle = index / segments * Math.PI * 2;
+      return new THREE.Vector3(center.x + Math.cos(angle) * radius, center.y, center.z + Math.sin(angle) * radius);
+    });
+  }
+
+  function collectVisualSamples() {
+    const forward = { x: -Math.sin(rig.yaw), z: -Math.cos(rig.yaw) };
+    const right = { x: Math.cos(rig.yaw), z: -Math.sin(rig.yaw) };
+    const offsets = [
+      { tag: "focus", x: 0, z: 0 },
+      { tag: "ahead", x: forward.x * 900, z: forward.z * 900 },
+      { tag: "far-ahead", x: forward.x * 1800, z: forward.z * 1800 },
+      { tag: "left-ridge", x: right.x * -760 + forward.x * 420, z: right.z * -760 + forward.z * 420 },
+      { tag: "right-ridge", x: right.x * 760 + forward.x * 420, z: right.z * 760 + forward.z * 420 },
+      { tag: "near-left", x: right.x * -260, z: right.z * -260 },
+      { tag: "near-right", x: right.x * 260, z: right.z * 260 },
+      { tag: "rear", x: -forward.x * 520, z: -forward.z * 520 },
+      { tag: "north", x: 0, z: -1120 },
+      { tag: "south", x: 0, z: 1120 },
+      { tag: "east", x: 1120, z: 0 },
+      { tag: "west", x: -1120, z: 0 }
+    ];
+    return offsets.map((offset) => ({
+      ...core.sampleTerrain(camera.position.x + offset.x, camera.position.z + offset.z, descriptors.focus, erosionSolver),
+      tag: offset.tag
+    }));
+  }
 
   function syncTerrain() {
     radialTerrain.setFocus(camera.position);
@@ -72,6 +142,64 @@ async function boot() {
     }
   }
 
+  function syncVisualDescriptors() {
+    const visualVersion = `${descriptors.version}:${Math.floor(frame / 24)}`;
+    if (visualVersion === lastVisualVersion && visualDescriptors) return;
+    lastVisualVersion = visualVersion;
+    const samples = collectVisualSamples();
+    visualDescriptors = radialVisualDomain.describe({
+      terrain: descriptors,
+      camera: { position: { x: camera.position.x, y: camera.position.y, z: camera.position.z }, yaw: rig.yaw, pitch: rig.pitch },
+      terrainSample: lastSample,
+      samples,
+      time: frame / 60
+    });
+    clearVisualGroup();
+
+    if (visualDescriptors.skyHaze?.backgroundColor) {
+      scene.background = new THREE.Color(visualDescriptors.skyHaze.backgroundColor);
+      scene.fog.color = new THREE.Color(visualDescriptors.skyHaze.backgroundColor);
+      scene.fog.density = visualDescriptors.skyHaze.fogDensity ?? scene.fog.density;
+    }
+
+    for (const ring of visualDescriptors.lodRings ?? []) {
+      const points = ringPoints(ring.center, ring.outerRadiusMeters, 128);
+      const geometry = new THREE.BufferGeometry().setFromPoints(points);
+      const line = new THREE.LineLoop(geometry, getLineMaterial("#fff1a8", ring.opacity));
+      line.name = `lod:${ring.bandId}`;
+      visualGroup.add(line);
+    }
+
+    for (const thread of visualDescriptors.hydrologyThreads ?? []) {
+      const geometry = new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(thread.from.x, thread.from.y, thread.from.z),
+        new THREE.Vector3(thread.to.x, thread.to.y, thread.to.z)
+      ]);
+      const line = new THREE.Line(geometry, getLineMaterial("#4dd9ff", Math.max(0.18, thread.pulse * 0.72)));
+      line.name = thread.id;
+      visualGroup.add(line);
+    }
+
+    for (const patch of visualDescriptors.biomeMosaic ?? []) {
+      const geometry = new THREE.CircleGeometry(patch.radiusMeters, 28);
+      const mesh = new THREE.Mesh(geometry, getMeshMaterial(patch.colorHint, 0.16 + patch.density * 0.24));
+      mesh.name = patch.id;
+      mesh.rotation.x = -Math.PI / 2;
+      mesh.position.set(patch.position.x, patch.position.y, patch.position.z);
+      visualGroup.add(mesh);
+    }
+
+    const provinceColors = { alpine: "#eef4ff", foothill: "#ffd47d", basin: "#a9d18e", unknown: "#ffffff" };
+    for (const province of visualDescriptors.geologyProvinces ?? []) {
+      const radius = 18 + Math.max(0, province.ridgeEnergy) * 18;
+      const geometry = new THREE.SphereGeometry(radius, 16, 10);
+      const mesh = new THREE.Mesh(geometry, getMeshMaterial(provinceColors[province.regionType] ?? "#ffffff", 0.24 + province.faultGlow * 0.38));
+      mesh.name = province.id;
+      mesh.position.set(province.centroid.x, province.centroid.y + 70, province.centroid.z);
+      visualGroup.add(mesh);
+    }
+  }
+
   function moveCamera(dt) {
     if (keys.has("ArrowLeft")) rig.yaw += dt * 1.35;
     if (keys.has("ArrowRight")) rig.yaw -= dt * 1.35;
@@ -97,10 +225,14 @@ async function boot() {
   function render() {
     syncTerrain();
     lastSample = core.sampleTerrain(camera.position.x, camera.position.z, descriptors.focus, erosionSolver);
+    syncVisualDescriptors();
     const h = Math.round(lastSample.height);
     const order = lastSample.hydrology?.stream?.streamOrder ?? 0;
     const dd = lastSample.hydrology?.stream?.drainageDensityKmPerKm2 ?? 0;
-    hud.innerHTML = `<strong>Infinite Radial Terrain</strong><br>Earth scale · 1 unit = 1m · WASD fly · Space/Shift vertical · arrows look<br>Height ${h}m · Stream ${order} · Drainage ${dd.toFixed(1)}km/km² · Snap ${descriptors.originSnap}m · Origin ${descriptors.origin.x},${descriptors.origin.z}`;
+    const biome = visualDescriptors?.travelForecast?.aheadBiome ?? "unknown";
+    const action = visualDescriptors?.travelForecast?.recommendedAction ?? "free-cruise";
+    const descriptorCount = visualDescriptors?.rendererHandoff?.counts?.total ?? 0;
+    hud.innerHTML = `<strong>Infinite Radial Terrain</strong><br>Earth scale · NexusEngine CDN · descriptor-only visual domain · WASD fly · Space/Shift vertical · arrows look<br>Height ${h}m · Stream ${order} · Drainage ${dd.toFixed(1)}km/km² · Biome ${biome} · Cue ${action} · Visual descriptors ${descriptorCount}`;
     renderer.render(scene, camera);
   }
 
@@ -130,7 +262,9 @@ async function boot() {
   globalThis.GameHost = {
     radialTerrain,
     erosionSolver,
-    getState: () => ({ frame, camera: { position: camera.position.toArray(), yaw: rig.yaw, pitch: rig.pitch }, descriptors, terrainSample: core.clone(lastSample) })
+    runtime: runtimeDescriptor,
+    visualDomain: radialVisualDomain,
+    getState: () => ({ frame, runtime: runtimeDescriptor, camera: { position: camera.position.toArray(), yaw: rig.yaw, pitch: rig.pitch }, descriptors, visualDescriptors: core.clone(visualDescriptors), domain: { infiniteRadialTerrainVisual: core.clone(visualDescriptors) }, terrainSample: core.clone(lastSample) })
   };
 
   syncTerrain();
