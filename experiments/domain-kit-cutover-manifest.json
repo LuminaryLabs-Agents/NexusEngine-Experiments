@@ -10,7 +10,7 @@
       "status": "camera-composition-readability-renderer-handoff-pass",
       "domainCutover": ["third-person-follow-kit", "rigged-actor-kit", "three-debug-ray-adapter", "n-core-debug-kit", "third-person-arena-fractal-domain-kit", "third-person-locomotion-readability-domain-kit", "third-person-camera-composition-readability-domain-kit"],
       "bridgeNeeded": "browser route imports NexusEngine main via CDN through an arena-fractal wrapper; controller math remains in runtime while arena, locomotion, and camera-composition readability domain kits emit renderer-neutral descriptors",
-      "featureParity": ["WASD movement", "spring-arm camera", "core debug export", "arena fractal descriptors", "yaw alignment fans", "backpedal guard rails", "jump apex bands", "landing safety patches", "camera recenter leashes", "input cadence beats", "focus target ribbons", "shoulder clearance wedges", "near clip cushions", "orbit intent rails", "occlusion risk veils", "camera comfort meters"]
+      "featureParity": ["WASD movement", "spring-arm camera", "core debug export", "arena fractal descriptors", "locomotion readability", "camera composition readability"]
     },
     {
       "id": "peer-scene-transition",
@@ -18,8 +18,8 @@
       "canonicalPath": "experiments/peer-scene-transition/",
       "status": "oracle-readability-renderer-handoff-pass",
       "domainCutover": ["core-scene-kit", "scene-host-contract", "peer-scene-domain-kit", "scene-renderer-handoff-kit", "scene-chronicle-domain-kit", "scene-consequence-domain-kit", "scene-decision-readability-domain-kit", "scene-oracle-readability-domain-kit"],
-      "bridgeNeeded": "browser host imports NexusEngine main via CDN; renderer consumes base, atmospheric, chronicle, consequence, decision, and oracle-readability descriptors only while route solving, action eligibility, inventory truth, decision ranking, future forecasting, and ending readiness stay in domain kits",
-      "featureParity": ["scene routes", "lantern gate", "forest puzzle", "bridge puzzle", "shrine puzzle", "chronicle descriptors", "consequence descriptors", "action likelihood radars", "gate requirement ladders", "inventory use echoes", "pressure release windows", "narrative thread pins", "exit choice scorecards", "objective forecast threads", "pressure clock rings", "resource route maps", "memory branch echoes", "puzzle debt stacks", "ending readiness crown"]
+      "bridgeNeeded": "browser host imports NexusEngine main via CDN; renderer consumes base, atmospheric, chronicle, consequence, decision, and oracle-readability descriptors only",
+      "featureParity": ["scene routes", "inventory", "gates", "chronicle descriptors", "consequence descriptors", "oracle route forecast"]
     },
     {
       "id": "the-cavalry-of-rome",
@@ -27,17 +27,17 @@
       "canonicalPath": "apps/the-cavalry-of-rome/",
       "status": "logistics-readiness-renderer-handoff-pass",
       "domainCutover": ["cavalry-campaign-map-kit", "cavalry-world-actions-kit", "cavalry-campaign-fractal-domain-kit", "cavalry-battlefield-orders-domain-kit", "cavalry-logistics-readiness-domain-kit"],
-      "bridgeNeeded": "live and experiment routes load NexusEngine main CDN handoff passes; reusable campaign, battlefield-orders, and logistics-readiness kits emit supply line, march corridor, cohesion, morale, maneuver, scout, flank, reinforcement, attrition, tempo, objective pressure, depot, forage, road strain, siege, courier, and winter descriptors while overlays consume descriptors only",
-      "featureParity": ["large campaign map", "one world action cadence", "Rome territory movement", "AI pressure", "campaign fractal descriptors", "scouting vector descriptors", "flank risk arcs", "reinforcement callouts", "attrition forecast chips", "turn tempo standards", "objective pressure banner", "supply depot radii", "forage corridors", "road strain threads", "siege readiness signals", "courier order pulses", "winter attrition warnings"]
+      "bridgeNeeded": "live and experiment routes load NexusEngine main CDN handoff passes; reusable campaign, battlefield-orders, and logistics-readiness kits emit descriptor-only campaign surfaces",
+      "featureParity": ["campaign map", "world actions", "campaign fractal descriptors", "battlefield orders", "logistics readiness"]
     },
     {
       "id": "vr-platformer-board",
       "kind": "experiment",
       "canonicalPath": "experiments/vr-platformer-board/",
-      "status": "objective-readability-renderer-handoff-pass",
-      "domainCutover": ["platformer-level-domain-kit", "spatial-game-board-domain-kit", "vr-board-renderer-handoff-kit", "vr-board-traversal-readability-domain-kit", "vr-board-objective-readability-domain-kit"],
-      "bridgeNeeded": "browser host imports NexusEngine main via CDN; traversal readability now composes objective-readability descriptors while existing Canvas presentation consumes folded checkpoint, beacon, and tempo descriptor buckets only",
-      "featureParity": ["A/D movement", "Space jump", "R reset", "coins", "hazards", "exit", "traversal readability descriptors", "collectible priority orbits", "hazard approach funnels", "momentum lanes", "exit readiness gates", "head comfort corridors", "route risk scorecards"]
+      "status": "skill-rhythm-readiness-renderer-handoff-pass",
+      "domainCutover": ["platformer-level-domain-kit", "spatial-game-board-domain-kit", "vr-board-renderer-handoff-kit", "vr-board-traversal-readability-domain-kit", "vr-board-objective-readability-domain-kit", "vr-board-skill-rhythm-readiness-domain-kit"],
+      "bridgeNeeded": "browser host imports NexusEngine main via CDN; traversal readability now composes objective-readability and skill-rhythm readiness descriptors while existing Canvas presentation consumes folded checkpoint, beacon, tempo, jump-gate, air-control, combo, hesitation, save-echo, and exit-commitment descriptor buckets only",
+      "featureParity": ["A/D movement", "Space jump", "R reset", "coins", "hazards", "exit", "traversal readability descriptors", "collectible priority orbits", "hazard approach funnels", "momentum lanes", "exit readiness gates", "head comfort corridors", "route risk scorecards", "jump timing gates", "air control vectors", "coin combo lanes", "hazard hesitation fields", "checkpoint save echoes", "exit commitment crests"]
     },
     {
       "id": "next-ledge",
@@ -45,8 +45,8 @@
       "canonicalPath": "experiments/next-ledge/",
       "status": "anchor-timing-readability-renderer-handoff-pass",
       "domainCutover": ["action-input-kit", "generic-route-cargo-extraction-kit", "next-ledge-visual-fractal-domain-kit", "next-ledge-route-cargo-domain-kit", "next-ledge-traversal-readability-domain-kit", "next-ledge-anchor-timing-readability-domain-kit"],
-      "bridgeNeeded": "browser wrapper consumes NexusEngine main CDN and emits renderer-neutral route-cargo, traversal-readability, and anchor-timing descriptors while the Three/diegetic renderer consumes descriptors only",
-      "featureParity": ["grapple", "swing", "sector advance", "cargo cache descriptors", "fall pressure descriptors", "traversal readability descriptors", "release timing dials", "grapple line-of-sight strips", "swing energy pockets", "wall bounce warnings", "route commitment stairs", "fail-floor proximity waves"]
+      "bridgeNeeded": "browser wrapper consumes NexusEngine main CDN and emits renderer-neutral route-cargo, traversal-readability, and anchor-timing descriptors",
+      "featureParity": ["grapple", "swing", "cargo descriptors", "traversal readability", "anchor timing readability"]
     },
     {
       "id": "infinite-radial-terrain",
@@ -54,8 +54,8 @@
       "canonicalPath": "experiments/infinite-radial-terrain/",
       "status": "survey-contract-readiness-renderer-handoff-pass",
       "domainCutover": ["infinite-radial-terrain-visual-domain-kit", "terrain-expedition-readability-domain-kit", "terrain-wayfinding-readability-domain-kit", "terrain-survey-contract-readiness-domain-kit"],
-      "bridgeNeeded": "browser host imports NexusEngine main via CDN; radial terrain visual, expedition readability, wayfinding readability, and survey contract readiness domains emit survey, altitude, ridge, hazard, sample, route, bearing, landmark, slope, biome, return, drift, survey contract, tempo, fork, pledge, sample chain, and return confidence descriptors consumed by presentation-only Three and DOM overlays",
-      "featureParity": ["camera flight", "radial LOD rings", "biome mosaic", "survey transect descriptors", "altitude corridor descriptors", "route task bands", "bearing needles", "horizon landmarks", "slope choice ribbons", "biome transition gates", "origin return anchors", "stamina drift meters", "survey contract steps", "waypoint tempo rings", "risk reward forks", "altitude pledge bands", "sample chain ghosts", "return confidence compass", "GameHost composed renderer handoff"]
+      "bridgeNeeded": "browser host imports NexusEngine main via CDN; terrain domains emit visual, expedition, wayfinding, and survey contract descriptors consumed by presentation-only overlays",
+      "featureParity": ["camera flight", "radial LOD rings", "survey descriptors", "wayfinding descriptors", "survey contract readiness"]
     },
     {
       "id": "the-open-above",
@@ -63,8 +63,8 @@
       "canonicalPath": "experiments/the-open-above/",
       "status": "flight-route-readability-renderer-handoff-pass",
       "domainCutover": ["open-above-visual-fractal-domain-kit", "open-above-flight-route-readability-domain-kit"],
-      "bridgeNeeded": "browser host imports NexusEngine main via CDN; visual and flight-route readability domains emit cloud, ridgeline, speed, thermal, contrail, updraft, ridge hazard, landing, flock draft, altitude reserve, and homeward bearing descriptors consumed by WebGL and DOM presentation only",
-      "featureParity": ["bird flight", "terrain streaming", "flock agents", "visual sky descriptors", "cloud strata", "ridge silhouettes", "speed ribbons", "thermal columns", "wingtip contrails", "updraft corridors", "ridge hazard shelves", "landing meadow ghosts", "flock draft wakes", "altitude reserve meters", "homeward bearing threads", "GameHost composed renderer handoff"]
+      "bridgeNeeded": "browser host imports NexusEngine main via CDN; visual and flight-route readability domains emit descriptors consumed by WebGL and DOM presentation only",
+      "featureParity": ["bird flight", "terrain streaming", "visual sky descriptors", "flight route readability"]
     },
     {
       "id": "high-fidelity-meadow",
@@ -72,8 +72,8 @@
       "canonicalPath": "experiments/high-fidelity-meadow/",
       "status": "pasture-route-readability-renderer-handoff-pass",
       "domainCutover": ["terrain-field-domain-service-kit", "meadow-visual-fractal-domain-kit", "meadow-ecology-readability-domain-kit", "meadow-pasture-route-readability-domain-kit"],
-      "bridgeNeeded": "browser host imports NexusEngine main via CDN; meadow visual, ecology, and pasture route readability kits emit living-scene, grazing route, forage priority, sheep comfort, water, gate return, and shelter descriptors consumed by Three presentation only",
-      "featureParity": ["grass", "flowers", "sheep", "pollinator route descriptors", "shepherd path descriptors", "grazing route scores", "forage patch priorities", "sheep comfort arcs", "water trough threads", "gate return cues", "weather shelter bands", "GameHost composed renderer handoff"]
+      "bridgeNeeded": "browser host imports NexusEngine main via CDN; meadow visual, ecology, and pasture route readability kits emit descriptors consumed by Three presentation only",
+      "featureParity": ["grass", "flowers", "sheep", "ecology descriptors", "pasture route readability"]
     },
     {
       "id": "fogline-relay",
@@ -81,8 +81,8 @@
       "canonicalPath": "experiments/fogline-relay/",
       "status": "operator-rhythm-readability-renderer-handoff-pass",
       "domainCutover": ["action-input-kit", "scan-survey-kit", "fogline-visual-fractal-domain-kit", "fogline-renderer-handoff-kit", "fogline-signal-cartography-domain-kit", "fogline-operator-rhythm-domain-kit"],
-      "bridgeNeeded": "browser host imports NexusEngine main via CDN; visual, route-readability, signal-cartography, and operator-rhythm descriptors are folded into compatible renderer buckets and consumed by Canvas/Three presentation only through a composed GameHost renderer handoff",
-      "featureParity": ["first-person movement", "scan", "relays", "wraith pressure", "route readability descriptors", "relay priority markers", "wraith avoidance corridors", "scan window ladders", "gate charge threads", "retreat pocket compasses", "signal triangulation grid", "scan pulse cadence rings", "relay repair beats", "wraith noise shadows", "lantern breath pockets", "route drift corrections", "extraction commitment beacons"]
+      "bridgeNeeded": "browser host imports NexusEngine main via CDN; visual, route-readability, signal-cartography, and operator-rhythm descriptors are consumed by presentation only",
+      "featureParity": ["first-person movement", "scan", "relays", "signal cartography", "operator rhythm"]
     },
     {
       "id": "nexus-frontier-signal-isles",
@@ -90,8 +90,8 @@
       "canonicalPath": "experiments/nexus-frontier-signal-isles/",
       "status": "expedition-readiness-renderer-handoff-pass",
       "domainCutover": ["foundation-kit", "action-input-kit", "scan-survey-kit", "resource-node-kit", "build-placement-kit", "route-checkpoint-kit", "cargo-delivery-kit", "signal-isles-visual-fractal-domain-kit", "signal-isles-objective-step-queue-kit", "signal-isles-proximity-action-cue-kit", "signal-isles-gate-dependency-thread-kit", "signal-isles-cargo-route-ribbon-kit", "signal-isles-pressure-safe-pocket-kit", "signal-isles-resource-build-delta-kit", "signal-isles-objective-renderer-handoff-kit", "signal-isles-objective-readability-domain-kit", "signal-isles-expedition-readiness-domain-kit"],
-      "bridgeNeeded": "browser host imports NexusEngine main via CDN; visual, objective readability, and expedition readiness kits emit objective beat, action cue, dependency, cargo route, safe pocket, resource delta, scan sector, shard ferry, mast charge, retreat lane, gate runway, and beacon forecast descriptors consumed by Three presentation only",
-      "featureParity": ["first-person movement", "harvest", "build mast", "pressure wave", "visual descriptors", "objective readability descriptors", "scan sweep sectors", "shard ferry lines", "mast charge windows", "pressure retreat lanes", "gate timing runways", "beacon activation forecasts", "GameHost composed renderer handoff"]
+      "bridgeNeeded": "browser host imports NexusEngine main via CDN; visual, objective readability, and expedition readiness descriptors are consumed by Three presentation only",
+      "featureParity": ["first-person movement", "harvest", "build mast", "objective readability", "expedition readiness"]
     },
     {
       "id": "sora-the-infinite",
@@ -99,8 +99,8 @@
       "canonicalPath": "experiments/sora-the-infinite/",
       "status": "preflight-challenge-readiness-renderer-handoff-pass",
       "domainCutover": ["sora-compatibility-domain-kit", "sora-renderer-handoff-kit", "sora-launch-rehearsal-domain-kit", "sora-flightplan-readability-domain-kit", "sora-sky-negotiation-readiness-domain-kit", "sora-preflight-challenge-readiness-domain-kit"],
-      "bridgeNeeded": "legacy zero-frame redirect is now an authored NexusEngine CDN route-preview gateway with launch rehearsal, flightplan readability, sky negotiation readiness, and preflight challenge readiness domains; renderer consumes route-preview, preflight, confidence, thermal, drift, countdown, target ghost, runway vector, energy budget, cloud slit, lane choice, risk card, return anchor, jetstream braid, storm shelf, thermal ladder, glide pocket, confidence rail, return vow, gust sync, velocity tether, altitude contract, cloud corridor, route tempo, and landing oath descriptors only",
-      "featureParity": ["legacy route preserved", "query/hash preserved", "input coaching", "route preview descriptors", "launch rehearsal descriptors", "flightplan readability descriptors", "runway vector lattice", "energy budget ribbons", "cloud cover slits", "launch lane choices", "risk/reward cards", "return anchors", "jetstream braids", "storm shelf warnings", "thermal ladder choices", "glide safe pockets", "handoff confidence rails", "return vow threads", "gust sync rings", "velocity tether beads", "altitude contract bands", "cloud corridor locks", "route tempo scores", "landing oath seals", "GameHost preflight challenge handoff"]
+      "bridgeNeeded": "legacy zero-frame redirect is now an authored NexusEngine CDN route-preview gateway with launch rehearsal, flightplan readability, sky negotiation readiness, and preflight challenge readiness domains",
+      "featureParity": ["legacy route preserved", "route preview descriptors", "launch rehearsal", "flightplan readability", "sky negotiation", "preflight challenge"]
     },
     {
       "id": "zombie-orchard",
@@ -108,8 +108,8 @@
       "canonicalPath": "experiments/zombie-orchard/",
       "status": "horde-pathing-readiness-renderer-handoff-pass",
       "domainCutover": ["action-input-kit", "zombie-orchard-visual-fractal-domain-kit", "zombie-orchard-survival-readability-domain-kit", "zombie-orchard-foraging-readability-domain-kit", "zombie-orchard-horde-pathing-readiness-domain-kit"],
-      "bridgeNeeded": "browser host imports NexusEngine main via CDN through the existing kit stack and the new horde-pathing overlay; survival, foraging, and horde-pathing readiness domains emit apple rarity, gear choice, harvest, row memory, boss omen, spawn lane, choke row, noise lure, retreat thread, weapon uptime, and surge countdown descriptors consumed by Canvas and overlay presentation only",
-      "featureParity": ["move", "collect", "survival waves", "orchard descriptors", "survival readability descriptors", "apple rarity heat", "gear choice arcs", "harvest streak trails", "safe harvest pockets", "row memory breadcrumbs", "boss omen branches", "spawn lane forecasts", "choke row priorities", "noise lure cones", "panic retreat threads", "weapon uptime rings", "round surge countdowns", "GameHost composed renderer handoff"]
+      "bridgeNeeded": "browser host imports NexusEngine main via CDN through the existing kit stack and horde-pathing overlay; survival, foraging, and horde-pathing domains emit descriptors consumed by presentation only",
+      "featureParity": ["move", "collect", "survival waves", "foraging readability", "horde pathing readiness"]
     },
     {
       "id": "tropical-island-scene",
@@ -118,7 +118,7 @@
       "status": "weather-shelter-readability-renderer-handoff-pass",
       "domainCutover": ["island-kit", "water-surface-kit", "tropical-lagoon-visual-fractal-domain-kit", "tropical-beachcomber-readability-domain-kit", "tropical-lagoon-navigation-readability-domain-kit", "tropical-weather-shelter-readability-domain-kit"],
       "bridgeNeeded": "browser host imports NexusEngine main via CDN; existing local ProtoKit import-map remains for old island/water stack; beachcomber, lagoon navigation, and weather shelter readability overlays import NexusEngine main CDN and consume descriptors only",
-      "featureParity": ["drag orbit", "fish", "coconuts", "reef descriptors", "task beacons", "shoreline path ribbons", "tide windows", "reef depth contours", "swim safety cones", "current vector fans", "snorkel point scores", "raft return wakes", "sun glare timing bands", "storm front sweeps", "shelter palm canopies", "tide escape windows", "wave break warnings", "supply cache glints", "dusk return beacons"]
+      "featureParity": ["drag orbit", "fish", "coconuts", "reef descriptors", "lagoon navigation", "weather shelter readability"]
     },
     {
       "id": "signal-bastion",
@@ -126,8 +126,8 @@
       "canonicalPath": "games/signal-bastion/",
       "status": "frontline-tactics-readability-handoff-pass",
       "domainCutover": ["generic-defense-aaa-kits", "generic-defense-presentation-stack-kit", "signal-bastion-command-fractal-domain-kit", "signal-bastion-wave-choreography-domain-kit", "signal-bastion-frontline-tactics-domain-kit"],
-      "bridgeNeeded": "browser host imports NexusEngine main via CDN; command, wave choreography, and frontline tactics kits emit renderer-compatible descriptor groups consumed by the existing canvas command-fractal presentation only",
-      "featureParity": ["2.5D oblique renderer", "placement ghost", "range rings", "30 waves", "command fractal descriptors", "spawn cadence rails", "leak risk funnels", "coverage gap cells", "upgrade priority pins", "panic reserve meter", "projectile tempo sparks", "build slot value fields", "tower role balance ribbons", "intercept zone brackets", "boss focus lenses", "overkill dampening chips", "salvage window flags"]
+      "bridgeNeeded": "browser host imports NexusEngine main via CDN; command, wave choreography, and frontline tactics kits emit renderer-compatible descriptor groups consumed by presentation only",
+      "featureParity": ["2.5D oblique renderer", "placement ghost", "30 waves", "command fractal descriptors", "frontline tactics"]
     },
     {
       "id": "rogue-lite-hellscape-siege",
@@ -136,8 +136,8 @@
       "status": "siegecraft-readiness-renderer-handoff-pass",
       "removedLegacyPaths": ["games/rogue-lite-hellscape-siege-v2/"],
       "domainCutover": ["action-input-kit", "resource-pressure-kit", "hellscape-siege-fractal-domain-kit", "hellscape-expedition-readability-domain-kit", "hellscape-siegecraft-readiness-domain-kit"],
-      "bridgeNeeded": "browser host imports NexusEngine main via CDN; hellscape siege fractal, expedition readability, and siegecraft readiness domains emit route, safe-zone, survival-vector, crafting-window, boss-wake, exit-compass, footprint, crossfire, burn, build-priority, breach-countdown, and extraction-risk descriptors consumed by canvas presentation only",
-      "featureParity": ["realm portals", "harvesting", "inventory", "build", "core defense", "hellscape readability descriptors", "extraction route descriptors", "safe zone beacons", "survival vectors", "crafting windows", "boss wake signatures", "realm exit compass", "barricade footprint grid", "turret crossfire lattice", "resource burn forecasts", "build priority queue", "core breach countdowns", "extraction risk ribbons"]
+      "bridgeNeeded": "browser host imports NexusEngine main via CDN; hellscape domains emit descriptors consumed by canvas presentation only",
+      "featureParity": ["realm portals", "harvesting", "inventory", "build", "core defense", "siegecraft readiness"]
     }
   ],
   "versionedRoutePolicy": {
