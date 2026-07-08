@@ -205,11 +205,98 @@ function addAttentionBeacons(group, attentionBeacons = {}) {
   group.add(layer);
 }
 
-export function createMeadowVisualFractalLayers(visualFractal = {}, ecologyReadability = {}) {
+function addGrazingRouteScores(group, grazingRouteScores = {}) {
+  const layer = new THREE.Group();
+  layer.name = "meadow.pasture.grazingRouteScores";
+  for (const route of grazingRouteScores.routes ?? []) {
+    const mid = new THREE.Vector3((route.from.x + route.to.x) * 0.5, Math.max(route.from.y, route.to.y) + 0.18 + route.score * 0.42, (route.from.z + route.to.z) * 0.5);
+    const line = makeLine([new THREE.Vector3(route.from.x, route.from.y + 0.04, route.from.z), mid, new THREE.Vector3(route.to.x, route.to.y + 0.04, route.to.z)], 0xe0d36b, 0.12 + route.score * 0.28);
+    line.name = route.id;
+    line.userData = { descriptor: route, baseOpacity: line.material.opacity };
+    layer.add(line);
+  }
+  group.add(layer);
+}
+
+function addForagePatchPriorities(group, foragePatchPriorities = {}) {
+  const layer = new THREE.Group();
+  layer.name = "meadow.pasture.foragePatchPriorities";
+  for (const patch of foragePatchPriorities.patches ?? []) {
+    const disc = makeDisc(patch.radius, rgb(patch.color), 0.07 + patch.priority * 0.14);
+    disc.name = patch.id;
+    disc.position.set(patch.x, patch.y + 0.018, patch.z);
+    disc.scale.set(1.28, 1.0, 0.64);
+    disc.rotation.z = patch.phase * Math.PI * 2;
+    disc.userData = { descriptor: patch, baseOpacity: disc.material.opacity };
+    layer.add(disc);
+  }
+  group.add(layer);
+}
+
+function addSheepComfortArcs(group, sheepComfortArcs = {}) {
+  const layer = new THREE.Group();
+  layer.name = "meadow.pasture.sheepComfortArcs";
+  for (const arc of sheepComfortArcs.arcs ?? []) {
+    const ring = new THREE.RingGeometry(Math.max(0.08, arc.radius * 0.82), Math.max(0.12, arc.radius), 36, 1);
+    ring.rotateX(-Math.PI / 2);
+    const mesh = new THREE.Mesh(ring, new THREE.MeshBasicMaterial({ color: new THREE.Color(0.82, 0.9, 0.58), transparent: true, opacity: 0.045 + arc.comfort * 0.075, depthWrite: false, side: THREE.DoubleSide, blending: THREE.AdditiveBlending }));
+    mesh.name = arc.id;
+    mesh.position.set(arc.x, arc.y + 0.018, arc.z);
+    mesh.rotation.z = (arc.yawStart + arc.yawEnd) * 0.5;
+    mesh.userData = { descriptor: arc, baseOpacity: mesh.material.opacity };
+    layer.add(mesh);
+  }
+  group.add(layer);
+}
+
+function addWaterTroughThreads(group, waterTroughThreads = {}) {
+  const layer = new THREE.Group();
+  layer.name = "meadow.pasture.waterTroughThreads";
+  for (const thread of waterTroughThreads.threads ?? []) {
+    const line = makeLine([new THREE.Vector3(thread.from.x, thread.from.y + 0.05, thread.from.z), new THREE.Vector3(thread.to.x, thread.to.y + 0.05, thread.to.z)], 0x96d5d9, 0.08 + thread.urgency * 0.22);
+    line.name = thread.id;
+    line.userData = { descriptor: thread, baseOpacity: line.material.opacity };
+    layer.add(line);
+  }
+  group.add(layer);
+}
+
+function addGateReturnCues(group, gateReturnCues = {}) {
+  const layer = new THREE.Group();
+  layer.name = "meadow.pasture.gateReturnCues";
+  for (const cue of gateReturnCues.cues ?? []) {
+    const plane = makeSoftPlane(cue.radius * 0.4, cue.radius * 1.35, new THREE.Color(0.98, 0.78, 0.44), 0.052 + cue.priority * 0.085);
+    plane.name = cue.id;
+    plane.position.set(cue.x, cue.y + cue.radius * 0.36, cue.z);
+    plane.rotation.set(0, cue.phase * Math.PI * 2, 0);
+    plane.userData = { descriptor: cue, baseOpacity: plane.material.opacity };
+    layer.add(plane);
+  }
+  group.add(layer);
+}
+
+function addWeatherShelterBands(group, weatherShelterBands = {}) {
+  const layer = new THREE.Group();
+  layer.name = "meadow.pasture.weatherShelterBands";
+  for (const band of weatherShelterBands.bands ?? []) {
+    const ring = new THREE.RingGeometry(Math.max(0.1, band.radius * 0.74), Math.max(0.18, band.radius), 54, 1);
+    ring.rotateX(-Math.PI / 2);
+    const mesh = new THREE.Mesh(ring, new THREE.MeshBasicMaterial({ color: new THREE.Color(0.54, 0.66, 0.42), transparent: true, opacity: 0.035 + band.shelter * 0.08 + band.pressure * 0.035, depthWrite: false, side: THREE.DoubleSide }));
+    mesh.name = band.id;
+    mesh.position.set(band.x, band.y + 0.02, band.z);
+    mesh.rotation.z = band.phase * Math.PI * 2;
+    mesh.userData = { descriptor: band, baseOpacity: mesh.material.opacity };
+    layer.add(mesh);
+  }
+  group.add(layer);
+}
+
+export function createMeadowVisualFractalLayers(visualFractal = {}, ecologyReadability = {}, pastureRouteReadability = {}) {
   const group = new THREE.Group();
   group.name = "meadow.visualFractal.layers";
   const descriptors = visualFractal.descriptors ?? {};
   const ecologyDescriptors = ecologyReadability.descriptors ?? {};
+  const pastureDescriptors = pastureRouteReadability.descriptors ?? {};
   addDepthStrata(group, descriptors.depthStrata);
   addGrassPatches(group, descriptors.grassPatches);
   addFlowerDrifts(group, descriptors.flowerDrifts);
@@ -222,12 +309,19 @@ export function createMeadowVisualFractalLayers(visualFractal = {}, ecologyReada
   addWindLanes(group, ecologyDescriptors.windLanes);
   addSeasonalBloomQueue(group, ecologyDescriptors.seasonalBloomQueue);
   addAttentionBeacons(group, ecologyDescriptors.attentionBeacons);
+  addGrazingRouteScores(group, pastureDescriptors.grazingRouteScores);
+  addForagePatchPriorities(group, pastureDescriptors.foragePatchPriorities);
+  addSheepComfortArcs(group, pastureDescriptors.sheepComfortArcs);
+  addWaterTroughThreads(group, pastureDescriptors.waterTroughThreads);
+  addGateReturnCues(group, pastureDescriptors.gateReturnCues);
+  addWeatherShelterBands(group, pastureDescriptors.weatherShelterBands);
   group.userData = {
-    source: "meadow-visual-fractal-and-ecology-readability-domain-kits",
-    rendererContract: ecologyReadability.rendererHandoff?.contract ?? visualFractal.rendererHandoff?.contract ?? "descriptors-only",
+    source: "meadow-visual-fractal-ecology-and-pasture-route-readability-domain-kits",
+    rendererContract: pastureRouteReadability.rendererHandoff?.contract ?? ecologyReadability.rendererHandoff?.contract ?? visualFractal.rendererHandoff?.contract ?? "descriptors-only",
     counts: {
       visualFractal: visualFractal.descriptorCounts ?? {},
-      ecologyReadability: ecologyReadability.descriptorCounts ?? {}
+      ecologyReadability: ecologyReadability.descriptorCounts ?? {},
+      pastureRouteReadability: pastureRouteReadability.descriptorCounts ?? {}
     }
   };
   return group;
@@ -246,6 +340,7 @@ export function updateMeadowVisualFractalLayers(group, cycle = {}, time = 0) {
     else if (node.name.includes("pollinatorRoute")) node.material.opacity = Math.max(0.01, base * (0.82 + day * 0.34 + pulse));
     else if (node.name.includes("windLane")) node.material.opacity = Math.max(0.008, base * (0.85 + warm * 0.22 + pulse));
     else if (node.name.includes("attentionBeacon")) node.material.opacity = Math.max(0.01, base * (0.9 + warm * 0.38 + pulse));
+    else if (node.name.includes("pasture")) node.material.opacity = Math.max(0.01, base * (0.88 + warm * 0.24 + pulse));
     else node.material.opacity = Math.max(0.01, base * (0.92 + warm * 0.16 + pulse));
   });
 }
