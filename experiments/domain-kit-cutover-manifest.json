@@ -88,10 +88,10 @@
       "id": "sora-the-infinite",
       "kind": "experiment",
       "canonicalPath": "experiments/sora-the-infinite/",
-      "status": "launch-rehearsal-readability-handoff-pass",
-      "domainCutover": ["sora-compatibility-domain-kit", "sora-renderer-handoff-kit", "sora-launch-rehearsal-domain-kit"],
-      "bridgeNeeded": "legacy zero-frame redirect is now an authored NexusEngine CDN route-preview gateway with a launch rehearsal domain; renderer consumes route-preview plus preflight, confidence, thermal, drift, countdown, and target ghost descriptors only",
-      "featureParity": ["legacy route preserved", "query/hash preserved", "input coaching", "route preview descriptors", "launch rehearsal descriptors", "GameHost launch rehearsal handoff"]
+      "status": "flightplan-readability-handoff-pass",
+      "domainCutover": ["sora-compatibility-domain-kit", "sora-renderer-handoff-kit", "sora-launch-rehearsal-domain-kit", "sora-flightplan-readability-domain-kit"],
+      "bridgeNeeded": "legacy zero-frame redirect is now an authored NexusEngine CDN route-preview gateway with launch rehearsal and flightplan readability domains; renderer consumes route-preview, preflight, confidence, thermal, drift, countdown, target ghost, runway vector, energy budget, cloud slit, lane choice, risk card, and return anchor descriptors only",
+      "featureParity": ["legacy route preserved", "query/hash preserved", "input coaching", "route preview descriptors", "launch rehearsal descriptors", "flightplan readability descriptors", "runway vector lattice", "energy budget ribbons", "cloud cover slits", "launch lane choices", "risk/reward cards", "return anchors", "GameHost flightplan handoff"]
     },
     {
       "id": "zombie-orchard",
