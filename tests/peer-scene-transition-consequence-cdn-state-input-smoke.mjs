@@ -27,7 +27,7 @@ const intakeTokens = [
   "rewardPreview",
   "consequenceDomain: consequenceDomainKit.snapshot",
   "rendererHandoff: handoff.descriptorCounts",
-  "scene-consequence-handoff",
+  "peer-scene-consequence/renderer-handoff",
   "route-consequence",
   "reward-preview"
 ];
