@@ -1,3 +1,4 @@
+import './third-person-navigation-challenge-readiness-kits-smoke.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {
