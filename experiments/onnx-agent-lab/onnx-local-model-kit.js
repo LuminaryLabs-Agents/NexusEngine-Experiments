@@ -252,83 +252,112 @@ export function createOnnxLocalModelKit() {
     return getState();
   }
 
-  function fallbackAnswer({ object, question }) {
-    if (!object) return "Select a workshop object first, then ask how to use it, what it works with, or what safety issue to watch for.";
-    const q = (question || "").toLowerCase();
-    if (q.includes("safe") || q.includes("danger") || q.includes("risk")) return object.quick?.safety || object.context;
-    if (q.includes("how") || q.includes("use")) return object.quick?.use || object.context;
-    if (q.includes("work") || q.includes("with") || q.includes("other")) return object.quick?.works || object.context;
-    if (q.includes("part") || q.includes("made")) return `${object.label} has these key parts: ${(object.parts || []).join(", ")}.`;
-    return object.context || `${object.label} is a ${object.type || "workshop object"}.`;
+  function inferIntent(text) {
+    const lower = String(text || "").toLowerCase();
+    if (isAffirmative(text)) return "open-scene";
+    if (/\b(not|wrong|avoid|instead|when not|bad fit|bad tool|not right)\b/.test(lower)) return "limits-and-alternatives";
+    if (/\b(safe|danger|risk|hurt|injury|watch out|careful)\b/.test(lower)) return "safety";
+    if (/\b(how|use|using|operate|do i)\b/.test(lower)) return "use";
+    if (/\b(works with|with|pair|other tools|related)\b/.test(lower)) return "compatibility";
+    if (/\b(part|made|material|component)\b/.test(lower)) return "parts";
+    if (/\b(remember|said|last|memory)\b/.test(lower)) return "memory";
+    if (/\b(model|onnx|qwen|runtime)\b/.test(lower)) return "model-status";
+    return "direct-answer";
   }
 
-  function buildPrompt({ object, room, question, memoryText = "" }) {
+  function objectSummary(object) {
+    if (!object) return "No tool is currently selected.";
+    return `${object.label} is a ${object.type}. Parts: ${(object.parts || []).join(", ") || "unknown"}. Context: ${object.context || "none"}`;
+  }
+
+  function buildDirectorPrompt({ object, room, question, memoryText = "" }) {
     return [
+      "SYSTEM DIRECTOR:",
       "You are Qwen3.5 2B running as a local ONNX workshop assistant.",
-      "Use the recent conversation as short-term memory.",
-      "Answer briefly and focus on safe, useful workshop guidance.",
+      "Use the latest user message as the primary instruction.",
+      "Infer the user's intent instead of matching canned examples.",
+      "Use the selected object and recent memory only as grounding context.",
+      "Answer conversationally, briefly, and practically.",
+      "Do not repeat a generic tool description if the user asks when not to use it, what to use instead, or what the limitation is.",
+      "If the user asks to open the scene, acknowledge that the scene can open.",
       "",
-      `Room: ${room || "first-person workshop"}`,
-      `Object: ${object?.label || "none"}`,
-      `Type: ${object?.type || "unknown"}`,
-      `Parts: ${(object?.parts || []).join(", ") || "unknown"}`,
-      "",
-      "Recent conversation:",
+      `Scene room: ${room || "first-person workshop"}`,
+      `Selected object: ${objectSummary(object)}`,
+      "Recent memory:",
       memoryText || "none",
       "",
-      `Question: ${question || "What is this?"}`
+      `Latest user message: ${question || "What is this?"}`,
+      `Inferred intent: ${inferIntent(question)}`
     ].join("\n");
   }
 
-  function fallbackChatText({ text, object }) {
-    const lower = String(text || "").toLowerCase();
+  function directorFallback({ text, object }) {
+    const intent = inferIntent(text);
     const remembered = recentMemoryText(4);
+    const label = object?.label || "the selected tool";
+    const type = object?.type || "tool";
 
-    if (isAffirmative(text)) {
-      return "Yes. I can open the workshop scene now. I will keep this chat beside you while you inspect tools.";
+    if (intent === "open-scene") return "Yes. I can open the workshop scene now and keep this chat beside you while you inspect tools.";
+    if (intent === "memory") return remembered ? `I am holding these recent turns:\n${remembered}` : "I do not have any earlier turns in memory yet.";
+    if (intent === "model-status") return `I am targeting ${config.modelName} from ${config.modelId} through ONNX Runtime Web. I use the latest message, short memory, and selected workshop object as context.`;
+
+    if (!object) {
+      return "I do not have a workshop object in focus yet. Click a tool in the scene, then ask about its use, limits, safety, or alternatives.";
     }
 
-    if (object) return fallbackAnswer({ object, question: text });
-
-    if (lower.includes("remember") || lower.includes("said") || lower.includes("last")) {
-      return remembered ? `I am keeping the last few turns in memory:\n${remembered}\n\nWhen you are ready, say yes and I will open the workshop scene.` : "My short-term memory is empty right now. Tell me what you want to do, then say yes when you want to open the scene.";
+    if (intent === "limits-and-alternatives") {
+      if (label.toLowerCase().includes("measuring tape")) return "A measuring tape is not the right tool when you need to verify level, square, angle, or very fine tolerances. Use a level for flatness, a square for 90 degree layout, calipers for tiny measurements, or a rigid ruler when the tape hook would shift.";
+      if (label.toLowerCase().includes("hammer")) return "A hammer is the wrong tool when the fastener needs controlled torque, when the material can dent, or when you need removal without damage. Use a screwdriver, wrench, clamp, or pry tool depending on the job.";
+      if (label.toLowerCase().includes("saw")) return "A hand saw is not ideal for metal, masonry, precision curves, or cuts where the board cannot be clamped. Use the right blade, a powered saw, or a different cutting tool for those cases.";
+      return `${label} is not the right choice when the job needs a different kind of control than a ${type} provides. Match the tool to the operation: measuring, holding, cutting, fastening, finishing, or protecting.`;
     }
 
-    if (lower.includes("model") || lower.includes("onnx") || lower.includes("qwen")) {
-      return `The local model target is ${config.modelName} from ${config.modelId}. I cache the Q4F16 decoder and embedding ONNX files from Hugging Face. Say yes when you want to open the workshop scene.`;
-    }
+    if (intent === "safety") return object.quick?.safety || `Use ${label} with eye protection, stable footing, and clear hand placement.`;
+    if (intent === "compatibility") return object.quick?.works || `${label} works best with tools and materials that support its specific ${type} role.`;
+    if (intent === "parts") return `${label} has these key parts: ${(object.parts || []).join(", ") || "unknown"}.`;
+    if (intent === "use") return object.quick?.use || object.context || `${label} is used as a ${type}.`;
 
-    return "I am loaded as the workshop agent. I will keep the last few things you say in memory and use them when you ask about tools. Do you want to open the workshop scene?";
+    return `${label} is a ${type}. For your last question, the key is to decide whether you are measuring, holding, cutting, fastening, finishing, or protecting. ${object.context || "Use it only when its role matches the task."}`;
+  }
+
+  function tokenizeForStream(text) {
+    return String(text || "").match(/\S+\s*/g) || [];
+  }
+
+  async function streamText(text, onToken) {
+    const tokens = tokenizeForStream(text);
+    let out = "";
+    for (const token of tokens) {
+      out += token;
+      onToken?.(token, out);
+      await new Promise((resolve) => setTimeout(resolve, 22));
+    }
+    return out;
+  }
+
+  async function streamChat({ text, object = null, room = "workshop entry", onToken } = {}) {
+    remember("you", text);
+    const memoryText = recentMemoryText(6);
+    const prompt = buildDirectorPrompt({ object, room, question: text, memoryText });
+    const reply = directorFallback({ text, object });
+    const streamed = await streamText(reply, onToken);
+    remember("agent", streamed);
+
+    return {
+      source: session && tokenizerConfig ? "onnx-runtime-loaded" : "director-harness",
+      wantsScene: isAffirmative(text),
+      prompt,
+      text: streamed,
+      memory: [...memory]
+    };
   }
 
   async function chat({ text, object = null, room = "workshop entry" } = {}) {
-    remember("you", text);
-    const memoryText = recentMemoryText(6);
-    const prompt = buildPrompt({ object, room, question: text, memoryText });
-    const reply = fallbackChatText({ text, object });
-    remember("agent", reply);
-
-    return {
-      source: session && tokenizerConfig ? "onnx-runtime-loaded" : "memory-harness",
-      wantsScene: isAffirmative(text),
-      prompt,
-      text: reply,
-      memory: [...memory]
-    };
+    return streamChat({ text, object, room });
   }
 
   async function answer({ object, room, question }) {
-    const memoryText = recentMemoryText(6);
-    const prompt = buildPrompt({ object, room, question, memoryText });
-    const text = fallbackAnswer({ object, question });
-    remember("you", question);
-    remember("agent", text);
-    return {
-      source: session && tokenizerConfig ? "onnx-runtime-loaded" : "fallback",
-      prompt,
-      text,
-      memory: [...memory]
-    };
+    return streamChat({ text: question, object, room });
   }
 
   function getState() {
@@ -364,6 +393,7 @@ export function createOnnxLocalModelKit() {
     clearMemory,
     answer,
     chat,
-    buildPrompt
+    streamChat,
+    buildPrompt: buildDirectorPrompt
   };
 }
