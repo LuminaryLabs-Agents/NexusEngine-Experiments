@@ -33,6 +33,21 @@ function safeInput(input = {}) {
   };
 }
 
+export const SORA_ROUTE_PREVIEW_DOMAIN_TREE = `sora-route-preview-domain
+├─ flight-readability
+│  ├─ wind-shear-forecast-domain
+│  │  └─ sora-wind-shear-forecast-kit
+│  └─ altitude-envelope-domain
+│     └─ sora-altitude-envelope-kit
+├─ route-memory
+│  ├─ waypoint-ribbon-domain
+│  │  └─ sora-waypoint-ribbon-kit
+│  └─ handoff-packet-domain
+│     └─ sora-handoff-packet-kit
+└─ renderer-handoff
+   └─ sora-renderer-handoff-kit
+      └─ renderer consumes descriptors only`;
+
 export function createSoraAliasProvenanceKit(options = {}) {
   const routeId = options.routeId ?? "sora-the-infinite";
   const targetRouteId = options.targetRouteId ?? "the-open-above";
@@ -118,6 +133,126 @@ export function createSoraSkyMemoryBandKit(options = {}) {
   };
 }
 
+export function createSoraWindShearForecastKit(options = {}) {
+  const cellCount = clamp(options.cellCount ?? 7, 4, 10);
+  return {
+    id: "sora-wind-shear-forecast-kit",
+    describe(input = {}) {
+      const tick = clamp(input.tick ?? 0, 0, 1000000);
+      const readiness = clamp(input.readiness ?? 0, 0, 1);
+      const control = safeInput(input.input);
+      const seed = normalizedSeed(`${input.seed ?? "sora-wind"}:${control.bank}:${control.climb}`);
+      const cells = Array.from({ length: cellCount }, (_, index) => {
+        const phase = seed.phase * Math.PI * 2 + tick * 0.018 + index * 0.91;
+        const crosswind = Math.sin(phase) * 0.5 + control.bank * 0.5;
+        const lift = Math.cos(phase * 0.7) * 0.35 + readiness * 0.65 + Math.max(0, control.thrust) * 0.18;
+        return {
+          id: `wind-shear-cell-${index}`,
+          kind: "wind-shear-cell",
+          x: round(12 + index * (76 / Math.max(1, cellCount - 1)) + crosswind * 4, 2),
+          y: round(18 + ((index % 3) * 13) + Math.sin(phase * 0.53) * 3, 2),
+          width: round(18 + readiness * 18 + Math.abs(crosswind) * 8, 2),
+          strength: round(clamp((lift + 0.3) / 1.4, 0, 1)),
+          drift: round(crosswind),
+          label: crosswind < -0.25 ? "left shear" : crosswind > 0.25 ? "right shear" : "stable lift"
+        };
+      });
+      return {
+        kind: "wind-shear-forecast",
+        readiness: round(readiness),
+        cells
+      };
+    }
+  };
+}
+
+export function createSoraWaypointRibbonKit(options = {}) {
+  const waypointCount = clamp(options.waypointCount ?? 5, 3, 8);
+  return {
+    id: "sora-waypoint-ribbon-kit",
+    describe(input = {}) {
+      const readiness = clamp(input.readiness ?? 0, 0, 1);
+      const query = String(input.query ?? "");
+      const hash = String(input.hash ?? "");
+      const seed = normalizedSeed(`${query}:${hash}:waypoints`);
+      const waypoints = Array.from({ length: waypointCount }, (_, index) => {
+        const progress = waypointCount <= 1 ? 1 : index / (waypointCount - 1);
+        const wave = Math.sin(seed.phase * Math.PI * 2 + progress * Math.PI * 1.4);
+        return {
+          id: `sora-waypoint-${index}`,
+          kind: "route-waypoint",
+          label: index === 0 ? "alias" : index === waypointCount - 1 ? "open-above" : `sky-${index}`,
+          x: round(18 + progress * 64 + wave * 5, 2),
+          y: round(76 - progress * 48 + Math.cos(seed.phase + index) * 4, 2),
+          radius: round(6 + readiness * 8 + index * 0.7, 2),
+          open: readiness >= progress * 0.72,
+          progress: round(progress)
+        };
+      });
+      return {
+        kind: "waypoint-ribbon",
+        preservedQuery: Boolean(query),
+        preservedHash: Boolean(hash),
+        waypoints
+      };
+    }
+  };
+}
+
+export function createSoraHandoffPacketKit(options = {}) {
+  const targetRouteId = options.targetRouteId ?? "the-open-above";
+  return {
+    id: "sora-handoff-packet-kit",
+    describe(input = {}) {
+      const readiness = clamp(input.readiness ?? 0, 0, 1);
+      const query = String(input.query ?? "");
+      const hash = String(input.hash ?? "");
+      const control = safeInput(input.input);
+      const packets = [
+        { id: "packet-alias", label: "alias route id", ready: true, value: "sora-the-infinite" },
+        { id: "packet-target", label: "target route", ready: true, value: targetRouteId },
+        { id: "packet-url-state", label: "query/hash state", ready: Boolean(query || hash), value: `${query}${hash}` || "empty" },
+        { id: "packet-flight-state", label: "flight readiness", ready: readiness >= 0.58, value: String(round(readiness)) },
+        { id: "packet-control-state", label: "control vector", ready: Math.abs(control.bank) > 0.1 || Math.abs(control.climb) > 0.1 || control.thrust > 0.1, value: `${round(control.bank)},${round(control.climb)},${round(control.thrust)}` }
+      ];
+      return {
+        kind: "handoff-packets",
+        packetCount: packets.length,
+        packets
+      };
+    }
+  };
+}
+
+export function createSoraAltitudeEnvelopeKit(options = {}) {
+  const bandCount = clamp(options.bandCount ?? 6, 4, 9);
+  return {
+    id: "sora-altitude-envelope-kit",
+    describe(input = {}) {
+      const readiness = clamp(input.readiness ?? 0, 0, 1);
+      const control = safeInput(input.input);
+      const bands = Array.from({ length: bandCount }, (_, index) => {
+        const level = index / Math.max(1, bandCount - 1);
+        const active = readiness + Math.max(0, control.climb) * 0.18 >= level * 0.84;
+        return {
+          id: `altitude-envelope-${index}`,
+          kind: "altitude-envelope-band",
+          level: round(level),
+          y: round(82 - level * 58, 2),
+          opacity: round((active ? 0.18 : 0.06) + readiness * 0.14),
+          liftGate: round(level * 0.84),
+          active
+        };
+      });
+      return {
+        kind: "altitude-envelope",
+        climb: round(control.climb),
+        bands
+      };
+    }
+  };
+}
+
 export function createSoraContinuityGateKit(options = {}) {
   const targetPath = options.targetPath ?? "../the-open-above/";
   return {
@@ -179,6 +314,10 @@ export function createSoraRendererHandoffKit() {
         alias: input.alias,
         launchVectors: input.launchVectors,
         skyMemoryBands: input.skyMemoryBands,
+        windShearForecast: input.windShearForecast,
+        waypointRibbon: input.waypointRibbon,
+        handoffPackets: input.handoffPackets,
+        altitudeEnvelope: input.altitudeEnvelope,
         continuityGate: input.continuityGate,
         inputCoaching: input.inputCoaching
       };
@@ -190,6 +329,10 @@ export function createSoraRendererHandoffKit() {
         descriptorCounts: {
           launchVectors: descriptors.launchVectors?.lanes?.length ?? 0,
           skyMemoryBands: descriptors.skyMemoryBands?.bands?.length ?? 0,
+          windShearCells: descriptors.windShearForecast?.cells?.length ?? 0,
+          waypoints: descriptors.waypointRibbon?.waypoints?.length ?? 0,
+          handoffPackets: descriptors.handoffPackets?.packets?.length ?? 0,
+          altitudeBands: descriptors.altitudeEnvelope?.bands?.length ?? 0,
           continuityGates: descriptors.continuityGate?.gates?.length ?? 0,
           coaching: descriptors.inputCoaching?.coaching?.length ?? 0
         }
@@ -202,13 +345,29 @@ export function createSoraCompatibilityDomainKit(options = {}) {
   const aliasKit = createSoraAliasProvenanceKit(options);
   const launchVectorKit = createSoraLaunchVectorKit(options);
   const skyMemoryBandKit = createSoraSkyMemoryBandKit(options);
+  const windShearForecastKit = createSoraWindShearForecastKit(options);
+  const waypointRibbonKit = createSoraWaypointRibbonKit(options);
+  const handoffPacketKit = createSoraHandoffPacketKit(options);
+  const altitudeEnvelopeKit = createSoraAltitudeEnvelopeKit(options);
   const continuityGateKit = createSoraContinuityGateKit(options);
   const inputCoachingKit = createSoraInputCoachingKit(options);
   const rendererHandoffKit = createSoraRendererHandoffKit(options);
 
   return {
     id: "sora-compatibility-domain-kit",
-    kits: [aliasKit.id, launchVectorKit.id, skyMemoryBandKit.id, continuityGateKit.id, inputCoachingKit.id, rendererHandoffKit.id],
+    kits: [
+      aliasKit.id,
+      launchVectorKit.id,
+      skyMemoryBandKit.id,
+      windShearForecastKit.id,
+      waypointRibbonKit.id,
+      handoffPacketKit.id,
+      altitudeEnvelopeKit.id,
+      continuityGateKit.id,
+      inputCoachingKit.id,
+      rendererHandoffKit.id
+    ],
+    domainTree: SORA_ROUTE_PREVIEW_DOMAIN_TREE,
     describe(input = {}) {
       const tick = clamp(input.tick ?? 0, 0, 1000000);
       const control = safeInput(input.input);
@@ -217,11 +376,26 @@ export function createSoraCompatibilityDomainKit(options = {}) {
       const query = String(input.query ?? "");
       const hash = String(input.hash ?? "");
       const alias = aliasKit.describe({ query });
+      const previewSeed = `${alias.hash}:${query}:${hash}:${tick}`;
       const launchVectors = launchVectorKit.describe({ tick, readiness, input: control });
       const skyMemoryBands = skyMemoryBandKit.describe({ tick, energy: readiness, seed: `${alias.hash}:${query}:${hash}` });
+      const windShearForecast = windShearForecastKit.describe({ tick, readiness, input: control, seed: previewSeed });
+      const waypointRibbon = waypointRibbonKit.describe({ readiness, query, hash });
+      const handoffPackets = handoffPacketKit.describe({ readiness, query, hash, input: control });
+      const altitudeEnvelope = altitudeEnvelopeKit.describe({ readiness, input: control });
       const continuityGate = continuityGateKit.describe({ readiness, query, hash });
       const inputCoaching = inputCoachingKit.describe({ input: control, readiness });
-      const rendererHandoff = rendererHandoffKit.describe({ alias, launchVectors, skyMemoryBands, continuityGate, inputCoaching });
+      const rendererHandoff = rendererHandoffKit.describe({
+        alias,
+        launchVectors,
+        skyMemoryBands,
+        windShearForecast,
+        waypointRibbon,
+        handoffPackets,
+        altitudeEnvelope,
+        continuityGate,
+        inputCoaching
+      });
       return {
         kind: "sora-compatibility-domain",
         routeId: "sora-the-infinite",
@@ -230,6 +404,10 @@ export function createSoraCompatibilityDomainKit(options = {}) {
         alias,
         launchVectors,
         skyMemoryBands,
+        windShearForecast,
+        waypointRibbon,
+        handoffPackets,
+        altitudeEnvelope,
         continuityGate,
         inputCoaching,
         rendererHandoff
@@ -242,7 +420,13 @@ export function createSoraCompatibilityDomainKit(options = {}) {
         targetRouteId: described.targetRouteId,
         readiness: described.readiness,
         descriptorCounts: described.rendererHandoff.descriptorCounts,
-        href: described.continuityGate.href
+        href: described.continuityGate.href,
+        preview: {
+          windShearCells: described.windShearForecast.cells.length,
+          waypoints: described.waypointRibbon.waypoints.length,
+          handoffPackets: described.handoffPackets.packets.length,
+          altitudeBands: described.altitudeEnvelope.bands.length
+        }
       };
     }
   };
