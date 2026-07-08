@@ -1,24 +1,25 @@
 {
   "id": "the-cavalry-of-rome",
   "title": "The Cavalry of Rome",
-  "status": "tactical-maneuver-gameplay-seed",
-  "canonicalRouteClaim": false,
+  "status": "campaign-fractal-command-handoff-pass",
+  "canonicalRouteClaim": true,
   "deterministicReplayClaim": false,
-  "designIntent": "DSK-composed WebGPU/WebGL-first fidelity route with no in-game UI DOM or loading overlay UI: scan over a larger pannable realistic Roman terrain map, enter a Rome-perspective WebGL2-shaded hex battlefield, and use seven scene-native maneuvers with action points, dice rolls, movement highlights, terrain movement rules, and mini low-poly squad units.",
+  "designIntent": "DSK-composed WebGPU/WebGL-first Roman strategy route: scan over a large procedural campaign map, issue one world action at a time, read supply pressure, march corridors, morale fronts, unit cohesion, and command choices through renderer-neutral descriptors, then preserve the older battlefield and tactical maneuver surfaces without moving reusable logic into the renderer.",
   "liveEndpoint": "apps/the-cavalry-of-rome/",
   "activeModules": [
-    "experiments/The Cavalry of Rome/src/main-realistic.js",
-    "experiments/The Cavalry of Rome/src/vegetation-pass.js",
-    "experiments/The Cavalry of Rome/src/hex-battlefield-pass.js",
-    "experiments/The Cavalry of Rome/src/hex-squad-visual-pass.js",
-    "experiments/The Cavalry of Rome/src/hex-gameplay-pass.js"
+    "experiments/The Cavalry of Rome/src/cavalry-campaign-3d-terrain-pass.js",
+    "experiments/The Cavalry of Rome/src/cavalry-campaign-tactical-grid-pass.js",
+    "experiments/The Cavalry of Rome/src/cavalry-campaign-space-select-pass.js",
+    "experiments/The Cavalry of Rome/src/cavalry-campaign-world-actions-pass.js",
+    "experiments/The Cavalry of Rome/src/cavalry-campaign-fractal-domain-kit.js",
+    "experiments/The Cavalry of Rome/src/cavalry-campaign-fractal-handoff-pass.js"
   ],
-  "standingIterationRule": "Every future gameplay iteration should improve visual fidelity as a secondary goal and should not regress terrain density, vegetation descriptors, lighting mood, region readability, soldier fidelity, hex readability, maneuver feedback, or cinematic composition.",
+  "standingIterationRule": "Every future gameplay iteration should improve visual fidelity as a secondary goal and should not regress terrain density, vegetation descriptors, lighting mood, region readability, soldier fidelity, hex readability, maneuver feedback, command readability, or cinematic composition.",
   "currentGameplayStep": {
-    "id": "seven-maneuver-tactical-loop",
-    "status": "implemented-as-scene-native-overlay",
-    "intent": "Add the first playable tactical rules layer without reintroducing UI: action points, maneuver selection, dice rolls, movement highlights, terrain restrictions, and Rome-only unit control.",
-    "implementation": "hex-gameplay-pass.js adds Advance Left/Center/Right, Line Brigade, Heavy Brigade, Berserk, and Scout. It rolls 2d6 action points every three turns, uses crypto-backed d6 rolls for advance unit counts, renders shaded WebGL dice on the board, highlights eligible units and reachable hexes, blocks water, ends the maneuver after landing on hills/fences, allows light troops to move up to two spaces, allows Scout to move three spaces, allows Berserk to move two spaces then attack an adjacent enemy, and exposes GameHost tactical gameplay snapshots. It also supersedes older high-noon unit shadows with individual angled soldier shadows."
+    "id": "campaign-fractal-command-readability",
+    "status": "implemented-as-renderer-neutral-descriptor-handoff",
+    "intent": "Add a deeper strategic-readability layer around the campaign map so the player can understand supply lines, possible march corridors, cohesion, morale pressure, and command state without putting tactical truth into the renderer.",
+    "implementation": "cavalry-campaign-fractal-domain-kit.js emits supply-line, march-corridor, unit-cohesion, morale-weather, maneuver-choice, and renderer-handoff descriptors from the current campaign state. cavalry-campaign-fractal-handoff-pass.js imports NexusEngine main via CDN, computes the descriptor domain each frame, exposes GameHost campaignFractal state, and renders a presentation-only overlay that consumes descriptors without owning campaign simulation, input, WebGL, audio, assets, or frame-loop truth."
   },
   "existingDskStack": [
     "gamehost-standard-kit",
@@ -28,7 +29,14 @@
     "zone-field-kit",
     "camera-cinematic-maker-kit",
     "visual-fidelity-maker-kit",
-    "scenario-qa-harness"
+    "scenario-qa-harness",
+    "cavalry-supply-line-kit",
+    "cavalry-march-corridor-kit",
+    "cavalry-unit-cohesion-field-kit",
+    "cavalry-morale-weather-front-kit",
+    "cavalry-maneuver-choice-band-kit",
+    "cavalry-fractal-renderer-handoff-kit",
+    "cavalry-campaign-fractal-domain-kit"
   ],
   "maneuvers": {
     "advanceLeft": { "cost": 1, "effect": "Roll 1d6 and move that many eligible Rome units from the left third." },
@@ -39,27 +47,26 @@
     "berserk": { "cost": 4, "effect": "Move one Rome unit up to two spaces and attack an adjacent enemy." },
     "scout": { "cost": 4, "effect": "Move one Rome unit up to three spaces." }
   },
+  "campaignFractalDomain": {
+    "tree": "cavalry-campaign-fractal-domain -> campaign-readability/supply-line + march-corridor -> battlefield-readability/unit-cohesion + morale-weather + maneuver-choice -> renderer-handoff/descriptors-only",
+    "atomicKits": [
+      "cavalry-supply-line-kit",
+      "cavalry-march-corridor-kit",
+      "cavalry-unit-cohesion-field-kit",
+      "cavalry-morale-weather-front-kit",
+      "cavalry-maneuver-choice-band-kit",
+      "cavalry-fractal-renderer-handoff-kit"
+    ],
+    "compositeKit": "cavalry-campaign-fractal-domain-kit",
+    "handoff": "renderer consumes descriptor buckets only: supplyLines, marchCorridors, cohesionFields, moraleFronts, maneuverChoices"
+  },
   "fidelityFocus": {
     "terrain": "realistic low-poly terrain with domain warping, FBM/ridged noise, blended biome colors, moisture/slope/river masks, and non-repeating landforms",
-    "mapNavigation": "large pannable region-selection surface with keyboard/drag pan and wheel zoom",
+    "mapNavigation": "large pannable campaign surface with keyboard/drag pan and wheel zoom",
+    "campaignReadability": "descriptor-driven supply lines, march corridors, unit cohesion fields, morale-weather fronts, and command choice bands over the campaign map",
     "regions": "oversized highlighted region meshes with glow, wobble borders, and DSK affordance descriptors",
-    "hexBattlefield": {
-      "camera": "above and behind Rome, looking across the whole tactical field",
-      "grid": "11x9 fixed pointy-offset hex board with consistent radius/y-scale covering the old freeform battlefield",
-      "renderer": "WebGL2 shader pass for tile interiors plus Canvas2D overlays for units, movement highlights, and tactical effects",
-      "materials": "procedural FBM terrain color, rim lighting, bevel shading, water shimmer, hill contouring, grass striations, and fence rail/post detail",
-      "terrain": "grass, water, hill, and fence hexes with movement/defense metadata",
-      "units": "mini low-poly soldier squads representing aggregated troop groups, with no circular bases or unit rings",
-      "selection": "only Rome-side units are hover-highlighted and selectable",
-      "movement": "scene-native reachable-hex highlights, water impassable, hill/fence landing ends the maneuver",
-      "dice": "WebGL2 shaded dice for 1d6 advance rolls and 2d6 action point rolls",
-      "colors": "light troops green, medium troops blue, heavy troops red; army ownership appears as a colored military band",
-      "romeBand": "red",
-      "enemyBands": "region-based gold, white, purple, or black bands"
-    },
-    "visibleUi": "none; canvas-only in-game presentation",
-    "uiDom": "none; runtime status hooks are non-DOM sinks only",
-    "loaderUi": "none; shared route page loader is intentionally omitted for this game endpoint",
+    "visibleUi": "minimal route chrome; reusable command/readability logic remains descriptor-owned",
+    "uiDom": "presentation-only sinks and command surfaces; campaign truth stays in the campaign state and domain descriptors",
     "proceduralVegetation": {
       "grass": "deterministic grass descriptor field is retained as metadata for future terrain-anchored instancing",
       "screenSpaceRendering": "disabled because it was visually floating in the sky and caused panning/selection jank",
@@ -67,7 +74,7 @@
       "boundary": "local procedural vegetation descriptor DSK candidate owns placements; no screen-space overlay is rendered until true terrain-anchored WebGPU instancing exists"
     },
     "soldiers": "tactical hex mode uses mini low-poly soldier squads with individual angled shadows, body class colors, military bands, shields, spears, helmets, and selection pennants",
-    "battlefield": "aligned WebGL2-shaded hex grid, terrain tiles, scene-native highlights, shaded dice, aggregated squad pieces, region terrain variation, and no visible UI"
+    "battlefield": "aligned WebGL2-shaded hex grid, terrain tiles, scene-native highlights, shaded dice, aggregated squad pieces, region terrain variation, and no circular token rings"
   },
   "protectedExpressionGuardrails": [
     "Do not copy tabletop scenario layouts, card systems, dice faces, command sections, rule text, or unit-stat tables.",
@@ -84,21 +91,21 @@
     "hex terrain WebGL2 material shader",
     "mini squad tactical unit renderer",
     "seven-maneuver tactical gameplay state machine",
-    "WebGL2 board dice renderer",
-    "reachable hex and attack target highlighter",
-    "cinematic camera interpolation and map pan/zoom controls",
-    "non-DOM runtime sink shim for status/readout compatibility"
+    "campaign map cell ownership and one-action cadence",
+    "campaign fractal supply-line descriptors",
+    "campaign fractal march-corridor descriptors",
+    "campaign fractal unit-cohesion descriptors",
+    "campaign fractal morale-weather descriptors",
+    "campaign fractal maneuver-choice descriptors",
+    "NexusEngine CDN handoff pass"
   ],
   "rendererOwnership": {
     "webgpu": "presentation-only",
     "hexBattlefieldWebGl": "scene-native tactical tile-material renderer",
     "hexGameplayOverlay": "scene-native movement/highlight/squad renderer and first playable interaction layer",
     "hexDiceWebGl": "scene-native WebGL2 dice renderer",
-    "hexCanvasFallback": "fallback if WebGL2 is unavailable",
+    "campaignFractalOverlay": "presentation-only Canvas2D consumer of renderer-neutral descriptors",
     "vegetationOverlay": "disabled until terrain-anchored instancing exists",
-    "visibleUi": "none",
-    "uiDom": "none",
-    "loaderUi": "none",
     "dskOwned": [
       "route progress descriptors",
       "region affordance descriptors",
@@ -109,43 +116,27 @@
       "GameHost proof contract",
       "procedural vegetation descriptor snapshot via local DSK candidate",
       "hex battlefield snapshot via local DSK candidate",
-      "tactical gameplay snapshot via local DSK candidate"
+      "tactical gameplay snapshot via local DSK candidate",
+      "campaign fractal descriptor snapshot via local DSK candidate"
     ]
   },
   "futureProtoKitCandidatesFromCustomLogic": [
-    { "id": "hex-battlefield-grid-kit", "source": "createHexBattlefield, terrainForHex, projectHex, fixed pointy-offset layout, and hex terrain metadata", "reason": "Reusable no-UI tactical grid layer for region-to-battlefield strategy routes." },
-    { "id": "hex-webgl-material-shader-kit", "source": "WebGL2 shader for procedural hex interiors, rim lighting, water shimmer, hill contours, grass strokes, and fence detail", "reason": "Reusable high-fidelity tile material renderer for tactical boards." },
-    { "id": "hex-maneuver-gameplay-kit", "source": "seven maneuver definitions, AP costs, section-based advance logic, brigade grouping, scout/berserk rules, and terrain movement restrictions", "reason": "Reusable scene-native maneuver layer for tactical board games without visible UI." },
-    { "id": "webgl-board-dice-kit", "source": "crypto-backed dice rolls and WebGL2 shaded dice renderer", "reason": "Reusable board-native dice feedback layer." },
-    { "id": "hex-terrain-descriptor-kit", "source": "grass/water/hill/fence terrain descriptors with movement and defense metadata", "reason": "Reusable tactical terrain descriptor boundary independent of renderer." },
-    { "id": "hex-squad-visual-kit", "source": "mini low-poly squad rendering with class colors, army bands, and directional soldier shadows", "reason": "Reusable tactical unit renderer for aggregated squad pieces." },
-    { "id": "tactical-army-formation-kit", "source": "createBattleUnits and Rome/enemy deployment layout", "reason": "Reusable army deployment and roster compression layer for hex battles." },
-    { "id": "troop-class-visual-kit", "source": "class colors and army band colors for aggregated troop units", "reason": "Reusable visual identity rules for light/medium/heavy tactical units." },
-    { "id": "terrain-anchored-vegetation-kit", "source": "hex battlefield tile features and screen-space vegetation suppression during tactical play", "reason": "Reusable guarantee that tactical vegetation is drawn in terrain space rather than detached screen space." },
-    { "id": "campaign-terrain-visual-kit", "source": "procedural terrain mesh and terrain color logic", "reason": "Reusable visual terrain foundation for campaign-map routes." },
-    { "id": "painterly-terrain-material-kit", "source": "brush-stroke overlays, river ribbons, contour accents, and color glaze passes", "reason": "Reusable visual-material layer for painterly map surfaces." },
-    { "id": "terrain-region-highlight-kit", "source": "large region overlay generation, hover highlighting, and glowing border ribbons", "reason": "Reusable replacement for point-node strategy maps." },
-    { "id": "pannable-campaign-camera-kit", "source": "keyboard/drag pan, wheel zoom, and map-centered camera focus", "reason": "Reusable inspection control for large campaign-map surfaces." },
-    { "id": "procedural-vegetation-field-kit", "source": "deterministic grass, reed, shrub, tree, flower, and rock descriptor generation from biome, slope, moisture, river, and terrain noise fields", "reason": "Reusable renderer-neutral vegetation population layer for high-fidelity terrain routes." },
-    { "id": "map-to-scene-camera-transition-kit", "source": "world-map scan camera and cinematic dive interpolation", "reason": "Reusable select-region-to-local-scene transition." }
+    { "id": "campaign-supply-line-kit", "source": "cavalry-supply-line-kit", "reason": "Reusable frontier pressure and supply readability for turn-based strategy maps." },
+    { "id": "campaign-march-corridor-kit", "source": "cavalry-march-corridor-kit", "reason": "Reusable adjacent-move and attack outcome preview descriptors." },
+    { "id": "campaign-unit-cohesion-kit", "source": "cavalry-unit-cohesion-field-kit", "reason": "Reusable formation density and troop power readability." },
+    { "id": "campaign-morale-weather-kit", "source": "cavalry-morale-weather-front-kit", "reason": "Reusable ownership pressure and front-line weather descriptors." },
+    { "id": "campaign-command-choice-kit", "source": "cavalry-maneuver-choice-band-kit", "reason": "Reusable command availability descriptors independent of DOM buttons." }
   ],
   "intentionallyOmitted": [
     "full combat resolution",
     "unit stat tables beyond visual class and terrain metadata",
     "campaign economy",
-    "enemy AI turns",
     "large JSON datasets",
     "vegetation harvesting",
     "tree collision",
     "fire spread",
     "screen-space vegetation rendering",
-    "visible HUD",
-    "visible footer instructions",
-    "visible command buttons",
-    "hidden HUD DOM",
-    "hidden footer DOM",
-    "hidden commandBar DOM",
     "shared page-loader UI"
   ],
-  "nextLedge": "Add enemy turn behavior and fuller combat resolution after validating scene-native unit movement, terrain costs, AP cadence, and dice feedback in browser."
+  "nextLedge": "Promote the campaign fractal kits into reusable ProtoKits once browser validation confirms the descriptors improve command readability without creating overlay clutter."
 }
