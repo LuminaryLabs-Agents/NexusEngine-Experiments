@@ -8,7 +8,7 @@ function showFatal(error) {
 
 async function boot() {
   const [sessionModule, rendererModule, inputModule, hudModule, loopModule, synthModule] = await Promise.all([
-    import("./session-visual-upgrade.js"),
+    import("./session-cargo-extraction-upgrade.js"),
     import("./renderer-three-fidelity.js"),
     import("./input.js"),
     import("./hud.js"),
