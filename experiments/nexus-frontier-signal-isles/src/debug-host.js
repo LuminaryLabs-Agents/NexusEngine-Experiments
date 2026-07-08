@@ -31,6 +31,9 @@ export function createSignalIslesDebugHost({ composition, renderer, input, nexus
     getExpeditionReadinessState() {
       return composition.getExpeditionReadinessState();
     },
+    getStormAnchorReadinessState() {
+      return composition.getStormAnchorReadinessState();
+    },
     getRendererHandoff() {
       return composition.getRendererHandoff();
     },
