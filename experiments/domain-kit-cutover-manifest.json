@@ -58,6 +58,15 @@
       "featureParity": ["camera flight", "radial LOD rings", "biome mosaic", "survey transect descriptors", "altitude corridor descriptors", "route task bands", "bearing needles", "horizon landmarks", "slope choice ribbons", "biome transition gates", "origin return anchors", "stamina drift meters"]
     },
     {
+      "id": "the-open-above",
+      "kind": "experiment",
+      "canonicalPath": "experiments/the-open-above/",
+      "status": "flight-route-readability-renderer-handoff-pass",
+      "domainCutover": ["open-above-visual-fractal-domain-kit", "open-above-flight-route-readability-domain-kit"],
+      "bridgeNeeded": "browser host imports NexusEngine main via CDN; visual and flight-route readability domains emit cloud, ridgeline, speed, thermal, contrail, updraft, ridge hazard, landing, flock draft, altitude reserve, and homeward bearing descriptors consumed by WebGL and DOM presentation only",
+      "featureParity": ["bird flight", "terrain streaming", "flock agents", "visual sky descriptors", "cloud strata", "ridge silhouettes", "speed ribbons", "thermal columns", "wingtip contrails", "updraft corridors", "ridge hazard shelves", "landing meadow ghosts", "flock draft wakes", "altitude reserve meters", "homeward bearing threads", "GameHost composed renderer handoff"]
+    },
+    {
       "id": "high-fidelity-meadow",
       "kind": "experiment",
       "canonicalPath": "experiments/high-fidelity-meadow/",
