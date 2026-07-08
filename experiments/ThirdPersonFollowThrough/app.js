@@ -1,6 +1,6 @@
 import * as THREE from 'https://unpkg.com/three@0.165.0/build/three.module.js';
 import { createCameraControlUtilityKit } from 'https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/core-kits/core-utility-kit/camera-control-utility-kit.js';
-import { createTransformMathUtilityKit } from 'https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/core-kits/core-utility-kit/transform-math-utility-kit.js';
+import { createTransformMathUtilityKit } from 'https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/core-kits/core-utility-kit/transform-math-utility-kit.js?v=planar-camera-basis-v1';
 import { createThirdPersonFollowKit } from './kits/third-person-follow-kit.js';
 import { createRiggedActorKit } from './kits/rigged-actor-kit.js';
 import { thirdPersonFollowThroughDomain } from './domain/third-person-follow-through-domain.js';
@@ -86,6 +86,9 @@ const cameraTarget = new THREE.Object3D();
 scene.add(cameraTarget);
 const lookTarget = new THREE.Vector3();
 const headWorld = new THREE.Vector3();
+const cameraWorldForward = new THREE.Vector3(0, 0, -1);
+const movementBasisForward = new THREE.Vector3(0, 0, -1);
+const movementBasisRight = new THREE.Vector3(1, 0, 0);
 const follow = createThirdPersonFollowKit({ distance: 6.2, height: 0.15, lookAhead: 2.4, lagSpeed: 11, pitch: 0.28 });
 
 const lookMat = new THREE.MeshStandardMaterial({ color: 0x44ff88, roughness: 0.3, emissive: 0x063b14 });
@@ -115,6 +118,13 @@ document.body.dataset.nexusDomain = thirdPersonFollowThroughDomain.id;
 
 function toVector3(v) {
   return new THREE.Vector3(v.x, v.y, v.z);
+}
+function toPlainVector3(v) {
+  return { x: v.x, y: v.y, z: v.z };
+}
+function copyPlainVector3(target, v) {
+  target.set(v.x, v.y, v.z);
+  return target;
 }
 function resolveCircleAabb(position, collider, radius) {
   const closestX = THREE.MathUtils.clamp(position.x, collider.minX, collider.maxX);
@@ -204,14 +214,22 @@ function tick(now) {
 
   let cameraYaw = cameraUtil.cameraYawFromRootAndOrbit(rootYaw, orbitYawOffset);
   const basisInput = { forward: input.has('w'), back: input.has('s'), left: input.has('a'), right: input.has('d') };
-  const wishPlain = transformUtil.cameraRelativeWishVector(basisInput, cameraYaw);
+  camera.getWorldDirection(cameraWorldForward);
+  const movementBasisPlain = transformUtil.planarBasisFromForward(
+    toPlainVector3(cameraWorldForward),
+    transformUtil.up(),
+    transformUtil.forwardFromYaw(cameraYaw)
+  );
+  copyPlainVector3(movementBasisForward, movementBasisPlain.forward);
+  copyPlainVector3(movementBasisRight, movementBasisPlain.right);
+  const wishPlain = transformUtil.wishVectorFromBasis(basisInput, movementBasisPlain);
   wish.copy(toVector3(wishPlain));
 
   if (wish.lengthSq() > 0) {
     const previousCameraYaw = cameraYaw;
     const preserveFacingWhileBacking = basisInput.back && !basisInput.forward;
     if (!preserveFacingWhileBacking) {
-      const desiredYaw = Math.atan2(wish.x, -wish.z);
+      const desiredYaw = transformUtil.yawFromForward(wishPlain, rootYaw);
       rootYaw = transformUtil.lerpAngle(rootYaw, desiredYaw, Math.min(1, dt * rotateSpeed));
       orbitYawOffset = cameraUtil.preserveOrbitForCameraYaw(rootYaw, previousCameraYaw, maxOrbitYaw);
     }
@@ -244,11 +262,17 @@ function tick(now) {
     rootYawDeg: THREE.MathUtils.radToDeg(rootYaw),
     orbitYawOffsetDeg: THREE.MathUtils.radToDeg(orbitYawOffset),
     cameraYawDeg: THREE.MathUtils.radToDeg(cameraYaw),
+    movementYawDeg: THREE.MathUtils.radToDeg(transformUtil.yawFromForward(movementBasisPlain.forward, cameraYaw)),
+    movementBasisMode: 'rendered-camera-planar-forward',
     handoffAlpha,
     cameraPivotWorld: cameraPivotWorld.toArray(),
     headWorld: headWorld.toArray(),
     lookAheadWorld: lookTarget.toArray(),
     cameraPosition: camera.position.toArray(),
+    cameraForwardWorld: cameraWorldForward.toArray(),
+    movementBasisForwardWorld: movementBasisForward.toArray(),
+    movementBasisRightWorld: movementBasisRight.toArray(),
+    movementWishWorld: wish.toArray(),
     targetPosition: actorRoot.position.toArray(),
     debugVisible,
     colliderCount: colliders.length,
