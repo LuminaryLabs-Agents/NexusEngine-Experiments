@@ -9,6 +9,7 @@ const gateway = fs.readFileSync(new URL("../experiments/sora-the-infinite/sora-c
 const style = fs.readFileSync(new URL("../experiments/sora-the-infinite/sora-sky-negotiation-style.css", import.meta.url), "utf8");
 const kitSource = fs.readFileSync(new URL("../experiments/_kits/sora-the-infinite/sora-sky-negotiation-readiness-domain-kits.js", import.meta.url), "utf8");
 const runChecks = fs.readFileSync(new URL("../scripts/run-checks.mjs", import.meta.url), "utf8");
+const existingFlightplanSmoke = fs.readFileSync(new URL("./sora-flightplan-readability-cdn-state-input-smoke.mjs", import.meta.url), "utf8");
 
 const cdn = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js";
 assert.ok(gateway.includes(cdn), "changed Sora gateway should import NexusEngine main CDN");
@@ -21,8 +22,9 @@ assert.ok(gateway.includes("skyNegotiationReadiness"), "gateway should compose s
 assert.ok(style.includes("jetstream-braid") && style.includes("storm-shelf") && style.includes("return-vow-thread"), "style should render sky negotiation descriptor buckets");
 assert.ok(kitSource.includes("sora-sky-negotiation-readiness-domain"), "kit source should include domain tree");
 assert.ok(kitSource.includes("renderer consumes descriptors only"), "kit source should include renderer handoff contract");
-assert.ok(runChecks.includes("sora-sky-negotiation-readiness-domain-kits-smoke.mjs"), "full checks should include sky negotiation kit smoke");
-assert.ok(runChecks.includes("sora-sky-negotiation-readiness-cdn-state-input-smoke.mjs"), "full checks should include sky negotiation CDN smoke");
+assert.ok(runChecks.includes("sora-flightplan-readability-cdn-state-input-smoke.mjs"), "full/deploy checks should include the existing Sora CDN smoke route");
+assert.ok(existingFlightplanSmoke.includes("sora-sky-negotiation-readiness-domain-kits-smoke.mjs"), "existing Sora CDN smoke should import sky negotiation kit smoke");
+assert.ok(existingFlightplanSmoke.includes("sora-sky-negotiation-readiness-cdn-state-input-smoke.mjs"), "existing Sora CDN smoke should import sky negotiation CDN smoke");
 
 const routePreview = {
   readiness: 0.72,
