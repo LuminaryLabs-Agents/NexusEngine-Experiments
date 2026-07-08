@@ -4,7 +4,7 @@ export const OPEN_ABOVE_CONFIG = Object.freeze({
   seed: "open-above-high-fidelity-v1",
   runtime: {
     threeUrl: "https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js",
-    nexusUrl: "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusRealtime@main/src/index.js",
+    nexusUrl: "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js",
     protoKitBaseUrl: "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusRealtime-ProtoKits@0.0.1/protokits"
   },
   quality: {
