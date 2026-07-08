@@ -14,6 +14,7 @@ import {
 } from './protokits/hellscape-kits.js';
 import { createHellscapeSiegeFractalDomainKit } from './hellscape-siege-fractal-domain-kit.js';
 import { createHellscapeExpeditionReadabilityDomainKit } from './hellscape-expedition-readability-domain-kit.js';
+import { createHellscapeSiegecraftReadinessDomainKit } from './hellscape-siegecraft-readiness-domain-kit.js';
 import { createCanvasRenderer } from './renderer/canvas-renderer.js';
 
 const NEXUS_ENGINE_RUNTIME = Object.freeze({
@@ -26,6 +27,7 @@ const errorPanel = document.querySelector('#errorPanel');
 const renderer = createCanvasRenderer(canvas);
 const visualFractalDomain = createHellscapeSiegeFractalDomainKit();
 const expeditionReadabilityDomain = createHellscapeExpeditionReadabilityDomainKit();
+const siegecraftReadinessDomain = createHellscapeSiegecraftReadinessDomainKit();
 const down = new Set();
 const pressed = new Set();
 
@@ -123,15 +125,24 @@ function describeExpeditionReadability(state) {
   });
 }
 
-function composeRendererHandoff(visualFractal, expeditionReadability) {
+function describeSiegecraftReadiness(state) {
+  return siegecraftReadinessDomain.describe({
+    ...state,
+    buildCatalog: config.builds,
+    time: engine.world.clock.elapsed
+  });
+}
+
+function composeRendererHandoff(visualFractal, expeditionReadability, siegecraftReadiness) {
   return {
     id: 'hellscape-composed-renderer-handoff',
     kit: 'hellscape-composed-renderer-handoff',
     kind: 'renderer-handoff',
-    policy: visualFractal?.rendererHandoff?.policy ?? expeditionReadability?.rendererHandoff?.policy,
+    policy: visualFractal?.rendererHandoff?.policy ?? expeditionReadability?.rendererHandoff?.policy ?? siegecraftReadiness?.rendererHandoff?.policy,
     descriptors: {
       ...(visualFractal?.rendererHandoff?.descriptors ?? {}),
-      hellscapeExpedition: expeditionReadability?.rendererHandoff?.descriptors ?? {}
+      hellscapeExpedition: expeditionReadability?.rendererHandoff?.descriptors ?? {},
+      hellscapeSiegecraft: siegecraftReadiness?.rendererHandoff?.descriptors ?? {}
     },
     counts: {
       ...(visualFractal?.rendererHandoff?.counts ?? {}),
@@ -140,7 +151,13 @@ function composeRendererHandoff(visualFractal, expeditionReadability) {
       survivalVectors: expeditionReadability?.rendererHandoff?.counts?.survivalVectors ?? 0,
       craftingWindows: expeditionReadability?.rendererHandoff?.counts?.craftingWindows ?? 0,
       bossWake: expeditionReadability?.rendererHandoff?.counts?.bossWake ?? 0,
-      exitCompass: expeditionReadability?.rendererHandoff?.counts?.exitCompass ?? 0
+      exitCompass: expeditionReadability?.rendererHandoff?.counts?.exitCompass ?? 0,
+      barricadeFootprints: siegecraftReadiness?.rendererHandoff?.counts?.barricadeFootprints ?? 0,
+      turretCrossfire: siegecraftReadiness?.rendererHandoff?.counts?.turretCrossfire ?? 0,
+      resourceBurnForecasts: siegecraftReadiness?.rendererHandoff?.counts?.resourceBurnForecasts ?? 0,
+      buildPriorityQueue: siegecraftReadiness?.rendererHandoff?.counts?.buildPriorityQueue ?? 0,
+      coreBreachCountdowns: siegecraftReadiness?.rendererHandoff?.counts?.coreBreachCountdowns ?? 0,
+      extractionRiskRibbons: siegecraftReadiness?.rendererHandoff?.counts?.extractionRiskRibbons ?? 0
     }
   };
 }
@@ -154,11 +171,13 @@ function snapshot() {
   };
   state.visualFractal = describeVisualFractal(state);
   state.expeditionReadability = describeExpeditionReadability(state);
-  state.rendererHandoff = composeRendererHandoff(state.visualFractal, state.expeditionReadability);
+  state.siegecraftReadiness = describeSiegecraftReadiness(state);
+  state.rendererHandoff = composeRendererHandoff(state.visualFractal, state.expeditionReadability, state.siegecraftReadiness);
   state.domain = {
     ...(state.domain ?? {}),
     hellscapeSiegeFractal: state.visualFractal,
-    hellscapeExpeditionReadability: state.expeditionReadability
+    hellscapeExpeditionReadability: state.expeditionReadability,
+    hellscapeSiegecraftReadiness: state.siegecraftReadiness
   };
   return state;
 }
@@ -201,12 +220,18 @@ window.GameHost = {
   nexusEngineRuntime: NEXUS_ENGINE_RUNTIME,
   visualFractalDomain,
   expeditionReadabilityDomain,
+  siegecraftReadinessDomain,
   getState: snapshot,
   getVisualFractal: () => describeVisualFractal(engine.getState()),
   getExpeditionReadability: () => describeExpeditionReadability(engine.getState()),
+  getSiegecraftReadiness: () => describeSiegecraftReadiness(engine.getState()),
   getRendererHandoff: () => {
     const state = engine.getState();
-    return composeRendererHandoff(describeVisualFractal(state), describeExpeditionReadability(state));
+    return composeRendererHandoff(
+      describeVisualFractal(state),
+      describeExpeditionReadability(state),
+      describeSiegecraftReadiness(state)
+    );
   },
   startWave: () => engine.waves.start(),
   add: (id, n = 10) => engine.inventory.add(id, n),
