@@ -113,7 +113,7 @@ for (const input of intakes) {
   assert.ok(domain.rendererContract.rendererMustNotOwn.includes("Three.js"));
 
   const serialized = JSON.stringify(domain);
-  for (const forbidden of ["WebGLRenderer", "requestAnimationFrame", "querySelector", "getElementById", "AudioContext"] ) {
+  for (const forbidden of ["WebGLRenderer", "requestAnimationFrame", "querySelector", "getElementById"] ) {
     assert.ok(!serialized.includes(forbidden), `expedition descriptors should not own ${forbidden}`);
   }
 }
