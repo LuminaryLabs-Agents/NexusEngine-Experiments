@@ -1,3 +1,5 @@
+import "./high-fidelity-meadow-harvest-festival-readiness-kits-smoke.mjs";
+import "./high-fidelity-meadow-harvest-festival-cdn-state-input-smoke.mjs";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { createMeadowFlockSafetyReadinessDomainKit } from "../experiments/high-fidelity-meadow/src/meadow-flock-safety-readiness-kits.js";
@@ -23,6 +25,7 @@ assert.ok(files.main.includes("getFlockSafetyReadiness"), "GameHost should expos
 assert.ok(files.main.includes("flockSafetyReadiness"), "main should compose flock safety descriptors into state");
 assert.ok(files.main.includes("getRendererHandoff"), "GameHost should expose composed renderer handoff");
 assert.ok(files.index.includes("20260708-flock-safety-readiness-1"), "entrypoint should cache-bust the flock safety upgrade");
+assert.ok(files.index.includes("20260708-harvest-festival-readiness-1"), "entrypoint should cache-bust the harvest festival upgrade");
 assert.ok(files.renderer.includes("lostLambCalls"), "renderer should consume lost lamb call descriptors");
 assert.ok(files.renderer.includes("foxShadowBoundaries"), "renderer should consume fox boundary descriptors");
 assert.ok(files.renderer.includes("bellwetherLeadThreads"), "renderer should consume bellwether lead descriptors");
@@ -33,7 +36,7 @@ assert.equal(files.flockSafety.includes("document.querySelector"), false, "flock
 assert.equal(files.flockSafety.includes("requestAnimationFrame"), false, "flock safety kits must not own frame loop");
 assert.ok(files.runChecks.includes("high-fidelity-meadow-flock-safety-readiness-kits-smoke.mjs"), "full/deploy checks should route flock safety kit smoke");
 assert.ok(files.runChecks.includes("high-fidelity-meadow-flock-safety-cdn-state-input-smoke.mjs"), "full/deploy checks should route flock safety CDN/state smoke");
-assert.ok(files.manifest.includes("flock-safety-readiness-renderer-handoff-pass"), "manifest should record the flock safety cutover");
+assert.ok(files.manifest.includes("flock-safety-readiness-renderer-handoff-pass") || files.manifest.includes("harvest-festival-readiness-renderer-handoff-pass"), "manifest should record the meadow readiness cutover");
 
 const heightAt = (x = 0, z = 0) => Math.sin(x * 0.031) * 0.2 + Math.cos(z * 0.037) * 0.17;
 const pathMask = (x = 0, z = 0) => Math.max(0, 1 - Math.abs(x * 0.18 + z * 0.05) / 11);
@@ -76,4 +79,4 @@ const simulatedState = mockInputs.map((input, index) => ({
 assert.equal(simulatedState.length, 10, "playwright-style smoke should cover 10 state/input cases");
 assert.ok(simulatedState.every((entry) => entry.snapshot.descriptorCounts.total >= 41), "each input should preserve flock safety descriptor state");
 
-console.log(`High Fidelity Meadow flock safety CDN/state/input smoke passed ${simulatedState.length} cases against NexusEngine main CDN wiring.`);
+console.log(`High Fidelity Meadow flock safety CDN/state/input smoke passed ${simulatedState.length} cases against NexusEngine main CDN wiring and routed harvest festival validation.`);
