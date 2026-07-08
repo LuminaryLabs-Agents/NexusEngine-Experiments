@@ -14,9 +14,11 @@ async function boot() {
   const corePath = "./" + "terrain-world-stack" + "." + "js";
   const domainPath = "./" + "hifi-radial-domain" + "." + "js";
   const visualPath = "../_kits/infinite-radial-terrain/infinite-radial-terrain-kits.js";
+  const expeditionPath = "../_kits/infinite-radial-terrain/terrain-expedition-readability-kits.js";
   const core = await import(corePath);
   const domain = await import(domainPath);
   const visualDomain = await import(visualPath);
+  const expeditionDomain = await import(expeditionPath);
   let NexusEngine = null;
   try {
     NexusEngine = await import(params.get("nexusEngine") || NEXUS_ENGINE_URL);
@@ -32,6 +34,7 @@ async function boot() {
   const erosionSolver = await core.loadErosionSolver(params);
   const radialTerrain = domain.createRadialTerrainDomain({ originSnap: 250 });
   const radialVisualDomain = visualDomain.createInfiniteRadialTerrainVisualDomainKit();
+  const terrainExpeditionDomain = expeditionDomain.createTerrainExpeditionReadabilityDomainKit();
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: "high-performance" });
   renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
   renderer.setSize(innerWidth, innerHeight);
@@ -61,6 +64,7 @@ async function boot() {
   const rig = { yaw: 0, pitch: -0.32, speed: 320 };
   let descriptors = radialTerrain.getDescriptors();
   let visualDescriptors = null;
+  let expeditionDescriptors = null;
   let lastVersion = -1;
   let lastVisualVersion = "";
   let lastSample = null;
@@ -142,18 +146,77 @@ async function boot() {
     }
   }
 
+  function addDescriptorLine(from, to, color, opacity = 0.6, name = "descriptor-line") {
+    const geometry = new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(from.x, from.y, from.z),
+      new THREE.Vector3(to.x, to.y, to.z)
+    ]);
+    const line = new THREE.Line(geometry, getLineMaterial(color, opacity));
+    line.name = name;
+    visualGroup.add(line);
+  }
+
+  function addDescriptorRing(center, radius, color, opacity = 0.4, name = "descriptor-ring") {
+    const geometry = new THREE.BufferGeometry().setFromPoints(ringPoints(center, radius, 96));
+    const line = new THREE.LineLoop(geometry, getLineMaterial(color, opacity));
+    line.name = name;
+    visualGroup.add(line);
+  }
+
+  function addDescriptorDisc(center, radius, color, opacity = 0.18, name = "descriptor-disc") {
+    const geometry = new THREE.CircleGeometry(radius, 32);
+    const mesh = new THREE.Mesh(geometry, getMeshMaterial(color, opacity));
+    mesh.name = name;
+    mesh.rotation.x = -Math.PI / 2;
+    mesh.position.set(center.x, center.y, center.z);
+    visualGroup.add(mesh);
+  }
+
+  function renderExpeditionDescriptors() {
+    const handoff = expeditionDescriptors?.rendererHandoff?.descriptors ?? {};
+    for (const transect of handoff.surveyTransects ?? []) {
+      addDescriptorLine(transect.from, transect.to, "#fff1a8", 0.28 + transect.surveyValue * 0.42, transect.id);
+    }
+    for (const corridor of handoff.altitudeCorridors ?? []) {
+      addDescriptorRing(corridor.center, corridor.radiusMeters, corridor.status === "inside" ? "#b9ffcf" : "#f7d488", 0.12 + corridor.confidence * 0.22, corridor.id);
+    }
+    for (const beacon of handoff.ridgePassBeacons ?? []) {
+      const geometry = new THREE.SphereGeometry(26 + beacon.passScore * 28, 16, 10);
+      const mesh = new THREE.Mesh(geometry, getMeshMaterial("#ffffff", 0.24 + beacon.passScore * 0.34));
+      mesh.name = beacon.id;
+      mesh.position.set(beacon.position.x, beacon.position.y, beacon.position.z);
+      visualGroup.add(mesh);
+    }
+    for (const basin of handoff.hazardBasins ?? []) {
+      addDescriptorDisc(basin.position, basin.radiusMeters, "#ff7a55", 0.1 + basin.risk * 0.22, basin.id);
+      addDescriptorRing({ ...basin.position, y: basin.position.y + 8 }, basin.radiusMeters, "#ffb199", 0.18 + basin.avoidStrength * 0.28, `${basin.id}:edge`);
+    }
+    for (const bookmark of handoff.sampleBookmarks ?? []) {
+      const geometry = new THREE.BoxGeometry(34, 34 + bookmark.priority * 32, 34);
+      const mesh = new THREE.Mesh(geometry, getMeshMaterial("#7df2ff", 0.2 + bookmark.priority * 0.34));
+      mesh.name = bookmark.id;
+      mesh.position.set(bookmark.position.x, bookmark.position.y, bookmark.position.z);
+      visualGroup.add(mesh);
+    }
+    for (const task of handoff.routeTaskBands ?? []) {
+      addDescriptorRing(task.center, task.radiusMeters, "#c9a7ff", 0.16 + task.priority * 0.32, task.id);
+    }
+  }
+
   function syncVisualDescriptors() {
     const visualVersion = `${descriptors.version}:${Math.floor(frame / 24)}`;
-    if (visualVersion === lastVisualVersion && visualDescriptors) return;
+    if (visualVersion === lastVisualVersion && visualDescriptors && expeditionDescriptors) return;
     lastVisualVersion = visualVersion;
     const samples = collectVisualSamples();
-    visualDescriptors = radialVisualDomain.describe({
+    const descriptorInput = {
       terrain: descriptors,
       camera: { position: { x: camera.position.x, y: camera.position.y, z: camera.position.z }, yaw: rig.yaw, pitch: rig.pitch },
       terrainSample: lastSample,
       samples,
       time: frame / 60
-    });
+    };
+    visualDescriptors = radialVisualDomain.describe(descriptorInput);
+    expeditionDescriptors = terrainExpeditionDomain.describe({ ...descriptorInput, visual: visualDescriptors });
     clearVisualGroup();
 
     if (visualDescriptors.skyHaze?.backgroundColor) {
@@ -171,13 +234,7 @@ async function boot() {
     }
 
     for (const thread of visualDescriptors.hydrologyThreads ?? []) {
-      const geometry = new THREE.BufferGeometry().setFromPoints([
-        new THREE.Vector3(thread.from.x, thread.from.y, thread.from.z),
-        new THREE.Vector3(thread.to.x, thread.to.y, thread.to.z)
-      ]);
-      const line = new THREE.Line(geometry, getLineMaterial("#4dd9ff", Math.max(0.18, thread.pulse * 0.72)));
-      line.name = thread.id;
-      visualGroup.add(line);
+      addDescriptorLine(thread.from, thread.to, "#4dd9ff", Math.max(0.18, thread.pulse * 0.72), thread.id);
     }
 
     for (const patch of visualDescriptors.biomeMosaic ?? []) {
@@ -198,6 +255,8 @@ async function boot() {
       mesh.position.set(province.centroid.x, province.centroid.y + 70, province.centroid.z);
       visualGroup.add(mesh);
     }
+
+    renderExpeditionDescriptors();
   }
 
   function moveCamera(dt) {
@@ -232,7 +291,9 @@ async function boot() {
     const biome = visualDescriptors?.travelForecast?.aheadBiome ?? "unknown";
     const action = visualDescriptors?.travelForecast?.recommendedAction ?? "free-cruise";
     const descriptorCount = visualDescriptors?.rendererHandoff?.counts?.total ?? 0;
-    hud.innerHTML = `<strong>Infinite Radial Terrain</strong><br>Earth scale · NexusEngine CDN · descriptor-only visual domain · WASD fly · Space/Shift vertical · arrows look<br>Height ${h}m · Stream ${order} · Drainage ${dd.toFixed(1)}km/km² · Biome ${biome} · Cue ${action} · Visual descriptors ${descriptorCount}`;
+    const expeditionCount = expeditionDescriptors?.rendererHandoff?.counts?.total ?? 0;
+    const corridor = expeditionDescriptors?.altitudeCorridors?.find((entry) => entry.status === "inside")?.clearanceMeters ?? expeditionDescriptors?.altitudeCorridors?.[0]?.clearanceMeters ?? 0;
+    hud.innerHTML = `<strong>Infinite Radial Terrain</strong><br>Earth scale · NexusEngine CDN · descriptor-only expedition domain · WASD fly · Space/Shift vertical · arrows look<br>Height ${h}m · Stream ${order} · Drainage ${dd.toFixed(1)}km/km² · Biome ${biome} · Cue ${action} · Corridor ${Math.round(corridor)}m · Visual ${descriptorCount} · Expedition ${expeditionCount}`;
     renderer.render(scene, camera);
   }
 
@@ -264,7 +325,22 @@ async function boot() {
     erosionSolver,
     runtime: runtimeDescriptor,
     visualDomain: radialVisualDomain,
-    getState: () => ({ frame, runtime: runtimeDescriptor, camera: { position: camera.position.toArray(), yaw: rig.yaw, pitch: rig.pitch }, descriptors, visualDescriptors: core.clone(visualDescriptors), domain: { infiniteRadialTerrainVisual: core.clone(visualDescriptors) }, terrainSample: core.clone(lastSample) })
+    expeditionDomain: terrainExpeditionDomain,
+    getExpeditionReadability: () => core.clone(expeditionDescriptors),
+    getRendererHandoff: () => core.clone(expeditionDescriptors?.rendererHandoff ?? visualDescriptors?.rendererHandoff),
+    getState: () => ({
+      frame,
+      runtime: runtimeDescriptor,
+      camera: { position: camera.position.toArray(), yaw: rig.yaw, pitch: rig.pitch },
+      descriptors,
+      visualDescriptors: core.clone(visualDescriptors),
+      expeditionDescriptors: core.clone(expeditionDescriptors),
+      domain: {
+        infiniteRadialTerrainVisual: core.clone(visualDescriptors),
+        infiniteRadialTerrainExpedition: core.clone(expeditionDescriptors)
+      },
+      terrainSample: core.clone(lastSample)
+    })
   };
 
   syncTerrain();
