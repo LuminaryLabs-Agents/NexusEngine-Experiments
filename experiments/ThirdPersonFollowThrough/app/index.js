@@ -1,2 +1,2 @@
-import './arena-fractal-entry.js?v=locomotion-readability-v1';
+import './arena-fractal-entry.js?v=camera-composition-readability-v1';
 export {};
