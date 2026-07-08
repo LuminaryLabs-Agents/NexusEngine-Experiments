@@ -11,6 +11,24 @@ export function startLoop({ session, input, renderer, hud, synth }) {
     return lastSnapshot;
   }
 
+  function rendererHandoff() {
+    const snapshot = session.snapshot();
+    const domain = snapshot.domain ?? {};
+    const handoffs = [
+      domain.routeCargoVisual?.rendererHandoff,
+      domain.traversalReadability?.rendererHandoff
+    ].filter(Boolean);
+    const descriptors = handoffs.flatMap((handoff) => Array.isArray(handoff.descriptors) ? handoff.descriptors : []);
+    return {
+      id: "next-ledge-composed-renderer-handoff",
+      kind: "renderer-handoff",
+      descriptorCount: descriptors.length,
+      handoffCount: handoffs.length,
+      descriptors,
+      rendererContract: "renderer consumes descriptors only; route, cargo, traversal, browser input, and frame-loop truth stay outside renderer presentation"
+    };
+  }
+
   function frame(now) {
     if (!running) return;
     const dt = Math.min(1 / 30, (now - last) / 1000 || 1 / 60);
@@ -25,6 +43,8 @@ export function startLoop({ session, input, renderer, hud, synth }) {
     session,
     renderer,
     getState: () => session.snapshot(),
+    getTraversalReadability: () => session.snapshot().domain?.traversalReadability,
+    getRendererHandoff: rendererHandoff,
     tick: (dt = 1 / 60, command = {}) => tick(dt, command),
     restart: () => session.restart(),
     advanceSector: () => session.advanceSector(),
