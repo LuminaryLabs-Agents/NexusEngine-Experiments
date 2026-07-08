@@ -64,8 +64,8 @@
   position: absolute;
   left: var(--x);
   top: var(--y);
-  width: calc(var(--r) * 2);
-  height: calc(var(--r) * 2);
+  width: var(--d);
+  height: var(--d);
   border: 1px solid rgba(164, 241, 255, calc(0.16 + var(--v) * 0.5));
   border-radius: 999px;
   transform: translate(-50%, -50%);
