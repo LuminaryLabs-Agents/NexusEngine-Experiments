@@ -43,10 +43,10 @@
       "id": "next-ledge",
       "kind": "experiment",
       "canonicalPath": "experiments/next-ledge/",
-      "status": "rescue-line-readiness-renderer-handoff-pass",
-      "domainCutover": ["action-input-kit", "generic-route-cargo-extraction-kit", "next-ledge-visual-fractal-domain-kit", "next-ledge-route-cargo-domain-kit", "next-ledge-traversal-readability-domain-kit", "next-ledge-anchor-timing-readability-domain-kit", "next-ledge-rescue-line-readiness-domain-kit"],
-      "bridgeNeeded": "browser wrapper consumes NexusEngine main CDN and emits renderer-neutral route-cargo, traversal-readability, anchor-timing, and rescue-line readiness descriptors; rescue overlay consumes composed descriptors only",
-      "featureParity": ["grapple", "swing", "cargo descriptors", "traversal readability", "anchor timing readability", "rescue line readiness"]
+      "status": "summit-bivouac-readiness-renderer-handoff-pass",
+      "domainCutover": ["action-input-kit", "generic-route-cargo-extraction-kit", "next-ledge-visual-fractal-domain-kit", "next-ledge-route-cargo-domain-kit", "next-ledge-traversal-readability-domain-kit", "next-ledge-anchor-timing-readability-domain-kit", "next-ledge-rescue-line-readiness-domain-kit", "next-ledge-summit-bivouac-readiness-domain-kit"],
+      "bridgeNeeded": "browser wrapper consumes NexusEngine main CDN and emits renderer-neutral route-cargo, traversal-readability, anchor-timing, rescue-line, and summit-bivouac readiness descriptors; overlays consume composed descriptors only",
+      "featureParity": ["grapple", "swing", "cargo descriptors", "traversal readability", "anchor timing readability", "rescue line readiness", "summit bivouac readiness"]
     },
     {
       "id": "infinite-radial-terrain",
