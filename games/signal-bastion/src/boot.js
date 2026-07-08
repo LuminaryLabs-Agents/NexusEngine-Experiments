@@ -2,6 +2,7 @@ import { resolveSignalBastionPreset } from "../presets/index.js";
 import { createSignalBastionCanvasRenderer } from "./renderer-canvas.js";
 import { createSignalBastionInputHost } from "./input-host.js";
 import { createSignalBastionCommandFractalDomainKit } from "./signal-bastion-command-fractal-domain-kit.js";
+import { createSignalBastionWaveChoreographyDomainKit } from "./signal-bastion-wave-choreography-domain-kit.js";
 
 const NEXUS_URL = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js";
 const DEFENSE_KITS_URL = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusRealtime-ProtoKits@main/protokits/generic-defense-aaa-dsk-bridge/index.js";
@@ -17,6 +18,16 @@ const SIGNAL_BASTION_DEFENSE_DSK_BOUNDARY_IDS = Object.freeze([
   "sessionFacade",
   "renderDescriptors"
 ]);
+
+const SIGNAL_BASTION_RENDERER_HANDOFF_POLICY = Object.freeze({
+  rendererConsumesDescriptorsOnly: true,
+  noDomOwnership: true,
+  noInputOwnership: true,
+  noFrameLoopOwnership: true,
+  noWebglOwnership: true,
+  noAudioOwnership: true,
+  noAssetLoadingOwnership: true
+});
 
 function getSignalBastionGenericDefenseNamespace(engine) {
   return engine.n?.genericDefense ?? {};
@@ -74,6 +85,40 @@ function getSignalBastionCommandFractal(commandFractalKit, presentation, activeB
     preset,
     buildCatalog: preset?.level?.buildOrder ?? []
   });
+}
+
+function getSignalBastionWaveChoreography(waveChoreographyKit, presentation, activeBlueprint, preset) {
+  return waveChoreographyKit.describe({
+    presentation,
+    rawSnapshot: presentation?.rawSnapshot ?? {},
+    activeBlueprint,
+    preset,
+    buildCatalog: preset?.level?.buildOrder ?? []
+  });
+}
+
+function composeSignalBastionRendererHandoff(commandFractal, waveChoreography) {
+  const commandDescriptors = commandFractal?.rendererHandoff?.descriptors ?? [];
+  const waveDescriptors = waveChoreography?.rendererHandoff?.descriptors ?? [];
+  const descriptors = [...commandDescriptors, ...waveDescriptors];
+  return {
+    id: "signal-bastion-composed-renderer-handoff",
+    kind: "renderer-handoff",
+    rendererNeutral: true,
+    policy: SIGNAL_BASTION_RENDERER_HANDOFF_POLICY,
+    descriptors,
+    counts: {
+      descriptors: descriptors.length,
+      commandDescriptors: commandDescriptors.length,
+      waveChoreographyDescriptors: waveDescriptors.length,
+      spawnCadenceBeats: waveChoreography?.rendererHandoff?.counts?.spawnCadenceBeats ?? 0,
+      leakFunnels: waveChoreography?.rendererHandoff?.counts?.leakFunnels ?? 0,
+      coverageGaps: waveChoreography?.rendererHandoff?.counts?.coverageGaps ?? 0,
+      upgradePins: waveChoreography?.rendererHandoff?.counts?.upgradePins ?? 0,
+      reserveRings: waveChoreography?.rendererHandoff?.counts?.reserveRings ?? 0,
+      projectileSparks: waveChoreography?.rendererHandoff?.counts?.projectileSparks ?? 0
+    }
+  };
 }
 
 function assertDefenseDskBridge(DefenseKits) {
@@ -134,6 +179,7 @@ export async function bootSignalBastion(documentRef = document) {
       ]
     });
     const commandFractalKit = createSignalBastionCommandFractalDomainKit();
+    const waveChoreographyKit = createSignalBastionWaveChoreographyDomainKit();
     engine.tick(0);
 
     const input = createSignalBastionInputHost({
@@ -151,7 +197,23 @@ export async function bootSignalBastion(documentRef = document) {
       const activeBlueprint = input.getActiveBlueprint();
       const presentation = getSignalBastionPresentation(engine);
       const commandFractal = getSignalBastionCommandFractal(commandFractalKit, presentation, activeBlueprint, preset);
-      return { ...presentation, commandFractal, domain: { ...(presentation.domain ?? {}), signalBastionCommandFractal: commandFractal } };
+      const waveChoreography = getSignalBastionWaveChoreography(waveChoreographyKit, presentation, activeBlueprint, preset);
+      const rendererHandoff = composeSignalBastionRendererHandoff(commandFractal, waveChoreography);
+      const composedCommandFractal = {
+        ...commandFractal,
+        waveChoreography,
+        rendererHandoff
+      };
+      return {
+        ...presentation,
+        commandFractal: composedCommandFractal,
+        waveChoreography,
+        domain: {
+          ...(presentation.domain ?? {}),
+          signalBastionCommandFractal: commandFractal,
+          signalBastionWaveChoreography: waveChoreography
+        }
+      };
     }
 
     function frame(now) {
@@ -172,6 +234,7 @@ export async function bootSignalBastion(documentRef = document) {
       getState: () => getSignalBastionSessionFacade(engine)?.getSnapshot?.(),
       getPresentation: () => createPresentationSnapshot(),
       getCommandFractal: () => createPresentationSnapshot().commandFractal,
+      getWaveChoreography: () => createPresentationSnapshot().waveChoreography,
       getRendererHandoff: () => createPresentationSnapshot().commandFractal?.rendererHandoff,
       getFoundation: () => getSignalBastionFoundationSnapshot(engine),
       getScale: () => getSignalBastionBudgetSnapshot(engine),
