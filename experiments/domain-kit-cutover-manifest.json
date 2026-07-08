@@ -52,10 +52,10 @@
       "id": "infinite-radial-terrain",
       "kind": "experiment",
       "canonicalPath": "experiments/infinite-radial-terrain/",
-      "status": "terrain-expedition-readability-handoff-pass",
-      "domainCutover": ["infinite-radial-terrain-visual-domain-kit", "terrain-expedition-readability-domain-kit"],
-      "bridgeNeeded": "browser host imports NexusEngine main via CDN; radial terrain visual and expedition readability domains emit survey, altitude, ridge, hazard, sample, and route task descriptors consumed by Three presentation only",
-      "featureParity": ["camera flight", "radial LOD rings", "biome mosaic", "survey transect descriptors", "altitude corridor descriptors", "route task bands"]
+      "status": "wayfinding-readability-handoff-pass",
+      "domainCutover": ["infinite-radial-terrain-visual-domain-kit", "terrain-expedition-readability-domain-kit", "terrain-wayfinding-readability-domain-kit"],
+      "bridgeNeeded": "browser host imports NexusEngine main via CDN; radial terrain visual, expedition readability, and wayfinding readability domains emit survey, altitude, ridge, hazard, sample, route, bearing, landmark, slope, biome, return, and drift descriptors consumed by presentation-only Three and DOM overlays",
+      "featureParity": ["camera flight", "radial LOD rings", "biome mosaic", "survey transect descriptors", "altitude corridor descriptors", "route task bands", "bearing needles", "horizon landmarks", "slope choice ribbons", "biome transition gates", "origin return anchors", "stamina drift meters"]
     },
     {
       "id": "high-fidelity-meadow",
