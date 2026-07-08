@@ -1,3 +1,4 @@
+import "./zombie-orchard-foraging-readability-kits-smoke.mjs";
 import assert from "node:assert/strict";
 import {
   createOrchardEscapeLaneKit,
@@ -124,4 +125,4 @@ assert.ok(ZOMBIE_ORCHARD_SURVIVAL_READABILITY_TREE.includes("orchard-threat-grad
 assert.ok(ZOMBIE_ORCHARD_SURVIVAL_READABILITY_TREE.includes("orchard-survival-renderer-handoff-kit"));
 assert.ok(ZOMBIE_ORCHARD_SURVIVAL_READABILITY_TREE.includes("renderer consumes descriptors only"));
 
-console.log("zombie orchard survival readability kits smoke passed: 80 intake checks");
+console.log("zombie orchard survival readability kits smoke passed: 80 intake checks plus foraging import");
