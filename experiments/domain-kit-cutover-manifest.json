@@ -79,10 +79,10 @@
       "id": "fogline-relay",
       "kind": "experiment",
       "canonicalPath": "experiments/fogline-relay/",
-      "status": "operator-rhythm-readability-renderer-handoff-pass",
-      "domainCutover": ["action-input-kit", "scan-survey-kit", "fogline-visual-fractal-domain-kit", "fogline-renderer-handoff-kit", "fogline-signal-cartography-domain-kit", "fogline-operator-rhythm-domain-kit"],
-      "bridgeNeeded": "browser host imports NexusEngine main via CDN; visual, route-readability, signal-cartography, and operator-rhythm descriptors are consumed by presentation only",
-      "featureParity": ["first-person movement", "scan", "relays", "signal cartography", "operator rhythm"]
+      "status": "survivor-rescue-readiness-renderer-handoff-pass",
+      "domainCutover": ["action-input-kit", "scan-survey-kit", "fogline-visual-fractal-domain-kit", "fogline-renderer-handoff-kit", "fogline-signal-cartography-domain-kit", "fogline-operator-rhythm-domain-kit", "fogline-survivor-rescue-readiness-domain-kit"],
+      "bridgeNeeded": "browser host imports NexusEngine main via CDN; visual, route-readability, signal-cartography, operator-rhythm, and survivor-rescue descriptors are consumed by presentation only",
+      "featureParity": ["first-person movement", "scan", "relays", "signal cartography", "operator rhythm", "survivor rescue readiness"]
     },
     {
       "id": "nexus-frontier-signal-isles",
