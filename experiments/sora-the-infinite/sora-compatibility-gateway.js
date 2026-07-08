@@ -12,6 +12,7 @@ const gateList = document.querySelector("#gate-list");
 const launchLink = document.querySelector("#launch-link");
 const primeButton = document.querySelector("#prime-route");
 const debugStrip = document.querySelector("#debug-strip");
+const packetList = document.querySelector("#packet-list");
 
 const domainKit = createSoraCompatibilityDomainKit({ targetPath: TARGET_PATH });
 const state = {
@@ -73,11 +74,22 @@ function updatePointer(event, active = true) {
 }
 
 function renderStage(handoff) {
-  const { launchVectors, skyMemoryBands } = handoff.descriptors;
+  const {
+    launchVectors,
+    skyMemoryBands,
+    windShearForecast,
+    waypointRibbon,
+    altitudeEnvelope,
+    handoffPackets
+  } = handoff.descriptors;
   stage.innerHTML = `
     <div class="horizon-arc"></div>
+    ${altitudeEnvelope.bands.map((band) => `<i class="altitude-band ${band.active ? "active" : ""}" style="--y:${band.y};--o:${band.opacity};--gate:${band.liftGate}" title="lift gate ${band.liftGate}"></i>`).join("")}
     ${skyMemoryBands.bands.map((band) => `<i class="sky-memory-band" style="--x:${band.x};--y:${band.y};--w:${band.width};--o:${band.opacity};--h:${band.hue}" title="${band.travelNote}"></i>`).join("")}
+    ${windShearForecast.cells.map((cell) => `<i class="wind-shear-cell" style="--x:${cell.x};--y:${cell.y};--w:${cell.width};--s:${cell.strength};--d:${cell.drift}" title="${cell.label}"></i>`).join("")}
+    ${waypointRibbon.waypoints.map((point) => `<i class="waypoint-node ${point.open ? "open" : "sealed"}" style="--x:${point.x};--y:${point.y};--r:${point.radius};--p:${point.progress}" title="${point.label}"></i>`).join("")}
     ${launchVectors.lanes.map((lane) => `<i class="launch-vector ${lane.active ? "active" : ""}" style="--bearing:${lane.bearingDeg};--lift:${lane.lift};--drift:${lane.drift}" title="climb ${lane.climbDeg}°"></i>`).join("")}
+    ${handoffPackets.packets.map((packet, index) => `<i class="handoff-packet ${packet.ready ? "ready" : "pending"}" style="--i:${index};--ready:${packet.ready ? 1 : 0}" title="${packet.label}: ${packet.value}"></i>`).join("")}
   `;
 }
 
@@ -90,6 +102,7 @@ function renderTelemetry(domain) {
   launchLink.textContent = domain.continuityGate.label;
   coachingList.innerHTML = domain.inputCoaching.coaching.map((cue) => `<li class="${cue.active ? "active" : ""}">${cue.label}</li>`).join("");
   gateList.innerHTML = domain.continuityGate.gates.map((gate) => `<li class="${gate.open ? "open" : "sealed"}"><strong>${gate.open ? "✓" : "·"}</strong> ${gate.label}</li>`).join("");
+  packetList.innerHTML = domain.handoffPackets.packets.map((packet) => `<li class="${packet.ready ? "open" : "sealed"}"><strong>${packet.ready ? "✓" : "·"}</strong> ${packet.label}</li>`).join("");
   debugStrip.textContent = JSON.stringify({
     nexusEngineCdn: NEXUS_ENGINE_CDN,
     nexusEngineExportCount: Object.keys(NexusEngineRuntime).length,
@@ -138,6 +151,15 @@ globalThis.GameHost = {
   getState: () => ({ ...state, input: { ...state.input } }),
   describe: () => describe(),
   getRendererHandoff: () => describe().rendererHandoff,
+  getRoutePreview: () => {
+    const domain = describe();
+    return {
+      windShearForecast: domain.windShearForecast,
+      waypointRibbon: domain.waypointRibbon,
+      handoffPackets: domain.handoffPackets,
+      altitudeEnvelope: domain.altitudeEnvelope
+    };
+  },
   launch: () => { globalThis.location.href = describe().continuityGate.href; },
   reset: resetGateway
 };
