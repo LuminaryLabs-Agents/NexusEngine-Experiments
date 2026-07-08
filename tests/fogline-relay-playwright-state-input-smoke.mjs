@@ -26,6 +26,9 @@ const sessionSource = await readFile(join(root, "experiments/fogline-relay/src/s
 assert.ok(sessionSource.includes("createFoglineVisualFractalDomain"));
 assert.ok(sessionSource.includes("foglineVisualFractal"));
 
+const mainSource = await readFile(join(root, "experiments/fogline-relay/src/main.js"), "utf8");
+assert.ok(mainSource.includes("getRendererHandoff"), "GameHost should expose renderer handoff descriptors");
+
 const server = createServer(async (request, response) => {
   try {
     const filePath = safePath(request.url ?? "/");
@@ -57,21 +60,32 @@ try {
     globalThis.GameHost.engine.foglineRelay.input({ moveX: 0.15, moveZ: 1, turn: 0.04, pitch: -0.01, scan: true });
     globalThis.GameHost.session.prepareFrame();
     globalThis.GameHost.engine.tick(1 / 30);
-    return globalThis.GameHost.session.snapshot();
+    return {
+      snapshot: globalThis.GameHost.session.snapshot(),
+      handoff: globalThis.GameHost.getRendererHandoff()
+    };
   });
 
-  assert.ok(state.game?.player, "Fogline state should expose player state");
-  assert.ok(state.game.player.z > -4, "direct input should move player forward from spawn");
-  assert.ok(state.visualFractal, "snapshot should expose visual fractal descriptors");
-  assert.ok(state.domain?.foglineVisualFractal, "domain snapshot should expose visual fractal descriptors");
-  assert.ok(Array.isArray(state.visualFractal.routeThreads));
-  assert.ok(Array.isArray(state.visualFractal.groundMottles));
-  assert.ok(Array.isArray(state.visualFractal.relayAuras));
-  assert.ok(Array.isArray(state.visualFractal.wraithEchoes));
-  assert.ok(Array.isArray(state.visualFractal.gateSigils));
-  assert.ok(Array.isArray(state.visualFractal.canopyShafts));
-  assert.ok(state.visualFractal.drawOrder.length >= 30, "descriptor handoff should contain a rich render queue");
-  assert.ok(state.visualFractal.drawOrder.every((entry) => entry.id && entry.archetype && entry.position), "each descriptor should be renderer-consumable");
+  const snapshot = state.snapshot;
+  assert.ok(snapshot.game?.player, "Fogline state should expose player state");
+  assert.ok(snapshot.game.player.z > -4, "direct input should move player forward from spawn");
+  assert.ok(snapshot.visualFractal, "snapshot should expose visual fractal descriptors");
+  assert.ok(snapshot.domain?.foglineVisualFractal, "domain snapshot should expose visual fractal descriptors");
+  assert.ok(Array.isArray(snapshot.visualFractal.routeThreads));
+  assert.ok(Array.isArray(snapshot.visualFractal.groundMottles));
+  assert.ok(Array.isArray(snapshot.visualFractal.relayAuras));
+  assert.ok(Array.isArray(snapshot.visualFractal.wraithEchoes));
+  assert.ok(Array.isArray(snapshot.visualFractal.gateSigils));
+  assert.ok(Array.isArray(snapshot.visualFractal.canopyShafts));
+  assert.ok(Array.isArray(snapshot.visualFractal.scanCones));
+  assert.ok(Array.isArray(snapshot.visualFractal.objectiveNeedles));
+  assert.ok(Array.isArray(snapshot.visualFractal.memoryBreadcrumbs));
+  assert.ok(Array.isArray(snapshot.visualFractal.pressureVignettes));
+  assert.ok(Array.isArray(snapshot.visualFractal.safePockets));
+  assert.ok(snapshot.visualFractal.rendererHandoff?.policy === "renderer-consumes-descriptors-only");
+  assert.ok(state.handoff?.descriptorCount >= snapshot.visualFractal.drawOrder.length, "GameHost handoff should mirror descriptor queue");
+  assert.ok(snapshot.visualFractal.drawOrder.length >= 40, "descriptor handoff should contain a rich render queue");
+  assert.ok(snapshot.visualFractal.drawOrder.every((entry) => entry.id && entry.archetype && entry.position), "each descriptor should be renderer-consumable");
   console.log("Fogline Relay NexusEngine CDN-backed Playwright state input smoke passed");
 } finally {
   if (browser) await browser.close();
