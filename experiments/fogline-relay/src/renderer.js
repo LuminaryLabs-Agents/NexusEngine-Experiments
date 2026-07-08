@@ -87,6 +87,72 @@ function drawVolumetric(ctx, snapshot, project) {
   }
 }
 
+function drawGroundFractals(ctx, snapshot, project) {
+  for (const mottle of snapshot.visualFractal?.groundMottles ?? []) {
+    const p = project(mottle.position, 0.02);
+    if (!p) continue;
+    ctx.fillStyle = rgba(mottle.color, mottle.opacity * p.alpha, [157, 234, 255]);
+    ctx.beginPath();
+    ctx.ellipse(p.x, p.y, clamp(mottle.radius * p.scale, 4, 90), clamp(mottle.radius * 0.34 * p.scale, 2, 26), mottle.rotation ?? 0, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  for (const thread of snapshot.visualFractal?.routeThreads ?? []) {
+    const p = project(thread.position, 0.03);
+    if (!p) continue;
+    ctx.save();
+    ctx.translate(p.x, p.y);
+    ctx.rotate(thread.yaw ?? 0);
+    ctx.fillStyle = rgba(thread.color, thread.opacity * p.alpha, [119, 243, 255]);
+    ctx.fillRect(-clamp(thread.width * p.scale, 2, 36) / 2, -clamp(thread.length * p.scale, 16, 360) / 2, clamp(thread.width * p.scale, 2, 36), clamp(thread.length * p.scale, 16, 360));
+    ctx.restore();
+  }
+}
+
+function drawSignalFractals(ctx, snapshot, project) {
+  for (const shaft of snapshot.visualFractal?.canopyShafts ?? []) {
+    const p = project(shaft.position, shaft.height * 0.45);
+    if (!p) continue;
+    const radius = clamp(shaft.radius * p.scale, 18, 220);
+    const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, radius);
+    g.addColorStop(0, rgba(shaft.color, shaft.opacity * p.alpha, [157, 234, 255]));
+    g.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.ellipse(p.x, p.y, radius * 0.72, radius * 1.9, 0, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  for (const sigil of snapshot.visualFractal?.gateSigils ?? []) {
+    const p = project(sigil.position, 0.08);
+    if (!p) continue;
+    ctx.strokeStyle = rgba(sigil.color, sigil.opacity * p.alpha, [186, 252, 255]);
+    ctx.lineWidth = Math.max(1, p.scale * 0.018);
+    ctx.beginPath();
+    ctx.ellipse(p.x, p.y, clamp(sigil.radius * p.scale, 8, 190), clamp(sigil.radius * 0.32 * p.scale, 4, 62), sigil.rotation ?? 0, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+  for (const aura of snapshot.visualFractal?.relayAuras ?? []) {
+    const p = project(aura.position, 0.1);
+    if (!p) continue;
+    ctx.strokeStyle = rgba(aura.color, aura.opacity * p.alpha, [119, 243, 255]);
+    ctx.lineWidth = Math.max(2, p.scale * 0.025);
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, clamp(aura.radius * p.scale, 8, 150), 0, Math.PI * 2);
+    ctx.stroke();
+  }
+  for (const echo of snapshot.visualFractal?.wraithEchoes ?? []) {
+    const p = project(echo.position, 1.2);
+    if (!p) continue;
+    const radius = clamp(echo.radius * p.scale, 14, 210);
+    const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, radius);
+    g.addColorStop(0, rgba(echo.color, echo.opacity * p.alpha, [255, 80, 104]));
+    g.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.ellipse(p.x, p.y, radius * 0.58, radius, 0, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+
 function drawRelay(ctx, p, mat, relay) {
   const h = clamp(2.2 * p.scale, 24, 160);
   const w = Math.max(8, h * 0.18);
@@ -190,7 +256,9 @@ export function createCanvasRenderer(canvas) {
       const project = createProjector(size, snapshot.game.player);
       ctx.clearRect(0, 0, size.width, size.height);
       drawBackdrop(ctx, size, snapshot);
+      drawGroundFractals(ctx, snapshot, project);
       drawVolumetric(ctx, snapshot, project);
+      drawSignalFractals(ctx, snapshot, project);
       for (const object of snapshot.visual?.layers?.drawOrder ?? []) drawObject(ctx, snapshot, project, object);
       drawCompass(ctx, snapshot, project);
       drawFog(ctx, size, snapshot);
