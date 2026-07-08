@@ -140,6 +140,39 @@ function drawHellscapeExpedition(ctx, expeditionReadability) {
   }
 }
 
+function drawHellscapeSiegecraft(ctx, siegecraftReadiness) {
+  const descriptors = siegecraftReadiness?.rendererHandoff?.descriptors ?? {};
+
+  for (const cell of descriptors.barricadeFootprints || []) {
+    ring(ctx, cell.center, cell.radius, cell.color, cell.viable ? 0.08 + cell.score * 0.18 : 0.04, cell.viable ? 1.8 : 0.8);
+    if (cell.viable && cell.score > 0.6) circle(ctx, cell.center.x, cell.center.y, 3 + cell.score * 3, cell.color, 0.18 + cell.score * 0.2);
+  }
+
+  for (const beam of descriptors.turretCrossfire || []) {
+    line(ctx, beam.from, beam.to, beam.color, 0.06 + beam.coverage * 0.18, 0.8 + beam.coverage * 2.2);
+    if (beam.hot) ring(ctx, beam.to, 14 + beam.coverage * 18, beam.color, 0.06 + beam.coverage * 0.12, 1);
+  }
+
+  for (const forecast of descriptors.resourceBurnForecasts || []) {
+    ring(ctx, forecast.anchor, forecast.radius, forecast.color, forecast.canAfford ? 0.13 + forecast.burn * 0.14 : 0.05, forecast.selected ? 2 : 1);
+    if (forecast.selected) circle(ctx, forecast.anchor.x, forecast.anchor.y, 3 + forecast.burn * 4, forecast.color, 0.22);
+  }
+
+  for (const card of descriptors.buildPriorityQueue || []) {
+    ring(ctx, card.anchor, card.radius, card.color, 0.07 + card.priority * 0.14, card.rank === 1 ? 2.3 : 1);
+  }
+
+  for (const countdown of descriptors.coreBreachCountdowns || []) {
+    line(ctx, countdown.from, countdown.to, countdown.color, 0.06 + countdown.severity * 0.16, 1 + countdown.severity * 2.1);
+    ring(ctx, countdown.to, 64 + countdown.severity * 38, countdown.color, 0.05 + countdown.severity * 0.13, 1.2 + countdown.severity * 1.3);
+  }
+
+  for (const ribbon of descriptors.extractionRiskRibbons || []) {
+    line(ctx, ribbon.from, ribbon.to, ribbon.color, 0.08 + ribbon.risk * 0.12, 1 + ribbon.risk * 1.7);
+    ring(ctx, ribbon.to, 20 + ribbon.risk * 20 + Math.sin(ribbon.pulse || 0) * 3, ribbon.color, 0.08 + ribbon.risk * 0.13, 1.2);
+  }
+}
+
 function resizeCanvas(canvas, ctx) {
   const dpr = Math.min(globalThis.devicePixelRatio || 1, 2);
   const width = Math.max(320, globalThis.innerWidth || 960);
@@ -172,6 +205,7 @@ export function createCanvasRenderer(canvas) {
     }
     drawHellscapeFractal(ctx, state.visualFractal);
     drawHellscapeExpedition(ctx, state.expeditionReadability);
+    drawHellscapeSiegecraft(ctx, state.siegecraftReadiness);
     if (state.realm?.id === 'lobby') {
       const coreColor = state.wave?.active ? '#ff3300' : '#38bdf8';
       circle(ctx, state.core.x, state.core.y, 46, coreColor, 0.72);
