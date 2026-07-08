@@ -21,6 +21,27 @@ function circle(ctx, x, y, radius, color, alpha = 0.8) {
   ctx.restore();
 }
 
+function ring(ctx, center, radius, color, alpha = 0.16, lineWidth = 1) {
+  ctx.save();
+  ctx.strokeStyle = rgba(color, alpha);
+  ctx.lineWidth = lineWidth;
+  ctx.beginPath();
+  ctx.arc(center?.x || 0, center?.y || 0, radius || 0, 0, TAU);
+  ctx.stroke();
+  ctx.restore();
+}
+
+function line(ctx, from, to, color, alpha = 0.18, lineWidth = 1.5) {
+  ctx.save();
+  ctx.strokeStyle = rgba(color, alpha);
+  ctx.lineWidth = lineWidth;
+  ctx.beginPath();
+  ctx.moveTo(from?.x || 0, from?.y || 0);
+  ctx.lineTo(to?.x || 0, to?.y || 0);
+  ctx.stroke();
+  ctx.restore();
+}
+
 function health(ctx, entity, radius, color) {
   if (!entity.maxHp) return;
   const pct = clamp(entity.hp / entity.maxHp, 0, 1);
@@ -31,6 +52,55 @@ function health(ctx, entity, radius, color) {
   ctx.arc(entity.x || 0, entity.y || 0, radius, -Math.PI / 2, -Math.PI / 2 + TAU * pct);
   ctx.stroke();
   ctx.restore();
+}
+
+function drawHellscapeFractal(ctx, visualFractal) {
+  const descriptors = visualFractal?.rendererHandoff?.descriptors ?? {};
+  const pressure = descriptors.realmPressure;
+  if (pressure) {
+    for (const pressureRing of pressure.rings || []) {
+      ring(ctx, pressure.center, pressureRing.radius, pressure.color, pressureRing.alpha, 1.2 + pressure.pressure * 1.8);
+    }
+  }
+
+  const defense = descriptors.coreDefense;
+  if (defense) {
+    for (const coreRing of defense.coreRings || []) {
+      ring(ctx, defense.core, coreRing.radius, coreRing.color, coreRing.alpha, 1.1);
+    }
+    for (const coverage of defense.coverage || []) {
+      ring(ctx, coverage.center, coverage.radius, coverage.color, coverage.alpha, coverage.kind === 'turret' ? 1.5 : 1);
+    }
+  }
+
+  const threat = descriptors.threatLanes;
+  if (threat?.spawnRing) {
+    ring(ctx, threat.spawnRing.center, threat.spawnRing.radius, threat.spawnRing.color, threat.spawnRing.alpha, threat.waveActive ? 2 : 1);
+  }
+  for (const lane of threat?.lanes || []) {
+    line(ctx, lane.from, lane.to, lane.color, lane.enemyType === 'brute' ? 0.28 : 0.18, lane.enemyType === 'brute' ? 2.4 : 1.4);
+  }
+
+  for (const route of descriptors.resourceRoutes || []) {
+    line(ctx, route.from, route.to, route.color, route.kind === 'drop-route-thread' ? 0.26 : 0.13, route.kind === 'drop-route-thread' ? 2 : 1);
+  }
+
+  for (const beacon of descriptors.portalBeacons || []) {
+    ring(ctx, beacon.center, beacon.interactionRadius, beacon.color, 0.2 + beacon.risk * 0.18, 1.6);
+    ring(ctx, beacon.center, beacon.interactionRadius + 18 + beacon.risk * 12, beacon.color, 0.08 + beacon.risk * 0.12, 1);
+  }
+
+  const affordance = descriptors.buildAffordances;
+  if (affordance) {
+    for (const option of affordance.options || []) {
+      const theta = (option.selected ? -Math.PI / 2 : Math.PI / 2) + (Number(option.radius) || 54) * 0.001;
+      const center = {
+        x: affordance.anchor.x + Math.cos(theta) * (56 + option.radius * 0.12),
+        y: affordance.anchor.y + Math.sin(theta) * (56 + option.radius * 0.12)
+      };
+      ring(ctx, center, option.selected ? 18 : 12, option.color, option.canAfford ? option.alpha : 0.06, option.selected ? 2 : 1);
+    }
+  }
 }
 
 function resizeCanvas(canvas, ctx) {
@@ -63,6 +133,7 @@ export function createCanvasRenderer(canvas) {
       ctx.arc(0, 0, r, 0, TAU);
       ctx.stroke();
     }
+    drawHellscapeFractal(ctx, state.visualFractal);
     if (state.realm?.id === 'lobby') {
       const coreColor = state.wave?.active ? '#ff3300' : '#38bdf8';
       circle(ctx, state.core.x, state.core.y, 46, coreColor, 0.72);
