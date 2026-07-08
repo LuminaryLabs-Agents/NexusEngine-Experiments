@@ -1,3 +1,5 @@
+import "./next-ledge-rescue-line-readiness-kits-smoke.mjs";
+import "./next-ledge-rescue-line-readiness-cdn-state-input-smoke.mjs";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
@@ -13,8 +15,8 @@ const oldRuntimeCdn = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusRealtim
 
 assert.ok(wrapperSource.includes(nexusEngineCdn), "changed wrapper should import NexusEngine main through the CDN");
 assert.doesNotMatch(wrapperSource, new RegExp(oldRuntimeCdn.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")), "changed wrapper must not import old NexusRealtime runtime CDN");
-assert.match(routeShell, /anchor-timing-readability-renderer-handoff-pass/, "route shell should identify anchor timing readability cutover");
-assert.match(routeShell, /main\.js\?v=anchor-timing-readability-1/, "route shell should cache-bust the anchor timing upgrade");
+assert.match(routeShell, /rescue-line-readiness-renderer-handoff-pass/, "route shell should identify the latest rescue line readability cutover");
+assert.match(routeShell, /main\.js\?v=rescue-line-readiness-1/, "route shell should cache-bust the latest Next Ledge upgrade");
 assert.match(wrapperSource, /createNextLedgeAnchorTimingReadabilityDomainKit/, "wrapper should import the anchor timing domain kit");
 assert.match(wrapperSource, /anchorTimingReadabilityDomain\.describe\(snapshot, cargoSnapshot, traversalReadability\)/, "wrapper should derive anchor timing descriptors from state/cargo/traversal input");
 assert.match(wrapperSource, /anchorTimingReadabilityDescriptors/, "visual quality report should count anchor timing descriptors");
