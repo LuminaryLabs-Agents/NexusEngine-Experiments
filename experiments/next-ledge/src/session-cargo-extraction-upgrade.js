@@ -73,20 +73,23 @@ export function createNextLedgeSession(options = {}) {
       if (syncedEvents.has(key)) continue;
       syncedEvents.add(key);
 
-      if (["anchor-locked", "restored", "summit-reached"].includes(evt.type) && evt.targetId) {
+      const anchorRole = ["normal", "rest", "summit"].includes(evt.type) ? evt.type : evt.anchorType;
+      const isAnchorLock = evt.type === "anchor-locked" || Boolean(anchorRole && evt.targetId);
+
+      if ((isAnchorLock || ["restored", "summit-reached"].includes(evt.type)) && evt.targetId) {
         facade.enterCheckpoint?.(evt.targetId, { actorId: "next-ledge-climber", commandId: `cargo:${key}:enter` });
         facade.completeCheckpoint?.(evt.targetId, { allowOutOfOrder: true, actorId: "next-ledge-climber", commandId: `cargo:${key}:complete` });
       }
 
-      if (evt.type === "anchor-locked" && evt.type !== "summit") {
-        facade.pickupCargo?.("anchor-signal-cargo", evt.type === "rest" ? 1 : 0.25, { commandId: `cargo:${key}:anchor-pickup`, reason: "anchor-lock" });
-        facade.recoverPressure?.("fall-pressure", 4, { commandId: `cargo:${key}:anchor-recover`, reason: "anchor-lock" });
+      if (isAnchorLock && anchorRole !== "summit") {
+        facade.pickupCargo?.("anchor-signal-cargo", anchorRole === "rest" ? 1 : 0.25, { commandId: `cargo:${key}:anchor-pickup`, reason: "anchor-lock" });
+        facade.recoverPressure?.("fall-pressure", anchorRole === "rest" ? 12 : 4, { commandId: `cargo:${key}:anchor-recover`, reason: "anchor-lock" });
       }
       if (evt.type === "restored") {
         facade.pickupCargo?.("anchor-signal-cargo", 1, { commandId: `cargo:${key}:rest-pickup`, reason: "rest-cache" });
-        facade.recoverPressure?.("fall-pressure", 18, { commandId: `cargo:${key}:rest-recover", reason: "rest-cache" });
+        facade.recoverPressure?.("fall-pressure", 18, { commandId: `cargo:${key}:rest-recover`, reason: "rest-cache" });
       }
-      if (evt.type === "summit-reached") {
+      if (evt.type === "summit-reached" || anchorRole === "summit") {
         facade.deliverCargo?.("anchor-signal-cargo", 99, { commandId: `cargo:${key}:summit-delivery`, reason: "summit-delivery" });
         facade.recoverPressure?.("fall-pressure", 100, { commandId: `cargo:${key}:summit-clear`, reason: "summit-clear" });
       }
