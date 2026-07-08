@@ -20,7 +20,7 @@
   <main id="app">
     <canvas id="game" role="application" aria-label="VR platformer board experiment"></canvas>
     <aside id="hud" aria-label="Game HUD" data-tone="neutral">
-      <span id="objective">Booting kits…</span>
+      <span id="objective">Booting NexusEngine board…</span>
       <span id="controls">A/D move · Space jump · R reset · drag head</span>
     </aside>
     <section id="errorPanel" role="alert" hidden></section>
@@ -41,9 +41,11 @@
       createVrBoardRendererHandoffKit,
       createVrBoardWorldSeedKit
     } from "../_kits/vr-platformer-board/vr-platformer-board-kits.js";
+    import {
+      createVrBoardTraversalReadabilityDomainKit
+    } from "../_kits/vr-platformer-board/vr-board-traversal-readability-kits.js";
 
     const NEXUS_URL = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js";
-    const PROTOKITS = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusRealtime-ProtoKits@main/protokits";
 
     const canvas = document.querySelector("#game");
     const ctx = canvas.getContext("2d");
@@ -83,32 +85,82 @@
       rendererHandoffKit: boardRendererHandoffKit,
       hudDescriptorKit: boardHudDescriptorKit
     });
+    const traversalReadabilityKit = createVrBoardTraversalReadabilityDomainKit();
 
-    let latestBoardComposition = null;
-
-    function showFatal(error) {
-      errorPanel.hidden = false;
-      errorPanel.textContent = String(error?.stack ?? error?.message ?? error);
-    }
-
-    const keys = new Set();
+    const board = { sizeMeters: { x: 1.6, y: 0.9 } };
     const head = { position: { x: 0, y: 1.6, z: 0 }, forward: { x: 0, y: 0, z: -1 }, up: { x: 0, y: 1, z: 0 } };
+    const level = createLevel();
+    const keys = new Set();
+    let objects = { collectedValue: 0, collectedIds: [] };
+    let avatar = makeAvatar();
+    let lastSafeAvatar = makeAvatar();
+    let latestBoardComposition = null;
+    let latestTraversalReadability = null;
+    let latestInput = { moveAxis: 0, jumpPressed: false, restartPressed: false };
+    let runtimeSurface = { imported: false, factoryName: "unloaded" };
+    let last = performance.now();
     let dragging = false;
     let lastPointer = null;
 
     addEventListener("keydown", (event) => keys.add(event.key.toLowerCase()));
     addEventListener("keyup", (event) => keys.delete(event.key.toLowerCase()));
     addEventListener("blur", () => keys.clear());
-    canvas.addEventListener("pointerdown", (event) => { dragging = true; lastPointer = { x: event.clientX, y: event.clientY }; canvas.setPointerCapture?.(event.pointerId); });
+    canvas.addEventListener("pointerdown", (event) => {
+      dragging = true;
+      lastPointer = { x: event.clientX, y: event.clientY };
+      canvas.setPointerCapture?.(event.pointerId);
+    });
     canvas.addEventListener("pointerup", () => { dragging = false; lastPointer = null; });
     canvas.addEventListener("pointermove", (event) => {
       if (!dragging || !lastPointer) return;
       const dx = event.clientX - lastPointer.x;
       const dy = event.clientY - lastPointer.y;
       lastPointer = { x: event.clientX, y: event.clientY };
-      head.position.x = Math.max(-0.22, Math.min(0.22, head.position.x + dx * 0.0012));
-      head.position.y = Math.max(1.35, Math.min(1.9, head.position.y - dy * 0.0012));
+      head.position.x = clamp(head.position.x + dx * 0.0012, -0.22, 0.22);
+      head.position.y = clamp(head.position.y - dy * 0.0012, 1.35, 1.9);
     });
+
+    function createLevel() {
+      return {
+        start: { x: 0, y: 1.15 },
+        exit: { x: 14.4, y: 4.5, w: 0.7, h: 1.2 },
+        platforms: [
+          { id: "launch", x: -0.6, y: 1.15, w: 3.1, h: 0.28 },
+          { id: "low-hop", x: 3.0, y: 2.0, w: 1.9, h: 0.26 },
+          { id: "hazard-bridge", x: 5.9, y: 2.85, w: 2.2, h: 0.26 },
+          { id: "recovery", x: 8.8, y: 2.2, w: 1.8, h: 0.26 },
+          { id: "summit", x: 11.6, y: 3.55, w: 2.4, h: 0.28 },
+          { id: "exit-pad", x: 14.0, y: 4.4, w: 1.5, h: 0.3 }
+        ],
+        collectibles: [
+          { id: "coin-launch", x: 2.2, y: 2.2, value: 1 },
+          { id: "coin-bridge", x: 6.8, y: 3.82, value: 1 },
+          { id: "coin-recovery", x: 9.6, y: 3.1, value: 1 },
+          { id: "coin-summit", x: 12.6, y: 4.5, value: 1 }
+        ],
+        hazards: [
+          { id: "spike-gap", x: 4.95, y: 1.08, w: 0.8, h: 0.36 },
+          { id: "spike-bridge", x: 7.45, y: 2.76, w: 0.7, h: 0.36 },
+          { id: "drop-warning", x: 10.82, y: 1.12, w: 0.82, h: 0.36 }
+        ]
+      };
+    }
+
+    function makeAvatar() {
+      return {
+        position: { x: 0.05, y: 2.0 },
+        velocity: { x: 0, y: 0 },
+        size: { x: 0.48, y: 0.78 },
+        grounded: false,
+        mode: "alive",
+        moveAxis: 0
+      };
+    }
+
+    function showFatal(error) {
+      errorPanel.hidden = false;
+      errorPanel.textContent = String(error?.stack ?? error?.message ?? error);
+    }
 
     function resize() {
       const dpr = Math.min(devicePixelRatio || 1, 2);
@@ -119,13 +171,96 @@
     addEventListener("resize", resize);
     resize();
 
+    function clamp(value, min, max) {
+      return Math.max(min, Math.min(max, Number(value) || 0));
+    }
+
+    function resetAvatar() {
+      avatar = { ...lastSafeAvatar, position: { ...lastSafeAvatar.position }, velocity: { x: 0, y: 0 }, grounded: false, mode: "alive" };
+    }
+
+    function updateAvatar(dt, input) {
+      if (input.restartPressed) {
+        avatar = makeAvatar();
+        lastSafeAvatar = makeAvatar();
+        objects = { collectedValue: 0, collectedIds: [] };
+      }
+      avatar.moveAxis = input.moveAxis;
+      avatar.velocity.x = clamp(avatar.velocity.x + input.moveAxis * 16 * dt, -3.4, 3.4);
+      avatar.velocity.x *= avatar.grounded ? 0.84 : 0.96;
+      if (input.jumpPressed && avatar.grounded) {
+        avatar.velocity.y = 6.8;
+        avatar.grounded = false;
+      }
+      avatar.velocity.y -= 13.6 * dt;
+      avatar.position.x += avatar.velocity.x * dt;
+      avatar.position.y += avatar.velocity.y * dt;
+      avatar.grounded = false;
+
+      for (const platform of level.platforms) {
+        const wasAbove = avatar.position.y - avatar.velocity.y * dt >= platform.y;
+        const overlapsX = avatar.position.x + avatar.size.x > platform.x && avatar.position.x < platform.x + platform.w;
+        const falling = avatar.velocity.y <= 0;
+        if (falling && wasAbove && overlapsX && avatar.position.y <= platform.y + 0.05 && avatar.position.y > platform.y - 0.45) {
+          avatar.position.y = platform.y;
+          avatar.velocity.y = 0;
+          avatar.grounded = true;
+          lastSafeAvatar = { ...avatar, position: { ...avatar.position }, velocity: { ...avatar.velocity } };
+        }
+      }
+
+      for (const coin of level.collectibles) {
+        if (objects.collectedIds.includes(coin.id)) continue;
+        const dx = Math.abs((avatar.position.x + avatar.size.x * 0.5) - coin.x);
+        const dy = Math.abs((avatar.position.y + avatar.size.y * 0.5) - coin.y);
+        if (dx < 0.48 && dy < 0.58) {
+          objects = { collectedValue: objects.collectedValue + (coin.value ?? 1), collectedIds: [...objects.collectedIds, coin.id] };
+        }
+      }
+
+      const hitHazard = level.hazards.some((hazard) => avatar.position.x < hazard.x + hazard.w && avatar.position.x + avatar.size.x > hazard.x && avatar.position.y < hazard.y + hazard.h && avatar.position.y + avatar.size.y > hazard.y);
+      if (hitHazard || avatar.position.y < -1.4) {
+        avatar.mode = "fallen";
+        resetAvatar();
+      }
+    }
+
+    function buildSnapshot(time) {
+      const progress = clamp((avatar.position.x - level.start.x) / Math.max(1, level.exit.x - level.start.x), 0, 1);
+      const camera = { position: { x: clamp(avatar.position.x - 3.2, -0.4, 12.4), y: Math.max(1, avatar.position.y - 1.5) } };
+      const comfort = { warnings: Math.abs(head.position.x) > 0.18 ? ["head-drift"] : [] };
+      const sequence = { hint: progress > 0.82 ? "Enter the exit gate" : objects.collectedValue >= 3 ? "Thread the summit lane" : "Collect coins and read the landing zones" };
+      const input = latestInput;
+      latestBoardComposition = boardCompositionKit.describe({ avatar, level, objects, camera, board, comfort, sequence, xrPose: { head }, time });
+      latestTraversalReadability = traversalReadabilityKit.describe({ avatar, level, objects, camera, board, comfort, sequence, xrPose: { head }, input, time });
+      return { avatar, level, objects, camera, board, comfort, sequence, xrPose: { head }, boardComposition: latestBoardComposition, traversalReadability: latestTraversalReadability, runtimeSurface };
+    }
+
+    function frame(now) {
+      const dt = Math.min(1 / 30, (now - last) / 1000 || 1 / 60);
+      last = now;
+      latestInput = {
+        moveAxis: (keys.has("d") || keys.has("arrowright") ? 1 : 0) - (keys.has("a") || keys.has("arrowleft") ? 1 : 0),
+        jumpPressed: keys.has(" ") || keys.has("w") || keys.has("arrowup"),
+        restartPressed: keys.has("r")
+      };
+      updateAvatar(dt, latestInput);
+      const snapshot = buildSnapshot(now / 1000);
+      objective.textContent = snapshot.boardComposition.hud.objective;
+      controls.textContent = `${snapshot.boardComposition.hud.controls} · traversal ${snapshot.traversalReadability.rendererHandoff.counts.total}`;
+      hud.dataset.tone = snapshot.traversalReadability.controlCoachingStrip.tone === "warning" ? "warning" : snapshot.boardComposition.hud.statusTone;
+      drawBoard(snapshot);
+      requestAnimationFrame(frame);
+    }
+
     function drawBoard(snapshot) {
       const w = innerWidth;
       const h = innerHeight;
       ctx.clearRect(0, 0, w, h);
+      const composition = snapshot.boardComposition;
+      const traversal = snapshot.traversalReadability;
       const headX = snapshot.xrPose?.head?.position?.x ?? 0;
       const headY = snapshot.xrPose?.head?.position?.y ?? 1.6;
-      const board = snapshot.board ?? { sizeMeters: { x: 1.6, y: 0.9 } };
       const scale = Math.min(w * 0.72 / 320, h * 0.68 / 180);
       const bw = 320 * scale;
       const bh = 180 * scale;
@@ -133,10 +268,7 @@
       const cy = h * 0.52 + (1.6 - headY) * 120;
       const left = cx - bw / 2;
       const top = cy - bh / 2;
-      const composition = snapshot.boardComposition ?? { world: null, depthLanes: [], challenge: null, visual: {} };
-
       drawRoomGlow(composition, cx, cy, bw, bh);
-
       ctx.save();
       ctx.translate(left, top);
       ctx.scale(scale, scale);
@@ -146,41 +278,37 @@
       ctx.strokeStyle = "rgba(150,210,255,0.55)";
       ctx.lineWidth = 1.2 / scale;
       ctx.stroke();
-
       ctx.save();
       ctx.beginPath();
       roundRect(ctx, 0, 0, 320, 180, 7);
       ctx.clip();
-      ctx.fillStyle = "#111b30";
+      ctx.fillStyle = "#101a2e";
       ctx.fillRect(0, 0, 320, 180);
-      ctx.fillStyle = "#1f3155";
+      ctx.fillStyle = "#203458";
       ctx.fillRect(0, 120, 320, 60);
-
       drawAtmosphericDome(composition);
       drawBoardDepth(composition);
       drawBoardSkyline(composition);
-
-      ctx.fillStyle = "rgba(255,255,255,0.05)";
-      for (let i = 0; i < 14; i++) ctx.fillRect(i * 28 - (snapshot.camera?.position?.x ?? 0) * 2 % 28, 24 + Math.sin(i) * 8, 20, 80);
-
-      const render = snapshot.render?.descriptors ?? [];
-      const cameraX = snapshot.camera?.position?.x ?? 0;
-      const cameraY = snapshot.camera?.position?.y ?? 0;
+      const cameraX = snapshot.camera.position.x;
+      const cameraY = snapshot.camera.position.y;
+      drawCheckpointThread(traversal, cameraX, cameraY);
+      drawTempoPulseBands(traversal, cameraX, cameraY);
+      drawLandingZones(traversal, cameraX, cameraY);
       drawPlatformRelief(composition, cameraX, cameraY);
+      drawLevel(snapshot.level, snapshot.objects, cameraX, cameraY);
       drawCollectibleConstellation(composition, cameraX, cameraY);
-      drawPlatformAuras(composition, cameraX, cameraY);
       drawMotionTrail(composition, cameraX, cameraY);
-      for (const item of render) drawDescriptor(item, cameraX, cameraY);
-      drawCollectibleOrbits(composition, cameraX, cameraY);
+      drawJumpArc(traversal, cameraX, cameraY);
+      drawFailRecoveryBeacons(traversal, cameraX, cameraY);
       drawHazardTelemetry(composition, cameraX, cameraY);
+      drawAvatar(snapshot.avatar, cameraX, cameraY);
       drawChallengeStrip(composition);
+      drawControlCoachingStrip(traversal);
       drawComfortFocus(composition);
       ctx.restore();
-
       ctx.fillStyle = "rgba(255,255,255,0.8)";
       ctx.font = "5px ui-sans-serif";
-      const descriptorCount = composition.visual?.rendererHandoff?.counts?.total ?? 0;
-      ctx.fillText(`board ${board.sizeMeters?.x ?? 1.6}m · stereo eyes ${snapshot.stereo?.views?.length ?? 0} · ${descriptorCount} descriptors`, 4, 192);
+      ctx.fillText(`board ${snapshot.board.sizeMeters.x}m · NexusEngine ${snapshot.runtimeSurface.factoryName} · ${traversal.rendererHandoff.counts.total} traversal descriptors`, 4, 192);
       ctx.restore();
     }
 
@@ -195,14 +323,12 @@
     }
 
     function drawAtmosphericDome(composition) {
-      const dome = composition.visual?.atmosphericDome;
-      if (!dome) return;
-      for (const band of dome.skyBands ?? []) {
+      for (const band of composition.visual?.atmosphericDome?.skyBands ?? []) {
         ctx.fillStyle = band.hue === "cyan" ? `rgba(90, 222, 255, ${band.opacity})` : `rgba(166, 118, 255, ${band.opacity})`;
         roundRect(ctx, -20 + band.drift * 12, band.y, 360, band.height, 18);
         ctx.fill();
       }
-      for (const mote of dome.motes ?? []) {
+      for (const mote of composition.visual?.atmosphericDome?.motes ?? []) {
         ctx.fillStyle = `rgba(220, 245, 255, ${mote.alpha})`;
         ctx.beginPath();
         ctx.arc(mote.x, mote.y, mote.radius, 0, Math.PI * 2);
@@ -213,7 +339,6 @@
     function drawBoardDepth(composition) {
       for (const lane of composition.depthLanes ?? []) {
         ctx.strokeStyle = `rgba(130, 190, 255, ${lane.opacity})`;
-        ctx.lineWidth = 1;
         ctx.beginPath();
         ctx.ellipse(160 + lane.offset * 42, 124 + lane.depth * 5, lane.width * 24, 14 + lane.depth * 2, 0, 0, Math.PI * 2);
         ctx.stroke();
@@ -221,11 +346,37 @@
     }
 
     function drawBoardSkyline(composition) {
-      const skyline = composition.world?.skyline ?? [];
-      for (const tower of skyline) {
+      for (const tower of composition.world?.skyline ?? []) {
         ctx.fillStyle = `rgba(150, 190, 255, ${tower.alpha})`;
         ctx.fillRect(tower.x, tower.y, 16, tower.h);
       }
+    }
+
+    function drawLevel(level, objects, cameraX, cameraY) {
+      for (const platform of level.platforms) {
+        const p = worldToScreen(platform.x, platform.y, cameraX, cameraY);
+        ctx.fillStyle = "rgba(127,167,255,0.92)";
+        roundRect(ctx, p.x, p.y - platform.h * 18, platform.w * 18, platform.h * 18, 2);
+        ctx.fill();
+      }
+      for (const hazard of level.hazards) {
+        const p = worldToScreen(hazard.x, hazard.y, cameraX, cameraY);
+        ctx.fillStyle = "rgba(255,75,110,0.86)";
+        ctx.fillRect(p.x, p.y - hazard.h * 18, hazard.w * 18, hazard.h * 18);
+      }
+      for (const coin of level.collectibles) {
+        if (objects.collectedIds.includes(coin.id)) continue;
+        const p = worldToScreen(coin.x, coin.y, cameraX, cameraY);
+        ctx.fillStyle = "rgba(255,211,90,0.92)";
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 4.4, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      const exit = level.exit;
+      const e = worldToScreen(exit.x, exit.y, cameraX, cameraY);
+      ctx.strokeStyle = "rgba(157,255,122,0.92)";
+      ctx.lineWidth = 2;
+      ctx.strokeRect(e.x, e.y - exit.h * 18, exit.w * 18, exit.h * 18);
     }
 
     function drawPlatformRelief(composition, cameraX, cameraY) {
@@ -235,26 +386,7 @@
         roundRect(ctx, p.x + 4, p.y - relief.h * 18 + 5, relief.w * 18, relief.h * 18 + 6, 3);
         ctx.fill();
         ctx.strokeStyle = `rgba(160, 226, 255, ${Math.min(0.78, relief.rim)})`;
-        ctx.lineWidth = 1;
         ctx.strokeRect(p.x, p.y - relief.h * 18 - 1, relief.w * 18, 2);
-      }
-    }
-
-    function drawPlatformAuras(composition, cameraX, cameraY) {
-      for (const aura of composition.world?.platformAuras ?? []) {
-        const p = worldToScreen(aura.x, aura.y, cameraX, cameraY);
-        ctx.fillStyle = `rgba(88, 231, 255, ${aura.pulse * 0.16})`;
-        roundRect(ctx, p.x - 3, p.y - aura.h * 18 - 5, aura.w * 18 + 6, aura.h * 18 + 10, 4);
-        ctx.fill();
-      }
-    }
-
-    function drawMotionTrail(composition, cameraX, cameraY) {
-      for (const ghost of composition.visual?.motionTrail?.ghosts ?? []) {
-        const p = worldToScreen(ghost.x, ghost.y, cameraX, cameraY);
-        ctx.fillStyle = `rgba(255, 255, 255, ${ghost.alpha})`;
-        roundRect(ctx, p.x - 3 * ghost.scale, p.y - 11 * ghost.scale, 8 * ghost.scale, 13 * ghost.scale, 3);
-        ctx.fill();
       }
     }
 
@@ -276,23 +408,14 @@
         ctx.stroke();
         ctx.globalAlpha = 1;
       }
-      for (const node of constellation.nodes ?? []) {
-        const p = worldToScreen(node.x, node.y, cameraX, cameraY);
-        ctx.fillStyle = `rgba(255, 226, 119, ${node.sparkle})`;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, 2.5 + node.orbit * 5, 0, Math.PI * 2);
-        ctx.fill();
-      }
     }
 
-    function drawCollectibleOrbits(composition, cameraX, cameraY) {
-      for (const orbit of composition.world?.collectibleOrbits ?? []) {
-        const p = worldToScreen(orbit.x, orbit.y, cameraX, cameraY);
-        ctx.strokeStyle = "rgba(255, 230, 120, 0.42)";
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, orbit.radius * 18, 0, Math.PI * 2);
-        ctx.stroke();
+    function drawMotionTrail(composition, cameraX, cameraY) {
+      for (const ghost of composition.visual?.motionTrail?.ghosts ?? []) {
+        const p = worldToScreen(ghost.x, ghost.y, cameraX, cameraY);
+        ctx.fillStyle = `rgba(255, 255, 255, ${ghost.alpha})`;
+        roundRect(ctx, p.x - 3 * ghost.scale, p.y - 11 * ghost.scale, 8 * ghost.scale, 13 * ghost.scale, 3);
+        ctx.fill();
       }
     }
 
@@ -300,22 +423,98 @@
       for (const hazard of composition.visual?.hazardTelemetry ?? []) {
         const p = worldToScreen(hazard.x, hazard.y, cameraX, cameraY);
         ctx.strokeStyle = `rgba(255, 95, 118, ${hazard.pulse})`;
-        ctx.lineWidth = 1.2;
         ctx.beginPath();
         ctx.arc(p.x + hazard.w * 9, p.y - hazard.h * 9, hazard.warningRadius * 16, 0, Math.PI * 2);
         ctx.stroke();
       }
     }
 
-    function drawChallengeStrip(composition) {
-      const progress = composition.challenge?.progress ?? 0;
-      const intensity = composition.challenge?.intensity ?? 0;
-      ctx.fillStyle = "rgba(0,0,0,0.34)";
-      roundRect(ctx, 8, 8, 116, 11, 6);
-      ctx.fill();
-      ctx.fillStyle = intensity > 70 ? "#ffbf6b" : "#78ffd6";
-      roundRect(ctx, 10, 10, 112 * progress, 7, 4);
-      ctx.fill();
+    function drawJumpArc(traversal, cameraX, cameraY) {
+      const arc = traversal.jumpArcForecast;
+      if (!arc?.points?.length) return;
+      ctx.strokeStyle = arc.phase === "launchable" ? "rgba(120,255,214,0.72)" : "rgba(255,218,128,0.52)";
+      ctx.beginPath();
+      for (const [index, point] of arc.points.entries()) {
+        const p = worldToScreen(point.x, point.y, cameraX, cameraY);
+        if (index === 0) ctx.moveTo(p.x, p.y); else ctx.lineTo(p.x, p.y);
+      }
+      ctx.stroke();
+      if (arc.landingTarget) {
+        const p = worldToScreen(arc.landingTarget.x, arc.landingTarget.y, cameraX, cameraY);
+        ctx.strokeStyle = `rgba(120,255,214,${0.25 + arc.landingTarget.confidence * 0.55})`;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y - 5, 8 + arc.landingTarget.confidence * 6, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+    }
+
+    function drawLandingZones(traversal, cameraX, cameraY) {
+      for (const zone of traversal.landingZoneHeat ?? []) {
+        const p = worldToScreen(zone.x, zone.y, cameraX, cameraY);
+        ctx.fillStyle = `rgba(120,255,214,${0.08 + zone.quality * 0.16})`;
+        roundRect(ctx, p.x, p.y - 8, zone.w * 18, 6, 3);
+        ctx.fill();
+      }
+    }
+
+    function drawCheckpointThread(traversal, cameraX, cameraY) {
+      const thread = traversal.checkpointThread;
+      const byId = new Map((thread?.nodes ?? []).map((node) => [node.id, node]));
+      ctx.strokeStyle = "rgba(255,255,255,0.18)";
+      for (const link of thread?.links ?? []) {
+        const a = byId.get(link.from);
+        const b = byId.get(link.to);
+        if (!a || !b) continue;
+        const pa = worldToScreen(a.x, a.y, cameraX, cameraY);
+        const pb = worldToScreen(b.x, b.y, cameraX, cameraY);
+        ctx.beginPath();
+        ctx.moveTo(pa.x, pa.y - 18);
+        ctx.lineTo(pb.x, pb.y - 18);
+        ctx.stroke();
+      }
+      for (const node of thread?.nodes ?? []) {
+        const p = worldToScreen(node.x, node.y, cameraX, cameraY);
+        ctx.fillStyle = node.role === "exit" ? "rgba(157,255,122,0.7)" : node.role === "collectible" ? "rgba(255,211,90,0.6)" : "rgba(160,210,255,0.5)";
+        ctx.beginPath();
+        ctx.arc(p.x, p.y - 18, node.active ? 4.5 : 2.5, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    function drawFailRecoveryBeacons(traversal, cameraX, cameraY) {
+      for (const beacon of traversal.failRecoveryBeacons?.beacons ?? []) {
+        const p = worldToScreen(beacon.x, beacon.y, cameraX, cameraY);
+        ctx.strokeStyle = `rgba(255,95,118,${0.2 + beacon.urgency * 0.45})`;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y - 6, beacon.radius * 18, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+    }
+
+    function drawTempoPulseBands(traversal, cameraX, cameraY) {
+      for (const band of traversal.tempoPulseBands ?? []) {
+        const p = worldToScreen(band.x, band.y, cameraX, cameraY);
+        ctx.strokeStyle = `rgba(166,118,255,${0.12 + band.pulse * 0.24})`;
+        ctx.beginPath();
+        ctx.ellipse(p.x, p.y + 82, 18 + band.pulse * 16, 5, 0, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+    }
+
+    function drawControlCoachingStrip(traversal) {
+      const strip = traversal.controlCoachingStrip;
+      if (!strip) return;
+      let x = 10;
+      for (const chip of strip.chips) {
+        const width = 42 + chip.label.length * 2.4;
+        ctx.fillStyle = chip.active ? "rgba(120,255,214,0.22)" : "rgba(255,255,255,0.08)";
+        roundRect(ctx, x, 158, width, 11, 6);
+        ctx.fill();
+        ctx.fillStyle = "rgba(255,255,255,0.72)";
+        ctx.font = "4.5px ui-sans-serif";
+        ctx.fillText(chip.label, x + 5, 165.5);
+        x += width + 5;
+      }
     }
 
     function drawComfortFocus(composition) {
@@ -329,34 +528,26 @@
       ctx.fillRect(312, 0, 8, 180);
     }
 
-    function worldToScreen(x, y, cameraX, cameraY) {
-      return { x: 160 + (x - cameraX) * 18, y: 118 - (y - cameraY) * 18 };
+    function drawChallengeStrip(composition) {
+      const progress = composition.challenge?.progress ?? 0;
+      const intensity = composition.challenge?.intensity ?? 0;
+      ctx.fillStyle = "rgba(0,0,0,0.34)";
+      roundRect(ctx, 8, 8, 116, 11, 6);
+      ctx.fill();
+      ctx.fillStyle = intensity > 70 ? "#ffbf6b" : "#78ffd6";
+      roundRect(ctx, 10, 10, 112 * progress, 7, 4);
+      ctx.fill();
     }
 
-    function drawDescriptor(item, cameraX, cameraY) {
-      if (["camera", "parallax-layer"].includes(item.type)) return;
-      const p = worldToScreen(item.x ?? 0, item.y ?? 0, cameraX, cameraY);
-      const ww = (item.w ?? 0.6) * 18;
-      const hh = (item.h ?? 0.6) * 18;
-      if (item.type === "solid" || item.type === "moving-platform") {
-        ctx.fillStyle = item.type === "moving-platform" ? "#78ffd6" : "#7fa7ff";
-        roundRect(ctx, p.x, p.y - hh, ww, hh, 2);
-        ctx.fill();
-      } else if (item.type === "collectible") {
-        ctx.fillStyle = "#ffd35a";
-        ctx.beginPath(); ctx.arc(p.x, p.y, 5, 0, Math.PI * 2); ctx.fill();
-      } else if (item.type === "hazard") {
-        ctx.fillStyle = "#ff4b6e";
-        ctx.fillRect(p.x, p.y - hh, ww, hh);
-      } else if (item.type === "exit") {
-        ctx.strokeStyle = "#9dff7a";
-        ctx.lineWidth = 2;
-        ctx.strokeRect(p.x, p.y - hh, ww, hh);
-      } else if (item.type === "avatar") {
-        ctx.fillStyle = item.mode === "fallen" ? "#ff4b6e" : "#ffffff";
-        roundRect(ctx, p.x, p.y - hh, ww, hh, 3);
-        ctx.fill();
-      }
+    function drawAvatar(avatar, cameraX, cameraY) {
+      const p = worldToScreen(avatar.position.x, avatar.position.y, cameraX, cameraY);
+      ctx.fillStyle = avatar.mode === "fallen" ? "#ff4b6e" : "#ffffff";
+      roundRect(ctx, p.x, p.y - avatar.size.y * 18, avatar.size.x * 18, avatar.size.y * 18, 3);
+      ctx.fill();
+    }
+
+    function worldToScreen(x, y, cameraX, cameraY) {
+      return { x: 160 + (x - cameraX) * 18, y: 118 - (y - cameraY) * 18 };
     }
 
     function roundRect(context, x, y, w, h, r) {
@@ -370,113 +561,17 @@
     }
 
     async function boot() {
-      const NexusRealtime = await import(NEXUS_URL);
-      const { createPlatformerLevelDomainKit } = await import(`${PROTOKITS}/platformer-level-domain-kit/index.js`);
-      const { createPlatformerAvatarDomainKit } = await import(`${PROTOKITS}/platformer-avatar-domain-kit/index.js`);
-      const { createPlatformerPhysicsSystemKit, simulatePlatformerStep } = await import(`${PROTOKITS}/platformer-physics-system-kit/index.js`);
-      const { createPlatformerCollisionDomainKit } = await import(`${PROTOKITS}/platformer-collision-domain-kit/index.js`);
-      const { createPlatformerObjectDomainKit } = await import(`${PROTOKITS}/platformer-object-domain-kit/index.js`);
-      const { createPlatformerCameraDomainKit } = await import(`${PROTOKITS}/platformer-camera-domain-kit/index.js`);
-      const { createPlatformerRenderDescriptorKit } = await import(`${PROTOKITS}/platformer-render-descriptor-kit/index.js`);
-      const { createPlatformerEffectsDomainKit } = await import(`${PROTOKITS}/platformer-effects-domain-kit/index.js`);
-      const { createPlatformerParallaxDomainKit } = await import(`${PROTOKITS}/platformer-parallax-domain-kit/index.js`);
-      const { createPlatformerObjectiveSequenceKit } = await import(`${PROTOKITS}/platformer-objective-sequence-kit/index.js`);
-      const { createXrPoseDomainKit } = await import(`${PROTOKITS}/xr-pose-domain-kit/index.js`);
-      const { createXrInputAdapterKit } = await import(`${PROTOKITS}/xr-input-adapter-kit/index.js`);
-      const { createSpatialAnchorDomainKit } = await import(`${PROTOKITS}/spatial-anchor-domain-kit/index.js`);
-      const { createSpatialGameBoardDomainKit } = await import(`${PROTOKITS}/spatial-game-board-domain-kit/index.js`);
-      const { createXrComfortDomainKit } = await import(`${PROTOKITS}/xr-comfort-domain-kit/index.js`);
-      const { createXrPlatformerRenderAdapterKit } = await import(`${PROTOKITS}/xr-platformer-render-adapter-kit/index.js`);
-      const { createStereoscopicRenderDomainKit } = await import(`${PROTOKITS}/stereoscopic-render-domain-kit/index.js`);
-
-      const createEngine = NexusRealtime.createRealtimeGame ?? NexusRealtime.createRealtimeEngine ?? NexusRealtime.createEngine;
-      if (typeof createEngine !== "function") throw new Error("NexusEngine CDN runtime did not expose createRealtimeGame/createRealtimeEngine/createEngine.");
-      const engine = createEngine({
-        kits: [
-          createPlatformerLevelDomainKit(NexusRealtime),
-          createPlatformerAvatarDomainKit(NexusRealtime),
-          createPlatformerCollisionDomainKit(NexusRealtime),
-          createPlatformerPhysicsSystemKit(NexusRealtime),
-          createPlatformerObjectDomainKit(NexusRealtime),
-          createPlatformerCameraDomainKit(NexusRealtime),
-          createPlatformerRenderDescriptorKit(NexusRealtime),
-          createPlatformerEffectsDomainKit(NexusRealtime),
-          createPlatformerParallaxDomainKit(NexusRealtime),
-          createPlatformerObjectiveSequenceKit(NexusRealtime),
-          createXrPoseDomainKit(NexusRealtime),
-          createXrInputAdapterKit(NexusRealtime),
-          createSpatialAnchorDomainKit(NexusRealtime),
-          createSpatialGameBoardDomainKit(NexusRealtime),
-          createXrComfortDomainKit(NexusRealtime),
-          createStereoscopicRenderDomainKit(NexusRealtime, { requires: [] }),
-          createXrPlatformerRenderAdapterKit(NexusRealtime)
-        ]
-      });
-
-      let avatar = engine.platformerAvatar.getState();
-      let last = performance.now();
-      let wasJumping = false;
-      let wasRestarting = false;
-
+      const NexusEngine = await import(NEXUS_URL);
+      const createEngine = NexusEngine.createRealtimeGame ?? NexusEngine.createRealtimeEngine ?? NexusEngine.createEngine;
+      runtimeSurface = { imported: true, factoryName: typeof createEngine === "function" ? (createEngine.name || "createEngine") : "namespace-only" };
       window.GameHost = {
-        engine,
-        getState: () => ({ avatar, level: engine.platformerLevel.getState(), board: engine.spatialGameBoard.getState(), sequence: engine.platformerSequence.getState(), boardComposition: latestBoardComposition }),
+        getState: () => ({ avatar, level, objects, board, boardComposition: latestBoardComposition, traversalReadability: latestTraversalReadability, domain: { vrBoardTraversalReadability: latestTraversalReadability }, runtimeSurface }),
         getBoardComposition: () => latestBoardComposition,
-        getBoardDomainSnapshot: () => boardCompositionKit.snapshot({
-          avatar,
-          level: engine.platformerLevel.getState().level,
-          objects: engine.platformerObjects.getState(),
-          camera: engine.platformerCamera.updateFromAvatar(avatar, engine.platformerLevel.getState().level),
-          board: engine.spatialGameBoard.getState(),
-          comfort: { warnings: [] },
-          sequence: engine.platformerSequence.getState(),
-          xrPose: engine.xrPose.getState(),
-          time: performance.now() / 1000
-        })
+        getTraversalReadability: () => latestTraversalReadability,
+        getRendererHandoff: () => latestTraversalReadability?.rendererHandoff ?? null,
+        getBoardDomainSnapshot: () => boardCompositionKit.snapshot({ avatar, level, objects, camera: { position: { x: avatar.position.x - 3.2, y: avatar.position.y - 1.5 } }, board, comfort: { warnings: [] }, sequence: { hint: "Collect coins and read the landing zones" }, xrPose: { head }, time: performance.now() / 1000 }),
+        reset: () => { avatar = makeAvatar(); objects = { collectedValue: 0, collectedIds: [] }; }
       };
-
-      function frame(now) {
-        const dt = Math.min(1 / 30, (now - last) / 1000 || 1 / 60);
-        last = now;
-        const axis = (keys.has("d") || keys.has("arrowright") ? 1 : 0) - (keys.has("a") || keys.has("arrowleft") ? 1 : 0);
-        const jump = keys.has(" ") || keys.has("w") || keys.has("arrowup");
-        const restart = keys.has("r");
-        engine.xrPose.submit({ head });
-        engine.xrInput.submit({ moveAxis: axis, jumpPressed: jump && !wasJumping, restartPressed: restart && !wasRestarting });
-        wasJumping = jump;
-        wasRestarting = restart;
-        engine.tick(dt);
-
-        if (restart) avatar = engine.platformerAvatar.getState();
-        avatar.moveAxis = axis;
-        if (jump && avatar.grounded) { avatar.jumpQueued = true; avatar.jumpBuffer = 0.12; }
-        const level = engine.platformerLevel.getState().level;
-        avatar = simulatePlatformerStep(avatar, level, dt);
-        const collisions = engine.platformerCollision.resolve(avatar, level);
-        const objects = engine.platformerObjects.getState();
-        for (const coin of level.collectibles) {
-          const box = { x: avatar.position.x, y: avatar.position.y, w: avatar.size.x, h: avatar.size.y };
-          const hit = box.x < coin.x + 0.3 && box.x + box.w > coin.x - 0.3 && box.y < coin.y + 0.3 && box.y + box.h > coin.y - 0.3;
-          if (hit) engine.platformerObjects.collect(coin.id, coin.value);
-        }
-        if (collisions.hazardHits.length || avatar.mode === "fallen") { engine.platformerEffects.spawn("hazard", avatar.position); avatar = engine.platformerAvatar.reset({}).position ? engine.platformerAvatar.getState() : engine.platformerAvatar.getState(); }
-        if (collisions.exitHits.length) engine.platformerObjects.exit(collisions.exitHits[0]);
-        const camera = engine.platformerCamera.updateFromAvatar(avatar, level);
-        const sequence = engine.platformerSequence.evaluate({ objects: engine.platformerObjects.getState(), avatar });
-        const render = engine.platformerRender.build({ avatar, level, objects: engine.platformerObjects.getState(), camera });
-        const parallax = engine.platformerParallax.project(camera);
-        const board = engine.spatialGameBoard.getState();
-        const stereo = engine.stereoscopicRender.updateFromCamera(head, dt);
-        const comfort = engine.xrComfort.evaluate({ head, board });
-        const adapter = engine.xrPlatformerRenderAdapter.compose({ render, board, stereo, parallax, effects: engine.platformerEffects.getState().effects, sequence });
-        latestBoardComposition = boardCompositionKit.describe({ avatar, level, objects: engine.platformerObjects.getState(), camera, board, comfort, sequence, xrPose: engine.xrPose.getState(), time: now / 1000 });
-
-        objective.textContent = latestBoardComposition.hud.objective;
-        controls.textContent = latestBoardComposition.hud.controls;
-        hud.dataset.tone = latestBoardComposition.hud.statusTone;
-        drawBoard({ avatar, camera, render, sequence, board, stereo, comfort, adapter, xrPose: engine.xrPose.getState(), boardComposition: latestBoardComposition });
-        requestAnimationFrame(frame);
-      }
       requestAnimationFrame(frame);
     }
 
