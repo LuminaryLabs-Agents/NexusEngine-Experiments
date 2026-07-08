@@ -1,13 +1,21 @@
 import * as THREE from 'https://unpkg.com/three@0.165.0/build/three.module.js';
-import { createCameraControlUtilityKit } from 'https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/core-kits/core-utility-kit/camera-control-utility-kit.js';
-import { createTransformMathUtilityKit } from 'https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/core-kits/core-utility-kit/transform-math-utility-kit.js?v=planar-camera-basis-v1';
+import { createRealtimeGame } from 'https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/game-kit-composer.js?v=core-debug-v1';
+import { createCoreDebugKit } from 'https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/core-kits/core-debug-kit/index.js?v=core-debug-v1';
+import { createCameraControlUtilityKit } from 'https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/core-kits/core-utility-kit/camera-control-utility-kit.js?v=core-debug-v1';
+import { createTransformMathUtilityKit } from 'https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/core-kits/core-utility-kit/transform-math-utility-kit.js?v=core-debug-v1';
 import { createThirdPersonFollowKit } from './kits/third-person-follow-kit.js';
 import { createRiggedActorKit } from './kits/rigged-actor-kit.js';
+import { createThreeDebugRayAdapter } from './kits/three-debug-ray-adapter.js';
 import { thirdPersonFollowThroughDomain } from './domain/third-person-follow-through-domain.js';
 
 const app = document.getElementById('app');
 const transformUtil = createTransformMathUtilityKit();
 const cameraUtil = createCameraControlUtilityKit();
+const debugScope = 'third-person-follow-through';
+const debugEngine = createRealtimeGame({
+  kits: [createCoreDebugKit({ historyLimit: 240, exportLimit: 32 })]
+});
+const debug = debugEngine.n.coreDebug;
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x78add8);
 scene.fog = new THREE.Fog(0x78add8, 42, 110);
@@ -89,6 +97,9 @@ const headWorld = new THREE.Vector3();
 const cameraWorldForward = new THREE.Vector3(0, 0, -1);
 const movementBasisForward = new THREE.Vector3(0, 0, -1);
 const movementBasisRight = new THREE.Vector3(1, 0, 0);
+const actorForwardWorld = new THREE.Vector3(0, 0, -1);
+const actorRayOrigin = new THREE.Vector3();
+const movementRayOrigin = new THREE.Vector3();
 const follow = createThirdPersonFollowKit({ distance: 6.2, height: 0.15, lookAhead: 2.4, lagSpeed: 11, pitch: 0.28 });
 
 const lookMat = new THREE.MeshStandardMaterial({ color: 0x44ff88, roughness: 0.3, emissive: 0x063b14 });
@@ -113,8 +124,11 @@ const rootYawHandoffSpeed = 2.35;
 const orbitReturnSpeed = 1.8;
 const rotateSpeed = 8.5;
 const moveSpeed = 7.5;
+const debugRayAdapter = createThreeDebugRayAdapter(THREE, { scene, scope: debugScope, visible: debugVisible });
 camera.position.set(0, 3.2, 15);
 document.body.dataset.nexusDomain = thirdPersonFollowThroughDomain.id;
+window.__thirdPersonDebugEngine = debugEngine;
+window.__thirdPersonDebug = debug;
 
 function toVector3(v) {
   return new THREE.Vector3(v.x, v.y, v.z);
@@ -170,12 +184,15 @@ function reset() {
   orbitYawOffset = 0;
   cameraPitch = 0.28;
   handoffAlpha = 0;
+  debug.reset();
 }
 function setDebugVisible(visible) {
   debugVisible = visible;
   actor.setDebugVisible(visible);
   lookAheadSphere.visible = visible;
   actor.collisionCapsule.visible = false;
+  debugRayAdapter.setVisible(visible);
+  debug.setEnabled(visible);
 }
 
 addEventListener('keydown', e => {
@@ -201,6 +218,9 @@ addEventListener('resize', () => {
 function tick(now) {
   const dt = Math.min(0.04, (now - last) / 1000);
   last = now;
+  debugEngine.tick(dt);
+  debug.beginFrame({ frame: debugEngine.clock.frame });
+  debug.clearFrame(debugScope);
 
   let turningCamera = false;
   if (input.has('arrowleft')) { orbitYawOffset -= dt * 1.8; turningCamera = true; }
@@ -258,11 +278,108 @@ function tick(now) {
   follow.update({ camera, target: cameraTarget, controlYaw: cameraYaw, headingYaw: rootYaw, pitchOverride: cameraPitch, lookTarget, THREE, dt });
 
   actor.headMarkerCube.getWorldPosition(headWorld);
+  actorForwardWorld.copy(toVector3(transformUtil.forwardFromYaw(rootYaw)));
+  actorRayOrigin.copy(actorRoot.position).add(new THREE.Vector3(0, 1.05, 0));
+  movementRayOrigin.copy(actorRoot.position).add(new THREE.Vector3(0, 0.72, 0));
+  const movementYawDeg = THREE.MathUtils.radToDeg(transformUtil.yawFromForward(movementBasisPlain.forward, cameraYaw));
+  const actorForwardPlain = toPlainVector3(actorForwardWorld);
+  const debugState = {
+    experiment: 'ThirdPersonFollowThrough',
+    domain: thirdPersonFollowThroughDomain.id,
+    frame: debugEngine.clock.frame,
+    time: debugEngine.clock.elapsed,
+    input: {
+      w: basisInput.forward,
+      a: basisInput.left,
+      s: basisInput.back,
+      d: basisInput.right,
+      arrowLeft: input.has('arrowleft'),
+      arrowRight: input.has('arrowright'),
+      arrowUp: input.has('arrowup'),
+      arrowDown: input.has('arrowdown'),
+      pointerLocked: document.pointerLockElement === renderer.domElement
+    },
+    actor: {
+      position: actorRoot.position.toArray(),
+      rootYawDeg: THREE.MathUtils.radToDeg(rootYaw),
+      forwardWorld: actorForwardWorld.toArray(),
+      grounded,
+      yVel
+    },
+    camera: {
+      position: camera.position.toArray(),
+      cameraYawDeg: THREE.MathUtils.radToDeg(cameraYaw),
+      orbitYawOffsetDeg: THREE.MathUtils.radToDeg(orbitYawOffset),
+      pitch: cameraPitch,
+      handoffAlpha,
+      forwardWorld: cameraWorldForward.toArray(),
+      pivotWorld: cameraPivotWorld.toArray(),
+      lookAheadWorld: lookTarget.toArray()
+    },
+    movement: {
+      basisMode: 'rendered-camera-planar-forward',
+      basisForwardWorld: movementBasisForward.toArray(),
+      basisRightWorld: movementBasisRight.toArray(),
+      wishWorld: wish.toArray(),
+      movementYawDeg,
+      moveSpeed
+    },
+    collision: {
+      actorRadius,
+      colliderCount: colliders.length
+    },
+    debug: {
+      visible: debugVisible,
+      rayConvention: {
+        blue: 'rendered camera planar forward',
+        green: 'movement wish vector',
+        red: 'actor/root forward'
+      }
+    }
+  };
+
+  debug.registerRay({
+    id: 'thirdPerson.camera.forward',
+    scope: debugScope,
+    channel: 'camera',
+    color: 'blue',
+    origin: cameraPivotWorld.toArray(),
+    direction: movementBasisForward.toArray(),
+    length: 3,
+    label: 'camera planar forward'
+  });
+  debug.registerRay({
+    id: 'thirdPerson.movement.wish',
+    scope: debugScope,
+    channel: 'movement',
+    color: 'green',
+    origin: movementRayOrigin.toArray(),
+    direction: wish.lengthSq() > 0.000001 ? wish.toArray() : movementBasisForward.toArray(),
+    length: wish.lengthSq() > 0.000001 ? 3 : 0.65,
+    label: 'movement wish'
+  });
+  debug.registerRay({
+    id: 'thirdPerson.actor.forward',
+    scope: debugScope,
+    channel: 'actor',
+    color: 'red',
+    origin: actorRayOrigin.toArray(),
+    direction: actorForwardPlain,
+    length: 3,
+    label: 'actor forward'
+  });
+  debug.setScalar('thirdPerson.rootYawDeg', debugState.actor.rootYawDeg, { scope: debugScope, channel: 'actor', units: 'deg' });
+  debug.setScalar('thirdPerson.cameraYawDeg', debugState.camera.cameraYawDeg, { scope: debugScope, channel: 'camera', units: 'deg' });
+  debug.setScalar('thirdPerson.movementYawDeg', movementYawDeg, { scope: debugScope, channel: 'movement', units: 'deg' });
+  debug.captureState('third-person-controller', debugState, { scope: debugScope, channel: 'movement' });
+  const debugExport = debug.exportState('third-person-controller', { payload: debugState });
+  debugRayAdapter.update(debugExport);
+
   window.__thirdPersonFollowThrough = {
-    rootYawDeg: THREE.MathUtils.radToDeg(rootYaw),
-    orbitYawOffsetDeg: THREE.MathUtils.radToDeg(orbitYawOffset),
-    cameraYawDeg: THREE.MathUtils.radToDeg(cameraYaw),
-    movementYawDeg: THREE.MathUtils.radToDeg(transformUtil.yawFromForward(movementBasisPlain.forward, cameraYaw)),
+    rootYawDeg: debugState.actor.rootYawDeg,
+    orbitYawOffsetDeg: debugState.camera.orbitYawOffsetDeg,
+    cameraYawDeg: debugState.camera.cameraYawDeg,
+    movementYawDeg,
     movementBasisMode: 'rendered-camera-planar-forward',
     handoffAlpha,
     cameraPivotWorld: cameraPivotWorld.toArray(),
@@ -273,14 +390,18 @@ function tick(now) {
     movementBasisForwardWorld: movementBasisForward.toArray(),
     movementBasisRightWorld: movementBasisRight.toArray(),
     movementWishWorld: wish.toArray(),
+    actorForwardWorld: actorForwardWorld.toArray(),
     targetPosition: actorRoot.position.toArray(),
     debugVisible,
+    debugExport,
+    debugRayCount: Object.keys(debugExport.rays ?? {}).length,
     colliderCount: colliders.length,
     actorRadius,
     rigBoneNames: Object.keys(actor.bones),
     rigJointCount: Object.keys(actor.joints).length,
     grounded
   };
+  window.__thirdPersonDebugExport = debugExport;
 
   renderer.render(scene, camera);
   requestAnimationFrame(tick);
