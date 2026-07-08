@@ -1,5 +1,6 @@
 import { createSignalIslesVisualFractalDomainKit } from "../../_kits/nexus-frontier-signal-isles/signal-isles-visual-fractal-domain-kits.js";
 import { createSignalIslesObjectiveReadabilityDomainKit } from "../../_kits/nexus-frontier-signal-isles/signal-isles-objective-readability-domain-kits.js";
+import { createSignalIslesExpeditionReadinessDomainKit } from "../../_kits/nexus-frontier-signal-isles/signal-isles-expedition-readiness-domain-kits.js";
 
 // Signal Isles keeps gameplay truth in this runtime-style bridge, not in the renderer.
 // Compatibility markers for static audit: createRealtimeGame createActionInputKit createScanSurveyKit createTimedPressureDirectorKit createGamehostStandardKit.
@@ -40,6 +41,7 @@ export async function createSignalIslesComposition({ level, preset, sequences })
   const session = createSession(level);
   const visualFractal = createSignalIslesVisualFractalDomainKit();
   const objectiveReadability = createSignalIslesObjectiveReadabilityDomainKit();
+  const expeditionReadiness = createSignalIslesExpeditionReadinessDomainKit();
 
   function reset() {
     Object.assign(session, createSession(level));
@@ -96,19 +98,22 @@ export async function createSignalIslesComposition({ level, preset, sequences })
   function flushInput(intent = {}, delta = 1 / 60) { if (intent.restart) return reset(); move(intent, delta); if (intent.scan) scan(delta); if (intent.interact || intent.build) interact(); return getState(); }
   function getObjectiveState() { return { current: level.objectives[session.objectiveIndex] ?? null, completedFacts: [...session.completedFacts], completedObjectives: [...session.completedObjectives], completed: session.completed }; }
   function getSequenceState() { return { activeSequenceId: session.activeSequenceId, sequences: sequences.map((s) => s.id), prompt: session.lastPrompt, waitingFor: level.objectives[session.objectiveIndex]?.requires.filter((fact) => !session.completedFacts.includes(fact)) ?? [] }; }
-  function getVisualFractalState() { return visualFractal.describe({ level, preset, session: clone(session), objective: getObjectiveState(), sequence: getSequenceState(), kitStates: clone(kits), elapsed: session.elapsed }); }
-  function getObjectiveReadabilityState() { return objectiveReadability.describe({ level, preset, session: clone(session), objective: getObjectiveState(), sequence: getSequenceState(), kitStates: clone(kits), elapsed: session.elapsed }); }
+  function describeInput() { return { level, preset, session: clone(session), objective: getObjectiveState(), sequence: getSequenceState(), kitStates: clone(kits), elapsed: session.elapsed }; }
+  function getVisualFractalState() { return visualFractal.describe(describeInput()); }
+  function getObjectiveReadabilityState() { return objectiveReadability.describe(describeInput()); }
+  function getExpeditionReadinessState() { return expeditionReadiness.describe(describeInput()); }
   function getRendererHandoff() {
     const signalIslesVisualFractal = getVisualFractalState();
     const signalIslesObjectiveReadability = getObjectiveReadabilityState();
-    const descriptors = { ...(signalIslesVisualFractal.rendererHandoff?.descriptors ?? {}), ...(signalIslesObjectiveReadability.rendererHandoff?.descriptors ?? {}) };
+    const signalIslesExpeditionReadiness = getExpeditionReadinessState();
+    const descriptors = { ...(signalIslesVisualFractal.rendererHandoff?.descriptors ?? {}), ...(signalIslesObjectiveReadability.rendererHandoff?.descriptors ?? {}), ...(signalIslesExpeditionReadiness.rendererHandoff?.descriptors ?? {}) };
     return { kit: "signal-isles-composed-renderer-handoff-kit", contract: { rendererConsumesDescriptorsOnly: true, forbiddenOwnership: ["DOM", "browser-input", "Three.js", "WebGL", "audio", "asset-loading", "frame-loop"] }, descriptors, counts: Object.fromEntries(Object.entries(descriptors).map(([key, value]) => [key, Array.isArray(value) ? value.length : 0])) };
   }
-  function getState() { const signalIslesVisualFractal = getVisualFractalState(); const signalIslesObjectiveReadability = getObjectiveReadabilityState(); return { session: clone(session), objective: getObjectiveState(), sequence: getSequenceState(), input: kits.actionInput, scan: kits.scanSurvey, agents: kits.agentGroup, pressure: kits.timedPressure, lastRejection: session.lastRejection, visualFractal: signalIslesVisualFractal, objectiveReadability: signalIslesObjectiveReadability, rendererHandoff: getRendererHandoff(), domain: { signalIslesVisualFractal, signalIslesObjectiveReadability } }; }
+  function getState() { const signalIslesVisualFractal = getVisualFractalState(); const signalIslesObjectiveReadability = getObjectiveReadabilityState(); const signalIslesExpeditionReadiness = getExpeditionReadinessState(); return { session: clone(session), objective: getObjectiveState(), sequence: getSequenceState(), input: kits.actionInput, scan: kits.scanSurvey, agents: kits.agentGroup, pressure: kits.timedPressure, lastRejection: session.lastRejection, visualFractal: signalIslesVisualFractal, objectiveReadability: signalIslesObjectiveReadability, expeditionReadiness: signalIslesExpeditionReadiness, rendererHandoff: getRendererHandoff(), domain: { signalIslesVisualFractal, signalIslesObjectiveReadability, signalIslesExpeditionReadiness } }; }
   function getReplaySnapshot() { return JSON.stringify({ frame: session.frame, facts: session.completedFacts, player: { x: Number(session.player.x.toFixed(3)), z: Number(session.player.z.toFixed(3)) }, completed: session.completed }); }
-  function getRenderSnapshot() { const signalIslesVisualFractal = getVisualFractalState(); const signalIslesObjectiveReadability = getObjectiveReadabilityState(); return { level, preset, session, kitStates: kits, objective: getObjectiveState(), sequence: getSequenceState(), scanCompletedCount: kits.scanSurvey.completedTargetIds.length, replayDigest: getReplaySnapshot(), visualFractal: signalIslesVisualFractal, objectiveReadability: signalIslesObjectiveReadability, rendererHandoff: getRendererHandoff(), domain: { signalIslesVisualFractal, signalIslesObjectiveReadability } }; }
+  function getRenderSnapshot() { const signalIslesVisualFractal = getVisualFractalState(); const signalIslesObjectiveReadability = getObjectiveReadabilityState(); const signalIslesExpeditionReadiness = getExpeditionReadinessState(); return { level, preset, session, kitStates: kits, objective: getObjectiveState(), sequence: getSequenceState(), scanCompletedCount: kits.scanSurvey.completedTargetIds.length, replayDigest: getReplaySnapshot(), visualFractal: signalIslesVisualFractal, objectiveReadability: signalIslesObjectiveReadability, expeditionReadiness: signalIslesExpeditionReadiness, rendererHandoff: getRendererHandoff(), domain: { signalIslesVisualFractal, signalIslesObjectiveReadability, signalIslesExpeditionReadiness } }; }
 
-  return { engine: kits, start() { session.running = true; }, stop() { session.running = false; }, reset, tick, flushInput, setKey: (key, down) => { kits.actionInput[key] = down; }, clearInput: () => { kits.actionInput = {}; }, requestInteract: interact, requestBuild: interact, requestScan: scan, stopScan() {}, getState, getKitStates: () => clone(kits), getObjectiveState, getSequenceState, getVisualFractalState, getObjectiveReadabilityState, getRendererHandoff, getInputState: () => clone(kits.actionInput), getRecentEvents: () => [...session.recentEvents], getLastRejection: () => session.lastRejection, getReplaySnapshot, getRenderSnapshot };
+  return { engine: kits, start() { session.running = true; }, stop() { session.running = false; }, reset, tick, flushInput, setKey: (key, down) => { kits.actionInput[key] = down; }, clearInput: () => { kits.actionInput = {}; }, requestInteract: interact, requestBuild: interact, requestScan: scan, stopScan() {}, getState, getKitStates: () => clone(kits), getObjectiveState, getSequenceState, getVisualFractalState, getObjectiveReadabilityState, getExpeditionReadinessState, getRendererHandoff, getInputState: () => clone(kits.actionInput), getRecentEvents: () => [...session.recentEvents], getLastRejection: () => session.lastRejection, getReplaySnapshot, getRenderSnapshot };
 }
 
 export default createSignalIslesComposition;
