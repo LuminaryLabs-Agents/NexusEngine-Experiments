@@ -235,6 +235,16 @@ export async function createSignalIslesRenderer({ canvas, level, preset }) {
     for (const route of descriptors.evacuationTideRoutes ?? []) addThread(route);
   }
 
+  function drawHarborReliefDescriptors(snapshot) {
+    const descriptors = snapshot.harborReliefReadiness?.rendererHandoff?.descriptors ?? snapshot.domain?.signalIslesHarborReliefReadiness?.rendererHandoff?.descriptors ?? {};
+    for (const settlement of descriptors.woundedSettlements ?? []) if (settlement.active) addGroundDisc({ ...settlement, intensity: settlement.urgency ?? 0.4 }, 0.05 + Number(settlement.urgency ?? 0) * 0.13);
+    for (const crate of descriptors.medicineCrates ?? []) addGroundRing({ ...crate, intensity: crate.supply ?? 0.35 }, crate.secured ? 0.16 : 0.26 + Number(crate.supply ?? 0) * 0.16);
+    for (const pier of descriptors.pierLandingWindows ?? []) if (pier.active) addGroundRing({ ...pier, intensity: pier.ready ? 0.9 : 0.35 + Number(pier.progress ?? 0) * 0.45 }, pier.ready ? 0.38 : 0.14 + Number(pier.progress ?? 0) * 0.2);
+    for (const channel of descriptors.skiffChannelThreads ?? []) addThread(channel);
+    for (const horn of descriptors.reliefHornCalls ?? []) if (horn.active) addGroundRing({ ...horn, intensity: horn.charge ?? 0.4 }, 0.12 + Number(horn.charge ?? 0) * 0.25);
+    for (const manifest of descriptors.departureManifests ?? []) if (manifest.active) addGroundRing({ ...manifest, intensity: manifest.readiness ?? 0.25 }, 0.1 + Number(manifest.readiness ?? 0) * 0.24);
+  }
+
   function drawVisualDescriptors(snapshot) {
     clearLayer(visualLayer);
     const descriptors = snapshot.visualFractal?.rendererHandoff?.descriptors ?? {};
@@ -247,6 +257,7 @@ export async function createSignalIslesRenderer({ canvas, level, preset }) {
     drawObjectiveReadabilityDescriptors(snapshot);
     drawExpeditionReadinessDescriptors(snapshot);
     drawStormAnchorDescriptors(snapshot);
+    drawHarborReliefDescriptors(snapshot);
   }
 
   function draw(snapshot) {
