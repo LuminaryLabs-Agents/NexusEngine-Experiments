@@ -1,3 +1,5 @@
+import "./tropical-reef-rescue-readiness-kits-smoke.mjs";
+import "./tropical-reef-rescue-cdn-state-input-smoke.mjs";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { createTropicalWeatherShelterReadabilityDomainKit } from "../experiments/tropical-island-scene/src/tropical-weather-shelter-readability-domain-kit.js";
@@ -12,6 +14,7 @@ const checks = readFileSync("scripts/run-checks.mjs", "utf8");
 assert.match(entry, new RegExp(CDN.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")), "changed entry must import NexusEngine main CDN");
 assert.equal(entry.includes(OLD_RUNTIME_CDN), false, "changed weather shelter entry must not import old NexusRealtime runtime CDN");
 assert.match(indexHtml, /weather-shelter-readability-entry\.js\?v=tropical-island-weather-shelter-20260708/, "route shell must load weather shelter overlay");
+assert.match(indexHtml, /reef-rescue-readiness-entry\.js\?v=tropical-island-reef-rescue-20260708/, "route shell must load reef rescue overlay");
 assert.match(entry, /getWeatherShelterReadability/, "GameHost must expose weather shelter readability");
 assert.match(entry, /getRendererHandoff/, "GameHost renderer handoff must be extended");
 assert.match(entry, /weatherShelter/, "composed renderer handoff must include weather shelter group");
