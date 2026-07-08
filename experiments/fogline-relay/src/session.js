@@ -3,7 +3,18 @@ import { createFoglineRelayKit } from "./fogline-relay-kit.js";
 import { createFoglineRelayLevel } from "./level.js";
 import { createVisualSignals } from "./visual-signals.js";
 import { createFoglineVisualFractalDomain } from "./fogline-visual-fractal-kits.js";
+import { createFoglineSignalCartographyDomain } from "./fogline-signal-cartography-kits.js";
 import { DOMAIN_KITS_URL, createUnifiedDomainKits, syncUnifiedDomainState } from "../../_shared/domain-foundation.js";
+
+const CARTOGRAPHY_BUCKET_ARCHETYPES = Object.freeze({
+  routeThreads: "fogline.route.thread",
+  groundMottles: "fogline.ground.mottle",
+  relayAuras: "fogline.relay.aura",
+  scanCones: "fogline.scan.cone",
+  objectiveNeedles: "fogline.objective.needle",
+  gateSigils: "fogline.gate.sigil",
+  safePockets: "fogline.safe.pocket"
+});
 
 function domainSnapshot(engine) {
   return {
@@ -24,6 +35,65 @@ function domainSnapshot(engine) {
   };
 }
 
+function asPresentationDescriptor(descriptor = {}) {
+  const bucket = descriptor.compatibleBucket;
+  const compatibleArchetype = descriptor.compatibleArchetype ?? CARTOGRAPHY_BUCKET_ARCHETYPES[bucket];
+  return {
+    ...descriptor,
+    id: `cartography-${descriptor.id ?? descriptor.archetype}`,
+    originalArchetype: descriptor.archetype,
+    archetype: compatibleArchetype ?? descriptor.archetype,
+    cartography: true
+  };
+}
+
+function createComposedRendererHandoff(visualFractal = {}, signalCartography = {}) {
+  const descriptors = visualFractal.drawOrder ?? [];
+  const cartographyDescriptors = signalCartography.drawOrder ?? [];
+  const counts = descriptors.reduce((acc, descriptor) => {
+    acc[descriptor.originalArchetype ?? descriptor.archetype] = (acc[descriptor.originalArchetype ?? descriptor.archetype] ?? 0) + 1;
+    return acc;
+  }, {});
+  return {
+    id: "fogline-composed-renderer-handoff",
+    archetype: "fogline.composed.renderer.handoff",
+    policy: "renderer-consumes-descriptors-only",
+    descriptorCount: descriptors.length,
+    cartographyDescriptorCount: cartographyDescriptors.length,
+    descriptors,
+    sourceHandoffs: [visualFractal.rendererHandoff, signalCartography.rendererHandoff].filter(Boolean),
+    counts,
+    ownership: {
+      renderer: "consume-only",
+      dom: "excluded",
+      browserInput: "excluded",
+      three: "excluded",
+      webgl: "excluded",
+      audio: "excluded",
+      assets: "excluded",
+      frameLoop: "excluded"
+    }
+  };
+}
+
+function mergeSignalCartographyIntoVisualFractal(visualFractal = {}, signalCartography = {}) {
+  const merged = {
+    ...visualFractal,
+    cartography: signalCartography
+  };
+  for (const descriptor of signalCartography.drawOrder ?? []) {
+    const bucket = descriptor.compatibleBucket;
+    if (!bucket || !CARTOGRAPHY_BUCKET_ARCHETYPES[bucket]) continue;
+    merged[bucket] = [...(merged[bucket] ?? []), asPresentationDescriptor(descriptor)];
+  }
+  merged.drawOrder = [
+    ...(visualFractal.drawOrder ?? []),
+    ...Object.keys(CARTOGRAPHY_BUCKET_ARCHETYPES).flatMap((bucket) => (merged[bucket] ?? []).filter((descriptor) => descriptor.cartography))
+  ];
+  merged.rendererHandoff = createComposedRendererHandoff(merged, signalCartography);
+  return merged;
+}
+
 export async function createFoglineRelaySession() {
   const [NexusRealtime, VisualPipeline, DomainKits] = await Promise.all([
     import(NEXUS_URL),
@@ -34,6 +104,8 @@ export async function createFoglineRelaySession() {
   const level = createFoglineRelayLevel();
   const visualPreset = VisualPipeline.createFoglineVisualPreset();
   let visualFractal = createFoglineVisualFractalDomain({ level, route: level.route, game: { player: level.spawn, relays: level.relays, wraiths: level.wraiths, gate: level.gate, stats: { scanned: 0 } } });
+  let signalCartography = createFoglineSignalCartographyDomain({ level, route: level.route, game: { player: level.spawn, relays: level.relays, wraiths: level.wraiths, gate: level.gate, stats: { scanned: 0 } } });
+  visualFractal = mergeSignalCartographyIntoVisualFractal(visualFractal, signalCartography);
   const domainKits = createUnifiedDomainKits(NexusRealtime, DomainKits, {
     prefix: "fogline-relay",
     presetId: level.id,
@@ -102,6 +174,8 @@ export async function createFoglineRelaySession() {
   function prepareFrame() {
     const game = engine.foglineRelay.getState();
     visualFractal = createFoglineVisualFractalDomain({ level, route: level.route, game });
+    signalCartography = createFoglineSignalCartographyDomain({ level, route: level.route, game });
+    visualFractal = mergeSignalCartographyIntoVisualFractal(visualFractal, signalCartography);
     syncUnifiedDomainState(engine, { level, game }, {
       label: "fogline-relay",
       scanRadius: 4,
@@ -122,6 +196,8 @@ export async function createFoglineRelaySession() {
   function snapshot() {
     const game = engine.foglineRelay.getState();
     visualFractal = createFoglineVisualFractalDomain({ level, route: level.route, game });
+    signalCartography = createFoglineSignalCartographyDomain({ level, route: level.route, game });
+    visualFractal = mergeSignalCartographyIntoVisualFractal(visualFractal, signalCartography);
     return {
       level,
       clock: engine.clock,
@@ -130,10 +206,13 @@ export async function createFoglineRelaySession() {
       interactions: engine.interactionTargets?.getState?.(),
       visual: engine.visualPipeline.snapshot(),
       visualFractal,
+      signalCartography,
+      rendererHandoff: visualFractal.rendererHandoff,
       render: engine.renderDescriptors?.getState?.(),
       domain: {
         ...domainSnapshot(engine),
-        foglineVisualFractal: visualFractal
+        foglineVisualFractal: visualFractal,
+        foglineSignalCartography: signalCartography
       }
     };
   }
