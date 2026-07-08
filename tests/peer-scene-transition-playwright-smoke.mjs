@@ -21,6 +21,7 @@ function safePath(urlPath) {
 
 const source = await readFile(join(root, "experiments/peer-scene-transition/shared/scene-demo.js"), "utf8");
 assert.ok(source.includes(nexusEngineCdn), "changed experiment pulls NexusEngine main via CDN");
+assert.ok(source.includes("createSceneAtmosphericHandoffKit"), "changed experiment wires the atmospheric descriptor handoff");
 assert.ok(!source.includes("NexusRealtime"), "changed peer scene browser host avoids old NexusRealtime import");
 
 const server = createServer(async (request, response) => {
@@ -48,9 +49,15 @@ try {
   let state = await page.evaluate(() => globalThis.GameHost.getState());
   assert.equal(state.currentScene, "camp");
   let handoff = await page.evaluate(() => globalThis.GameHost.getRendererHandoff());
+  let atmosphere = await page.evaluate(() => globalThis.GameHost.getAtmosphericHandoff());
   assert.equal(handoff.routeNodes, 6);
   assert.equal(handoff.ambientParticles, 9);
   assert.equal(handoff.constellationStars, 5);
+  assert.equal(handoff.depthFogBands, 6);
+  assert.equal(handoff.lightRays, 5);
+  assert.equal(atmosphere.kitCount, 5);
+  assert.equal(atmosphere.depthFogBands, 6);
+  assert.equal(await page.evaluate(() => document.body.dataset.sceneAtmosphere), "opening");
   await page.getByRole("button", { name: /Take lantern/i }).click();
   await page.getByRole("button", { name: /Pack bridge rope/i }).click();
   await page.getByRole("button", { name: /Walk to the crossroads/i }).click();
@@ -59,6 +66,7 @@ try {
   await page.waitForURL(/forest\.html$/);
   state = await page.evaluate(() => globalThis.GameHost.getState());
   const domain = await page.evaluate(() => globalThis.GameHost.getPeerSceneDomain());
+  atmosphere = await page.evaluate(() => globalThis.GameHost.getAtmosphericHandoff());
   const mood = await page.evaluate(() => document.body.dataset.sceneMood);
   assert.equal(state.currentScene, "forest");
   assert.ok(state.inventory.includes("Lantern"));
@@ -67,8 +75,11 @@ try {
   assert.equal(domain.sceneId, "forest");
   assert.equal(domain.route.nodes, 6);
   assert.ok(domain.gates.gates >= 1);
+  assert.equal(atmosphere.sceneId, "forest");
+  assert.equal(atmosphere.lightRays, 5);
+  assert.equal(atmosphere.pathTension, 2);
   assert.ok(mood !== "");
-  console.log("peer scene transition NexusEngine CDN/state-input smoke passed: 16 intake cases");
+  console.log("peer scene transition NexusEngine CDN/state-input smoke passed: 25 intake cases");
 } finally {
   if (browser) await browser.close();
   await new Promise((resolve) => server.close(resolve));
