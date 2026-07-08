@@ -19,7 +19,7 @@ assert.equal(files.main.includes("LuminaryLabs-Dev/NexusRealtime"), false, "chan
 assert.ok(files.main.includes("createMeadowVisualFractalDomainKit"), "main should install visual fractal domain kit");
 assert.ok(files.main.includes("window.GameHost"), "main should expose GameHost state");
 assert.ok(files.main.includes("visualFractal"), "main should expose visualFractal state");
-assert.ok(files.index.includes("20260707-depth-patch-fractal-1"), "entrypoint should cache-bust the upgraded route");
+assert.ok(files.index.includes("20260708-ecology-readability-1"), "entrypoint should cache-bust the upgraded route");
 assert.ok(files.renderer.includes("createMeadowVisualFractalLayers"), "renderer should consume descriptors through a handoff adapter");
 
 const heightAt = (x = 0, z = 0) => Math.sin(x * 0.033) * 0.24 + Math.cos(z * 0.041) * 0.12;
