@@ -39,6 +39,7 @@ async function boot() {
     loop,
     getState: session.snapshot,
     getSignalCartography: () => session.snapshot().signalCartography,
+    getOperatorRhythm: () => session.snapshot().operatorRhythm,
     getRendererHandoff: () => session.snapshot().rendererHandoff,
     tick: loop.tick,
     stop: loop.stop,
