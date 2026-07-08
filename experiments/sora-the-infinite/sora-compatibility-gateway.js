@@ -2,6 +2,7 @@ import * as NexusEngineRuntime from "https://cdn.jsdelivr.net/gh/LuminaryLabs-De
 import { createSoraCompatibilityDomainKit } from "../_kits/sora-the-infinite/sora-compatibility-domain-kits.js";
 import { createSoraLaunchRehearsalDomainKit } from "../_kits/sora-the-infinite/sora-launch-rehearsal-domain-kits.js";
 import { createSoraFlightplanReadabilityDomainKit } from "../_kits/sora-the-infinite/sora-flightplan-readability-domain-kits.js";
+import { createSoraSkyNegotiationReadinessDomainKit } from "../_kits/sora-the-infinite/sora-sky-negotiation-readiness-domain-kits.js";
 
 const NEXUS_ENGINE_CDN = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js";
 const TARGET_PATH = "../the-open-above/";
@@ -17,10 +18,12 @@ const debugStrip = document.querySelector("#debug-strip");
 const packetList = document.querySelector("#packet-list");
 const rehearsalList = document.querySelector("#rehearsal-list");
 const flightplanList = document.querySelector("#flightplan-list");
+const skyNegotiationList = document.querySelector("#sky-negotiation-list");
 
 const domainKit = createSoraCompatibilityDomainKit({ targetPath: TARGET_PATH });
 const launchRehearsalKit = createSoraLaunchRehearsalDomainKit({ targetRouteId: "the-open-above" });
 const flightplanReadabilityKit = createSoraFlightplanReadabilityDomainKit({ targetRouteId: "the-open-above" });
+const skyNegotiationKit = createSoraSkyNegotiationReadinessDomainKit({ targetRouteId: "the-open-above" });
 const state = {
   tick: 0,
   readiness: 0.24,
@@ -38,11 +41,12 @@ const state = {
 const routeQuery = globalThis.location.search || "";
 const routeHash = globalThis.location.hash || "";
 
-function composeRendererHandoff(routePreview, launchRehearsal, flightplanReadability) {
+function composeRendererHandoff(routePreview, launchRehearsal, flightplanReadability, skyNegotiationReadiness) {
   const forbiddenOwnership = Array.from(new Set([
     ...(routePreview.rendererHandoff?.forbiddenOwnership ?? []),
     ...(launchRehearsal.rendererHandoff?.forbiddenOwnership ?? []),
-    ...(flightplanReadability.rendererHandoff?.forbiddenOwnership ?? [])
+    ...(flightplanReadability.rendererHandoff?.forbiddenOwnership ?? []),
+    ...(skyNegotiationReadiness.rendererHandoff?.forbiddenOwnership ?? [])
   ]));
   return {
     kind: "sora-composed-renderer-handoff",
@@ -51,12 +55,14 @@ function composeRendererHandoff(routePreview, launchRehearsal, flightplanReadabi
     descriptors: {
       ...routePreview.rendererHandoff.descriptors,
       launchRehearsal: launchRehearsal.rendererHandoff.descriptors,
-      flightplanReadability: flightplanReadability.rendererHandoff.descriptors
+      flightplanReadability: flightplanReadability.rendererHandoff.descriptors,
+      skyNegotiationReadiness: skyNegotiationReadiness.rendererHandoff.descriptors
     },
     descriptorCounts: {
       ...routePreview.rendererHandoff.descriptorCounts,
       ...launchRehearsal.rendererHandoff.descriptorCounts,
-      ...flightplanReadability.rendererHandoff.descriptorCounts
+      ...flightplanReadability.rendererHandoff.descriptorCounts,
+      ...skyNegotiationReadiness.rendererHandoff.descriptorCounts
     }
   };
 }
@@ -86,11 +92,22 @@ function describe() {
     routePreview,
     launchRehearsal
   });
-  const rendererHandoff = composeRendererHandoff(routePreview, launchRehearsal, flightplanReadability);
+  const skyNegotiationReadiness = skyNegotiationKit.describe({
+    tick: state.tick,
+    readiness: routePreview.readiness,
+    input: state.input,
+    query: routeQuery,
+    hash: routeHash,
+    routePreview,
+    launchRehearsal,
+    flightplanReadability
+  });
+  const rendererHandoff = composeRendererHandoff(routePreview, launchRehearsal, flightplanReadability, skyNegotiationReadiness);
   return {
     ...routePreview,
     launchRehearsal,
     flightplanReadability,
+    skyNegotiationReadiness,
     rendererHandoff
   };
 }
@@ -135,7 +152,8 @@ function renderStage(handoff) {
     altitudeEnvelope,
     handoffPackets,
     launchRehearsal,
-    flightplanReadability
+    flightplanReadability,
+    skyNegotiationReadiness
   } = handoff.descriptors;
   stage.innerHTML = `
     <div class="horizon-arc"></div>
@@ -156,6 +174,12 @@ function renderStage(handoff) {
     ${flightplanReadability.energyBudget.segments.map((segment, index) => `<i class="energy-segment ${segment.stable ? "stable" : "thin"}" style="--i:${index};--v:${segment.value}" title="${segment.label}: ${segment.value}"></i>`).join("")}
     ${flightplanReadability.returnAnchors.anchors.map((anchor) => `<i class="return-anchor ${anchor.linked ? "linked" : "pending"}" style="--x:${anchor.x};--y:${anchor.y};--lock:${anchor.lock}" title="${anchor.label}"></i>`).join("")}
     ${flightplanReadability.riskRewardCards.cards.map((card, index) => `<i class="risk-card ${card.state}" style="--i:${index};--v:${card.value}" title="${card.label}: ${card.value}"></i>`).join("")}
+    ${skyNegotiationReadiness.jetstreamBraids.braids.map((braid) => `<i class="jetstream-braid ${braid.usable ? "usable" : "crosswind"}" style="--x:${braid.x};--y:${braid.y};--w:${braid.width};--d:${braid.drift};--f:${braid.favor}" title="${braid.label}"></i>`).join("")}
+    ${skyNegotiationReadiness.stormShelfWarnings.shelves.map((shelf) => `<i class="storm-shelf ${shelf.active ? "active" : "quiet"}" style="--x:${shelf.x};--y:${shelf.y};--span:${shelf.span};--s:${shelf.severity}" title="${shelf.label}"></i>`).join("")}
+    ${skyNegotiationReadiness.thermalLadderChoices.rungs.map((rung) => `<i class="thermal-ladder-rung ${rung.chosen ? "chosen" : "weak"}" style="--x:${rung.x};--y:${rung.y};--score:${rung.score};--lift:${rung.lift}" title="${rung.label}"></i>`).join("")}
+    ${skyNegotiationReadiness.glideSafePockets.pockets.map((pocket) => `<i class="glide-safe-pocket ${pocket.open ? "open" : "thin"}" style="--x:${pocket.x};--y:${pocket.y};--r:${pocket.radius};--safety:${pocket.safety}" title="${pocket.label}"></i>`).join("")}
+    ${skyNegotiationReadiness.handoffConfidenceRails.rails.map((rail) => `<i class="handoff-confidence-rail ${rail.ready ? "ready" : "building"}" style="--i:${rail.index};--c:${rail.confidence}" title="${rail.label}: ${rail.confidence}"></i>`).join("")}
+    ${skyNegotiationReadiness.returnVowThreads.threads.map((thread) => `<i class="return-vow-thread ${thread.sealed ? "sealed" : "loose"}" style="--x:${thread.x};--y:${thread.y};--lock:${thread.lock}" title="${thread.label}"></i>`).join("")}
   `;
 }
 
@@ -177,12 +201,18 @@ function renderTelemetry(domain) {
     ...domain.flightplanReadability.energyBudget.segments.map((segment) => `<li class="${segment.stable ? "open" : "sealed"}"><strong>${segment.stable ? "✓" : "·"}</strong> ${segment.label} reserve</li>`),
     ...domain.flightplanReadability.riskRewardCards.cards.map((card) => `<li class="${card.state === "danger" ? "sealed" : "open"}"><strong>${card.state === "danger" ? "!" : "✓"}</strong> ${card.label}</li>`)
   ].join("");
+  skyNegotiationList.innerHTML = [
+    ...domain.skyNegotiationReadiness.jetstreamBraids.braids.filter((braid) => braid.usable).slice(0, 2).map((braid) => `<li class="open"><strong>✓</strong> ${braid.label}</li>`),
+    ...domain.skyNegotiationReadiness.stormShelfWarnings.shelves.filter((shelf) => shelf.active).slice(0, 2).map((shelf) => `<li class="sealed"><strong>!</strong> ${shelf.label}</li>`),
+    ...domain.skyNegotiationReadiness.handoffConfidenceRails.rails.slice(-2).map((rail) => `<li class="${rail.ready ? "open" : "sealed"}"><strong>${rail.ready ? "✓" : "·"}</strong> ${rail.label} confidence</li>`)
+  ].join("");
   debugStrip.textContent = JSON.stringify({
     nexusEngineCdn: NEXUS_ENGINE_CDN,
     nexusEngineExportCount: Object.keys(NexusEngineRuntime).length,
     descriptorCounts: domain.rendererHandoff.descriptorCounts,
     launchRehearsal: domain.launchRehearsal.summary,
     flightplanReadability: domain.flightplanReadability.summary,
+    skyNegotiationReadiness: domain.skyNegotiationReadiness.summary,
     readiness: domain.readiness,
     href: domain.continuityGate.href
   }, null, 2);
@@ -238,6 +268,7 @@ globalThis.GameHost = {
   },
   getLaunchRehearsal: () => describe().launchRehearsal,
   getFlightplanReadability: () => describe().flightplanReadability,
+  getSkyNegotiationReadiness: () => describe().skyNegotiationReadiness,
   launch: () => { globalThis.location.href = describe().continuityGate.href; },
   reset: resetGateway
 };
