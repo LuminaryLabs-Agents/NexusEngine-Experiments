@@ -39,7 +39,9 @@ function formatStatus(snapshot) {
   const shards = session.resources["signal-shards"] ?? 0;
   const mode = session.completed ? "complete" : session.failed ? "failed" : session.phase;
   const visualCount = snapshot.visualFractal?.rendererHandoff?.counts?.signalThreads ?? 0;
-  return `${objective} · ${mode} · scan ${scans}/3 · shards ${shards} · flow ${visualCount}`;
+  const cueCount = snapshot.objectiveReadability?.rendererHandoff?.counts?.actionCues ?? 0;
+  const routeCount = snapshot.objectiveReadability?.rendererHandoff?.counts?.dependencyThreads ?? 0;
+  return `${objective} · ${mode} · scan ${scans}/3 · shards ${shards} · flow ${visualCount} · cues ${cueCount}/${routeCount}`;
 }
 
 function updateHud(snapshot) {
@@ -47,7 +49,7 @@ function updateHud(snapshot) {
   const rejection = composition.getLastRejection();
   controlsEl.textContent = rejection
     ? `Blocked: ${rejection.reason} · F/Mouse scan · E interact · B build · R reset`
-    : "F/Mouse scan · E interact/harvest/cargo · B build · WASD move · R reset";
+    : "F/Mouse scan · E interact/harvest/cargo · B build · WASD move · R reset · objective ribbons live";
 }
 
 function frame(now) {
@@ -80,7 +82,7 @@ async function boot() {
   input = createSignalIslesInputAdapter({ canvas, composition, renderer });
 
   window.GameHost = createSignalIslesDebugHost({ composition, renderer, input, nexusRuntimeDescriptor });
-  statusEl.textContent = "Restore signal · kit stack ready · NexusEngine CDN linked";
+  statusEl.textContent = "Restore signal · objective readability ready · NexusEngine CDN linked";
   controlsEl.textContent = "Click for pointer lock · F/Mouse scan · E interact · B build · R reset";
 
   requestAnimationFrame(frame);
