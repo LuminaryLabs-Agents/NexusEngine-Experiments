@@ -1,3 +1,4 @@
+import * as NexusEngine from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js";
 import { signalIslesLevel01 } from "./level-01.js";
 import { signalIslesPreset } from "./signal-isles-preset.js";
 import { signalIslesSequences } from "./sequences.js";
@@ -6,11 +7,18 @@ import { createSignalIslesRenderer } from "./renderer.js";
 import { createSignalIslesInputAdapter } from "./input-adapter.js";
 import { createSignalIslesDebugHost } from "./debug-host.js";
 
+export const NEXUS_ENGINE_RUNTIME_CDN = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js";
+
 const canvas = document.querySelector("#game");
 const statusEl = document.querySelector("#status");
 const controlsEl = document.querySelector("#controls");
 const errorPanel = document.querySelector("#errorPanel");
 const errorText = document.querySelector("#errorText");
+const nexusRuntimeDescriptor = Object.freeze({
+  source: NEXUS_ENGINE_RUNTIME_CDN,
+  exportCount: Object.keys(NexusEngine ?? {}).length,
+  label: "NexusEngine main CDN"
+});
 
 let running = true;
 let lastTime = performance.now();
@@ -30,7 +38,8 @@ function formatStatus(snapshot) {
   const scans = snapshot.scanCompletedCount;
   const shards = session.resources["signal-shards"] ?? 0;
   const mode = session.completed ? "complete" : session.failed ? "failed" : session.phase;
-  return `${objective} · ${mode} · scan ${scans}/3 · shards ${shards}`;
+  const visualCount = snapshot.visualFractal?.rendererHandoff?.counts?.signalThreads ?? 0;
+  return `${objective} · ${mode} · scan ${scans}/3 · shards ${shards} · flow ${visualCount}`;
 }
 
 function updateHud(snapshot) {
@@ -70,8 +79,8 @@ async function boot() {
 
   input = createSignalIslesInputAdapter({ canvas, composition, renderer });
 
-  window.GameHost = createSignalIslesDebugHost({ composition, renderer, input });
-  statusEl.textContent = "Restore signal · kit stack ready";
+  window.GameHost = createSignalIslesDebugHost({ composition, renderer, input, nexusRuntimeDescriptor });
+  statusEl.textContent = "Restore signal · kit stack ready · NexusEngine CDN linked";
   controlsEl.textContent = "Click for pointer lock · F/Mouse scan · E interact · B build · R reset";
 
   requestAnimationFrame(frame);
