@@ -1,3 +1,4 @@
+import "./cavalry-logistics-readiness-domain-kits-smoke.mjs";
 import assert from "node:assert/strict";
 import {
   CAVALRY_BATTLEFIELD_ORDERS_DOMAIN_TREE,
