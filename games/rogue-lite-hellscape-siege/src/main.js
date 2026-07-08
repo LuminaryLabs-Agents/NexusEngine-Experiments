@@ -1,5 +1,7 @@
+import * as NexusEngineRuntime from 'https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js';
 import { createRealtimeGame } from './protokits/runtime.js';
 import {
+  config,
   createInputKit,
   createRealmKit,
   createAvatarKit,
@@ -10,11 +12,18 @@ import {
   createFxKit,
   createHellscapeSiegeKit
 } from './protokits/hellscape-kits.js';
+import { createHellscapeSiegeFractalDomainKit } from './hellscape-siege-fractal-domain-kit.js';
 import { createCanvasRenderer } from './renderer/canvas-renderer.js';
+
+const NEXUS_ENGINE_RUNTIME = Object.freeze({
+  source: 'https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js',
+  module: NexusEngineRuntime
+});
 
 const canvas = document.querySelector('#game');
 const errorPanel = document.querySelector('#errorPanel');
 const renderer = createCanvasRenderer(canvas);
+const visualFractalDomain = createHellscapeSiegeFractalDomainKit();
 const down = new Set();
 const pressed = new Set();
 
@@ -96,15 +105,36 @@ function flushInput() {
   });
 }
 
+function describeVisualFractal(state) {
+  return visualFractalDomain.describe({
+    ...state,
+    buildCatalog: config.builds,
+    time: engine.world.clock.elapsed
+  });
+}
+
+function snapshot() {
+  const state = engine.getState();
+  state.clock = engine.world.clock;
+  state.nexusEngineRuntime = {
+    source: NEXUS_ENGINE_RUNTIME.source,
+    loaded: Boolean(NEXUS_ENGINE_RUNTIME.module)
+  };
+  state.visualFractal = describeVisualFractal(state);
+  state.domain = {
+    ...(state.domain ?? {}),
+    hellscapeSiegeFractal: state.visualFractal
+  };
+  return state;
+}
+
 function frame(now) {
   try {
     const dt = Math.min(0.033, (now - (frame.last || now)) / 1000 || 1 / 60);
     frame.last = now;
     flushInput();
     engine.tick(dt);
-    const state = engine.getState();
-    state.clock = engine.world.clock;
-    renderer.draw(state);
+    renderer.draw(snapshot());
     requestAnimationFrame(frame);
   } catch (error) {
     showError(error);
@@ -133,7 +163,11 @@ canvas.addEventListener('context' + 'menu', event => event.preventDefault());
 
 window.GameHost = {
   engine,
-  getState: () => engine.getState(),
+  nexusEngineRuntime: NEXUS_ENGINE_RUNTIME,
+  visualFractalDomain,
+  getState: snapshot,
+  getVisualFractal: () => describeVisualFractal(engine.getState()),
+  getRendererHandoff: () => describeVisualFractal(engine.getState()).rendererHandoff,
   startWave: () => engine.waves.start(),
   add: (id, n = 10) => engine.inventory.add(id, n),
   selectBuild: (index = 0) => engine.build.select(index),
