@@ -12,13 +12,16 @@ assert.doesNotMatch(boot, /LuminaryLabs-Dev\/NexusRealtime@main\/src\/index\.js/
 assert.match(boot, /createSignalBastionCommandFractalDomainKit/, "boot should create the command fractal domain kit");
 assert.match(boot, /getCommandFractal/, "GameHost should expose command fractal state");
 assert.match(boot, /getRendererHandoff/, "GameHost should expose renderer handoff state");
-assert.match(boot, /domain: \{ \.\.\.\(presentation\.domain \?\? \{\}\), signalBastionCommandFractal: commandFractal \}/, "presentation should expose command fractal under domain state");
+assert.match(boot, /signalBastionCommandFractal: commandFractal/, "presentation should expose command fractal under domain state");
+assert.match(boot, /signalBastionWaveChoreography: waveChoreography/, "presentation should expose wave choreography under domain state");
+assert.match(boot, /signalBastionFrontlineTactics: frontlineTactics/, "presentation should expose frontline tactics under domain state");
 assert.match(renderer, /drawCommandFractal/, "renderer should have a presentation-only command fractal drawing pass");
 assert.match(renderer, /presentation\.commandFractal\?\.rendererHandoff\?\.descriptors/, "renderer should consume command fractal descriptors");
 assert.doesNotMatch(renderer, /createRealtimeGame|createGenericDefense|engine\./, "renderer should not own engine or domain factories");
 assert.match(kitSource, /rendererConsumesDescriptorsOnly: true/, "handoff kit should declare descriptor-only renderer policy");
 assert.match(kitSource, /noFrameLoopOwnership: true/, "handoff kit should reject frame-loop ownership");
-assert.match(manifest, /signal-bastion-command-fractal-domain-kit/, "manifest should list the new command fractal domain kit");
+assert.match(manifest, /signal-bastion-command-fractal-domain-kit/, "manifest should list the command fractal domain kit");
+assert.match(manifest, /signal-bastion-frontline-tactics-domain-kit/, "manifest should list the frontline tactics domain kit");
 
 function makeState(index) {
   return {
