@@ -96,6 +96,23 @@ function drawGroundFractals(ctx, snapshot, project) {
     ctx.ellipse(p.x, p.y, clamp(mottle.radius * p.scale, 4, 90), clamp(mottle.radius * 0.34 * p.scale, 2, 26), mottle.rotation ?? 0, 0, Math.PI * 2);
     ctx.fill();
   }
+  for (const breadcrumb of snapshot.visualFractal?.memoryBreadcrumbs ?? []) {
+    const p = project(breadcrumb.position, 0.035);
+    if (!p) continue;
+    ctx.fillStyle = rgba(breadcrumb.color, breadcrumb.opacity * p.alpha, [157, 234, 255]);
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, clamp(breadcrumb.radius * p.scale, 3, 18), 0, Math.PI * 2);
+    ctx.fill();
+  }
+  for (const pocket of snapshot.visualFractal?.safePockets ?? []) {
+    const p = project(pocket.position, 0.04);
+    if (!p) continue;
+    ctx.strokeStyle = rgba(pocket.color, pocket.opacity * p.alpha, [186, 252, 255]);
+    ctx.lineWidth = Math.max(1, p.scale * 0.012);
+    ctx.beginPath();
+    ctx.ellipse(p.x, p.y, clamp(pocket.radius * p.scale, 8, 180), clamp(pocket.radius * 0.34 * p.scale, 4, 60), 0, 0, Math.PI * 2);
+    ctx.stroke();
+  }
   for (const thread of snapshot.visualFractal?.routeThreads ?? []) {
     const p = project(thread.position, 0.03);
     if (!p) continue;
@@ -108,7 +125,23 @@ function drawGroundFractals(ctx, snapshot, project) {
   }
 }
 
+function drawScanCone(ctx, cone, project) {
+  const p = project(cone.position, 0.12);
+  if (!p) return;
+  ctx.save();
+  ctx.translate(p.x, p.y);
+  ctx.rotate(cone.yaw ?? 0);
+  ctx.fillStyle = rgba(cone.color, cone.opacity * p.alpha, [186, 252, 255]);
+  ctx.beginPath();
+  ctx.moveTo(0, 0);
+  ctx.arc(0, 0, clamp(cone.length * p.scale, 30, 280), -cone.angle, cone.angle);
+  ctx.closePath();
+  ctx.fill();
+  ctx.restore();
+}
+
 function drawSignalFractals(ctx, snapshot, project) {
+  for (const cone of snapshot.visualFractal?.scanCones ?? []) drawScanCone(ctx, cone, project);
   for (const shaft of snapshot.visualFractal?.canopyShafts ?? []) {
     const p = project(shaft.position, shaft.height * 0.45);
     if (!p) continue;
@@ -120,6 +153,19 @@ function drawSignalFractals(ctx, snapshot, project) {
     ctx.beginPath();
     ctx.ellipse(p.x, p.y, radius * 0.72, radius * 1.9, 0, 0, Math.PI * 2);
     ctx.fill();
+  }
+  for (const needle of snapshot.visualFractal?.objectiveNeedles ?? []) {
+    const p = project(needle.position, needle.height ?? 2.4);
+    if (!p) continue;
+    ctx.strokeStyle = rgba(needle.color, needle.opacity * p.alpha, [119, 243, 255]);
+    ctx.lineWidth = Math.max(2, p.scale * 0.022);
+    ctx.beginPath();
+    ctx.moveTo(p.x, p.y);
+    ctx.lineTo(p.x, p.y - clamp((needle.height ?? 3) * p.scale, 18, 150));
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, clamp(needle.radius * p.scale, 10, 160), 0, Math.PI * 2);
+    ctx.stroke();
   }
   for (const sigil of snapshot.visualFractal?.gateSigils ?? []) {
     const p = project(sigil.position, 0.08);
@@ -138,6 +184,19 @@ function drawSignalFractals(ctx, snapshot, project) {
     ctx.beginPath();
     ctx.arc(p.x, p.y, clamp(aura.radius * p.scale, 8, 150), 0, Math.PI * 2);
     ctx.stroke();
+  }
+  for (const pressure of snapshot.visualFractal?.pressureVignettes ?? []) {
+    const p = project(pressure.position, 1.1);
+    if (!p) continue;
+    const radius = clamp(pressure.radius * p.scale, 32, 280);
+    const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, radius);
+    g.addColorStop(0, "rgba(0,0,0,0)");
+    g.addColorStop(0.58, rgba(pressure.color, pressure.opacity * 0.28 * p.alpha, [255, 80, 104]));
+    g.addColorStop(1, rgba(pressure.color, pressure.opacity * p.alpha, [255, 80, 104]));
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
+    ctx.fill();
   }
   for (const echo of snapshot.visualFractal?.wraithEchoes ?? []) {
     const p = project(echo.position, 1.2);
