@@ -30,7 +30,8 @@ async function boot() {
     getState: game.snapshot,
     tick: game.update,
     getSurvivalReadability: () => game.snapshot().survivalReadability,
-    getRendererHandoff: () => game.snapshot().survivalReadability?.rendererHandoff
+    getForagingReadability: () => game.snapshot().foragingReadability,
+    getRendererHandoff: () => game.snapshot().rendererHandoff
   };
 }
 
