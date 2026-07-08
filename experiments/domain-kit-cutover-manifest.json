@@ -115,10 +115,10 @@
       "id": "signal-bastion",
       "kind": "game",
       "canonicalPath": "games/signal-bastion/",
-      "status": "command-fractal-readability-handoff-pass",
-      "domainCutover": ["generic-defense-aaa-kits", "generic-defense-presentation-stack-kit", "signal-bastion-command-fractal-domain-kit"],
-      "bridgeNeeded": "browser host imports NexusEngine main via CDN; command fractal kits emit descriptors consumed by canvas presentation only",
-      "featureParity": ["2.5D oblique renderer", "placement ghost", "range rings", "30 waves", "command fractal descriptors"]
+      "status": "wave-choreography-readability-handoff-pass",
+      "domainCutover": ["generic-defense-aaa-kits", "generic-defense-presentation-stack-kit", "signal-bastion-command-fractal-domain-kit", "signal-bastion-wave-choreography-domain-kit"],
+      "bridgeNeeded": "browser host imports NexusEngine main via CDN; command and wave choreography kits emit renderer-compatible descriptor groups consumed by the existing canvas command-fractal presentation only",
+      "featureParity": ["2.5D oblique renderer", "placement ghost", "range rings", "30 waves", "command fractal descriptors", "spawn cadence rails", "leak risk funnels", "coverage gap cells", "upgrade priority pins", "panic reserve meter", "projectile tempo sparks"]
     },
     {
       "id": "rogue-lite-hellscape-siege",
