@@ -33,6 +33,18 @@ const inventoryKit = {
   }
 };
 
+function normalizeHostState(raw = {}) {
+  return {
+    ...raw,
+    currentSceneId: raw.currentSceneId ?? raw.currentScene ?? activeSceneId(),
+    visitedSceneIds: raw.visitedSceneIds ?? raw.visitedScenes ?? [activeSceneId()],
+    blockedLedger: raw.blockedLedger ?? raw.blockedTransitions ?? [],
+    actionLedger: raw.actionLedger ?? raw.actions ?? [],
+    transitionLedger: raw.transitionLedger ?? raw.acceptedTransitions ?? [],
+    log: raw.log ?? raw.latestLog ?? []
+  };
+}
+
 function ensureOraclePanel() {
   let panel = document.querySelector("#oracle-panel");
   if (!panel) {
@@ -97,8 +109,8 @@ function patchGameHost(oracleDomainKit) {
   const host = globalThis.GameHost;
   if (!host || host.__oracleReadabilityPatched) return;
   const previousRendererHandoff = host.getRendererHandoff?.bind(host);
-  const describeLiveOracle = () => oracleDomainKit.describe(activeSceneId(), host.getState?.() ?? {});
-  host.getOracleReadabilityDomain = () => oracleDomainKit.snapshot(activeSceneId(), host.getState?.() ?? {});
+  const describeLiveOracle = () => oracleDomainKit.describe(activeSceneId(), normalizeHostState(host.getState?.() ?? {}));
+  host.getOracleReadabilityDomain = () => oracleDomainKit.snapshot(activeSceneId(), normalizeHostState(host.getState?.() ?? {}));
   host.getOracleReadability = () => describeLiveOracle();
   host.getRendererHandoff = () => {
     const handoff = describeLiveOracle();
@@ -122,7 +134,7 @@ async function bootOracleReadability() {
   const oracleDomainKit = createSceneOracleReadabilityDomainKit({ manifestKit: makeManifestKit(scenes), inventoryKit });
   const render = () => {
     const host = globalThis.GameHost;
-    const state = host?.getState?.() ?? {};
+    const state = normalizeHostState(host?.getState?.() ?? {});
     const handoff = oracleDomainKit.describe(activeSceneId(), state);
     renderOracleStage(handoff);
     renderOraclePanel(handoff);
