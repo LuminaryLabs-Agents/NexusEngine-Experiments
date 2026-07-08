@@ -14,7 +14,7 @@ const existingFlightplanSmoke = fs.readFileSync(new URL("./sora-flightplan-reada
 const cdn = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js";
 assert.ok(gateway.includes(cdn), "changed Sora gateway should import NexusEngine main CDN");
 assert.equal(gateway.includes("LuminaryLabs-Dev/NexusRealtime"), false, "changed gateway should not import old NexusRealtime runtime");
-assert.ok(indexHtml.includes("sky-negotiation-readiness-v1"), "route shell should cache-bust sky negotiation readiness entry");
+assert.ok(indexHtml.includes("sky-rescue-readiness-v1"), "route shell should cache-bust current Sora readiness entries");
 assert.ok(indexHtml.includes("sky-negotiation-list"), "route shell should expose sky negotiation telemetry");
 assert.ok(gateway.includes("createSoraSkyNegotiationReadinessDomainKit"), "gateway should import sky negotiation domain kit");
 assert.ok(gateway.includes("getSkyNegotiationReadiness"), "GameHost should expose sky negotiation readiness state");
