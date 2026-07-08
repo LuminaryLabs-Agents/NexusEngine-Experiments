@@ -52,10 +52,10 @@
       "id": "infinite-radial-terrain",
       "kind": "experiment",
       "canonicalPath": "experiments/infinite-radial-terrain/",
-      "status": "wayfinding-readability-handoff-pass",
-      "domainCutover": ["infinite-radial-terrain-visual-domain-kit", "terrain-expedition-readability-domain-kit", "terrain-wayfinding-readability-domain-kit"],
-      "bridgeNeeded": "browser host imports NexusEngine main via CDN; radial terrain visual, expedition readability, and wayfinding readability domains emit survey, altitude, ridge, hazard, sample, route, bearing, landmark, slope, biome, return, and drift descriptors consumed by presentation-only Three and DOM overlays",
-      "featureParity": ["camera flight", "radial LOD rings", "biome mosaic", "survey transect descriptors", "altitude corridor descriptors", "route task bands", "bearing needles", "horizon landmarks", "slope choice ribbons", "biome transition gates", "origin return anchors", "stamina drift meters"]
+      "status": "survey-contract-readiness-renderer-handoff-pass",
+      "domainCutover": ["infinite-radial-terrain-visual-domain-kit", "terrain-expedition-readability-domain-kit", "terrain-wayfinding-readability-domain-kit", "terrain-survey-contract-readiness-domain-kit"],
+      "bridgeNeeded": "browser host imports NexusEngine main via CDN; radial terrain visual, expedition readability, wayfinding readability, and survey contract readiness domains emit survey, altitude, ridge, hazard, sample, route, bearing, landmark, slope, biome, return, drift, survey contract, tempo, fork, pledge, sample chain, and return confidence descriptors consumed by presentation-only Three and DOM overlays",
+      "featureParity": ["camera flight", "radial LOD rings", "biome mosaic", "survey transect descriptors", "altitude corridor descriptors", "route task bands", "bearing needles", "horizon landmarks", "slope choice ribbons", "biome transition gates", "origin return anchors", "stamina drift meters", "survey contract steps", "waypoint tempo rings", "risk reward forks", "altitude pledge bands", "sample chain ghosts", "return confidence compass", "GameHost composed renderer handoff"]
     },
     {
       "id": "the-open-above",
