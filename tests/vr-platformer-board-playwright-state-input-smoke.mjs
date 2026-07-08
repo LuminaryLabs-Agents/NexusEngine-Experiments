@@ -1,9 +1,12 @@
+import "./vr-board-skill-rhythm-readiness-kits-smoke.mjs";
+import "./vr-board-skill-rhythm-readiness-cdn-state-input-smoke.mjs";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
 const index = readFileSync("experiments/vr-platformer-board/index.html", "utf8");
 const visualKits = readFileSync("experiments/_kits/vr-platformer-board/vr-platformer-board-kits.js", "utf8");
 const traversalKits = readFileSync("experiments/_kits/vr-platformer-board/vr-board-traversal-readability-kits.js", "utf8");
+const skillKits = readFileSync("experiments/_kits/vr-platformer-board/vr-board-skill-rhythm-readiness-kits.js", "utf8");
 
 assert.ok(index.includes("https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js"));
 assert.ok(!index.includes("LuminaryLabs-Dev/NexusRealtime@main/src/index.js"));
@@ -42,9 +45,22 @@ const expectedTraversalKits = [
   "createVrBoardTempoPulseBandKit",
   "createVrBoardControlCoachingStripKit",
   "createVrBoardTraversalRendererHandoffKit",
-  "createVrBoardTraversalReadabilityDomainKit"
+  "createVrBoardTraversalReadabilityDomainKit",
+  "skillRhythmReadiness: rendererHandoff.descriptors.skillRhythmReadiness"
 ];
 for (const kit of expectedTraversalKits) assert.ok(traversalKits.includes(kit), kit);
+
+const expectedSkillKits = [
+  "createVrBoardJumpTimingGateKit",
+  "createVrBoardAirControlVectorKit",
+  "createVrBoardCoinComboLaneKit",
+  "createVrBoardHazardHesitationFieldKit",
+  "createVrBoardCheckpointSaveEchoKit",
+  "createVrBoardExitCommitmentCrestKit",
+  "createVrBoardSkillRhythmRendererHandoffKit",
+  "createVrBoardSkillRhythmReadinessDomainKit"
+];
+for (const kit of expectedSkillKits) assert.ok(skillKits.includes(kit), kit);
 
 const intakes = Array.from({ length: 10 }, (_, index) => ({
   dt: index % 2 ? 1 / 60 : 1 / 30,
@@ -52,7 +68,11 @@ const intakes = Array.from({ length: 10 }, (_, index) => ({
     moveAxis: index % 3 === 0 ? -1 : index % 3 === 1 ? 0 : 1,
     jumpPressed: index === 2 || index === 5,
     restartPressed: index === 8,
-    head: { position: { x: Math.max(-0.22, Math.min(0.22, -0.1 + index * 0.02)), y: Math.max(1.35, Math.min(1.9, 1.45 + index * 0.04)), z: 0 } }
+    head: { position: { x: Math.max(-0.22, Math.min(0.22, -0.1 + index * 0.02)), y: Math.max(1.35, Math.min(1.9, 1.45 + index * 0.04)), z: 0 } },
+    skillRhythm: {
+      jumpGateReadiness: Math.max(0, Math.min(1, 0.18 + index * 0.08)),
+      exitCommitment: Math.max(0, Math.min(1, index / 9))
+    }
   }
 }));
 
@@ -62,6 +82,8 @@ for (const intake of intakes) {
   assert.equal(typeof intake.input.jumpPressed, "boolean");
   assert.equal(typeof intake.input.restartPressed, "boolean");
   assert.ok(intake.input.head.position.y >= 1.35 && intake.input.head.position.y <= 1.9);
+  assert.ok(intake.input.skillRhythm.jumpGateReadiness >= 0 && intake.input.skillRhythm.jumpGateReadiness <= 1);
+  assert.ok(intake.input.skillRhythm.exitCommitment >= 0 && intake.input.skillRhythm.exitCommitment <= 1);
 }
 
-console.log("vr platformer board NexusEngine CDN playwright/state-input smoke passed: 10 intake cases with traversal handoff");
+console.log("vr platformer board NexusEngine CDN playwright/state-input smoke passed: 10 intake cases with traversal and skill rhythm handoff");
