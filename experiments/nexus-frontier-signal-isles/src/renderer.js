@@ -199,6 +199,16 @@ export async function createSignalIslesRenderer({ canvas, level, preset }) {
     visualLayer.add(mesh);
   }
 
+  function drawObjectiveReadabilityDescriptors(snapshot) {
+    const descriptors = snapshot.objectiveReadability?.rendererHandoff?.descriptors ?? snapshot.domain?.signalIslesObjectiveReadability?.rendererHandoff?.descriptors ?? {};
+    for (const pocket of descriptors.safePockets ?? []) if (pocket.active) addGroundDisc(pocket, 0.07 + Number(pocket.safety ?? 0) * 0.12);
+    for (const cue of descriptors.actionCues ?? []) addGroundRing({ ...cue, intensity: cue.eligible ? 0.78 : 0.28 }, cue.eligible ? 0.46 : 0.2);
+    for (const beat of descriptors.objectiveBeats ?? []) if (beat.active || beat.complete) addGroundRing({ ...beat, intensity: beat.active ? 0.85 : 0.35 }, beat.active ? 0.44 : 0.16);
+    for (const delta of descriptors.resourceDeltas ?? []) addGroundRing({ ...delta, intensity: delta.ready ? 0.72 : 0.32 }, delta.ready ? 0.34 : 0.18);
+    for (const thread of descriptors.dependencyThreads ?? []) addThread(thread);
+    for (const ribbon of descriptors.cargoRibbons ?? []) addThread(ribbon);
+  }
+
   function drawVisualDescriptors(snapshot) {
     clearLayer(visualLayer);
     const descriptors = snapshot.visualFractal?.rendererHandoff?.descriptors ?? {};
@@ -208,6 +218,7 @@ export async function createSignalIslesRenderer({ canvas, level, preset }) {
     for (const ghost of descriptors.buildGhosts ?? []) addGroundRing(ghost, ghost.placed ? 0.18 : 0.44);
     for (const shard of descriptors.resourceShards ?? []) addShard(shard);
     for (const compass of descriptors.compass ?? []) addThread({ from: compass.from, to: compass.to, strength: 0.65 + Number(compass.progress ?? 0) * 0.35, color: compass.color });
+    drawObjectiveReadabilityDescriptors(snapshot);
   }
 
   function draw(snapshot) {
