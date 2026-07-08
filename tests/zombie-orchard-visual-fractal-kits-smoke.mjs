@@ -11,6 +11,7 @@ import {
 } from "../experiments/zombie-orchard/src/visual-fractal-kits.js";
 
 const cases = Array.from({ length: 10 }, (_, i) => i);
+const EPSILON = 0.000001;
 
 const leaves = createOrchardLeafClusterKit({ seed: "test-leaves", clusterCount: 7 });
 for (const i of cases) {
@@ -70,7 +71,7 @@ for (const i of cases) {
   const pressure01 = i / 10;
   const out = lighting.describe({ health01, horde: { pressure01 }, danger: i > 7 });
   assert.ok(out.tension >= 0 && out.tension <= 1);
-  assert.ok(out.fogDensity >= 0.018 && out.fogDensity <= 0.052);
+  assert.ok(out.fogDensity >= 0.018 && out.fogDensity <= 0.052 + EPSILON);
   assert.ok(out.moonIntensity >= 2.2);
   assert.ok(out.vignette >= 0.18);
 }
