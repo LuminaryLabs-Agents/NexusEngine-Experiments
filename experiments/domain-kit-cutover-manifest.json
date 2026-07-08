@@ -16,10 +16,10 @@
       "id": "peer-scene-transition",
       "kind": "experiment",
       "canonicalPath": "experiments/peer-scene-transition/",
-      "status": "peer-scene-consequence-fractal-handoff-pass",
-      "domainCutover": ["core-scene-kit", "scene-host-contract", "peer-scene-domain-kit", "scene-renderer-handoff-kit", "scene-chronicle-domain-kit", "scene-consequence-domain-kit"],
-      "bridgeNeeded": "browser host imports NexusEngine main via CDN; renderer consumes base, atmospheric, chronicle, and consequence descriptors only while route solving and inventory truth stay in domain kits",
-      "featureParity": ["scene routes", "lantern gate", "forest puzzle", "bridge puzzle", "shrine puzzle", "chronicle descriptors", "consequence descriptors"]
+      "status": "decision-readability-renderer-handoff-pass",
+      "domainCutover": ["core-scene-kit", "scene-host-contract", "peer-scene-domain-kit", "scene-renderer-handoff-kit", "scene-chronicle-domain-kit", "scene-consequence-domain-kit", "scene-decision-readability-domain-kit"],
+      "bridgeNeeded": "browser host imports NexusEngine main via CDN; renderer consumes base, atmospheric, chronicle, consequence, and decision-readability descriptors only while route solving, action eligibility, inventory truth, and decision ranking stay in domain kits",
+      "featureParity": ["scene routes", "lantern gate", "forest puzzle", "bridge puzzle", "shrine puzzle", "chronicle descriptors", "consequence descriptors", "action likelihood radars", "gate requirement ladders", "inventory use echoes", "pressure release windows", "narrative thread pins", "exit choice scorecards"]
     },
     {
       "id": "the-cavalry-of-rome",
