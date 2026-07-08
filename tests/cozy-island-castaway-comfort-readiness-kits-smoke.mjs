@@ -1,4 +1,5 @@
 import "./cozy-island-tidepool-conservatory-readiness-kits-smoke.mjs";
+import "./cozy-island-sea-turtle-hatchery-readiness-kits-smoke.mjs";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import {
