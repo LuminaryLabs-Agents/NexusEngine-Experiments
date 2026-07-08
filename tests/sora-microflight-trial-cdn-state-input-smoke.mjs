@@ -13,7 +13,7 @@ const oldRuntimeCdn = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusRealtim
 
 assert.ok(routeHtml.includes("sora-microflight-trial-style.css"), "route loads microflight trial styles");
 assert.ok(routeHtml.includes("sora-microflight-trial-entry.js"), "route loads microflight trial entry");
-assert.ok(routeHtml.includes("microflight-trial-readiness-v1"), "route cache-busts microflight trial assets");
+assert.ok(routeHtml.includes("sky-rescue-readiness-v1"), "route cache-busts current Sora readiness assets");
 assert.ok(entrySource.includes(nexusEngineCdn), "microflight trial entry imports NexusEngine main CDN");
 assert.ok(!entrySource.includes(oldRuntimeCdn), "microflight trial entry does not import old NexusRealtime CDN");
 assert.ok(!kitSource.includes(oldRuntimeCdn), "microflight trial kit does not import old NexusRealtime CDN");
