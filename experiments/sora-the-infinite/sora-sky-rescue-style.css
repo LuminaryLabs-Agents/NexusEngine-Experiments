@@ -87,7 +87,7 @@
   left: var(--x);
   top: var(--y);
   width: var(--d);
-  height: calc(var(--d) * 0.45);
+  height: 14px;
   border-radius: 999px;
   transform: translate(-50%, -50%);
   background: rgba(212, 238, 255, calc(0.24 + var(--v) * 0.42));
