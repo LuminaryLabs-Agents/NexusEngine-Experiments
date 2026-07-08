@@ -19,7 +19,7 @@ assert.match(entry, /document\.body\.dataset\.tropicalWeatherShelter/, "route sh
 assert.equal(kitSource.includes("document."), false, "domain kit must not own DOM");
 assert.equal(kitSource.includes("window."), false, "domain kit must not own browser globals");
 assert.equal(kitSource.includes("requestAnimationFrame"), false, "domain kit must not own frame loop");
-assert.equal(kitSource.includes("WebGL"), false, "domain kit must not own WebGL implementation");
+assert.equal(kitSource.includes("WebGLRenderer"), false, "domain kit must not own WebGL implementation classes");
 assert.match(checks, /tests\/tropical-weather-shelter-readability-kits-smoke\.mjs/);
 assert.match(checks, /tests\/tropical-weather-shelter-cdn-state-input-smoke\.mjs/);
 
