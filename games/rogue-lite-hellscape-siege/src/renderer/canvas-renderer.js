@@ -207,6 +207,43 @@ function drawHellscapeInfernalContract(ctx, infernalContractReadiness) {
   }
 }
 
+function drawHellscapeAshCaravan(ctx, ashCaravanReadiness) {
+  const descriptors = ashCaravanReadiness?.rendererHandoff?.descriptors ?? {};
+
+  for (const column of descriptors.survivorCaravanColumns || []) {
+    line(ctx, column.from, column.via, column.color, 0.07 + column.panic * 0.1, 1 + column.panic * 1.5);
+    line(ctx, column.via, column.to, column.color, 0.08 + column.panic * 0.14, 1.2 + column.panic * 2);
+    ring(ctx, column.via, column.radius, column.color, column.blocked ? 0.2 : 0.08 + column.panic * 0.12, column.blocked ? 2.4 : 1.2);
+  }
+
+  for (const chain of descriptors.soulLanternChains || []) {
+    line(ctx, chain.from, chain.to, chain.color, 0.06 + chain.strength * 0.1, 0.9 + chain.strength * 1.7);
+    for (const lantern of chain.lanterns || []) {
+      circle(ctx, lantern.x, lantern.y, 3 + chain.strength * 3 + Math.sin(chain.pulse || 0) * 0.8, chain.color, 0.16 + chain.strength * 0.28);
+    }
+  }
+
+  for (const breach of descriptors.hellgateBreaches || []) {
+    ring(ctx, breach.center, breach.radius, breach.color, 0.05 + breach.severity * 0.16, 1.1 + breach.severity * 2);
+    line(ctx, breach.center, breach.target, breach.color, 0.04 + breach.severity * 0.12, 1 + breach.severity * 1.3);
+  }
+
+  for (const shelter of descriptors.ashShelterPockets || []) {
+    ring(ctx, shelter.center, shelter.radius, shelter.color, shelter.compromised ? 0.06 : 0.07 + shelter.shelter * 0.14, shelter.compromised ? 0.9 : 1.2 + shelter.shelter * 1.5);
+    ring(ctx, shelter.center, shelter.radius * 0.58, shelter.color, 0.03 + shelter.shelter * 0.08, 0.8);
+  }
+
+  for (const cache of descriptors.brimstoneRationCaches || []) {
+    line(ctx, cache.from, cache.center, cache.color, 0.05 + cache.value * 0.12, 0.8 + cache.value * 1.7);
+    circle(ctx, cache.center.x, cache.center.y, 3 + cache.value * 5, cache.color, cache.urgent ? 0.42 : 0.2 + cache.value * 0.16);
+  }
+
+  for (const circleDesc of descriptors.dawnExtractionCircles || []) {
+    line(ctx, circleDesc.from, circleDesc.anchor, circleDesc.color, circleDesc.open ? 0.17 : 0.05 + circleDesc.readiness * 0.1, circleDesc.open ? 2.2 : 1 + circleDesc.readiness);
+    ring(ctx, circleDesc.anchor, circleDesc.radius, circleDesc.color, circleDesc.open ? 0.24 : 0.06 + circleDesc.readiness * 0.12, circleDesc.open ? 2.2 : 1.2);
+  }
+}
+
 function resizeCanvas(canvas, ctx) {
   const dpr = Math.min(globalThis.devicePixelRatio || 1, 2);
   const width = Math.max(320, globalThis.innerWidth || 960);
@@ -241,6 +278,7 @@ export function createCanvasRenderer(canvas) {
     drawHellscapeExpedition(ctx, state.expeditionReadability);
     drawHellscapeSiegecraft(ctx, state.siegecraftReadiness);
     drawHellscapeInfernalContract(ctx, state.infernalContractReadiness);
+    drawHellscapeAshCaravan(ctx, state.ashCaravanReadiness);
     if (state.realm?.id === 'lobby') {
       const coreColor = state.wave?.active ? '#ff3300' : '#38bdf8';
       circle(ctx, state.core.x, state.core.y, 46, coreColor, 0.72);
