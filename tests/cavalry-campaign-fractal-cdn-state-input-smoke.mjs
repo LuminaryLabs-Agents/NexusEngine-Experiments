@@ -1,3 +1,5 @@
+import "./cavalry-field-hospital-readiness-kits-smoke.mjs";
+import "./cavalry-field-hospital-cdn-state-input-smoke.mjs";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { createCavalryCampaignFractalDomainKit } from "../experiments/The Cavalry of Rome/src/cavalry-campaign-fractal-domain-kit.js";
@@ -18,12 +20,15 @@ assert.ok(pass.includes("rendererConsumes = \"descriptors-only\""), "presentatio
 assert.ok(kit.includes("renderer consumes descriptors only"), "kit tree should document descriptor-only renderer handoff");
 assert.ok(kit.includes("forbiddenOwnership"), "kit should document forbidden ownership boundaries");
 assert.ok(ordersKit.includes("cavalry-battlefield-orders-domain"), "orders kit should document battlefield orders domain");
-assert.ok(experimentEntry.includes("cavalry-campaign-fractal-handoff-pass.js?v=campaign-034"), "experiment entry should load the Cavalry fractal handoff pass");
-assert.ok(liveEntry.includes("cavalry-campaign-fractal-handoff-pass.js?v=campaign-034"), "live entry should load the Cavalry fractal handoff pass");
-assert.ok(liveEntry.includes("Campaign 034"), "live route should expose the upgraded build stamp");
+assert.ok(experimentEntry.includes("cavalry-campaign-fractal-handoff-pass.js?v=campaign-035"), "experiment entry should load the Cavalry fractal handoff pass");
+assert.ok(liveEntry.includes("cavalry-campaign-fractal-handoff-pass.js?v=campaign-035"), "live entry should load the Cavalry fractal handoff pass");
+assert.ok(liveEntry.includes("cavalry-field-hospital-readiness-pass.js?v=campaign-037"), "live entry should load field hospital readiness pass");
+assert.ok(experimentEntry.includes("cavalry-field-hospital-readiness-pass.js?v=campaign-037"), "experiment entry should load field hospital readiness pass");
+assert.ok(liveEntry.includes("Campaign 035"), "live route should preserve the current build stamp while loading field hospital readiness");
 assert.ok(manifest.includes("the-cavalry-of-rome"), "manifest should include The Cavalry of Rome canonical entry");
 assert.ok(manifest.includes("cavalry-campaign-fractal-domain-kit"), "manifest should list the Cavalry fractal domain kit");
 assert.ok(manifest.includes("cavalry-battlefield-orders-domain-kit"), "manifest should list the Cavalry battlefield orders domain kit");
+assert.ok(manifest.includes("cavalry-field-hospital-readiness-domain-kit"), "manifest should list the Cavalry field hospital domain kit");
 
 const inputCases = Array.from({ length: 10 }, (_, i) => ({
   sizeId: "smoke",
