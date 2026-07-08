@@ -3,6 +3,7 @@ import { createGenericRouteCargoExtractionKit } from "https://cdn.jsdelivr.net/g
 import { createNextLedgeSession as createVisualNextLedgeSession } from "./session-visual-upgrade.js";
 import { createNextLedgeRouteCargoDomainKit } from "./route-cargo-fractal-kits.js";
 import { createNextLedgeTraversalReadabilityDomainKit } from "./traversal-readability-kits.js";
+import { createNextLedgeAnchorTimingReadabilityDomainKit } from "./anchor-timing-readability-kits.js";
 
 function createRuntimeEngine(options = {}) {
   const createEngine = NexusEngine.createRealtimeGame ?? NexusEngine.createRealtimeEngine ?? NexusEngine.createEngine;
@@ -44,6 +45,7 @@ export function createNextLedgeSession(options = {}) {
   const base = createVisualNextLedgeSession(options);
   const cargoDomain = createNextLedgeRouteCargoDomainKit(options.routeCargo ?? {});
   const traversalReadabilityDomain = createNextLedgeTraversalReadabilityDomainKit(options.traversalReadability ?? {});
+  const anchorTimingReadabilityDomain = createNextLedgeAnchorTimingReadabilityDomainKit(options.anchorTimingReadability ?? {});
   let runtime = createCargoRuntime(base.snapshot(), cargoDomain);
   const syncedEvents = new Set();
 
@@ -114,6 +116,7 @@ export function createNextLedgeSession(options = {}) {
     const cargoSnapshot = syncCargoEvents(snapshot);
     const routeCargoVisual = cargoDomain.describe(snapshot, cargoSnapshot);
     const traversalReadability = traversalReadabilityDomain.describe(snapshot, cargoSnapshot);
+    const anchorTimingReadability = anchorTimingReadabilityDomain.describe(snapshot, cargoSnapshot, traversalReadability);
     const visualQuality = snapshot.domain?.visualQuality ?? {};
     return {
       ...snapshot,
@@ -122,6 +125,7 @@ export function createNextLedgeSession(options = {}) {
         routeCargoExtraction: cargoSnapshot,
         routeCargoVisual,
         traversalReadability,
+        anchorTimingReadability,
         visualQuality: {
           ...visualQuality,
           uses: [
@@ -143,10 +147,19 @@ export function createNextLedgeSession(options = {}) {
             "recovery-vector-kit",
             "momentum-window-kit",
             "summit-route-beat-kit",
-            "traversal-readability-renderer-handoff-kit"
+            "traversal-readability-renderer-handoff-kit",
+            "next-ledge-anchor-timing-readability-domain-kit",
+            "anchor-release-timing-dial-kit",
+            "grapple-line-of-sight-strip-kit",
+            "swing-energy-pocket-kit",
+            "wall-bounce-warning-field-kit",
+            "route-commitment-stair-kit",
+            "fail-floor-proximity-wave-kit",
+            "anchor-timing-renderer-handoff-kit"
           ],
           routeCargoDescriptors: routeCargoVisual.rendererHandoff.descriptorCount,
-          traversalReadabilityDescriptors: traversalReadability.rendererHandoff.descriptorCount
+          traversalReadabilityDescriptors: traversalReadability.rendererHandoff.descriptorCount,
+          anchorTimingReadabilityDescriptors: anchorTimingReadability.rendererHandoff.descriptorCount
         }
       }
     };
@@ -177,6 +190,7 @@ export function createNextLedgeSession(options = {}) {
     cargoEngine: runtime.engine,
     routeCargoDomain: cargoDomain,
     traversalReadabilityDomain,
+    anchorTimingReadabilityDomain,
     update,
     snapshot,
     restart,
