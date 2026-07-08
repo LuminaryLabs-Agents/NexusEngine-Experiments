@@ -83,6 +83,7 @@ Added:
 
 Changed:
 
+- `experiments/nexus-frontier-signal-isles/index.html`
 - `experiments/nexus-frontier-signal-isles/src/game-composition.js`
 - `experiments/nexus-frontier-signal-isles/src/renderer.js`
 - `experiments/nexus-frontier-signal-isles/src/main.js`
@@ -118,6 +119,7 @@ npm run check:deploy
 - Changed route runtime imports NexusEngine main CDN:
   - `https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js`
 - Changed route runtime does not include the old NexusRealtime main CDN string.
+- Route copy in `index.html` now says Nexus Engine instead of NexusRealtime.
 - `game-composition.js` retains historical static audit marker text for old kit names, but the changed browser entrypoint is now a NexusEngine main CDN route.
 - Package-level historical names and legacy scripts were not changed because this pass was route-specific.
 
