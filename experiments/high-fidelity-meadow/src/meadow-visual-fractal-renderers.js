@@ -36,6 +36,12 @@ function makeLine(points, color, opacity) {
   return new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), material);
 }
 
+function makeRing(radius, color, opacity, innerScale = 0.78, segments = 48) {
+  const ring = new THREE.RingGeometry(Math.max(0.06, radius * innerScale), Math.max(0.12, radius), segments, 1);
+  ring.rotateX(-Math.PI / 2);
+  return new THREE.Mesh(ring, new THREE.MeshBasicMaterial({ color, transparent: true, opacity, depthWrite: false, side: THREE.DoubleSide, blending: THREE.AdditiveBlending }));
+}
+
 function addGrassPatches(group, grassPatches = {}) {
   const layer = new THREE.Group();
   layer.name = "meadow.visual.grassPatches";
@@ -180,9 +186,7 @@ function addSeasonalBloomQueue(group, seasonalBloomQueue = {}) {
   const layer = new THREE.Group();
   layer.name = "meadow.ecology.seasonalBloomQueue";
   for (const bloom of seasonalBloomQueue.blooms ?? []) {
-    const ring = new THREE.RingGeometry(Math.max(0.05, bloom.radius * 0.72), Math.max(0.1, bloom.radius), 28, 1);
-    ring.rotateX(-Math.PI / 2);
-    const mesh = new THREE.Mesh(ring, new THREE.MeshBasicMaterial({ color: rgb(bloom.color), transparent: true, opacity: 0.12 + bloom.openness * 0.18, depthWrite: false, side: THREE.DoubleSide, blending: THREE.AdditiveBlending }));
+    const mesh = makeRing(bloom.radius, rgb(bloom.color), 0.12 + bloom.openness * 0.18, 0.72, 28);
     mesh.name = bloom.id;
     mesh.position.set(bloom.x, bloom.y + 0.02, bloom.z);
     mesh.userData = { descriptor: bloom, baseOpacity: mesh.material.opacity };
@@ -237,9 +241,7 @@ function addSheepComfortArcs(group, sheepComfortArcs = {}) {
   const layer = new THREE.Group();
   layer.name = "meadow.pasture.sheepComfortArcs";
   for (const arc of sheepComfortArcs.arcs ?? []) {
-    const ring = new THREE.RingGeometry(Math.max(0.08, arc.radius * 0.82), Math.max(0.12, arc.radius), 36, 1);
-    ring.rotateX(-Math.PI / 2);
-    const mesh = new THREE.Mesh(ring, new THREE.MeshBasicMaterial({ color: new THREE.Color(0.82, 0.9, 0.58), transparent: true, opacity: 0.045 + arc.comfort * 0.075, depthWrite: false, side: THREE.DoubleSide, blending: THREE.AdditiveBlending }));
+    const mesh = makeRing(arc.radius, new THREE.Color(0.82, 0.9, 0.58), 0.045 + arc.comfort * 0.075, 0.82, 36);
     mesh.name = arc.id;
     mesh.position.set(arc.x, arc.y + 0.018, arc.z);
     mesh.rotation.z = (arc.yawStart + arc.yawEnd) * 0.5;
@@ -279,9 +281,7 @@ function addWeatherShelterBands(group, weatherShelterBands = {}) {
   const layer = new THREE.Group();
   layer.name = "meadow.pasture.weatherShelterBands";
   for (const band of weatherShelterBands.bands ?? []) {
-    const ring = new THREE.RingGeometry(Math.max(0.1, band.radius * 0.74), Math.max(0.18, band.radius), 54, 1);
-    ring.rotateX(-Math.PI / 2);
-    const mesh = new THREE.Mesh(ring, new THREE.MeshBasicMaterial({ color: new THREE.Color(0.54, 0.66, 0.42), transparent: true, opacity: 0.035 + band.shelter * 0.08 + band.pressure * 0.035, depthWrite: false, side: THREE.DoubleSide }));
+    const mesh = makeRing(band.radius, new THREE.Color(0.54, 0.66, 0.42), 0.035 + band.shelter * 0.08 + band.pressure * 0.035, 0.74, 54);
     mesh.name = band.id;
     mesh.position.set(band.x, band.y + 0.02, band.z);
     mesh.rotation.z = band.phase * Math.PI * 2;
@@ -291,12 +291,96 @@ function addWeatherShelterBands(group, weatherShelterBands = {}) {
   group.add(layer);
 }
 
-export function createMeadowVisualFractalLayers(visualFractal = {}, ecologyReadability = {}, pastureRouteReadability = {}) {
+function addLostLambCalls(group, lostLambCalls = {}) {
+  const layer = new THREE.Group();
+  layer.name = "meadow.flockSafety.lostLambCalls";
+  for (const call of lostLambCalls.calls ?? []) {
+    const plane = makeSoftPlane(call.radius * 0.56, call.radius * 1.18, new THREE.Color(1.0, 0.93, 0.66), 0.05 + call.priority * 0.12);
+    plane.name = call.id;
+    plane.position.set(call.x, call.y + call.radius * 0.28, call.z);
+    plane.rotation.set(0, call.phase * Math.PI * 2, 0);
+    plane.userData = { descriptor: call, baseOpacity: plane.material.opacity };
+    layer.add(plane);
+  }
+  group.add(layer);
+}
+
+function addFoxShadowBoundaries(group, foxShadowBoundaries = {}) {
+  const layer = new THREE.Group();
+  layer.name = "meadow.flockSafety.foxShadowBoundaries";
+  for (const boundary of foxShadowBoundaries.boundaries ?? []) {
+    const mesh = makeRing(boundary.radius, new THREE.Color(0.58, 0.28 + boundary.risk * 0.12, 0.16), 0.035 + boundary.risk * 0.13, 0.7, 56);
+    mesh.name = boundary.id;
+    mesh.position.set(boundary.x, boundary.y + 0.025, boundary.z);
+    mesh.rotation.z = boundary.phase * Math.PI * 2;
+    mesh.userData = { descriptor: boundary, baseOpacity: mesh.material.opacity };
+    layer.add(mesh);
+  }
+  group.add(layer);
+}
+
+function addBellwetherLeadThreads(group, bellwetherLeadThreads = {}) {
+  const layer = new THREE.Group();
+  layer.name = "meadow.flockSafety.bellwetherLeadThreads";
+  for (const thread of bellwetherLeadThreads.threads ?? []) {
+    const mid = new THREE.Vector3((thread.from.x + thread.to.x) * 0.5, Math.max(thread.from.y, thread.to.y) + 0.42 + thread.urgency * 0.52, (thread.from.z + thread.to.z) * 0.5);
+    const line = makeLine([new THREE.Vector3(thread.from.x, thread.from.y + 0.08, thread.from.z), mid, new THREE.Vector3(thread.to.x, thread.to.y + 0.08, thread.to.z)], 0xf5d76e, 0.1 + thread.urgency * 0.26);
+    line.name = thread.id;
+    line.userData = { descriptor: thread, baseOpacity: line.material.opacity };
+    layer.add(line);
+  }
+  group.add(layer);
+}
+
+function addVetCheckPulses(group, vetCheckPulses = {}) {
+  const layer = new THREE.Group();
+  layer.name = "meadow.flockSafety.vetCheckPulses";
+  for (const pulse of vetCheckPulses.pulses ?? []) {
+    const mesh = makeRing(pulse.radius, new THREE.Color(0.66, 0.88, 0.82), 0.04 + pulse.concern * 0.1, 0.64, 36);
+    mesh.name = pulse.id;
+    mesh.position.set(pulse.x, pulse.y + 0.02, pulse.z);
+    mesh.rotation.z = pulse.phase * Math.PI * 2;
+    mesh.userData = { descriptor: pulse, baseOpacity: mesh.material.opacity };
+    layer.add(mesh);
+  }
+  group.add(layer);
+}
+
+function addNightfallFoldGates(group, nightfallFoldGates = {}) {
+  const layer = new THREE.Group();
+  layer.name = "meadow.flockSafety.nightfallFoldGates";
+  for (const gate of nightfallFoldGates.gates ?? []) {
+    const plane = makeSoftPlane(gate.radius * 0.42, gate.radius * 1.6, new THREE.Color(0.94, 0.63, 0.34), 0.06 + gate.readiness * 0.1);
+    plane.name = gate.id;
+    plane.position.set(gate.x, gate.y + gate.radius * 0.38, gate.z);
+    plane.rotation.set(0, gate.phase * Math.PI * 2, 0);
+    plane.userData = { descriptor: gate, baseOpacity: plane.material.opacity };
+    layer.add(plane);
+  }
+  group.add(layer);
+}
+
+function addCottageLanternReturns(group, cottageLanternReturns = {}) {
+  const layer = new THREE.Group();
+  layer.name = "meadow.flockSafety.cottageLanternReturns";
+  for (const lantern of cottageLanternReturns.lanterns ?? []) {
+    const plane = makeSoftPlane(lantern.radius * 0.62, lantern.radius * 1.8, new THREE.Color(1.0, 0.74, 0.36), 0.055 + lantern.glow * 0.11);
+    plane.name = lantern.id;
+    plane.position.set(lantern.x, lantern.y + lantern.radius * 0.45, lantern.z);
+    plane.rotation.set(0, lantern.phase * Math.PI * 2, 0);
+    plane.userData = { descriptor: lantern, baseOpacity: plane.material.opacity };
+    layer.add(plane);
+  }
+  group.add(layer);
+}
+
+export function createMeadowVisualFractalLayers(visualFractal = {}, ecologyReadability = {}, pastureRouteReadability = {}, flockSafetyReadiness = {}) {
   const group = new THREE.Group();
   group.name = "meadow.visualFractal.layers";
   const descriptors = visualFractal.descriptors ?? {};
   const ecologyDescriptors = ecologyReadability.descriptors ?? {};
   const pastureDescriptors = pastureRouteReadability.descriptors ?? {};
+  const safetyDescriptors = flockSafetyReadiness.descriptors ?? {};
   addDepthStrata(group, descriptors.depthStrata);
   addGrassPatches(group, descriptors.grassPatches);
   addFlowerDrifts(group, descriptors.flowerDrifts);
@@ -315,13 +399,20 @@ export function createMeadowVisualFractalLayers(visualFractal = {}, ecologyReada
   addWaterTroughThreads(group, pastureDescriptors.waterTroughThreads);
   addGateReturnCues(group, pastureDescriptors.gateReturnCues);
   addWeatherShelterBands(group, pastureDescriptors.weatherShelterBands);
+  addLostLambCalls(group, safetyDescriptors.lostLambCalls);
+  addFoxShadowBoundaries(group, safetyDescriptors.foxShadowBoundaries);
+  addBellwetherLeadThreads(group, safetyDescriptors.bellwetherLeadThreads);
+  addVetCheckPulses(group, safetyDescriptors.vetCheckPulses);
+  addNightfallFoldGates(group, safetyDescriptors.nightfallFoldGates);
+  addCottageLanternReturns(group, safetyDescriptors.cottageLanternReturns);
   group.userData = {
-    source: "meadow-visual-fractal-ecology-and-pasture-route-readability-domain-kits",
-    rendererContract: pastureRouteReadability.rendererHandoff?.contract ?? ecologyReadability.rendererHandoff?.contract ?? visualFractal.rendererHandoff?.contract ?? "descriptors-only",
+    source: "meadow-visual-fractal-ecology-pasture-route-and-flock-safety-readiness-domain-kits",
+    rendererContract: flockSafetyReadiness.rendererHandoff?.contract ?? pastureRouteReadability.rendererHandoff?.contract ?? ecologyReadability.rendererHandoff?.contract ?? visualFractal.rendererHandoff?.contract ?? "descriptors-only",
     counts: {
       visualFractal: visualFractal.descriptorCounts ?? {},
       ecologyReadability: ecologyReadability.descriptorCounts ?? {},
-      pastureRouteReadability: pastureRouteReadability.descriptorCounts ?? {}
+      pastureRouteReadability: pastureRouteReadability.descriptorCounts ?? {},
+      flockSafetyReadiness: flockSafetyReadiness.descriptorCounts ?? {}
     }
   };
   return group;
@@ -340,6 +431,7 @@ export function updateMeadowVisualFractalLayers(group, cycle = {}, time = 0) {
     else if (node.name.includes("pollinatorRoute")) node.material.opacity = Math.max(0.01, base * (0.82 + day * 0.34 + pulse));
     else if (node.name.includes("windLane")) node.material.opacity = Math.max(0.008, base * (0.85 + warm * 0.22 + pulse));
     else if (node.name.includes("attentionBeacon")) node.material.opacity = Math.max(0.01, base * (0.9 + warm * 0.38 + pulse));
+    else if (node.name.includes("flockSafety")) node.material.opacity = Math.max(0.01, base * (0.72 + (1 - day) * 0.52 + warm * 0.2 + pulse));
     else if (node.name.includes("pasture")) node.material.opacity = Math.max(0.01, base * (0.88 + warm * 0.24 + pulse));
     else node.material.opacity = Math.max(0.01, base * (0.92 + warm * 0.16 + pulse));
   });
