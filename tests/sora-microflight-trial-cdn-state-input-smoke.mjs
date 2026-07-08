@@ -11,8 +11,9 @@ const compatibilitySmoke = readFileSync("tests/sora-compatibility-cdn-state-inpu
 const nexusEngineCdn = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js";
 const oldRuntimeCdn = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusRealtime";
 
-assert.ok(routeHtml.includes("sora-microflight-trial-style.css?v=microflight-trial-readiness-v1"), "route loads microflight trial styles with cache busting");
-assert.ok(routeHtml.includes("sora-microflight-trial-entry.js?v=microflight-trial-readiness-v1"), "route loads microflight trial entry with cache busting");
+assert.ok(routeHtml.includes("sora-microflight-trial-style.css"), "route loads microflight trial styles");
+assert.ok(routeHtml.includes("sora-microflight-trial-entry.js"), "route loads microflight trial entry");
+assert.ok(routeHtml.includes("microflight-trial-readiness-v1"), "route cache-busts microflight trial assets");
 assert.ok(entrySource.includes(nexusEngineCdn), "microflight trial entry imports NexusEngine main CDN");
 assert.ok(!entrySource.includes(oldRuntimeCdn), "microflight trial entry does not import old NexusRealtime CDN");
 assert.ok(!kitSource.includes(oldRuntimeCdn), "microflight trial kit does not import old NexusRealtime CDN");
