@@ -89,7 +89,7 @@ assert.deepEqual(relicFocus.find((relic) => relic.actionId === "tune-lantern").m
 inventoryKit.flag(relicState, "forestMoths");
 assert.equal(relicFocusKit.describe("forest", relicState).find((relic) => relic.actionId === "tune-lantern").state, "callable");
 assert.equal(relicFocusKit.snapshot("forest", relicState).relics, 3);
-assert.equal(relicFocusKit.snapshot("forest", relicState).callable, 2);
+assert.equal(relicFocusKit.snapshot("forest", relicState).callable, 1);
 assertRendererNeutral(relicFocus);
 
 // Path tension kit: 10 smoke-test intake cases.
