@@ -31,6 +31,14 @@ function sync(group, cache, items, make, update) {
 }
 
 const setXZ = (obj, p = {}) => obj.position.set(n(p.x), 0, n(p.z ?? p.y));
+const setDescriptorPlane = (mesh, descriptor = {}, y = 0.018) => {
+  const center = descriptor.center ?? descriptor.position ?? { x: 0, z: 0 };
+  mesh.position.set(n(center.x), y, n(center.z ?? center.y));
+  mesh.scale.set(n(descriptor.width, 1), n(descriptor.length, 1), 1);
+  mesh.rotation.set(-Math.PI / 2, 0, n(descriptor.rotation));
+  mesh.material.color.copy(colorValue(descriptor.color, 0xffffff));
+  mesh.material.opacity = n(descriptor.opacity, 0.12);
+};
 
 function makeLeafMaterial(color) {
   return mat(colorValue(color, 0x284315), { roughness: 0.94 });
@@ -40,8 +48,12 @@ function updateTreeDescriptor(group, descriptor = {}) {
   setXZ(group, descriptor.position);
   const trunk = group.userData.trunk;
   const trunkData = descriptor.trunk ?? {};
-  trunk.geometry.dispose();
-  trunk.geometry = new THREE.CylinderGeometry(n(trunkData.crownRadius, 0.22), n(trunkData.baseRadius, 0.32), n(trunkData.height, 3.3), 7);
+  const trunkKey = [n(trunkData.crownRadius, 0.22).toFixed(3), n(trunkData.baseRadius, 0.32).toFixed(3), n(trunkData.height, 3.3).toFixed(3)].join(":");
+  if (trunk.userData.geometryKey !== trunkKey) {
+    trunk.geometry.dispose();
+    trunk.geometry = new THREE.CylinderGeometry(n(trunkData.crownRadius, 0.22), n(trunkData.baseRadius, 0.32), n(trunkData.height, 3.3), 7);
+    trunk.userData.geometryKey = trunkKey;
+  }
   trunk.position.y = n(trunkData.height, 3.3) / 2;
   trunk.rotation.z = n(trunkData.lean);
   const leaves = descriptor.leaves ?? [];
@@ -76,10 +88,15 @@ export async function createThreeView(canvas) {
   ground.receiveShadow = true;
   scene.add(ground);
 
+  const descriptorGround = new THREE.Group();
   const laneBandGroup = new THREE.Group();
-  const laneBandCache = new Map();
+  const fogRibbonGroup = new THREE.Group();
+  const hauntZoneGroup = new THREE.Group();
+  const pickupBeaconGroup = new THREE.Group();
+  const combatCueGroup = new THREE.Group();
   const trees = new THREE.Group(), apples = new THREE.Group(), pickups = new THREE.Group(), threats = new THREE.Group(), embers = new THREE.Group();
-  scene.add(laneBandGroup, trees, apples, pickups, threats, embers);
+  scene.add(descriptorGround, laneBandGroup, fogRibbonGroup, hauntZoneGroup, pickupBeaconGroup, combatCueGroup, trees, apples, pickups, threats, embers);
+  const groundCache = new Map(), laneBandCache = new Map(), fogRibbonCache = new Map(), hauntZoneCache = new Map(), pickupBeaconCache = new Map();
   const treeMap = new Map(), appleMap = new Map(), pickupMap = new Map(), threatMap = new Map();
 
   for (let i = 0; i < 80; i++) {
@@ -98,11 +115,38 @@ export async function createThreeView(canvas) {
   player.add(body, nose);
   scene.add(player);
 
+  const targetRing = new THREE.Mesh(new THREE.RingGeometry(0.85, 1, 42), mat(0xfff0b8, { transparent: true, opacity: 0.4, emissive: 0xffd168, emissiveIntensity: 0.18, depthWrite: false }));
+  targetRing.rotation.x = -Math.PI / 2;
+  const playerRangeRing = new THREE.Mesh(new THREE.RingGeometry(0.95, 1, 48), mat(0xfff0b8, { transparent: true, opacity: 0.08, emissive: 0xffd168, emissiveIntensity: 0.08, depthWrite: false }));
+  playerRangeRing.rotation.x = -Math.PI / 2;
+  combatCueGroup.add(targetRing, playerRangeRing);
+
+  const makeDescriptorPlane = (item) => {
+    const mesh = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), mat(colorValue(item.color, 0xffffff), { transparent: true, opacity: n(item.opacity, 0.12), depthWrite: false }));
+    mesh.rotation.x = -Math.PI / 2;
+    mesh.position.y = 0.018;
+    return mesh;
+  };
   const makeLaneBand = () => {
     const mesh = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), mat(0xd0a25b, { transparent: true, opacity: 0.08, depthWrite: false }));
     mesh.rotation.x = -Math.PI / 2;
     mesh.position.y = 0.012;
     return mesh;
+  };
+  const makeHauntZone = (zone) => {
+    const mesh = new THREE.Mesh(new THREE.RingGeometry(0.94, 1, 64), mat(colorValue(zone.color, 0x8647b8), { transparent: true, opacity: n(zone.opacity, 0.18), emissive: colorValue(zone.color, 0x8647b8), emissiveIntensity: 0.1, depthWrite: false }));
+    mesh.rotation.x = -Math.PI / 2;
+    return mesh;
+  };
+  const makePickupBeacon = (beacon) => {
+    const g = new THREE.Group();
+    const ring = new THREE.Mesh(new THREE.RingGeometry(0.9, 1, 38), mat(colorValue(beacon.color, 0xffd168), { transparent: true, opacity: n(beacon.opacity, 0.34), emissive: colorValue(beacon.color, 0xffd168), emissiveIntensity: 0.18, depthWrite: false }));
+    ring.rotation.x = -Math.PI / 2;
+    const pillar = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 1.8, 8), mat(colorValue(beacon.color, 0xffd168), { transparent: true, opacity: 0.22, emissive: colorValue(beacon.color, 0xffd168), emissiveIntensity: 0.22 }));
+    pillar.position.y = 0.9;
+    g.userData = { ring, pillar };
+    g.add(ring, pillar);
+    return g;
   };
   const makeTree = (t) => {
     const g = new THREE.Group();
@@ -148,16 +192,38 @@ export async function createThreeView(canvas) {
     const light = visual.lighting ?? {};
     scene.fog.density = n(light.fogDensity, 0.025);
     moon.intensity = n(light.moonIntensity, 2.7);
+    if (visual.ground?.baseColor) ground.material.color.copy(colorValue(visual.ground.baseColor, 0x111608));
     embers.children.forEach((ember, index) => {
       ember.position.y += 0.008 + (index % 5) * 0.001;
       if (ember.position.y > 4.5) ember.position.y = 0.35;
       ember.material.opacity = 0.18 + n(light.emberIntensity, 0.15) * 0.38;
     });
 
-    sync(laneBandGroup, laneBandCache, visual.lanes ?? [], makeLaneBand, (o, lane) => {
-      o.position.set(n(lane.center?.x), 0.014, n(lane.center?.z));
-      o.scale.set(n(lane.width, 4), n(lane.length, 100), 1);
-      o.material.opacity = n(lane.opacity, 0.08);
+    const groundItems = [
+      ...(visual.ground?.furrows ?? []),
+      ...(visual.ground?.leafPatches ?? []),
+      ...(visual.ground?.mudPatches ?? [])
+    ];
+    sync(descriptorGround, groundCache, groundItems, makeDescriptorPlane, (o, descriptor) => setDescriptorPlane(o, descriptor, descriptor.type === "furrow" ? 0.018 : 0.021));
+    sync(laneBandGroup, laneBandCache, visual.lanes ?? [], makeLaneBand, (o, lane) => setDescriptorPlane(o, lane, 0.014));
+    sync(fogRibbonGroup, fogRibbonCache, visual.fogRibbons ?? [], makeDescriptorPlane, (o, ribbon) => setDescriptorPlane(o, ribbon, 0.05));
+    sync(hauntZoneGroup, hauntZoneCache, visual.hauntZones ?? [], makeHauntZone, (o, zone) => {
+      setXZ(o, zone.position);
+      o.position.y = 0.07;
+      o.scale.setScalar(n(zone.radius, 7));
+      o.material.color.copy(colorValue(zone.color, 0x8647b8));
+      o.material.emissive.copy(colorValue(zone.color, 0x8647b8));
+      o.material.opacity = n(zone.opacity, 0.18);
+    });
+    sync(pickupBeaconGroup, pickupBeaconCache, visual.pickups ?? [], makePickupBeacon, (o, beacon) => {
+      setXZ(o, beacon.position);
+      o.position.y = 0.03;
+      o.userData.ring.scale.setScalar(n(beacon.ringScale, 1));
+      o.userData.ring.material.color.copy(colorValue(beacon.color, 0xffd168));
+      o.userData.ring.material.emissive.copy(colorValue(beacon.color, 0xffd168));
+      o.userData.ring.material.opacity = n(beacon.opacity, 0.32);
+      o.userData.pillar.material.color.copy(colorValue(beacon.color, 0xffd168));
+      o.userData.pillar.material.opacity = 0.14 + n(beacon.pulse, 0.35) * 0.18;
     });
     sync(trees, treeMap, visual.trees ?? (orchard.treeRows ?? []).flatMap((r) => r.trees ?? []), makeTree, updateTreeDescriptor);
     sync(apples, appleMap, orchard.activeApples ?? [], makeApple, (o, a) => {
@@ -175,14 +241,38 @@ export async function createThreeView(canvas) {
       const desc = (visual.threats ?? []).find((d) => d.id === m.entity) ?? m;
       setXZ(o, m.position);
       const h = n(desc.height, m.boss ? 3.4 : 2.2);
-      o.userData.body.geometry.dispose();
-      o.userData.body.geometry = new THREE.CylinderGeometry(n(desc.shoulderScale, 0.55) * 0.48, n(desc.shoulderScale, 0.55) * 0.58, h, 8);
+      const threatKey = [n(desc.shoulderScale, 0.55).toFixed(3), h.toFixed(3)].join(":");
+      if (o.userData.body.userData.geometryKey !== threatKey) {
+        o.userData.body.geometry.dispose();
+        o.userData.body.geometry = new THREE.CylinderGeometry(n(desc.shoulderScale, 0.55) * 0.48, n(desc.shoulderScale, 0.55) * 0.58, h, 8);
+        o.userData.body.userData.geometryKey = threatKey;
+      }
       o.userData.body.position.y = h / 2;
       o.userData.body.material.color.copy(colorThreat(desc));
       o.userData.aura.scale.setScalar(0.8 + n(desc.aura, 0.16) * 1.8);
       o.userData.aura.position.y = h * 0.5;
       o.userData.aura.material.opacity = 0.05 + n(desc.aura, 0.16) * 0.18;
     });
+    const cue = visual.combatCue ?? {};
+    targetRing.visible = Boolean(cue.targetLock);
+    if (cue.targetLock) {
+      setXZ(targetRing, cue.targetLock.position);
+      targetRing.position.y = 0.09;
+      targetRing.scale.setScalar(cue.targetLock.boss ? 2.2 : cue.targetLock.elite ? 1.55 : 1.15);
+      targetRing.material.color.copy(colorValue(cue.targetLock.color, 0xfff0b8));
+      targetRing.material.emissive.copy(colorValue(cue.targetLock.color, 0xfff0b8));
+      targetRing.material.opacity = n(cue.targetLock.opacity, 0.46);
+    }
+    if (cue.playerRing) {
+      playerRangeRing.visible = true;
+      setXZ(playerRangeRing, cue.playerRing.position);
+      playerRangeRing.position.y = 0.06;
+      playerRangeRing.scale.setScalar(n(cue.playerRing.radius, 3));
+      playerRangeRing.material.color.copy(colorValue(cue.playerRing.color, 0xfff0b8));
+      playerRangeRing.material.opacity = n(cue.playerRing.opacity, 0.08);
+    } else {
+      playerRangeRing.visible = false;
+    }
     const pp = snapshot.player?.position ?? { x: 0, z: 0 };
     player.position.set(n(pp.x), 0, n(pp.z));
     const f = snapshot.player?.facing ?? { x: 0, z: -1 };
