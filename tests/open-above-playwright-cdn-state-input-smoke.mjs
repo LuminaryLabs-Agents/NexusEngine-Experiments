@@ -1,3 +1,6 @@
+import "./open-above-flight-route-readability-kits-smoke.mjs";
+import "./open-above-flight-route-readability-cdn-state-input-smoke.mjs";
+
 import assert from "node:assert/strict";
 import { createServer } from "node:http";
 import { readFile } from "node:fs/promises";
@@ -20,7 +23,8 @@ function safePath(urlPath) {
 
 const config = await readFile(join(root, "experiments/the-open-above/open-above.config.js"), "utf8");
 assert.ok(config.includes("https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js"));
-assert.ok(config.includes("https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusRealtime@main/src/index.js"));
+assert.ok(config.includes("https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js"));
+assert.ok(!config.includes("https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusRealtime@main/src/index.js"));
 assert.ok(config.includes("https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusRealtime-ProtoKits@0.0.1/protokits"));
 
 const server = createServer(async (request, response) => {
@@ -43,20 +47,30 @@ try {
   browser = await chromium.launch({ headless: true });
   const page = await browser.newPage();
   await page.goto(`http://127.0.0.1:${port}/experiments/the-open-above/`, { waitUntil: "domcontentloaded" });
-  await page.waitForFunction(() => Boolean(globalThis.GameHost?.getState && globalThis.GameHost?.getVisualDomains), null, { timeout: 20000 });
+  await page.waitForFunction(() => Boolean(globalThis.GameHost?.getState && globalThis.GameHost?.getVisualDomains && globalThis.GameHost?.getFlightRouteReadability), null, { timeout: 20000 });
   const state = await page.evaluate(() => {
     globalThis.GameHost.stop();
     globalThis.GameHost.setInput({ pitch: 0.2, bank: -0.4, boost: true });
     globalThis.GameHost.tick(1 / 30, { pitch: 0.2, bank: -0.4, boost: true });
-    return globalThis.GameHost.getState();
+    const currentState = globalThis.GameHost.getState();
+    return {
+      state: currentState,
+      route: globalThis.GameHost.getFlightRouteReadability(),
+      handoff: globalThis.GameHost.getRendererHandoff(),
+      overlay: document.querySelector("#open-above-flight-route-readability-overlay")?.dataset ?? {}
+    };
   });
-  assert.ok(state.validation?.booted);
-  assert.ok(state.visualDomains?.mood);
-  assert.ok(Array.isArray(state.visualDomains?.cloudStrata));
-  assert.ok(Array.isArray(state.visualDomains?.speedRibbons));
-  assert.ok(Array.isArray(state.visualDomains?.thermals));
-  assert.equal(state.visualDomains.contrails.length, 2);
-  assert.ok(state.input.boost);
+  assert.ok(state.state.validation?.booted);
+  assert.ok(state.state.visualDomains?.mood);
+  assert.ok(Array.isArray(state.state.visualDomains?.cloudStrata));
+  assert.ok(Array.isArray(state.state.visualDomains?.speedRibbons));
+  assert.ok(Array.isArray(state.state.visualDomains?.thermals));
+  assert.equal(state.state.visualDomains.contrails.length, 2);
+  assert.ok(state.state.input.boost);
+  assert.ok(state.route?.summary?.descriptorCount >= 20);
+  assert.equal(state.route.rendererHandoff.contract, "renderer-consumes-descriptors-only");
+  assert.ok(state.handoff?.counts?.openAboveFlightRoute >= 20);
+  assert.equal(state.overlay.rendererConsumes, "descriptors-only");
   console.log("The Open Above CDN-backed Playwright state input smoke passed.");
 } finally {
   if (browser) await browser.close();
