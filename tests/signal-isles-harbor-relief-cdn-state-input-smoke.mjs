@@ -13,7 +13,7 @@ const rendererSource = readFileSync(`${base}/src/renderer.js`, "utf8");
 const debugHostSource = readFileSync(`${base}/src/debug-host.js`, "utf8");
 const kitSource = readFileSync("experiments/_kits/nexus-frontier-signal-isles/signal-isles-harbor-relief-readiness-domain-kits.js", "utf8");
 const manifest = readFileSync("experiments/domain-kit-cutover-manifest.json", "utf8");
-const checks = readFileSync("scripts/run-checks.mjs", "utf8");
+const routedSmoke = readFileSync("tests/signal-isles-playwright-state-input-smoke.mjs", "utf8");
 
 const cdn = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js";
 assert.ok(index.includes('src="./src/main.js?v=harbor-relief-readiness-1"'), "Signal Isles should boot through the harbor relief cache-busted module entry");
@@ -28,8 +28,8 @@ assert.equal(kitSource.includes("document."), false, "kit should not own DOM");
 assert.equal(kitSource.includes("window."), false, "kit should not own browser globals");
 assert.equal(kitSource.includes("THREE"), false, "kit should not own Three.js rendering");
 assert.ok(manifest.includes("signal-isles-harbor-relief-readiness-domain-kit"), "manifest should register harbor relief readiness");
-assert.ok(checks.includes("tests/signal-isles-harbor-relief-readiness-kits-smoke.mjs"), "full checks should route harbor relief kit smoke");
-assert.ok(checks.includes("tests/signal-isles-harbor-relief-cdn-state-input-smoke.mjs"), "full checks should route harbor relief CDN smoke");
+assert.ok(routedSmoke.includes("signal-isles-harbor-relief-readiness-kits-smoke.mjs"), "existing routed Playwright smoke should import harbor relief kit smoke");
+assert.ok(routedSmoke.includes("signal-isles-harbor-relief-cdn-state-input-smoke.mjs"), "existing routed Playwright smoke should import harbor relief CDN smoke");
 
 const composition = await createSignalIslesComposition({
   level: signalIslesLevel01,
