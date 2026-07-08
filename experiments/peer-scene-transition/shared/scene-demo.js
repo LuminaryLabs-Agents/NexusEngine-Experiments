@@ -12,6 +12,7 @@ import {
 } from "../../_kits/peer-scene-transition/peer-scene-transition-kits.js";
 import { createSceneAtmosphericHandoffKit } from "../../_kits/peer-scene-transition/peer-scene-atmospheric-handoff-kits.js";
 import { createSceneChronicleDomainKit } from "../../_kits/peer-scene-transition/peer-scene-chronicle-handoff-kits.js";
+import { createSceneConsequenceDomainKit } from "../../_kits/peer-scene-transition/peer-scene-consequence-handoff-kits.js";
 
 const NEXUS_ENGINE_CDN = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js";
 const KEY = "nexus.peerSceneTransition.v5";
@@ -27,6 +28,7 @@ let pressureKit;
 let peerSceneDomainKit;
 let atmosphericHandoffKit;
 let chronicleDomainKit;
+let consequenceDomainKit;
 
 function load(id) {
   try {
@@ -53,12 +55,14 @@ function describePeerSceneHandoff(state) {
   const baseHandoff = peerSceneDomainKit.describe(active, state);
   const atmospheric = atmosphericHandoffKit.describe(active, state, baseHandoff);
   const chronicle = chronicleDomainKit.describe(active, state, { baseHandoff, atmospheric });
+  const consequence = consequenceDomainKit.describe(active, state, { baseHandoff, atmospheric, chronicle });
   return {
     ...baseHandoff,
     descriptors: {
       ...baseHandoff.descriptors,
       atmospheric,
-      chronicle
+      chronicle,
+      consequence
     },
     descriptorCounts: {
       ...baseHandoff.descriptorCounts,
@@ -72,7 +76,12 @@ function describePeerSceneHandoff(state) {
       inventoryStars: chronicle.counts.inventoryStars,
       pressureWeather: chronicle.counts.pressureWeather,
       continuitySplices: chronicle.counts.continuitySplices,
-      choiceReadability: chronicle.counts.choiceReadability
+      choiceReadability: chronicle.counts.choiceReadability,
+      causeLens: consequence.counts.causeLens,
+      riskDelta: consequence.counts.riskDelta,
+      allyPresence: consequence.counts.allyPresence,
+      routeConsequences: consequence.counts.routeConsequences,
+      rewardPreview: consequence.counts.rewardPreview
     }
   };
 }
@@ -119,6 +128,7 @@ function renderVisualStage(handoff) {
   const descriptor = handoff.descriptors.scene;
   const atmospheric = handoff.descriptors.atmospheric;
   const chronicle = handoff.descriptors.chronicle;
+  const consequence = handoff.descriptors.consequence;
   const ambient = handoff.descriptors.ambientVariation;
   const gates = handoff.descriptors.gatePreview;
   const constellation = handoff.descriptors.completionConstellation;
@@ -135,6 +145,12 @@ function renderVisualStage(handoff) {
   const pressureWeather = chronicleDescriptors.pressureWeather ?? [];
   const continuitySplices = chronicleDescriptors.continuitySplices ?? [];
   const choiceReadability = chronicleDescriptors.choiceReadability ?? [];
+  const consequenceDescriptors = consequence?.descriptors ?? {};
+  const causeLens = consequenceDescriptors.causeLens ?? [];
+  const riskDelta = consequenceDescriptors.riskDelta ?? [];
+  const allyPresence = consequenceDescriptors.allyPresence ?? [];
+  const routeConsequences = consequenceDescriptors.routeConsequences ?? [];
+  const rewardPreview = consequenceDescriptors.rewardPreview ?? [];
   const stage = ensureVisualStage();
   stage.innerHTML = `
     <div class="sky-orb"></div>
@@ -149,26 +165,32 @@ function renderVisualStage(handoff) {
     <div class="path-tension-field">
       ${pathTension.map((path) => `<span class="path-tension ${path.open ? "open" : "sealed"} slot-${path.slot}" style="--arc:${path.arc};--p:${path.pressure}">${path.open ? "open" : "sealed"}</span>`).join("")}
       ${clueThreads.map((thread) => `<span class="path-tension ${thread.open ? "open" : "sealed"} slot-${thread.slot}" style="--arc:${thread.arc};--p:${thread.pressure}" title="${thread.label}">${thread.open ? "clue" : "need"}</span>`).join("")}
+      ${routeConsequences.map((route) => `<span class="path-tension ${route.open ? "open" : "sealed"} slot-${route.slot + 5}" style="--arc:${route.arc};--p:${route.weight}" title="${route.consequence}">${route.open ? "consequence" : "blocked"}</span>`).join("")}
     </div>
     <div class="ambient-field">
       ${ambient.map((particle) => `<i class="ambient-dot layer-${particle.layer} ${particle.active ? "active" : ""}" style="--x:${particle.x}%;--y:${particle.y}%;--s:${particle.scale};--d:${particle.drift};--dot:${particle.color}"></i>`).join("")}
       ${pressureWeather.map((front) => `<i class="ambient-dot layer-${front.band % 3} active" title="${front.severity}" style="--x:${front.x}%;--y:${front.y}%;--s:${front.spread};--d:${front.opacity};--dot:var(--scene-b)"></i>`).join("")}
+      ${riskDelta.map((risk) => `<i class="ambient-dot layer-${risk.band % 3} active" title="${risk.label}" style="--x:${risk.x}%;--y:${risk.y}%;--s:${0.2 + risk.severity};--d:${risk.severity};--dot:var(--scene-c)"></i>`).join("")}
     </div>
     <div class="gate-field">
       ${gates.map((gate) => `<span class="gate-glyph ${gate.open ? "open" : "sealed"} slot-${gate.slot}">${gate.glyph}</span>`).join("")}
+      ${rewardPreview.slice(0, 4).map((reward) => `<span class="gate-glyph ${reward.state === "available" ? "open" : "sealed"} slot-${reward.slot + 5}" title="${reward.label}">${reward.glyph}</span>`).join("")}
     </div>
     <div class="constellation-field">
       ${constellation.stars.map((star) => `<b class="star ${star.lit ? "lit" : ""}" style="--x:${star.x}%;--y:${star.y}%;--r:${star.radius}px" title="${star.label}"></b>`).join("")}
       ${inventoryStars.map((star) => `<b class="star ${star.lit ? "lit" : ""}" style="--x:${star.x}%;--y:${star.y}%;--r:${star.radius}px" title="${star.label}"></b>`).join("")}
+      ${allyPresence.map((ally) => `<b class="star ${ally.present ? "lit" : ""}" style="--x:${ally.x}%;--y:${ally.y}%;--r:${ally.radius}px" title="${ally.label}"></b>`).join("")}
     </div>
     <div class="relic-focus-field">
       ${relicFocus.map((relic) => `<b class="relic-focus ${relic.state}" style="--slot:${relic.slot};--pulse:${relic.pulse};--weight:${relic.focusWeight}" title="${relic.label}">${relic.ringCount}</b>`).join("")}
       ${choiceReadability.slice(0, 4).map((choice) => `<b class="relic-focus ${choice.state === "locked" ? "sealed" : choice.state === "resolved" ? "settled" : "callable"}" style="--slot:${choice.slot + 4};--pulse:${choice.pulse};--weight:${0.42 + choice.priority * 0.12}" title="${choice.label}">${choice.glyph}</b>`).join("")}
+      ${rewardPreview.slice(0, 4).map((reward) => `<b class="relic-focus ${reward.state === "withheld" ? "sealed" : reward.state === "claimed" ? "settled" : "callable"}" style="--slot:${reward.slot + 8};--pulse:${reward.pulse};--weight:${reward.value}" title="${reward.label}">${reward.glyph}</b>`).join("")}
     </div>
     <div class="memory-echo-field">
       ${memoryEchoes.slice(0, 4).map((echo) => `<span class="memory-echo ${echo.type}" style="--slot:${echo.slot};--weight:${echo.weight};--drift:${echo.drift}">${echo.type}</span>`).join("")}
       ${objectiveBeats.map((beat) => `<span class="memory-echo ${beat.done ? "action" : "blocked"}" style="--slot:${beat.slot + 4};--weight:${beat.readiness};--drift:${beat.drift}" title="${beat.label}">${beat.shortLabel}</span>`).join("")}
       ${continuitySplices.map((splice) => `<span class="memory-echo ${splice.current ? "action" : "transition"}" style="--slot:${splice.slot + 9};--weight:${splice.weight};--drift:${splice.arc}" title="${splice.visitedSceneId}">${splice.visitedSceneId}</span>`).join("")}
+      ${causeLens.map((cause) => `<span class="memory-echo action" style="--slot:${cause.slot + 13};--weight:${cause.weight};--drift:${cause.drift}" title="${cause.label}">${cause.sourceType}</span>`).join("")}
     </div>
     <div class="hint-ribbon">${hints.slice(0, 3).map((hint) => `<em class="${hint.state}">${hint.label}</em>`).join("")}</div>
     ${descriptor.stageLayers.map((layer) => `<span class="stage-layer depth-${layer.depth}" style="--glow:${layer.glow}">${layer.label}</span>`).join("")}
@@ -176,6 +198,7 @@ function renderVisualStage(handoff) {
   document.body.dataset.sceneMood = descriptor.mood;
   document.body.dataset.sceneAtmosphere = atmospheric?.phase ?? "unknown";
   document.body.dataset.sceneChronicle = chronicle ? "enabled" : "missing";
+  document.body.dataset.sceneConsequence = consequence ? "enabled" : "missing";
   document.body.style.setProperty("--scene-a", descriptor.palette[0]);
   document.body.style.setProperty("--scene-b", descriptor.palette[1]);
   document.body.style.setProperty("--scene-c", descriptor.palette[2]);
@@ -200,6 +223,7 @@ function renderStatePanel(state) {
   const domainSnapshot = peerSceneDomainKit.snapshot(active, state);
   const atmosphericSnapshot = atmosphericHandoffKit.snapshot(active, state);
   const chronicleSnapshot = chronicleDomainKit.snapshot(active, state);
+  const consequenceSnapshot = consequenceDomainKit.snapshot(active, state);
   let meters = document.querySelector("#state-panel");
   if (!meters) {
     meters = document.createElement("section");
@@ -213,6 +237,8 @@ function renderStatePanel(state) {
     <div class="bar"><i style="width:${domainSnapshot.constellation.completion}%"></i></div>
     <div class="meter"><span>Chronicle</span><strong>${chronicleSnapshot.objective.done}/${chronicleSnapshot.objective.beats}</strong></div>
     <div class="bar"><i style="width:${Math.round((chronicleSnapshot.objective.done / chronicleSnapshot.objective.beats) * 100)}%"></i></div>
+    <div class="meter"><span>Consequence</span><strong>${consequenceSnapshot.routes.open}/${consequenceSnapshot.routes.routes}</strong></div>
+    <div class="bar"><i style="width:${Math.round((consequenceSnapshot.routes.open / Math.max(1, consequenceSnapshot.routes.routes)) * 100)}%"></i></div>
     <div class="meter"><span>Pressure</span><strong>${pressure.score}</strong></div>
     <div class="bar"><i style="width:${pressure.score}%"></i></div>
     <div class="meter"><span>Atmosphere</span><strong>${atmosphericSnapshot.phase}</strong></div>
@@ -266,6 +292,7 @@ function render(state, msg = "") {
     visualKit: visualKit.snapshot(active, state),
     atmosphericHandoff: atmosphericHandoffKit.snapshot(active, state),
     chronicleDomain: chronicleDomainKit.snapshot(active, state),
+    consequenceDomain: consequenceDomainKit.snapshot(active, state),
     peerSceneDomain: peerSceneDomainKit.snapshot(active, state),
     rendererHandoff: handoff.descriptorCounts,
     state: stateKit.snapshot(state)
@@ -285,6 +312,7 @@ export async function bootPeerScene(id) {
   peerSceneDomainKit = createPeerSceneDomainKit({ manifestKit, inventoryKit, actionKit, visualKit });
   atmosphericHandoffKit = createSceneAtmosphericHandoffKit({ manifestKit, inventoryKit, actionKit });
   chronicleDomainKit = createSceneChronicleDomainKit({ manifestKit, inventoryKit, actionKit });
+  consequenceDomainKit = createSceneConsequenceDomainKit({ manifestKit, inventoryKit, actionKit });
   const state = load(id);
   pressureKit.evaluate(state);
   save(state);
@@ -296,6 +324,7 @@ export async function bootPeerScene(id) {
     getPeerSceneDomain: () => peerSceneDomainKit.snapshot(active, safeStateSnapshot()),
     getAtmosphericHandoff: () => atmosphericHandoffKit.snapshot(active, safeStateSnapshot()),
     getChronicleDomain: () => chronicleDomainKit.snapshot(active, safeStateSnapshot()),
+    getConsequenceDomain: () => consequenceDomainKit.snapshot(active, safeStateSnapshot()),
     getRendererHandoff: () => describePeerSceneHandoff(safeStateSnapshot()).descriptorCounts,
     reset: () => {
       sessionStorage.removeItem(KEY);
