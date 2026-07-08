@@ -1,17 +1,21 @@
 import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js";
+import * as NexusEngine from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js";
 import { animateSheep, createCottage, createGrass, createPollen, createSheep, createSky, createUniformRegistry, installControls } from "./procedural-renderers.js?v=0.0.2-cutover-1";
 import { createAaaTerrain } from "./aaa-terrain.js?v=0.0.2-cutover-1";
 import { createAaaDressing } from "./aaa-dressing.js?v=aaa-1";
 import { animateHighCloudDeck, createHighCloudDeck } from "./aaa-clouds.js?v=aaa-1";
 import { createMeadowPostprocess } from "./aaa-postprocess.js?v=aaa-1";
 import { createAudioEngine } from "./aaa-audio.js?v=aaa-1";
-import { createExperimentMeadowKit, createMeadowShaderVfxKit, MEADOW_EXPERIMENT_SCENE_VERSION } from "./meadow-experiment-scene.js?v=0.0.2-cutover-1";
+import { createExperimentMeadowKit, createMeadowShaderVfxKit, MEADOW_EXPERIMENT_SCENE_VERSION, pathMask, terrainHeight, yardMask } from "./meadow-experiment-scene.js?v=0.0.2-cutover-1";
+import { createMeadowVisualFractalDomainKit, MEADOW_VISUAL_FRACTAL_VERSION } from "./meadow-visual-fractal-domain-kit.js?v=20260707-depth-patch-1";
+import { createMeadowVisualFractalLayers, updateMeadowVisualFractalLayers } from "./meadow-visual-fractal-renderers.js?v=20260707-depth-patch-1";
 
 const canvas = document.querySelector("#game");
 const statusEl = document.querySelector("#status");
 const errorPanel = document.querySelector("#errorPanel");
 const clock = new THREE.Clock();
-const BUILD_ID = `0.0.2-meadow-experiment-cutover-${MEADOW_EXPERIMENT_SCENE_VERSION}`;
+const NEXUS_ENGINE_CDN = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js";
+const BUILD_ID = `0.0.2-meadow-depth-patch-fractal-${MEADOW_EXPERIMENT_SCENE_VERSION}`;
 const PROTO_SEED = "high-fidelity-countryside-v0.0.2";
 const GOLDEN_HOUR_OFFSET_SECONDS = 420;
 
@@ -97,7 +101,7 @@ function applyCycle(cycle, world, renderer, lights, sky, post, time) {
 }
 
 async function boot() {
-  const meadowKit = createExperimentMeadowKit(null, { seed: PROTO_SEED });
+  const meadowKit = createExperimentMeadowKit(NexusEngine, { seed: PROTO_SEED });
   const visualTargetKit = meadowKit.visualTargetKit;
   const visualTarget = visualTargetKit.createTargetDescriptor();
   const raw = meadowKit.createSceneDescriptor({
@@ -108,8 +112,23 @@ async function boot() {
     flowers: { count: 1800, radius: 96 },
     vfx: { count: 2200, radius: 94 }
   });
+  const visualFractalKit = createMeadowVisualFractalDomainKit(NexusEngine, {
+    seed: PROTO_SEED,
+    heightAt: terrainHeight,
+    pathMask,
+    yardMask
+  });
+  raw.visualFractal = visualFractalKit.describe({
+    seed: PROTO_SEED,
+    terrain: raw.terrain,
+    width: raw.terrain.width,
+    depth: raw.terrain.depth,
+    cycle: meadowKit.sampleCycle(GOLDEN_HOUR_OFFSET_SECONDS),
+    sheep: raw.sheep,
+    flowers: raw.flowers
+  });
   const visualTargetValidation = visualTargetKit.validateSceneDescriptor(raw);
-  const desc = adapt(raw, createMeadowShaderVfxKit(null, { seed: PROTO_SEED }).listShaders());
+  const desc = adapt(raw, createMeadowShaderVfxKit(NexusEngine, { seed: PROTO_SEED }).listShaders());
   const uniforms = createUniformRegistry();
   const renderer = createRenderer();
   const world = new THREE.Scene();
@@ -135,13 +154,15 @@ async function boot() {
   world.add(sun, moon, hemi);
   const sky = createSky(uniforms.uniforms);
   const clouds = createHighCloudDeck({ y: 86, radius: 248, count: 22 });
+  const visualFractalLayers = createMeadowVisualFractalLayers(desc.visualFractal);
   world.add(
     sky,
     clouds,
     createAaaTerrain(desc, shaderSource(desc), uniforms.uniforms),
     createGrass(desc, uniforms.uniforms),
     createCottage(desc, uniforms.uniforms),
-    createAaaDressing(raw)
+    createAaaDressing(raw),
+    visualFractalLayers
   );
   const flock = createSheep(desc, uniforms.uniforms);
   world.add(flock, createPollen(desc, uniforms.uniforms));
@@ -162,16 +183,28 @@ async function boot() {
     camera,
     meadowKit,
     visualTargetKit,
+    visualFractalKit,
     sceneDescriptor: raw,
+    visualFractal: desc.visualFractal,
     audio,
+    nexusEngine: {
+      source: NEXUS_ENGINE_CDN,
+      namespaceKeys: Object.keys(NexusEngine ?? {}).slice(0, 24)
+    },
     build: BUILD_ID,
     getState: () => ({
       build: BUILD_ID,
+      nexusEngine: { source: NEXUS_ENGINE_CDN, loaded: Object.keys(NexusEngine ?? {}).length > 0 },
       ownership: raw.ownership,
       grass: raw.grass.bladeCount,
       flowers: raw.flowers.flowers.length,
       sheep: raw.sheep.count,
       clouds: clouds.children.length,
+      visualFractal: {
+        version: MEADOW_VISUAL_FRACTAL_VERSION,
+        counts: desc.visualFractal.descriptorCounts,
+        contract: desc.visualFractal.rendererHandoff.contract
+      },
       visualTarget: {
         id: visualTarget.id,
         validation: visualTargetValidation,
@@ -186,12 +219,14 @@ async function boot() {
     const cycle = meadowKit.sampleCycle(time + GOLDEN_HOUR_OFFSET_SECONDS);
     uniforms.update(time, controls.control.windSeed);
     applyCycle(cycle, world, renderer, { sun, moon, hemi }, sky, post, time);
+    updateMeadowVisualFractalLayers(visualFractalLayers, cycle, time);
     controls.update();
     animateSheep(flock, time);
     animateHighCloudDeck(clouds, time);
     post.render();
     const audioState = audio.getState();
-    statusEl.textContent = `${raw.grass.bladeCount.toLocaleString()} grass · ${raw.flowers.flowers.length.toLocaleString()} flowers · ${raw.sheep.count} sheep · ${clouds.children.length} high clouds · target ${visualTargetValidation.score}/6 · ${cycle.time.phase} · ${audioState.enabled ? `audio ${audioState.section}` : "tap for 20m procedural audio"} · cutover ${MEADOW_EXPERIMENT_SCENE_VERSION}`;
+    const visualCount = desc.visualFractal.descriptorCounts.total;
+    statusEl.textContent = `${raw.grass.bladeCount.toLocaleString()} grass · ${raw.flowers.flowers.length.toLocaleString()} flowers · ${raw.sheep.count} sheep · ${clouds.children.length} high clouds · ${visualCount} visual descriptors · target ${visualTargetValidation.score}/6 · ${cycle.time.phase} · ${audioState.enabled ? `audio ${audioState.section}` : "tap for 20m procedural audio"} · cutover ${MEADOW_VISUAL_FRACTAL_VERSION}`;
     requestAnimationFrame(frame);
   }
   frame();
