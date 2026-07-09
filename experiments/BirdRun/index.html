@@ -1,1 +1,21 @@
-<!doctype html><title>BirdRun</title><body style="margin:0;background:#06100a;color:#efffed;font-family:system-ui"><main style="padding:24px"><h1>BirdRun</h1><p>Bird forward runner: dodge trees, survive distance, restart after stop.</p></main></body>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>BirdRun · Canopy Rescue</title>
+<style>
+:root{color-scheme:dark;font-family:Inter,system-ui,sans-serif;background:#06100a;color:#efffed}*{box-sizing:border-box}body{margin:0;min-height:100vh;overflow:hidden;background:#06100a}#bird-run-view{position:fixed;inset:0;width:100vw;height:100vh;display:block}.panel{position:fixed;z-index:3;left:18px;top:18px;max-width:min(560px,calc(100vw - 36px));padding:14px 16px;border:1px solid rgba(220,255,198,.22);border-radius:18px;background:rgba(5,16,9,.72);box-shadow:0 16px 70px rgba(0,0,0,.32);backdrop-filter:blur(14px)}h1{margin:0 0 8px;font-size:clamp(1.4rem,3vw,2.5rem);letter-spacing:.02em}.meta{color:#cceec5;line-height:1.42;font-size:.95rem}#bird-run-hud{margin-top:10px;color:#ffe99c;font-weight:800}button{margin-top:12px;border:1px solid rgba(255,233,156,.45);border-radius:999px;background:rgba(255,233,156,.14);color:#ffe99c;padding:9px 13px;font-weight:900;cursor:pointer}.badge{display:inline-block;margin-bottom:8px;color:#9dfbc3;text-transform:uppercase;letter-spacing:.13em;font-size:.72rem;font-weight:900}</style>
+</head>
+<body data-route="bird-run-canopy-rescue-readiness-renderer-handoff-pass">
+<canvas id="bird-run-view" aria-label="Playable BirdRun canopy rescue canvas"></canvas>
+<section class="panel">
+  <span class="badge">Nexus Engine · BirdRun</span>
+  <h1>Canopy Rescue Run</h1>
+  <div class="meta" id="bird-run-status">Loading headless canopy rescue descriptors...</div>
+  <div id="bird-run-hud">Distance 0m · Speed 0 · Rescued 0</div>
+  <button id="bird-run-reset" type="button">Restart run</button>
+</section>
+<script type="module" src="./bird-run-canopy-rescue-entry.js?v=bird-run-canopy-rescue-readiness-v1"></script>
+</body>
+</html>
