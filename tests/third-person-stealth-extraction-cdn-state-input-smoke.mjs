@@ -1,4 +1,6 @@
 import "./third-person-stealth-extraction-readiness-kits-smoke.mjs";
+import "./third-person-medevac-readiness-kits-smoke.mjs";
+import "./third-person-medevac-cdn-state-input-smoke.mjs";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { createThirdPersonStealthExtractionReadinessDomainKit } from "../experiments/ThirdPersonFollowThrough/kits/third-person-stealth-extraction-readiness-domain-kit.js";
