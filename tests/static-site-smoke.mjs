@@ -54,5 +54,21 @@ if (existsSync(rootIndex)) {
   }
 }
 
+const tinyDiffusionHtml = join(root, "experiments/tiny-diffusion-lab/index.html");
+if (existsSync(tinyDiffusionHtml)) {
+  const html = readFileSync(tinyDiffusionHtml, "utf8");
+  const js = readFileSync(join(root, "experiments/tiny-diffusion-lab/main.js"), "utf8");
+  const metadata = JSON.parse(readFileSync(join(root, "experiments/tiny-diffusion-lab/experiment.json"), "utf8"));
+  assert.ok(html.includes("Tiny Diffusion Lab"), "Tiny Diffusion Lab title should render in HTML");
+  assert.ok(html.includes("./main.js?v=tiny-diffusion-lab-1"), "Tiny Diffusion Lab should load its local browser host");
+  assert.ok(js.includes("https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js"), "Tiny Diffusion Lab should consume Nexus Engine main CDN");
+  assert.ok(js.includes("createNexusDiffusionKits"), "Tiny Diffusion Lab should install the diffusion module");
+  assert.ok(js.includes("engine.n.diffusion.prepare()"), "Tiny Diffusion Lab should prepare through engine.n.diffusion");
+  assert.ok(js.includes("engine.n.diffusion.train"), "Tiny Diffusion Lab should train through engine.n.diffusion");
+  assert.ok(js.includes("engine.n.diffusion.sample"), "Tiny Diffusion Lab should sample through engine.n.diffusion");
+  assert.equal(metadata.id, "tiny-diffusion-lab");
+  assert.ok(metadata.kitStack.includes("createNexusDiffusionKits"), "Tiny Diffusion Lab metadata should record diffusion kit consumption");
+}
+
 for (const warning of warnings) console.warn(`[static smoke warning] ${warning}`);
 console.log(`Static site smoke checked ${htmlFiles.length} HTML files and ${jsFiles.length} JS modules.`);
