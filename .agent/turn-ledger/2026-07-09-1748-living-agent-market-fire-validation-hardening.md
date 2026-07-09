@@ -2,9 +2,9 @@
 
 ## Scope
 
-Follow-up validation cleanup for the completed `experiments/living-agent-lab/market-fire-evacuation.html` upgrade.
+Follow-up validation and final cleanup for the completed `experiments/living-agent-lab/market-fire-evacuation.html` upgrade.
 
-## Change
+## CDN validation change
 
 Updated `tests/living-agent-market-fire-evacuation-cdn-state-input-smoke.mjs` so a network-enabled run now:
 
@@ -18,9 +18,14 @@ This is more accurate than attempting to import a lone copied entry module whose
 
 The existing source audit and 10 simulated state/input cases remain unchanged.
 
-## Commit
+## Gallery cleanup
+
+The gallery data now contains 17 active route entries. Corrected the stale gallery hint from 16 to 17 so the user-facing inventory count matches the route array.
+
+## Commits
 
 - `8735981c69591630e5fcbcf841ce9c5c0a230352` — Harden Living Agent CDN local module validation
+- `a42bc662eb8a2145a3e68931300df61ff0e61d9a` — Correct gallery route count after Living Agent upgrade
 
 ## Validation limitation
 
