@@ -21,12 +21,12 @@
   </style>
 </head>
 <body>
-  <main id="app" data-upgrade="survivor-rescue-readiness-renderer-handoff-pass storm-evacuation-readiness-renderer-handoff-pass radio-repair-readiness-renderer-handoff-pass blackout-recovery-readiness-renderer-handoff-pass ridge-ambulance-readiness-renderer-handoff-pass field-clinic-readiness-renderer-handoff-pass lighthouse-battery-readiness-renderer-handoff-pass">
-    <canvas id="game" role="application" aria-label="Fogline Relay game canvas with ridge ambulance, field clinic, and lighthouse battery readiness descriptors"></canvas>
+  <main id="app" data-upgrade="survivor-rescue-readiness-renderer-handoff-pass storm-evacuation-readiness-renderer-handoff-pass radio-repair-readiness-renderer-handoff-pass blackout-recovery-readiness-renderer-handoff-pass ridge-ambulance-readiness-renderer-handoff-pass field-clinic-readiness-renderer-handoff-pass lighthouse-battery-readiness-renderer-handoff-pass tide-siren-evacuation-readiness-renderer-handoff-pass">
+    <canvas id="game" role="application" aria-label="Fogline Relay game canvas with ridge ambulance, field clinic, lighthouse battery, and tide siren evacuation readiness descriptors"></canvas>
     <aside id="hud" aria-label="Game HUD">
-      <header id="status" aria-live="polite">Loading survivor rescue, storm evacuation, radio repair, blackout recovery, ridge ambulance, field clinic, and lighthouse battery readiness…</header>
-      <section id="prompt" aria-live="polite">Booting Nexus Engine kits with casualty beacons, triage sash routes, stretcher caches, oxygen lanterns, medic radio pings, ambulance gate windows, triage beacons, oxygen caches, stretcher lanes, medic shelters, ambulance routes, dawn clinic ledgers, hand-crank generators, battery caches, Fresnel lens alignment threads, fog-breach windows, family signal flares, and dawn beam ledger descriptors…</section>
-      <footer id="controls">WASD move · mouse/←→ look · hold E scan · R restart · click canvas to lock · restore lighthouse power while keeping the field clinic evacuation chain visible</footer>
+      <header id="status" aria-live="polite">Loading survivor rescue, storm evacuation, radio repair, blackout recovery, ridge ambulance, field clinic, lighthouse battery, and tide siren evacuation readiness…</header>
+      <section id="prompt" aria-live="polite">Booting Nexus Engine kits with casualty beacons, triage sash routes, stretcher caches, oxygen lanterns, medic radio pings, ambulance gate windows, triage beacons, oxygen caches, stretcher lanes, medic shelters, ambulance routes, dawn clinic ledgers, hand-crank generators, battery caches, Fresnel lens alignment threads, fog-breach windows, family signal flares, dawn beam ledgers, tide gauge stakes, siren bell towers, boat rope lanes, family muster flags, fuel drum caches, and dawn evacuation ledger descriptors…</section>
+      <footer id="controls">WASD move · mouse/←→ look · hold E scan · R restart · click canvas to lock · restore lighthouse power and stage tide-siren boat evacuation while keeping the field clinic chain visible</footer>
     </aside>
     <section id="errorPanel" role="alert" hidden>
       <h2>Could not start Fogline Relay</h2>
@@ -45,5 +45,6 @@
   <script type="module" src="./src/ridge-ambulance-readiness-entry.js?v=fogline-ridge-ambulance-readiness-1"></script>
   <script type="module" src="./src/field-clinic-readiness-entry.js?v=fogline-field-clinic-readiness-1"></script>
   <script type="module" src="./src/lighthouse-battery-readiness-entry.js?v=fogline-lighthouse-battery-readiness-1"></script>
+  <script type="module" src="./src/tide-siren-evacuation-readiness-entry.js?v=fogline-tide-siren-evacuation-readiness-1"></script>
 </body>
 </html>
