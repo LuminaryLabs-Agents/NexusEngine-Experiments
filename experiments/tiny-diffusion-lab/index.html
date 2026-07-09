@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Tiny Diffusion Lab trains and samples a small Nexus Engine diffusion model in the browser through createNexusDiffusionKits." />
+  <meta name="description" content="Tiny Diffusion Lab trains, samples, curates, and archives a small Nexus Engine diffusion model in the browser through createNexusDiffusionKits and renderer-neutral readiness kits." />
   <title>Tiny Diffusion Lab — Nexus Engine Experiment</title>
   <style>
     :root {
@@ -52,17 +52,19 @@
     .mission-list span { color: var(--muted); }
     #sampleClinicReadiness .mission-list p { border-color: rgba(245,207,120,.18); background: rgba(245,207,120,.055); }
     #sampleClinicReadiness .mission-list b { color: var(--accent-2); }
+    #datasetExpeditionReadiness .mission-list p { border-color: rgba(147,255,184,.18); background: rgba(147,255,184,.052); }
+    #datasetExpeditionReadiness .mission-list b { color: var(--ok); }
     .ok { color: var(--ok); }
     .danger { color: var(--danger); }
     @media (max-width: 860px) { .card, .card.wide { grid-column: 1 / -1; } .status, .mission-panel, .mission-list { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
-  <main id="app" data-experiment="tiny-diffusion-lab">
+  <main id="app" data-experiment="tiny-diffusion-lab" data-upgrade="dataset-expedition-readiness-renderer-handoff-pass">
     <header class="hero">
       <div class="eyebrow">Nexus Engine · Diffusion Domain Proof</div>
       <h1>Tiny Diffusion Lab</h1>
-      <p class="lede">Train a tiny browser-side diffusion model with the new Nexus Engine diffusion subdomains. The reusable model, tensor, backend, training, sampling, checkpoint, preview, and training mission readiness logic stays in Nexus Engine or renderer-neutral local kits; this route only renders descriptors and sends button intent.</p>
+      <p class="lede">Train a tiny browser-side diffusion model with the new Nexus Engine diffusion subdomains. The reusable model, tensor, backend, training, sampling, checkpoint, preview, training mission, dataset expedition, and sample clinic readiness logic stays in Nexus Engine or renderer-neutral local kits; this route only renders descriptors and sends button intent.</p>
     </header>
 
     <section class="toolbar" aria-label="Tiny diffusion lab controls">
@@ -89,6 +91,14 @@
         <h2>Training mission readiness</h2>
         <div id="trainingMissionReadiness" class="mission-panel" aria-label="Training mission readiness descriptors">
           <div class="metric"><span>Readiness</span><strong>waiting</strong></div>
+          <div class="metric"><span>Status</span><strong>booting</strong></div>
+        </div>
+      </article>
+
+      <article class="card full">
+        <h2>Dataset expedition readiness</h2>
+        <div id="datasetExpeditionReadiness" class="mission-panel" aria-label="Dataset expedition readiness descriptors" data-domain="tiny-diffusion-dataset-expedition-readiness-domain">
+          <div class="metric"><span>Expedition readiness</span><strong>waiting</strong></div>
           <div class="metric"><span>Status</span><strong>booting</strong></div>
         </div>
       </article>
@@ -130,6 +140,7 @@
 
   <script type="module" src="./main.js?v=tiny-diffusion-lab-1"></script>
   <script type="module" src="./app/training-mission-readiness-entry.js?v=tiny-diffusion-training-mission-20260708"></script>
+  <script type="module" src="./app/dataset-expedition-readiness-entry.js?v=tiny-diffusion-dataset-expedition-20260709"></script>
   <script type="module" src="./app/sample-clinic-readiness-entry.js?v=tiny-diffusion-sample-clinic-20260709"></script>
 </body>
 </html>
