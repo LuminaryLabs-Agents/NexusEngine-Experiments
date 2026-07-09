@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="description" content="Nexus Frontier: Signal Isles is a NexusEngine 3D kit-utilization showcase with objective, route, cargo, safety, resource, expedition, storm anchor, harbor relief, lighthouse evacuation, storm surge relay, and field hospital triage readiness descriptors." />
+  <meta name="description" content="Nexus Frontier: Signal Isles is a NexusEngine 3D kit-utilization showcase with objective, route, cargo, safety, resource, expedition, storm anchor, harbor relief, lighthouse evacuation, storm surge relay, field hospital triage, and solar desalination readiness descriptors." />
   <title>Nexus Frontier: Signal Isles</title>
   <style>
     html, body { margin:0; height:100%; overflow:hidden; background:#071019; color:#ecfbff; font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
@@ -19,19 +19,20 @@
   </style>
 </head>
 <body>
-  <main id="app" data-upgrade="harbor-relief-readiness-renderer-handoff-pass lighthouse-evacuation-readiness-renderer-handoff-pass storm-surge-relay-readiness-renderer-handoff-pass field-hospital-triage-readiness-renderer-handoff-pass">
-    <canvas id="game" role="application" aria-label="Nexus Frontier Signal Isles 3D experiment with objective, expedition, storm anchor, harbor relief, lighthouse evacuation, storm surge relay, and field hospital triage readability descriptors"></canvas>
+  <main id="app" data-upgrade="harbor-relief-readiness-renderer-handoff-pass lighthouse-evacuation-readiness-renderer-handoff-pass storm-surge-relay-readiness-renderer-handoff-pass field-hospital-triage-readiness-renderer-handoff-pass solar-desalination-readiness-renderer-handoff-pass">
+    <canvas id="game" role="application" aria-label="Nexus Frontier Signal Isles 3D experiment with objective, expedition, storm anchor, harbor relief, lighthouse evacuation, storm surge relay, field hospital triage, and solar desalination readiness descriptors"></canvas>
     <aside id="hud" aria-label="Game HUD">
-      <header id="status" aria-live="polite">Loading Signal Isles field hospital triage readiness…</header>
-      <footer id="controls">Click for pointer lock · F/Mouse scan · E interact · B build · R reset · map triage flags, stock medicine caches, and route stretcher lanes</footer>
+      <header id="status" aria-live="polite">Loading Signal Isles solar desalination readiness…</header>
+      <footer id="controls">Click for pointer lock · F/Mouse scan · E interact · B build · R reset · scan salt pans, build solar stills, pack charcoal filters, seal cistern jars, and launch freshwater ration buoys</footer>
     </aside>
     <section id="errorPanel" role="alert" hidden>
       <h1>Could not start Nexus Frontier: Signal Isles</h1>
       <pre id="errorText"></pre>
     </section>
   </main>
-  <script type="module" src="./src/main.js?v=storm-surge-relay-readiness-1-field-hospital-triage-1"></script>
+  <script type="module" src="./src/main.js?v=storm-surge-relay-readiness-1-field-hospital-triage-1-solar-desalination-1"></script>
   <script type="module" src="./src/storm-surge-relay-readiness-entry.js?v=storm-surge-relay-readiness-1"></script>
   <script type="module" src="./src/field-hospital-triage-readiness-entry.js?v=field-hospital-triage-readiness-1"></script>
+  <script type="module" src="./src/solar-desalination-readiness-entry.js?v=solar-desalination-readiness-1"></script>
 </body>
 </html>
