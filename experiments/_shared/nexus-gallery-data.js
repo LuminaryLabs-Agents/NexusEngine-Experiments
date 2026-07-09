@@ -21,12 +21,12 @@ export const games = Object.freeze([
     id: "vr-platformer-board",
     tab: "experiments",
     title: "VR Platformer Board",
-    route: "./experiments/vr-platformer-board/skyline-medevac.html",
+    route: "./experiments/vr-platformer-board/storm-harbor.html",
     kind: "experiment",
     visual: "next",
     playLabel: "Play experiment",
-    tags: [{ label: "VR Board", tone: "gold" }, { label: "Skyline Medevac", tone: "green" }, { label: "Nexus Engine", tone: "blue" }],
-    description: "Board-scale platformer rescue pass with tether pylons, harness threads, crosswind ribbons, oxygen canisters, medevac pod staging, and descriptor-only skyline medevac readiness over the jump/coin/hazard loop."
+    tags: [{ label: "VR Board", tone: "gold" }, { label: "Storm Harbor", tone: "green" }, { label: "Nexus Engine", tone: "blue" }],
+    description: "Board-scale platformer evacuation pass with tide gauges, flare buoys, crane cable crossings, supply net caches, rescue skiff berths, animated harbor water, and descriptor-only storm harbor readiness over the jump/collect/hazard loop."
   },
   {
     id: "infinite-radial-terrain",
@@ -194,6 +194,8 @@ export const games = Object.freeze([
     description: "Incident-router workshop route for model failure operations with alert beacons, trace samplers, classifier lanes, fallback briefs, operator shift posts, and audit ledgers using descriptor-only NexusEngine readiness kits."
   }
 ]);
+
+export const apps = games;
 
 export const tabs = Object.freeze([
   { id: "experiments", label: "Experiments", count: games.filter((app) => app.tab === "experiments").length },
