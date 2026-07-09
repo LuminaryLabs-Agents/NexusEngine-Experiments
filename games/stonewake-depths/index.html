@@ -37,7 +37,7 @@
   </style>
 </head>
 <body>
-  <main id="wrap" aria-label="Stonewake Depths high fidelity canvas game" data-upgrade="stonewake-flood-rescue-readiness-renderer-handoff-pass cave-clinic-triage-readiness-renderer-handoff-pass pressure-lock-pump-readiness-renderer-handoff-pass">
+  <main id="wrap" aria-label="Stonewake Depths high fidelity canvas game" data-upgrade="stonewake-flood-rescue-readiness-renderer-handoff-pass cave-clinic-triage-readiness-renderer-handoff-pass pressure-lock-pump-readiness-renderer-handoff-pass silt-archive-drainage-readiness-renderer-handoff-pass">
     <section id="shell">
       <canvas id="game" width="1280" height="720" role="application" aria-label="Stonewake Depths playable canvas"></canvas>
       <div class="overlay">
@@ -48,14 +48,15 @@
         <div id="prompt" class="prompt">Press E</div>
         <div class="controls"><span><b>A/D</b> move</span><span><b>Space</b> jump</span><span><b>E</b> pick/drop/valve</span><span><b>W/S</b> climb</span><span><b>R</b> restart</span></div>
       </div>
-      <section id="start" class="screen"><div class="card"><div class="kicker">Flood rescue + pressure lock route</div><h1>Stonewake<br/>Depths</h1><p>The heavy block still wakes the rune plate, but the chamber now exposes survivor pings, cave clinic triage, pressure gate wheels, pump chain tension, bellows air pockets, chalk depth marks, carbide lamp relays, and a lockmaster ledger.</p><button id="startBtn">Descend</button></div></section>
+      <section id="start" class="screen"><div class="card"><div class="kicker">Flood rescue + pressure lock + silt archive route</div><h1>Stonewake<br/>Depths</h1><p>The heavy block still wakes the rune plate, but the chamber now exposes survivor pings, cave clinic triage, pressure gate wheels, pump chain tension, bellows air pockets, chalk depth marks, carbide lamp relays, silt depth gauges, fossil shelf archives, siphon hose routes, sump crank wheels, waxed map cases, and a dawn drainage ledger.</p><button id="startBtn">Descend</button></div></section>
       <section id="end" class="screen hidden"><div class="card"><div id="endKicker" class="kicker">Chamber Complete</div><h2 id="endTitle">Door Woken</h2><p id="endCopy">The chamber exhales and the sealed door grinds open.</p><button id="againBtn">Play Again</button></div></section>
     </section>
   </main>
   <script>var mouse = { x: 0, y: 0 };</script>
-  <script type="module" src="./generated-stonewake-hotfix.js?v=playable-block-carry-20260707-flood-rescue-1-cave-clinic-1-pressure-lock-1"></script>
+  <script type="module" src="./generated-stonewake-hotfix.js?v=playable-block-carry-20260707-flood-rescue-1-cave-clinic-1-pressure-lock-1-silt-archive-1"></script>
   <script type="module" src="./stonewake-rescue-readiness-entry.js?v=stonewake-flood-rescue-readiness-1"></script>
   <script type="module" src="./stonewake-cave-clinic-triage-entry.js?v=stonewake-cave-clinic-triage-readiness-20260709"></script>
   <script type="module" src="./stonewake-pressure-lock-pump-entry.js?v=stonewake-pressure-lock-pump-readiness-20260709"></script>
+  <script type="module" src="./stonewake-silt-archive-drainage-entry.js?v=stonewake-silt-archive-drainage-readiness-20260709"></script>
 </body>
 </html>
