@@ -1,5 +1,7 @@
 import "./cavalry-field-hospital-readiness-kits-smoke.mjs";
 import "./cavalry-field-hospital-cdn-state-input-smoke.mjs";
+import "./cavalry-grain-convoy-readiness-kits-smoke.mjs";
+import "./cavalry-grain-convoy-cdn-state-input-smoke.mjs";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { createCavalryCampaignFractalDomainKit } from "../experiments/The Cavalry of Rome/src/cavalry-campaign-fractal-domain-kit.js";
@@ -24,11 +26,14 @@ assert.ok(experimentEntry.includes("cavalry-campaign-fractal-handoff-pass.js?v=c
 assert.ok(liveEntry.includes("cavalry-campaign-fractal-handoff-pass.js?v=campaign-035"), "live entry should load the Cavalry fractal handoff pass");
 assert.ok(liveEntry.includes("cavalry-field-hospital-readiness-pass.js?v=campaign-037"), "live entry should load field hospital readiness pass");
 assert.ok(experimentEntry.includes("cavalry-field-hospital-readiness-pass.js?v=campaign-037"), "experiment entry should load field hospital readiness pass");
-assert.ok(liveEntry.includes("Campaign 035"), "live route should preserve the current build stamp while loading field hospital readiness");
+assert.ok(liveEntry.includes("cavalry-grain-convoy-readiness-pass.js?v=campaign-038"), "live entry should load grain convoy readiness pass");
+assert.ok(experimentEntry.includes("cavalry-grain-convoy-readiness-pass.js?v=campaign-038"), "experiment entry should load grain convoy readiness pass");
+assert.ok(liveEntry.includes("Campaign 038"), "live route should expose the grain convoy build stamp");
 assert.ok(manifest.includes("the-cavalry-of-rome"), "manifest should include The Cavalry of Rome canonical entry");
 assert.ok(manifest.includes("cavalry-campaign-fractal-domain-kit"), "manifest should list the Cavalry fractal domain kit");
 assert.ok(manifest.includes("cavalry-battlefield-orders-domain-kit"), "manifest should list the Cavalry battlefield orders domain kit");
 assert.ok(manifest.includes("cavalry-field-hospital-readiness-domain-kit"), "manifest should list the Cavalry field hospital domain kit");
+assert.ok(manifest.includes("cavalry-grain-convoy-readiness-domain-kit"), "manifest should list the Cavalry grain convoy domain kit");
 
 const inputCases = Array.from({ length: 10 }, (_, i) => ({
   sizeId: "smoke",
