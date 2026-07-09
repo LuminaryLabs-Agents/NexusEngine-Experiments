@@ -37,7 +37,7 @@
   </style>
 </head>
 <body>
-  <main id="wrap" aria-label="Stonewake Depths high fidelity canvas game">
+  <main id="wrap" aria-label="Stonewake Depths high fidelity canvas game" data-upgrade="stonewake-flood-rescue-readiness-renderer-handoff-pass">
     <section id="shell">
       <canvas id="game" width="1280" height="720" role="application" aria-label="Stonewake Depths playable canvas"></canvas>
       <div class="overlay">
@@ -48,10 +48,11 @@
         <div id="prompt" class="prompt">Press E</div>
         <div class="controls"><span><b>A/D</b> move</span><span><b>Space</b> jump</span><span><b>E</b> pick/drop/valve</span><span><b>W/S</b> climb</span><span><b>R</b> restart</span></div>
       </div>
-      <section id="start" class="screen"><div class="card"><div class="kicker">Playable hotfix route</div><h1>Stonewake<br/>Depths</h1><p>The heavy block can now be picked up, carried, and dropped onto the rune plate. Space only jumps. R is the only restart key.</p><button id="startBtn">Descend</button></div></section>
+      <section id="start" class="screen"><div class="card"><div class="kicker">Flood rescue route</div><h1>Stonewake<br/>Depths</h1><p>The heavy block still wakes the rune plate, but the chamber now exposes survivor echo pings, chalk path marks, air pockets, rope lifts, and a rescue-bell extraction handoff.</p><button id="startBtn">Descend</button></div></section>
       <section id="end" class="screen hidden"><div class="card"><div id="endKicker" class="kicker">Chamber Complete</div><h2 id="endTitle">Door Woken</h2><p id="endCopy">The chamber exhales and the sealed door grinds open.</p><button id="againBtn">Play Again</button></div></section>
     </section>
   </main>
-  <script type="module" src="./generated-stonewake-hotfix.js?v=playable-block-carry-20260707"></script>
+  <script type="module" src="./generated-stonewake-hotfix.js?v=playable-block-carry-20260707-flood-rescue-1"></script>
+  <script type="module" src="./stonewake-rescue-readiness-entry.js?v=stonewake-flood-rescue-readiness-1"></script>
 </body>
 </html>
