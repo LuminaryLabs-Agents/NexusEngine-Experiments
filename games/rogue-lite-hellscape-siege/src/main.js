@@ -17,6 +17,7 @@ import { createHellscapeExpeditionReadabilityDomainKit } from './hellscape-exped
 import { createHellscapeSiegecraftReadinessDomainKit } from './hellscape-siegecraft-readiness-domain-kit.js';
 import { createHellscapeInfernalContractReadinessDomainKit } from './hellscape-infernal-contract-readiness-domain-kit.js';
 import { createHellscapeAshCaravanReadinessDomainKit } from './hellscape-ash-caravan-readiness-domain-kit.js';
+import { createHellscapeSanctuaryForgeReadinessDomainKit } from './hellscape-sanctuary-forge-readiness-domain-kit.js';
 import { createCanvasRenderer } from './renderer/canvas-renderer.js';
 
 const NEXUS_ENGINE_RUNTIME = Object.freeze({
@@ -32,6 +33,7 @@ const expeditionReadabilityDomain = createHellscapeExpeditionReadabilityDomainKi
 const siegecraftReadinessDomain = createHellscapeSiegecraftReadinessDomainKit();
 const infernalContractReadinessDomain = createHellscapeInfernalContractReadinessDomainKit();
 const ashCaravanReadinessDomain = createHellscapeAshCaravanReadinessDomainKit();
+const sanctuaryForgeReadinessDomain = createHellscapeSanctuaryForgeReadinessDomainKit();
 const down = new Set();
 const pressed = new Set();
 
@@ -153,7 +155,15 @@ function describeAshCaravanReadiness(state) {
   });
 }
 
-function composeRendererHandoff(visualFractal, expeditionReadability, siegecraftReadiness, infernalContractReadiness, ashCaravanReadiness) {
+function describeSanctuaryForgeReadiness(state) {
+  return sanctuaryForgeReadinessDomain.describe({
+    ...state,
+    buildCatalog: config.builds,
+    time: engine.world.clock.elapsed
+  });
+}
+
+function composeRendererHandoff(visualFractal, expeditionReadability, siegecraftReadiness, infernalContractReadiness, ashCaravanReadiness, sanctuaryForgeReadiness) {
   return {
     id: 'hellscape-composed-renderer-handoff',
     kit: 'hellscape-composed-renderer-handoff',
@@ -162,13 +172,15 @@ function composeRendererHandoff(visualFractal, expeditionReadability, siegecraft
       ?? expeditionReadability?.rendererHandoff?.policy
       ?? siegecraftReadiness?.rendererHandoff?.policy
       ?? infernalContractReadiness?.rendererHandoff?.policy
-      ?? ashCaravanReadiness?.rendererHandoff?.policy,
+      ?? ashCaravanReadiness?.rendererHandoff?.policy
+      ?? sanctuaryForgeReadiness?.rendererHandoff?.policy,
     descriptors: {
       ...(visualFractal?.rendererHandoff?.descriptors ?? {}),
       hellscapeExpedition: expeditionReadability?.rendererHandoff?.descriptors ?? {},
       hellscapeSiegecraft: siegecraftReadiness?.rendererHandoff?.descriptors ?? {},
       hellscapeInfernalContract: infernalContractReadiness?.rendererHandoff?.descriptors ?? {},
-      hellscapeAshCaravan: ashCaravanReadiness?.rendererHandoff?.descriptors ?? {}
+      hellscapeAshCaravan: ashCaravanReadiness?.rendererHandoff?.descriptors ?? {},
+      hellscapeSanctuaryForge: sanctuaryForgeReadiness?.rendererHandoff?.descriptors ?? {}
     },
     counts: {
       ...(visualFractal?.rendererHandoff?.counts ?? {}),
@@ -195,7 +207,13 @@ function composeRendererHandoff(visualFractal, expeditionReadability, siegecraft
       hellgateBreaches: ashCaravanReadiness?.rendererHandoff?.counts?.hellgateBreaches ?? 0,
       ashShelterPockets: ashCaravanReadiness?.rendererHandoff?.counts?.ashShelterPockets ?? 0,
       brimstoneRationCaches: ashCaravanReadiness?.rendererHandoff?.counts?.brimstoneRationCaches ?? 0,
-      dawnExtractionCircles: ashCaravanReadiness?.rendererHandoff?.counts?.dawnExtractionCircles ?? 0
+      dawnExtractionCircles: ashCaravanReadiness?.rendererHandoff?.counts?.dawnExtractionCircles ?? 0,
+      emberBellowsPressures: sanctuaryForgeReadiness?.rendererHandoff?.counts?.emberBellowsPressures ?? 0,
+      crucibleCoolingLoops: sanctuaryForgeReadiness?.rendererHandoff?.counts?.crucibleCoolingLoops ?? 0,
+      relicMoldPriorities: sanctuaryForgeReadiness?.rendererHandoff?.counts?.relicMoldPriorities ?? 0,
+      wardRuneCircles: sanctuaryForgeReadiness?.rendererHandoff?.counts?.wardRuneCircles ?? 0,
+      sanctuaryLaneThreads: sanctuaryForgeReadiness?.rendererHandoff?.counts?.sanctuaryLaneThreads ?? 0,
+      forgeGateCommits: sanctuaryForgeReadiness?.rendererHandoff?.counts?.forgeGateCommits ?? 0
     }
   };
 }
@@ -212,12 +230,14 @@ function snapshot() {
   state.siegecraftReadiness = describeSiegecraftReadiness(state);
   state.infernalContractReadiness = describeInfernalContractReadiness(state);
   state.ashCaravanReadiness = describeAshCaravanReadiness(state);
+  state.sanctuaryForgeReadiness = describeSanctuaryForgeReadiness(state);
   state.rendererHandoff = composeRendererHandoff(
     state.visualFractal,
     state.expeditionReadability,
     state.siegecraftReadiness,
     state.infernalContractReadiness,
-    state.ashCaravanReadiness
+    state.ashCaravanReadiness,
+    state.sanctuaryForgeReadiness
   );
   state.domain = {
     ...(state.domain ?? {}),
@@ -225,7 +245,8 @@ function snapshot() {
     hellscapeExpeditionReadability: state.expeditionReadability,
     hellscapeSiegecraftReadiness: state.siegecraftReadiness,
     hellscapeInfernalContractReadiness: state.infernalContractReadiness,
-    hellscapeAshCaravanReadiness: state.ashCaravanReadiness
+    hellscapeAshCaravanReadiness: state.ashCaravanReadiness,
+    hellscapeSanctuaryForgeReadiness: state.sanctuaryForgeReadiness
   };
   return state;
 }
@@ -271,6 +292,7 @@ window.GameHost = {
   siegecraftReadinessDomain,
   infernalContractReadinessDomain,
   ashCaravanReadinessDomain,
+  sanctuaryForgeReadinessDomain,
   getState: snapshot,
   getVisualFractal: () => describeVisualFractal(engine.getState()),
   getExpeditionReadability: () => describeExpeditionReadability(engine.getState()),
@@ -280,6 +302,9 @@ window.GameHost = {
   getAshCaravanReadiness: () => describeAshCaravanReadiness(engine.getState()),
   getHellscapeAshCaravanReadiness: () => describeAshCaravanReadiness(engine.getState()),
   getAshCaravanReadinessTree: () => ashCaravanReadinessDomain.tree,
+  getSanctuaryForgeReadiness: () => describeSanctuaryForgeReadiness(engine.getState()),
+  getHellscapeSanctuaryForgeReadiness: () => describeSanctuaryForgeReadiness(engine.getState()),
+  getSanctuaryForgeReadinessTree: () => sanctuaryForgeReadinessDomain.tree,
   getRendererHandoff: () => {
     const state = engine.getState();
     return composeRendererHandoff(
@@ -287,7 +312,8 @@ window.GameHost = {
       describeExpeditionReadability(state),
       describeSiegecraftReadiness(state),
       describeInfernalContractReadiness(state),
-      describeAshCaravanReadiness(state)
+      describeAshCaravanReadiness(state),
+      describeSanctuaryForgeReadiness(state)
     );
   },
   startWave: () => engine.waves.start(),
