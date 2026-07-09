@@ -157,8 +157,8 @@ export const games = Object.freeze([
     kind: "experiment",
     visual: "sora",
     playLabel: "Play experiment",
-    tags: [{ label: "Open Flight", tone: "gold" }, { label: "Radio Beacon", tone: "green" }, { label: "Nexus Engine", tone: "blue" }],
-    description: "Open aerial traversal gateway into The Open Above with rescue, lighthouse, rookery, star orchard, and sky radio beacon descriptors for cloud radio masts, distress frequency bands, lightning gaps, thermal relay buoys, sky stretcher cradles, and dawn radio ledgers."
+    tags: [{ label: "Open Flight", tone: "gold" }, { label: "Cloud Clinic", tone: "green" }, { label: "Nexus Engine", tone: "blue" }],
+    description: "Open aerial traversal gateway into The Open Above with rescue, lighthouse, rookery, star orchard, sky radio beacon, and cloud clinic triage descriptors for landing pads, pulse kites, vapor sterilizer rings, medicine satchels, recovery hammocks, and dawn clinic ledgers."
   },
   {
     id: "zombie-orchard",
