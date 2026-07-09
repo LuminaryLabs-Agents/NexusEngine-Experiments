@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="VR Platformer Board skyline medevac rescue readiness pass using NexusEngine main CDN and renderer-neutral domain kits." />
+  <title>VR Platformer Board · Skyline Medevac</title>
+  <style>
+    html, body { margin: 0; height: 100%; overflow: hidden; background: radial-gradient(circle at 50% 18%, #263a63, #090d18 54%, #03050a); color: white; font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    main, canvas { position: fixed; inset: 0; width: 100vw; height: 100vh; }
+    canvas { display: block; }
+    #hud { position: fixed; left: 16px; top: 14px; right: 16px; display: flex; justify-content: space-between; gap: 12px; pointer-events: none; font-size: 12px; letter-spacing: .04em; text-transform: uppercase; color: rgba(255,255,255,.82); }
+    #hud span { background: rgba(0,0,0,.28); border: 1px solid rgba(255,255,255,.14); border-radius: 999px; padding: 7px 10px; backdrop-filter: blur(10px); box-shadow: 0 0 28px rgba(100, 210, 255, .12); }
+    #hud[data-tone="warning"] span { border-color: rgba(255, 203, 105, .48); color: #ffe7ad; }
+    #hud[data-tone="success"] span { border-color: rgba(145, 255, 190, .48); color: #dfffea; }
+    #legend { position: fixed; left: 16px; bottom: 16px; width: min(430px, calc(100vw - 32px)); padding: 12px 14px; border-radius: 16px; background: rgba(2, 5, 12, .72); border: 1px solid rgba(255,255,255,.12); color: rgba(235,245,255,.78); font-size: 12px; line-height: 1.45; backdrop-filter: blur(14px); }
+    #legend strong { color: #dfffea; }
+    #errorPanel { position: fixed; left: 16px; right: 16px; bottom: 16px; padding: 14px; border-radius: 14px; background: rgba(80,0,0,.86); color: white; white-space: pre-wrap; font-size: 13px; }
+    #errorPanel[hidden] { display: none; }
+  </style>
+</head>
+<body>
+  <main id="app" data-upgrade="vr-board-skyline-medevac-readiness-renderer-handoff-pass">
+    <canvas id="game" role="application" aria-label="VR platformer board skyline medevac experiment"></canvas>
+    <aside id="hud" aria-label="Game HUD" data-tone="neutral">
+      <span id="objective">Booting skyline medevac board…</span>
+      <span id="controls">A/D move · Space jump · R reset · drag head</span>
+    </aside>
+    <section id="legend"><strong>Skyline medevac:</strong> lock tether pylons, recover oxygen canisters, avoid crosswind holds, and marshal the evacuation pod.</section>
+    <section id="errorPanel" role="alert" hidden></section>
+  </main>
+  <script type="module" src="./skyline-medevac-readiness-entry.js?v=vr-board-skyline-medevac-readiness-1"></script>
+</body>
+</html>
