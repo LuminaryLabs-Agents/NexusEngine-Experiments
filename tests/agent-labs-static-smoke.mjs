@@ -2,6 +2,8 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
 const living = readFileSync("experiments/living-agent-lab/index.html", "utf8");
+const livingMarketTrustEntry = readFileSync("experiments/living-agent-lab/market-trust-restoration-readiness-entry.js", "utf8");
+const livingMarketTrustKits = readFileSync("experiments/living-agent-lab/market-trust-restoration-readiness-kits.js", "utf8");
 const onnx = readFileSync("experiments/onnx-agent-lab/index.html", "utf8");
 const tiny = readFileSync("experiments/tiny-diffusion-lab/index.html", "utf8");
 const tinyMissionEntry = readFileSync("experiments/tiny-diffusion-lab/app/training-mission-readiness-entry.js", "utf8");
@@ -13,6 +15,13 @@ assert.match(living, /availableActions/);
 assert.match(living, /visibleState/);
 assert.match(living, /window\.GameHost/);
 assert.match(living, /Dispose/);
+assert.match(living, /data-experiment="living-agent-lab"/);
+assert.match(living, /market-trust-restoration-readiness-entry\.js\?v=living-agent-market-trust-20260709/);
+assert.match(livingMarketTrustEntry, /cdn\.jsdelivr\.net\/gh\/LuminaryLabs-Dev\/NexusEngine@main\/src\/index\.js/);
+assert.match(livingMarketTrustEntry, /getLivingAgentMarketTrustRestorationReadiness/);
+assert.match(livingMarketTrustEntry, /getRendererHandoff/);
+assert.match(livingMarketTrustKits, /living-agent-market-trust-restoration-domain/);
+assert.match(livingMarketTrustKits, /renderer consumes descriptors only/);
 
 assert.match(onnx, /ONNX Companion Workshop/);
 assert.match(onnx, /onnx-community\/Qwen2\.5-0\.5B-Instruct/);
