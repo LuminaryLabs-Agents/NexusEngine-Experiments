@@ -1,0 +1,35 @@
+{
+  "id": "tiny-diffusion-lab",
+  "title": "Tiny Diffusion Lab",
+  "route": "./experiments/tiny-diffusion-lab/",
+  "kind": "experiment",
+  "subtype": "lab",
+  "status": "browser-host-proof",
+  "runtime": "Nexus Engine main CDN",
+  "kitStack": [
+    "createRealtimeGame",
+    "createNexusDiffusionKits",
+    "diffusion-dataset-domain",
+    "diffusion-tensor-domain",
+    "diffusion-backend-domain",
+    "diffusion-noise-domain",
+    "diffusion-model-domain",
+    "diffusion-training-domain",
+    "diffusion-sampling-domain",
+    "diffusion-checkpoint-domain",
+    "diffusion-preview-domain"
+  ],
+  "controls": "Prepare, Train 1 epoch, Train 10 epochs, Generate sample, Save/load checkpoint, Reset",
+  "smokeActions": [
+    "prepare diffusion domain",
+    "train one epoch",
+    "sample denoising frames",
+    "save and load memory checkpoint",
+    "render preview descriptors"
+  ],
+  "ownership": {
+    "reusableImplementation": "LuminaryLabs-Dev/NexusEngine/src/modules/nexus-diffusion/",
+    "experimentOwns": ["DOM", "Canvas rendering", "button intent", "route metadata"],
+    "experimentDoesNotOwn": ["tensor math", "model training", "sampling algorithm", "checkpoint storage", "dataset generation"]
+  }
+}
