@@ -80,8 +80,8 @@ export const games = Object.freeze([
     kind: "experiment",
     visual: "fogline",
     playLabel: "Play experiment",
-    tags: [{ label: "First Person", tone: "gold" }, { label: "Scan", tone: "green" }, { label: "Fog", tone: "blue" }],
-    description: "First-person survey loop for scan targets, fog zones, timed pressure, hazard state, and renderer-only visual buckets."
+    tags: [{ label: "First Person", tone: "gold" }, { label: "Fog Observatory", tone: "green" }, { label: "Nexus Engine", tone: "blue" }],
+    description: "First-person survey loop for scan targets, fog zones, timed pressure, hazard state, rescue/clinic/lighthouse/tide overlays, and fog observatory calibration descriptors for barometer needles, hygrometer sashes, heliograph mirrors, relay kites, map flags, and dawn observatory ledgers."
   },
   {
     id: "nexus-frontier-signal-isles",
