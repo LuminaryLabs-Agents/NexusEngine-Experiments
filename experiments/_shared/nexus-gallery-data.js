@@ -168,8 +168,8 @@ export const games = Object.freeze([
     kind: "game",
     visual: "hell",
     playLabel: "Play game",
-    tags: [{ label: "Action RPG", tone: "gold" }, { label: "Base Siege", tone: "green" }, { label: "Harvest", tone: "red" }],
-    description: "Base route for realm portals, inventory, harvesting, building, wave-defense, FX, and renderer-only presentation loop."
+    tags: [{ label: "Action RPG", tone: "gold" }, { label: "Blood Moon Refuge", tone: "green" }, { label: "Harvest", tone: "red" }],
+    description: "Base-siege action route for realm portals, inventory, harvesting, building, wave-defense, ash caravan and forge descriptors, plus blood moon refuge sigils, medicine caches, shelter wards, demon pressure fronts, soul ferry routes, and dawn refuge accounting."
   }
 ]);
 
