@@ -1,3 +1,4 @@
+import "./meadow-night-watch-cdn-state-input-smoke.mjs";
 import "./meadow-pollinator-rescue-cdn-state-input-smoke.mjs";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
@@ -22,6 +23,8 @@ assert.ok(files.main.includes("window.GameHost"), "main should expose GameHost s
 assert.ok(files.main.includes("visualFractal"), "main should expose visualFractal state");
 assert.ok(files.index.includes("20260708-flock-safety-readiness-1"), "entrypoint should cache-bust the latest upgraded meadow route");
 assert.ok(files.index.includes("meadow-pollinator-rescue-entry.js?v=20260708-pollinator-rescue-readiness-1"), "entrypoint should load pollinator rescue readiness overlay");
+assert.ok(files.index.includes("meadow-night-watch-entry.js?v=20260708-night-watch-readiness-1"), "entrypoint should load night watch readiness overlay");
+assert.ok(files.index.includes("night-watch-readiness-renderer-handoff-pass"), "route should advertise night watch readiness");
 assert.ok(files.renderer.includes("createMeadowVisualFractalLayers"), "renderer should consume descriptors through a handoff adapter");
 
 const heightAt = (x = 0, z = 0) => Math.sin(x * 0.033) * 0.24 + Math.cos(z * 0.041) * 0.12;
