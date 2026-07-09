@@ -135,8 +135,8 @@ export const games = Object.freeze([
     kind: "experiment",
     visual: "next",
     playLabel: "Play experiment",
-    tags: [{ label: "Grapple", tone: "gold" }, { label: "Weather Station", tone: "green" }, { label: "Nexus Engine", tone: "blue" }],
-    description: "Grapple-climb validation with action input, ledge routes, swing pressure, feedback descriptors, glacier supply, avalanche rescue, and summit weather station readiness for anemometer masts, battery caches, barometer stakes, wind corridor ribbons, radio repeaters, and dawn forecast ledgers."
+    tags: [{ label: "Grapple", tone: "gold" }, { label: "Drone Relay", tone: "green" }, { label: "Nexus Engine", tone: "blue" }],
+    description: "Grapple-climb validation with action input, ledge routes, swing pressure, feedback descriptors, glacier supply, avalanche rescue, summit weather station readiness, and drone relay rescue descriptors for phosphor anchors, snow flags, drone perches, rescue cable spools, heat beacons, and extraction ledgers."
   },
   {
     id: "sora-the-infinite",
