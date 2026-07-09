@@ -1,3 +1,5 @@
+import "./sora-sky-rookery-migration-readiness-kits-smoke.mjs";
+import "./sora-sky-rookery-migration-cdn-state-input-smoke.mjs";
 import "./sora-sky-lighthouse-readiness-kits-smoke.mjs";
 import "./sora-sky-lighthouse-cdn-state-input-smoke.mjs";
 import "./sora-sky-rescue-readiness-domain-kits-smoke.mjs";
@@ -23,6 +25,8 @@ assert.ok(routeHtml.includes("sora-sky-rescue-style.css?v=sky-rescue-readiness-v
 assert.ok(routeHtml.includes("sky-rescue-readiness-v1"), "route cache-busts sky rescue readiness overlay");
 assert.ok(routeHtml.includes("sora-sky-lighthouse-entry.js?v=sky-lighthouse-readiness-v1"), "route includes sky lighthouse readiness overlay");
 assert.ok(routeHtml.includes("sky-lighthouse-readiness-renderer-handoff-pass"), "route advertises sky lighthouse readiness pass");
+assert.ok(routeHtml.includes("sora-sky-rookery-migration-entry.js?v=sky-rookery-migration-readiness-v1"), "route includes sky rookery migration overlay");
+assert.ok(routeHtml.includes("sky-rookery-migration-readiness-renderer-handoff-pass"), "route advertises sky rookery migration readiness pass");
 assert.ok(!routeHtml.includes("http-equiv=\"refresh\""), "zero-frame redirect removed");
 assert.ok(routeRuntime.includes(nexusEngineCdn), "gateway imports NexusEngine main CDN");
 assert.ok(!routeRuntime.includes(oldRuntimeCdn), "changed route runtime does not import old NexusRealtime CDN");
