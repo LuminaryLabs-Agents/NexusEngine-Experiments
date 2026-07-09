@@ -113,8 +113,8 @@ export const games = Object.freeze([
     kind: "game",
     visual: "hell",
     playLabel: "Play game",
-    tags: [{ label: "Tower Defense", tone: "gold" }, { label: "2.5D Cel", tone: "green" }, { label: "Tactics", tone: "blue" }],
-    description: "2.5D cel-style defense game with gameplay HUD, tower cards, context panel, placement ghost, range rings, and content pass."
+    tags: [{ label: "Tower Defense", tone: "gold" }, { label: "Supply Convoy", tone: "green" }, { label: "Nexus Engine", tone: "blue" }],
+    description: "2.5D cel-style defense game with tower cards, context panels, placement ghosts, range rings, field-hospital overlays, and supply-convoy readiness descriptors for ammo pallets, ration water, convoy lanes, ambush watch arcs, repair crew routes, and night quartermaster ledgers."
   },
   {
     id: "stonewake-depths",
