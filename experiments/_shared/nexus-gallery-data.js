@@ -69,8 +69,8 @@ export const games = Object.freeze([
     kind: "experiment",
     visual: "next",
     playLabel: "Open lab",
-    tags: [{ label: "ONNX Agent", tone: "gold" }, { label: "Trust Loop", tone: "green" }, { label: "Descriptors", tone: "blue" }],
-    description: "Small market-agent route where an ONNX or fallback guard chooses actions from visible state, while market-trust restoration kits expose witness, evidence, restitution, permit, crowd-calm, and mediator-oath descriptors."
+    tags: [{ label: "ONNX Agent", tone: "gold" }, { label: "Civic Festival", tone: "green" }, { label: "Descriptors", tone: "blue" }],
+    description: "Small market-agent route where an ONNX or fallback guard chooses actions from visible state while market-trust and civic-festival mediation kits expose permit scrolls, vendor lanes, lantern routes, dispute hearings, steward posts, and night-market ledgers."
   },
   {
     id: "fogline-relay",
