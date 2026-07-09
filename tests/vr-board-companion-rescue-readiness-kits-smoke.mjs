@@ -1,11 +1,15 @@
 import assert from "node:assert/strict";
 import {
   VR_BOARD_COMPANION_RESCUE_READINESS_DOMAIN_TREE,
+  createVrBoardCheckpointSanctuarySignalKit,
   createVrBoardCompanionRescueReadinessDomainKit,
   createVrBoardEscortLaneRibbonKit,
+  createVrBoardExitPortalBloomKit,
   createVrBoardExitStretcherCommitKit,
+  createVrBoardGuardianBridgeRibbonKit,
   createVrBoardLostCompanionBeaconKit,
   createVrBoardMedalCacheSignalKit,
+  createVrBoardMemoryShardTrailKit,
   createVrBoardRescueNetAnchorKit,
   createVrBoardShieldBubbleTimingKit
 } from "../experiments/_kits/vr-platformer-board/vr-board-companion-rescue-readiness-kits.js";
@@ -47,19 +51,28 @@ const stateCases = Array.from({ length: 10 }, (_, index) => ({
     collectedValue: Math.min(4, index % 5),
     collectedIds: level.collectibles.slice(0, Math.min(4, index % 5)).map((coin) => coin.id)
   },
+  comfort: { warnings: index === 7 ? ["head-drift"] : [] },
   input: { moveAxis: index % 3 === 0 ? -1 : index % 3 === 1 ? 0 : 1, jumpPressed: index % 4 === 0 },
   time: index * 0.37
 }));
 
 assert.equal(VR_BOARD_COMPANION_RESCUE_READINESS_DOMAIN_TREE.root, "vr-board-companion-rescue-readiness-domain");
 assert.ok(VR_BOARD_COMPANION_RESCUE_READINESS_DOMAIN_TREE.contract.includes("no DOM"));
+assert.ok(JSON.stringify(VR_BOARD_COMPANION_RESCUE_READINESS_DOMAIN_TREE).includes("memory-shard-trail-domain"));
+assert.ok(JSON.stringify(VR_BOARD_COMPANION_RESCUE_READINESS_DOMAIN_TREE).includes("guardian-bridge-domain"));
+assert.ok(JSON.stringify(VR_BOARD_COMPANION_RESCUE_READINESS_DOMAIN_TREE).includes("checkpoint-sanctuary-domain"));
+assert.ok(JSON.stringify(VR_BOARD_COMPANION_RESCUE_READINESS_DOMAIN_TREE).includes("portal-bloom-domain"));
 
 const lostCompanionBeaconKit = createVrBoardLostCompanionBeaconKit();
+const memoryShardTrailKit = createVrBoardMemoryShardTrailKit();
 const escortLaneRibbonKit = createVrBoardEscortLaneRibbonKit();
+const guardianBridgeRibbonKit = createVrBoardGuardianBridgeRibbonKit();
 const rescueNetAnchorKit = createVrBoardRescueNetAnchorKit();
 const shieldBubbleTimingKit = createVrBoardShieldBubbleTimingKit();
+const checkpointSanctuarySignalKit = createVrBoardCheckpointSanctuarySignalKit();
 const medalCacheSignalKit = createVrBoardMedalCacheSignalKit();
 const exitStretcherCommitKit = createVrBoardExitStretcherCommitKit();
+const exitPortalBloomKit = createVrBoardExitPortalBloomKit();
 const domainKit = createVrBoardCompanionRescueReadinessDomainKit();
 
 for (const [index, stateCase] of stateCases.entries()) {
@@ -68,9 +81,19 @@ for (const [index, stateCase] of stateCases.entries()) {
   assert.ok(lostBeacons.every((beacon) => beacon.kind === "lost-companion-beacon"));
   assert.ok(lostBeacons.every((beacon) => beacon.rendererContract.rendererMustNotOwn.includes("frame loop")));
 
+  const memoryShards = memoryShardTrailKit.describe(stateCase);
+  assert.equal(memoryShards.length, level.collectibles.length, `memory shards for case ${index}`);
+  assert.ok(memoryShards.every((shard) => shard.kind === "lost-companion-beacon"));
+  assert.ok(memoryShards.every((shard) => shard.shard === true));
+
   const escortRibbons = escortLaneRibbonKit.describe(stateCase);
   assert.ok(escortRibbons.length >= 1, `escort ribbons for case ${index}`);
   assert.ok(escortRibbons.every((ribbon) => ribbon.kind === "escort-lane-ribbon"));
+
+  const guardianBridges = guardianBridgeRibbonKit.describe(stateCase);
+  assert.equal(guardianBridges.length, level.platforms.length - 1);
+  assert.ok(guardianBridges.every((bridge) => bridge.kind === "escort-lane-ribbon"));
+  assert.ok(guardianBridges.every((bridge) => bridge.bridge === true));
 
   const rescueAnchors = rescueNetAnchorKit.describe(stateCase);
   assert.equal(rescueAnchors.length, level.hazards.length);
@@ -80,6 +103,10 @@ for (const [index, stateCase] of stateCases.entries()) {
   assert.equal(shieldWindows.length, level.hazards.length);
   assert.ok(shieldWindows.every((window) => window.readiness >= 0 && window.readiness <= 1));
 
+  const sanctuarySignals = checkpointSanctuarySignalKit.describe(stateCase);
+  assert.equal(sanctuarySignals.length, level.platforms.length);
+  assert.ok(sanctuarySignals.every((signal) => signal.sanctuary === true));
+
   const medalSignals = medalCacheSignalKit.describe(stateCase);
   assert.equal(medalSignals.length, level.collectibles.length);
   assert.ok(medalSignals.some((signal) => signal.kind === "medal-cache-signal"));
@@ -88,18 +115,29 @@ for (const [index, stateCase] of stateCases.entries()) {
   assert.equal(exitCommit.kind, "exit-stretcher-commit");
   assert.ok(exitCommit.readiness >= 0 && exitCommit.readiness <= 1);
 
+  const exitPortalBloom = exitPortalBloomKit.describe(stateCase);
+  assert.equal(exitPortalBloom.kind, "exit-portal-bloom");
+  assert.ok(exitPortalBloom.bloom >= 0 && exitPortalBloom.bloom <= 1);
+
   const descriptor = domainKit.describe(stateCase);
   assert.equal(descriptor.id, "vr-board-companion-rescue-readiness-domain");
   assert.equal(descriptor.rendererHandoff.policy, "renderer-consumes-descriptors-only");
-  assert.equal(descriptor.rendererHandoff.counts.lostCompanionBeacons, lostBeacons.length);
-  assert.equal(descriptor.rendererHandoff.counts.escortLaneRibbons, escortRibbons.length);
+  assert.equal(descriptor.rendererHandoff.counts.baseLostCompanionBeacons, lostBeacons.length);
+  assert.equal(descriptor.rendererHandoff.counts.memoryShardBeacons, memoryShards.length);
+  assert.equal(descriptor.rendererHandoff.counts.lostCompanionBeacons, lostBeacons.length + memoryShards.length);
+  assert.equal(descriptor.rendererHandoff.counts.baseEscortLaneRibbons, escortRibbons.length);
+  assert.equal(descriptor.rendererHandoff.counts.guardianBridgeRibbons, guardianBridges.length);
+  assert.equal(descriptor.rendererHandoff.counts.escortLaneRibbons, escortRibbons.length + guardianBridges.length);
   assert.equal(descriptor.rendererHandoff.counts.rescueNetAnchors, rescueAnchors.length);
   assert.equal(descriptor.rendererHandoff.counts.shieldBubbleWindows, shieldWindows.length);
-  assert.equal(descriptor.rendererHandoff.counts.medalCacheSignals, medalSignals.length);
+  assert.equal(descriptor.rendererHandoff.counts.checkpointSanctuarySignals, sanctuarySignals.length);
+  assert.equal(descriptor.rendererHandoff.counts.baseMedalCacheSignals, medalSignals.length);
+  assert.equal(descriptor.rendererHandoff.counts.medalCacheSignals, medalSignals.length + sanctuarySignals.length);
+  assert.equal(descriptor.rendererHandoff.counts.exitPortalBlooms, 1);
   assert.equal(descriptor.rendererHandoff.counts.exitStretcherCommits, 1);
   assert.doesNotThrow(() => JSON.stringify(descriptor));
   assert.ok(!JSON.stringify(descriptor).includes("document.querySelector"));
   assert.ok(!JSON.stringify(descriptor).includes("requestAnimationFrame"));
 }
 
-console.log("vr board companion rescue readiness kits smoke passed: 10 intake cases");
+console.log("vr board companion rescue guardian bridge readiness kits smoke passed: 10 intake cases");
