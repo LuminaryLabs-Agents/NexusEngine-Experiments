@@ -244,6 +244,43 @@ function drawHellscapeAshCaravan(ctx, ashCaravanReadiness) {
   }
 }
 
+function drawHellscapeSanctuaryForge(ctx, sanctuaryForgeReadiness) {
+  const descriptors = sanctuaryForgeReadiness?.rendererHandoff?.descriptors ?? {};
+
+  for (const bellows of descriptors.emberBellowsPressures || []) {
+    line(ctx, bellows.from, bellows.center, bellows.color, 0.05 + bellows.pressure * 0.18, 0.9 + bellows.pressure * 2.3);
+    ring(ctx, bellows.center, bellows.radius, bellows.color, 0.06 + bellows.pressure * 0.2, 1 + bellows.pressure * 2.2);
+    if (bellows.enemyHeat > 0) circle(ctx, bellows.center.x, bellows.center.y, 3 + bellows.enemyHeat, bellows.color, 0.2 + bellows.pressure * 0.2);
+  }
+
+  for (const loop of descriptors.crucibleCoolingLoops || []) {
+    line(ctx, loop.from, loop.via, loop.color, loop.blocked ? 0.06 : 0.05 + loop.coolant * 0.14, loop.blocked ? 0.8 : 0.9 + loop.coolant * 1.6);
+    line(ctx, loop.via, loop.to, loop.color, loop.blocked ? 0.05 : 0.06 + loop.coolant * 0.16, loop.blocked ? 0.8 : 1 + loop.coolant * 1.9);
+    ring(ctx, loop.via, loop.radius, loop.color, loop.blocked ? 0.05 : 0.07 + loop.coolant * 0.14, loop.blocked ? 0.8 : 1.2);
+  }
+
+  for (const mold of descriptors.relicMoldPriorities || []) {
+    ring(ctx, mold.anchor, mold.radius, mold.color, 0.06 + mold.priority * 0.16, mold.selected ? 2.5 : 1.1 + mold.priority);
+    if (mold.selected) circle(ctx, mold.anchor.x, mold.anchor.y, 4 + mold.readiness * 5, mold.color, 0.22 + mold.readiness * 0.2);
+  }
+
+  for (const ward of descriptors.wardRuneCircles || []) {
+    ring(ctx, ward.center, ward.radius, ward.color, ward.breached ? 0.18 : 0.05 + ward.ward * 0.16, ward.breached ? 2.4 : 1.1 + ward.ward * 1.5);
+    line(ctx, ward.center, ward.target, ward.color, 0.04 + ward.ward * 0.1, 0.8 + ward.ward * 1.2);
+  }
+
+  for (const lane of descriptors.sanctuaryLaneThreads || []) {
+    line(ctx, lane.from, lane.via, lane.color, lane.blocked ? 0.05 : 0.06 + lane.safety * 0.13, lane.blocked ? 0.8 : 1 + lane.safety * 1.7);
+    line(ctx, lane.via, lane.to, lane.color, lane.blocked ? 0.05 : 0.08 + lane.safety * 0.14, lane.blocked ? 0.8 : 1.1 + lane.safety * 2);
+    ring(ctx, lane.via, 14 + lane.safety * 22, lane.color, lane.blocked ? 0.06 : 0.06 + lane.safety * 0.13, lane.blocked ? 0.8 : 1.2);
+  }
+
+  for (const gate of descriptors.forgeGateCommits || []) {
+    line(ctx, gate.from, gate.anchor, gate.color, gate.open ? 0.18 : 0.06 + gate.readiness * 0.12, gate.open ? 2.4 : 1 + gate.readiness * 1.5);
+    ring(ctx, gate.anchor, gate.radius, gate.color, gate.open ? 0.26 : 0.07 + gate.readiness * 0.14, gate.open ? 2.6 : 1.2 + gate.readiness);
+  }
+}
+
 function resizeCanvas(canvas, ctx) {
   const dpr = Math.min(globalThis.devicePixelRatio || 1, 2);
   const width = Math.max(320, globalThis.innerWidth || 960);
@@ -279,6 +316,7 @@ export function createCanvasRenderer(canvas) {
     drawHellscapeSiegecraft(ctx, state.siegecraftReadiness);
     drawHellscapeInfernalContract(ctx, state.infernalContractReadiness);
     drawHellscapeAshCaravan(ctx, state.ashCaravanReadiness);
+    drawHellscapeSanctuaryForge(ctx, state.sanctuaryForgeReadiness);
     if (state.realm?.id === 'lobby') {
       const coreColor = state.wave?.active ? '#ff3300' : '#38bdf8';
       circle(ctx, state.core.x, state.core.y, 46, coreColor, 0.72);
