@@ -186,12 +186,12 @@ export const games = Object.freeze([
     id: "onnx-agent-lab",
     tab: "experiments",
     title: "ONNX Agent Lab",
-    route: "./experiments/onnx-agent-lab/signal-calibration.html",
+    route: "./experiments/onnx-agent-lab/incident-router.html",
     kind: "experiment",
     visual: "next",
     playLabel: "Open lab",
-    tags: [{ label: "ONNX Workshop", tone: "gold" }, { label: "Signal Calibration", tone: "green" }, { label: "Nexus Engine", tone: "blue" }],
-    description: "Signal-calibration workshop route for model handshakes, fallback safety rails, tool bench cues, prompt intent threads, memory trace cards, and scene-open gates using descriptor-only NexusEngine readiness kits."
+    tags: [{ label: "ONNX Workshop", tone: "gold" }, { label: "Incident Router", tone: "green" }, { label: "Nexus Engine", tone: "blue" }],
+    description: "Incident-router workshop route for model failure operations with alert beacons, trace samplers, classifier lanes, fallback briefs, operator shift posts, and audit ledgers using descriptor-only NexusEngine readiness kits."
   }
 ]);
 
@@ -199,5 +199,3 @@ export const tabs = Object.freeze([
   { id: "experiments", label: "Experiments", count: games.filter((app) => app.tab === "experiments").length },
   { id: "games", label: "Games", count: games.filter((app) => app.tab === "games").length }
 ]);
-
-export const apps = games;
