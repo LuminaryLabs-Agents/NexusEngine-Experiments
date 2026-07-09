@@ -19,8 +19,9 @@
     "check:covers": "node tools/capture-route-covers.mjs --dry-run",
     "check:control-math": "node experiments/_tests/control-math-smoke.mjs",
     "check:sora-stormglass-courier": "node tests/sora-stormglass-courier-domain-kits-smoke.mjs && node tests/sora-stormglass-courier-cdn-state-input-smoke.mjs",
-    "check": "npm run generate && npm run check:control-math && node scripts/run-checks.mjs && npm run check:sora-stormglass-courier",
-    "check:deploy": "npm run generate && npm run check:control-math && node scripts/run-checks.mjs --deploy && npm run check:sora-stormglass-courier"
+    "check:vr-board-breakwater-lighthouse": "node tests/vr-board-breakwater-lighthouse-rescue-readiness-kits-smoke.mjs && node tests/vr-board-breakwater-lighthouse-rescue-cdn-state-input-smoke.mjs",
+    "check": "npm run generate && npm run check:control-math && node scripts/run-checks.mjs && npm run check:sora-stormglass-courier && npm run check:vr-board-breakwater-lighthouse",
+    "check:deploy": "npm run generate && npm run check:control-math && node scripts/run-checks.mjs --deploy && npm run check:sora-stormglass-courier && npm run check:vr-board-breakwater-lighthouse"
   },
   "license": "MIT"
 }
