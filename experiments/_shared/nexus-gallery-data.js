@@ -65,12 +65,12 @@ export const games = Object.freeze([
     id: "living-agent-lab",
     tab: "experiments",
     title: "Living Agent Lab",
-    route: "./experiments/living-agent-lab/",
+    route: "./experiments/living-agent-lab/market-fire-evacuation.html",
     kind: "experiment",
     visual: "next",
-    playLabel: "Open lab",
-    tags: [{ label: "ONNX Agent", tone: "gold" }, { label: "Civic Festival", tone: "green" }, { label: "Descriptors", tone: "blue" }],
-    description: "Small market-agent route where an ONNX or fallback guard chooses actions from visible state while market-trust and civic-festival mediation kits expose permit scrolls, vendor lanes, lantern routes, dispute hearings, steward posts, and night-market ledgers."
+    playLabel: "Play drill",
+    tags: [{ label: "Response Agent", tone: "gold" }, { label: "Market Fire", tone: "green" }, { label: "Nexus Engine", tone: "blue" }],
+    description: "Procedural market fire evacuation drill where a response policy recommends actions while players inspect ember lanterns, clear smoke aisles, stage bucket relays, place stall firebreaks, account for merchants, reroute seeded market layouts, and close a dawn safety ledger through descriptor-only NexusEngine kits."
   },
   {
     id: "fogline-relay",
