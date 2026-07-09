@@ -14,8 +14,8 @@ export const games = Object.freeze([
     kind: "experiment",
     visual: "next",
     playLabel: "Play experiment",
-    tags: [{ label: "Scene Host", tone: "gold" }, { label: "Story Flow", tone: "green" }, { label: "DSK", tone: "blue" }],
-    description: "Story-scene orchestration proof where each HTML scene hosts itself, exits validate through scene state, small puzzle tokens unlock routes, and the debug panel exposes current scene, visited scenes, inventory, and transition ledgers."
+    tags: [{ label: "Scene Host", tone: "gold" }, { label: "Bell Archive", tone: "green" }, { label: "Nexus Engine", tone: "blue" }],
+    description: "Story-scene orchestration proof where each HTML scene hosts itself, exits validate through scene state, small puzzle tokens unlock routes, and bell archive evacuation kits add tower anchors, signal cords, sealed archive crates, flood plank crossings, witness roster seals, and dawn evidence ledgers."
   },
   {
     id: "vr-platformer-board",
