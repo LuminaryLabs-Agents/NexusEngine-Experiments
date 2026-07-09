@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="description" content="Living Agent Lab market fire evacuation drill powered by NexusEngine descriptor kits." />
-  <meta name="living-agent-domain-pass" content="market-fire-evacuation-readiness-renderer-handoff-pass" />
-  <title>Living Agent Lab · Market Fire Evacuation</title>
+  <meta name="description" content="Living Agent Lab market fire evacuation and canal bucket brigade drill powered by NexusEngine descriptor kits." />
+  <meta name="living-agent-domain-pass" content="market-fire-evacuation-readiness-renderer-handoff-pass canal-bucket-brigade-readiness-renderer-handoff-pass" />
+  <title>Living Agent Lab · Canal Bucket Brigade</title>
   <style>
     :root { color-scheme: dark; --ink: #f8f0df; --muted: #b9b5aa; --ember: #ff915f; --gold: #ffd06e; --water: #6fd5ff; --safe: #8ff0be; --panel: rgba(13,12,16,.82); --line: rgba(255,208,110,.24); }
     * { box-sizing: border-box; }
@@ -37,17 +37,18 @@
     @media (max-width: 940px) { .status { top: 84px; left: 0; right: auto; } .log { top: 84px; } .legend { display: none; } .panel { width: calc(100vw - 28px); } .actions { grid-template-columns: repeat(2,minmax(0,1fr)); } }
   </style>
 </head>
-<body data-experiment="living-agent-lab" data-readiness-pass="market-fire-evacuation-readiness-renderer-handoff-pass">
+<body data-experiment="living-agent-lab" data-readiness-pass="market-fire-evacuation-readiness-renderer-handoff-pass canal-bucket-brigade-readiness-renderer-handoff-pass">
   <canvas id="marketCanvas" aria-label="Procedural market fire evacuation drill"></canvas>
   <main class="chrome" aria-label="Market fire evacuation controls">
-    <header class="title"><strong>Living Agent Lab · Market Fire Evacuation</strong><span>Use the response agent to inspect ember lanterns, clear smoke aisles, stage bucket relays, place stall firebreaks, and account for every merchant before the fire line reaches the east gate.</span></header>
+    <header class="title"><strong>Living Agent Lab · Canal Bucket Brigade</strong><span>Use the response agent to inspect ember lanterns, clear smoke aisles, stage bucket relays, place stall firebreaks, muster civilians, and keep the canal bucket brigade moving before the fire line reaches the east gate.</span></header>
     <section class="status" aria-label="Response status"><div class="metric"><small>Phase</small><b id="phase">alarm</b></div><div class="metric"><small>Readiness</small><b id="readiness">5%</b></div><div class="metric"><small>Fire pressure</small><b id="pressure">94%</b></div></section>
     <pre class="log" id="eventLog">[0] Alarm raised. Market evacuation drill active.</pre>
     <section class="panel"><div class="agent"><span>Response agent recommends <b id="recommendation">inspect-lantern</b></span><span class="confidence" id="confidence">confidence 58%</span></div><div class="actions">
-      <button class="primary" data-action="ask-agent">Ask response agent</button><button data-action="inspect-lantern">Inspect lantern</button><button data-action="clear-aisle">Clear smoke aisle</button><button class="secondary" data-action="stage-bucket-relay">Stage bucket relay</button><button data-action="place-firebreak">Place firebreak</button><button data-action="muster-merchant">Muster merchant</button><button data-action="new-seed">Reroute market</button><button data-action="reset">Reset drill</button>
+      <button class="primary" data-action="ask-agent">Ask response agent</button><button data-action="inspect-lantern">Inspect lantern</button><button data-action="clear-aisle">Clear smoke aisle</button><button class="secondary" data-action="stage-bucket-relay">Stage bucket relay</button><button data-action="place-firebreak">Place firebreak</button><button data-action="muster-merchant">Muster civilians</button><button data-action="new-seed">Reroute market</button><button data-action="reset">Reset drill</button>
     </div></section>
-    <aside class="legend"><b>Descriptor legend</b><br /><span><i class="dot" style="background:var(--ember)"></i>ember sensor / active heat</span><br /><span><i class="dot" style="background:var(--water)"></i>bucket relay / cleared route</span><br /><span><i class="dot" style="background:var(--safe)"></i>accounted merchant / firebreak</span></aside>
+    <aside class="legend"><b>Descriptor legend</b><br /><span><i class="dot" style="background:var(--ember)"></i>ember sensor / active heat</span><br /><span><i class="dot" style="background:var(--water)"></i>bucket relay / canal flow</span><br /><span><i class="dot" style="background:var(--safe)"></i>muster ribbon / firebreak</span></aside>
   </main>
   <script type="module" src="./market-fire-evacuation-entry.js?v=living-agent-market-fire-evacuation-20260709"></script>
+  <script type="module" src="./canal-bucket-brigade-readiness-entry.js?v=living-agent-canal-bucket-brigade-20260709"></script>
 </body>
 </html>
