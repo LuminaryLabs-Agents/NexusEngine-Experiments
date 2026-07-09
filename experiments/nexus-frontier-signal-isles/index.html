@@ -3,14 +3,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="description" content="Nexus Frontier: Signal Isles is a NexusEngine 3D kit-utilization showcase with objective, route, cargo, safety, resource, expedition, storm anchor, harbor relief, lighthouse evacuation, and storm surge relay readiness descriptors." />
+  <meta name="description" content="Nexus Frontier: Signal Isles is a NexusEngine 3D kit-utilization showcase with objective, route, cargo, safety, resource, expedition, storm anchor, harbor relief, lighthouse evacuation, storm surge relay, and field hospital triage readiness descriptors." />
   <title>Nexus Frontier: Signal Isles</title>
   <style>
     html, body { margin:0; height:100%; overflow:hidden; background:#071019; color:#ecfbff; font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
     #app, #game, #hud { position:fixed; inset:0; }
     #game { display:block; width:100vw; height:100vh; cursor:crosshair; background:#071019; }
     #hud { pointer-events:none; }
-    #status, #controls { position:fixed; left:14px; z-index:2; max-width:min(820px,calc(100vw - 28px)); padding:7px 10px; border:1px solid rgba(116,235,255,.22); border-radius:999px; background:rgba(2,9,14,.34); color:rgba(236,251,255,.9); font-size:12px; letter-spacing:.02em; text-shadow:0 1px 8px #000; backdrop-filter:blur(8px); }
+    #status, #controls { position:fixed; left:14px; z-index:2; max-width:min(900px,calc(100vw - 28px)); padding:7px 10px; border:1px solid rgba(116,235,255,.22); border-radius:999px; background:rgba(2,9,14,.34); color:rgba(236,251,255,.9); font-size:12px; letter-spacing:.02em; text-shadow:0 1px 8px #000; backdrop-filter:blur(8px); }
     #status { top:12px; }
     #controls { bottom:12px; color:rgba(236,251,255,.68); }
     #errorPanel { position:fixed; inset:28px; z-index:5; overflow:auto; padding:22px; border:1px solid #ff6b7d; border-radius:18px; background:#270911e6; color:#ffdce2; box-shadow:0 20px 90px rgba(0,0,0,.45); }
@@ -19,18 +19,19 @@
   </style>
 </head>
 <body>
-  <main id="app" data-upgrade="harbor-relief-readiness-renderer-handoff-pass lighthouse-evacuation-readiness-renderer-handoff-pass storm-surge-relay-readiness-renderer-handoff-pass">
-    <canvas id="game" role="application" aria-label="Nexus Frontier Signal Isles 3D experiment with objective, expedition, storm anchor, harbor relief, lighthouse evacuation, and storm surge relay readability descriptors"></canvas>
+  <main id="app" data-upgrade="harbor-relief-readiness-renderer-handoff-pass lighthouse-evacuation-readiness-renderer-handoff-pass storm-surge-relay-readiness-renderer-handoff-pass field-hospital-triage-readiness-renderer-handoff-pass">
+    <canvas id="game" role="application" aria-label="Nexus Frontier Signal Isles 3D experiment with objective, expedition, storm anchor, harbor relief, lighthouse evacuation, storm surge relay, and field hospital triage readability descriptors"></canvas>
     <aside id="hud" aria-label="Game HUD">
-      <header id="status" aria-live="polite">Loading Signal Isles storm surge relay readiness…</header>
-      <footer id="controls">Click for pointer lock · F/Mouse scan · E interact · B build · R reset · brace tide gauges and raft relay lanes</footer>
+      <header id="status" aria-live="polite">Loading Signal Isles field hospital triage readiness…</header>
+      <footer id="controls">Click for pointer lock · F/Mouse scan · E interact · B build · R reset · map triage flags, stock medicine caches, and route stretcher lanes</footer>
     </aside>
     <section id="errorPanel" role="alert" hidden>
       <h1>Could not start Nexus Frontier: Signal Isles</h1>
       <pre id="errorText"></pre>
     </section>
   </main>
-  <script type="module" src="./src/main.js?v=storm-surge-relay-readiness-1"></script>
+  <script type="module" src="./src/main.js?v=storm-surge-relay-readiness-1-field-hospital-triage-1"></script>
   <script type="module" src="./src/storm-surge-relay-readiness-entry.js?v=storm-surge-relay-readiness-1"></script>
+  <script type="module" src="./src/field-hospital-triage-readiness-entry.js?v=field-hospital-triage-readiness-1"></script>
 </body>
 </html>
