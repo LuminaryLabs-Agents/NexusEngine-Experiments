@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Experimental camera-relative radial terrain tessellation, expedition readability, wayfinding, survey contract, basecamp resupply, avalanche rescue, observatory evacuation, skybridge shelter, aquifer cartography, and glacier beacon rescue route-planning demo for NexusEngine." />
+  <meta name="description" content="Experimental camera-relative radial terrain tessellation, expedition readability, wayfinding, survey contract, basecamp resupply, avalanche rescue, observatory evacuation, skybridge shelter, aquifer cartography, glacier beacon rescue, and mirage caravan rescue route-planning demo for NexusEngine." />
   <title>Infinite Radial Terrain</title>
   <style>
     html,body{margin:0;height:100%;overflow:hidden;background:#bfe7ff;color:#10202a;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
@@ -16,10 +16,10 @@
   </style>
 </head>
 <body>
-  <canvas id="game" aria-label="Infinite Radial Terrain expedition, wayfinding, survey contract, basecamp resupply, avalanche rescue, observatory evacuation, skybridge shelter, aquifer cartography, and glacier beacon rescue readability demo"></canvas>
-  <div class="hud" id="hud"><strong>Infinite Radial Terrain</strong><br>WASD fly · Space up · Shift down · drag mouse look · ` logs state · expedition + wayfinding + survey contract + basecamp resupply + avalanche rescue + observatory evacuation + skybridge shelter + aquifer cartography + glacier beacon rescue descriptors enabled</div>
+  <canvas id="game" aria-label="Infinite Radial Terrain expedition, wayfinding, survey contract, basecamp resupply, avalanche rescue, observatory evacuation, skybridge shelter, aquifer cartography, glacier beacon rescue, and mirage caravan rescue readability demo"></canvas>
+  <div class="hud" id="hud"><strong>Infinite Radial Terrain</strong><br>WASD fly · Space up · Shift down · drag mouse look · ` logs state · expedition + wayfinding + survey contract + basecamp resupply + avalanche rescue + observatory evacuation + skybridge shelter + aquifer cartography + glacier beacon rescue + mirage caravan rescue descriptors enabled</div>
   <pre id="error" hidden></pre>
-  <main id="app" data-terrain-pass="expedition-readability-renderer-handoff-pass wayfinding-readability-renderer-handoff-pass survey-contract-readiness-renderer-handoff-pass basecamp-resupply-readiness-renderer-handoff-pass avalanche-rescue-readiness-renderer-handoff-pass observatory-evacuation-readiness-renderer-handoff-pass skybridge-shelter-readiness-renderer-handoff-pass aquifer-cartography-readiness-renderer-handoff-pass glacier-beacon-rescue-readiness-renderer-handoff-pass" hidden></main>
+  <main id="app" data-terrain-pass="expedition-readability-renderer-handoff-pass wayfinding-readability-renderer-handoff-pass survey-contract-readiness-renderer-handoff-pass basecamp-resupply-readiness-renderer-handoff-pass avalanche-rescue-readiness-renderer-handoff-pass observatory-evacuation-readiness-renderer-handoff-pass skybridge-shelter-readiness-renderer-handoff-pass aquifer-cartography-readiness-renderer-handoff-pass glacier-beacon-rescue-readiness-renderer-handoff-pass mirage-caravan-rescue-readiness-renderer-handoff-pass" hidden></main>
   <script type="module" src="./infinite-radial-terrain.js?v=infinite-radial-terrain-expedition-readability-v1"></script>
   <script type="module" src="./terrain-wayfinding-readability-entry.js?v=infinite-radial-terrain-wayfinding-readability-v1"></script>
   <script type="module" src="./terrain-survey-contract-readiness-entry.js?v=infinite-radial-terrain-survey-contract-readiness-v1"></script>
@@ -29,5 +29,6 @@
   <script type="module" src="./terrain-skybridge-shelter-readiness-entry.js?v=infinite-radial-terrain-skybridge-shelter-readiness-v1"></script>
   <script type="module" src="./terrain-aquifer-cartography-readiness-entry.js?v=infinite-radial-terrain-aquifer-cartography-readiness-v1"></script>
   <script type="module" src="./terrain-glacier-beacon-rescue-readiness-entry.js?v=terrain-glacier-beacon-rescue-readiness-v1"></script>
+  <script type="module" src="./terrain-mirage-caravan-rescue-readiness-entry.js?v=terrain-mirage-caravan-rescue-readiness-v1"></script>
 </body>
 </html>
