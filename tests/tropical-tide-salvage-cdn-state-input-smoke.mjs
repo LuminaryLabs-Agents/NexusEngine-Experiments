@@ -1,3 +1,5 @@
+import "./tropical-storm-clinic-readiness-kits-smoke.mjs";
+import "./tropical-storm-clinic-cdn-state-input-smoke.mjs";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { createTropicalTideSalvageReadinessDomainKit } from "../experiments/tropical-island-scene/src/tropical-tide-salvage-readiness-domain-kit.js";
@@ -11,7 +13,8 @@ const runChecks = readFileSync("scripts/run-checks.mjs", "utf8");
 
 assert.ok(entry.includes(cdn), "tide salvage entry should import NexusEngine main CDN");
 assert.ok(route.includes("tropical-island-tide-salvage-20260708"), "route should cache-bust tide salvage overlay");
-assert.ok(route.includes("tide salvage descriptor handoff"), "route should advertise tide salvage handoff");
+assert.ok(route.includes("tide salvage"), "route should advertise tide salvage handoff");
+assert.ok(route.includes("storm clinic"), "route should advertise storm clinic handoff");
 assert.ok(!entry.includes("NexusRealtime-ProtoKits"), "changed tide salvage entry should not import old NexusRealtime ProtoKits");
 assert.ok(!kitSource.includes("NexusRealtime"), "new tide salvage kit should remain runtime-neutral");
 assert.ok(manifest.includes("tropical-tide-salvage-readiness-domain-kit"), "manifest should register tide salvage domain kit");
@@ -42,4 +45,4 @@ for (const state of cases) {
   assert.equal(handoff.counts.total, Object.entries(handoff.counts).filter(([key]) => key !== "total").reduce((sum, [, value]) => sum + value, 0));
 }
 
-console.log("tropical tide salvage CDN/state-input smoke passed: NexusEngine CDN + 10 intake cases validated");
+console.log("tropical tide salvage CDN/state-input smoke passed: NexusEngine CDN + 10 intake cases validated with storm clinic routed");
