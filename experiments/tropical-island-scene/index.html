@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="description" content="WebGL high-fidelity cel-shaded island terrain scene composed from horizontal NexusEngine descriptor domains, now with beachcomber, lagoon navigation, weather shelter, reef rescue, tide salvage, and storm clinic readiness overlays." />
+  <meta name="description" content="WebGL high-fidelity cel-shaded island terrain scene composed from horizontal NexusEngine descriptor domains, now with beachcomber, lagoon navigation, weather shelter, reef rescue, tide salvage, storm clinic, and rainwater purification readiness overlays." />
   <title>Tropical Island Scene — NexusEngine</title>
   <style>
     :root{color-scheme:dark;--text:#f5fff7;--muted:#b9d9cb;--gold:#ffe07b;--aqua:#84f5ff}
@@ -49,12 +49,12 @@
     }
   </script>
 </head>
-<body data-route-status="storm-clinic-readiness-renderer-handoff-pass">
+<body data-route-status="rainwater-purification-readiness-renderer-handoff-pass">
   <main id="app" aria-label="Tropical Island Scene">
-    <canvas id="game" role="application" aria-label="WebGL cel shaded island with lagoon shelves, reef blooms, beachcomber beacons, shoreline paths, coconut risk shadows, fish focus rings, drift lanes, tide windows, reef contours, swim cones, current vectors, snorkel scores, raft wakes, glare timing bands, storm fronts, shelter canopies, tide escape windows, wave warnings, supply cache glints, dusk return beacons, distress flare arcs, snorkel search lanes, rip current hazards, first aid cache sparks, raft anchor routes, extraction pier beacons, shipwreck cargo beacons, pearl cache glimmers, tide surge windows, reef cut hazards, outrigger route threads, sunset market delivery beacons, injured snorkeler triage buoys, freshwater cistern purity markers, clinic tent shade canopies, raft stretcher lanes, fever herb gardens, and dawn evacuation canoe windows"></canvas>
+    <canvas id="game" role="application" aria-label="WebGL cel shaded island with lagoon shelves, reef blooms, beachcomber beacons, shoreline paths, coconut risk shadows, fish focus rings, drift lanes, tide windows, reef contours, swim cones, current vectors, snorkel scores, raft wakes, glare timing bands, storm fronts, shelter canopies, tide escape windows, wave warnings, supply cache glints, dusk return beacons, distress flare arcs, snorkel search lanes, rip current hazards, first aid cache sparks, raft anchor routes, extraction pier beacons, shipwreck cargo beacons, pearl cache glimmers, tide surge windows, reef cut hazards, outrigger route threads, sunset market delivery beacons, injured snorkeler triage buoys, freshwater cistern purity markers, clinic tent shade canopies, raft stretcher lanes, fever herb gardens, dawn evacuation canoe windows, roof catchment gutters, palm leaf water channels, charcoal filter beds, cistern boil watches, clay jug ration routes, and dawn hydration stations"></canvas>
     <aside id="hud" aria-label="Minimal scene HUD">
-      <div id="title"><strong>Tropical Island Scene</strong> · lagoon + beachcomber + navigation + weather shelter + reef rescue + tide salvage + storm clinic descriptor handoff</div>
-      <div id="status">loading NexusEngine lagoon, beachcomber, navigation, weather shelter, reef rescue, tide salvage, and storm clinic descriptor composition…</div>
+      <div id="title"><strong>Tropical Island Scene</strong> · lagoon + beachcomber + navigation + weather shelter + reef rescue + tide salvage + storm clinic + rainwater purification descriptor handoff</div>
+      <div id="status">loading NexusEngine lagoon, beachcomber, navigation, weather shelter, reef rescue, tide salvage, storm clinic, and rainwater purification descriptor composition…</div>
     </aside>
     <section id="errorPanel" role="alert" hidden></section>
   </main>
@@ -65,5 +65,6 @@
   <script type="module" src="./src/reef-rescue-readiness-entry.js?v=tropical-island-reef-rescue-20260708"></script>
   <script type="module" src="./src/tide-salvage-readiness-entry.js?v=tropical-island-tide-salvage-20260708"></script>
   <script type="module" src="./src/storm-clinic-readiness-entry.js?v=tropical-island-storm-clinic-20260709"></script>
+  <script type="module" src="./src/rainwater-purification-readiness-entry.js?v=tropical-island-rainwater-purification-20260709"></script>
 </body>
 </html>
