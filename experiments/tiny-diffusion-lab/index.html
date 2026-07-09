@@ -54,17 +54,19 @@
     #sampleClinicReadiness .mission-list b { color: var(--accent-2); }
     #datasetExpeditionReadiness .mission-list p { border-color: rgba(147,255,184,.18); background: rgba(147,255,184,.052); }
     #datasetExpeditionReadiness .mission-list b { color: var(--ok); }
+    #latentMuseumReadiness .mission-list p { border-color: rgba(183,156,255,.20); background: rgba(183,156,255,.060); }
+    #latentMuseumReadiness .mission-list b { color: #cbb8ff; }
     .ok { color: var(--ok); }
     .danger { color: var(--danger); }
     @media (max-width: 860px) { .card, .card.wide { grid-column: 1 / -1; } .status, .mission-panel, .mission-list { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
-  <main id="app" data-experiment="tiny-diffusion-lab" data-upgrade="dataset-expedition-readiness-renderer-handoff-pass">
+  <main id="app" data-experiment="tiny-diffusion-lab" data-upgrade="dataset-expedition-readiness-renderer-handoff-pass latent-museum-curator-readiness-renderer-handoff-pass">
     <header class="hero">
       <div class="eyebrow">Nexus Engine · Diffusion Domain Proof</div>
       <h1>Tiny Diffusion Lab</h1>
-      <p class="lede">Train a tiny browser-side diffusion model with the new Nexus Engine diffusion subdomains. The reusable model, tensor, backend, training, sampling, checkpoint, preview, training mission, dataset expedition, and sample clinic readiness logic stays in Nexus Engine or renderer-neutral local kits; this route only renders descriptors and sends button intent.</p>
+      <p class="lede">Train a tiny browser-side diffusion model with the new Nexus Engine diffusion subdomains. The reusable model, tensor, backend, training, sampling, checkpoint, preview, training mission, dataset expedition, sample clinic, and latent museum curator readiness logic stays in Nexus Engine or renderer-neutral local kits; this route only renders descriptors and sends button intent.</p>
     </header>
 
     <section class="toolbar" aria-label="Tiny diffusion lab controls">
@@ -111,6 +113,14 @@
         </div>
       </article>
 
+      <article class="card full">
+        <h2>Latent museum curator readiness</h2>
+        <div id="latentMuseumReadiness" class="mission-panel" aria-label="Latent museum curator readiness descriptors" data-domain="tiny-diffusion-latent-museum-curator-readiness-domain">
+          <div class="metric"><span>Exhibition readiness</span><strong>waiting</strong></div>
+          <div class="metric"><span>Status</span><strong>booting</strong></div>
+        </div>
+      </article>
+
       <article class="card wide">
         <h2>Procedural dataset samples</h2>
         <div id="dataset" class="strip" aria-label="Dataset sample canvases"></div>
@@ -142,5 +152,6 @@
   <script type="module" src="./app/training-mission-readiness-entry.js?v=tiny-diffusion-training-mission-20260708"></script>
   <script type="module" src="./app/dataset-expedition-readiness-entry.js?v=tiny-diffusion-dataset-expedition-20260709"></script>
   <script type="module" src="./app/sample-clinic-readiness-entry.js?v=tiny-diffusion-sample-clinic-20260709"></script>
+  <script type="module" src="./app/latent-museum-curator-readiness-entry.js?v=tiny-diffusion-latent-museum-curator-20260709"></script>
 </body>
 </html>
