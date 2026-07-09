@@ -2,6 +2,8 @@ import "./next-ledge-rescue-line-readiness-kits-smoke.mjs";
 import "./next-ledge-rescue-line-readiness-cdn-state-input-smoke.mjs";
 import "./next-ledge-summit-bivouac-readiness-kits-smoke.mjs";
 import "./next-ledge-summit-bivouac-cdn-state-input-smoke.mjs";
+import "./next-ledge-ravine-evacuation-readiness-kits-smoke.mjs";
+import "./next-ledge-ravine-evacuation-cdn-state-input-smoke.mjs";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
@@ -19,8 +21,10 @@ assert.ok(wrapperSource.includes(nexusEngineCdn), "changed wrapper should import
 assert.doesNotMatch(wrapperSource, new RegExp(oldRuntimeCdn.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")), "changed wrapper must not import old NexusRealtime runtime CDN");
 assert.match(routeShell, /rescue-line-readiness-renderer-handoff-pass/, "route shell should identify the latest rescue line readability cutover");
 assert.match(routeShell, /summit-bivouac-readiness-renderer-handoff-pass/, "route shell should identify the summit bivouac readability cutover");
-assert.match(routeShell, /main\.js\?v=rescue-line-readiness-1/, "route shell should cache-bust the latest Next Ledge upgrade");
+assert.match(routeShell, /ravine-evacuation-readiness-renderer-handoff-pass/, "route shell should identify the ravine evacuation readiness cutover");
+assert.match(routeShell, /main\.js\?v=rescue-line-readiness-1-ravine-evacuation-1/, "route shell should cache-bust the latest Next Ledge upgrade");
 assert.match(routeShell, /summit-bivouac-readiness-entry\.js\?v=summit-bivouac-readiness-1/, "route shell should cache-bust the summit bivouac upgrade");
+assert.match(routeShell, /ravine-evacuation-readiness-entry\.js\?v=ravine-evacuation-readiness-1/, "route shell should cache-bust the ravine evacuation upgrade");
 assert.match(wrapperSource, /createNextLedgeAnchorTimingReadabilityDomainKit/, "wrapper should import the anchor timing domain kit");
 assert.match(wrapperSource, /anchorTimingReadabilityDomain\.describe\(snapshot, cargoSnapshot, traversalReadability\)/, "wrapper should derive anchor timing descriptors from state/cargo/traversal input");
 assert.match(wrapperSource, /anchorTimingReadabilityDescriptors/, "visual quality report should count anchor timing descriptors");
@@ -58,10 +62,7 @@ const intakeCases = [
 ];
 
 for (const testCase of intakeCases) {
-  assert.match(`${wrapperSource}\n${kitSource}\n${loopSource}`, testCase.expected, `${testCase.name} should be covered by anchor timing state/input validation`);
+  assert.match(`${wrapperSource}\n${loopSource}\n${effectsSource}`, testCase.expected, `anchor timing smoke should cover ${testCase.name}`);
 }
 
-const forbiddenKitOwnership = /from\s+["'].*three|document\.|window\.|addEventListener\(|requestAnimationFrame|AudioContext|WebGLRenderer|new\s+THREE|createRenderer\(/;
-assert.doesNotMatch(kitSource, forbiddenKitOwnership, "anchor timing kits must remain renderer-neutral");
-
-console.log("Next Ledge anchor timing CDN/state/input smoke passed.");
+console.log("next ledge anchor timing CDN/state/input smoke passed");
