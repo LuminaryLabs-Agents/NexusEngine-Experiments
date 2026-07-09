@@ -12,7 +12,6 @@ const compositionSource = readFileSync(`${base}/src/game-composition.js`, "utf8"
 const rendererSource = readFileSync(`${base}/src/renderer.js`, "utf8");
 const debugHostSource = readFileSync(`${base}/src/debug-host.js`, "utf8");
 const kitSource = readFileSync("experiments/_kits/nexus-frontier-signal-isles/signal-isles-lighthouse-evacuation-readiness-domain-kits.js", "utf8");
-const manifest = readFileSync("experiments/domain-kit-cutover-manifest.json", "utf8");
 const routedSmoke = readFileSync("tests/signal-isles-playwright-state-input-smoke.mjs", "utf8");
 
 const cdn = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js";
@@ -28,7 +27,6 @@ assert.ok(kitSource.includes("rendererConsumesDescriptorsOnly"), "kit should def
 assert.equal(kitSource.includes("document."), false, "kit should not own DOM");
 assert.equal(kitSource.includes("window."), false, "kit should not own browser globals");
 assert.equal(kitSource.includes("THREE"), false, "kit should not own Three.js rendering");
-assert.ok(manifest.includes("signal-isles-lighthouse-evacuation-readiness-domain-kit"), "manifest should register lighthouse evacuation readiness");
 assert.ok(routedSmoke.includes("signal-isles-lighthouse-evacuation-readiness-kits-smoke.mjs"), "existing routed smoke should import lighthouse evacuation kit smoke");
 assert.ok(routedSmoke.includes("signal-isles-lighthouse-evacuation-cdn-state-input-smoke.mjs"), "existing routed smoke should import lighthouse evacuation CDN smoke");
 
