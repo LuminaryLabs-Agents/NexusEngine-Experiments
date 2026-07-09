@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="description" content="VR Platformer Board storm harbor evacuation readiness pass using NexusEngine main CDN and renderer-neutral domain kits." />
-  <title>VR Platformer Board · Storm Harbor Evacuation</title>
+  <meta name="description" content="VR Platformer Board storm harbor evacuation and breakwater lighthouse rescue readiness pass using NexusEngine main CDN and renderer-neutral domain kits." />
+  <title>VR Platformer Board · Breakwater Lighthouse Rescue</title>
   <style>
     html, body { margin: 0; height: 100%; overflow: hidden; background: radial-gradient(circle at 50% 18%, #263a63, #090d18 54%, #03050a); color: white; font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
     main, canvas { position: fixed; inset: 0; width: 100vw; height: 100vh; }
@@ -20,15 +20,16 @@
   </style>
 </head>
 <body>
-  <main id="app" data-upgrade="vr-board-storm-harbor-evacuation-readiness-renderer-handoff-pass">
-    <canvas id="game" role="application" aria-label="VR platformer board storm harbor evacuation experiment"></canvas>
+  <main id="app" data-upgrade="vr-board-storm-harbor-evacuation-readiness-renderer-handoff-pass vr-board-breakwater-lighthouse-rescue-readiness-renderer-handoff-pass">
+    <canvas id="game" role="application" aria-label="VR platformer board breakwater lighthouse rescue experiment"></canvas>
     <aside id="hud" aria-label="Game HUD" data-tone="neutral">
       <span id="objective">Booting storm harbor board…</span>
       <span id="controls">A/D move · Space jump · R reset · drag head</span>
     </aside>
-    <section id="legend"><strong>Storm harbor evacuation:</strong> light flare buoys, cross crane cables, secure supply nets, read tide gauges, and launch the rescue skiff before the flooded dock closes.</section>
+    <section id="legend"><strong>Breakwater lighthouse rescue:</strong> light storm lamps, read wave splash markers, align prism rings, time foghorn bells, pull lifeline ropes, and launch the rescue skiff before the flooded dock closes.</section>
     <section id="errorPanel" role="alert" hidden></section>
   </main>
   <script type="module" src="./storm-harbor-evacuation-entry.js?v=vr-board-storm-harbor-evacuation-2"></script>
+  <script type="module" src="./breakwater-lighthouse-rescue-entry.js?v=vr-board-breakwater-lighthouse-rescue-1"></script>
 </body>
 </html>
