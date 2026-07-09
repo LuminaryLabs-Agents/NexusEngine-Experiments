@@ -102,8 +102,8 @@ export const games = Object.freeze([
     kind: "experiment",
     visual: "strategy",
     playLabel: "Play experiment",
-    tags: [{ label: "Painted Terrain", tone: "gold" }, { label: "Pannable Map", tone: "green" }, { label: "Full Soldiers", tone: "blue" }],
-    description: "High-fidelity DSK visual proof: pan across a painterly Roman terrain map, hover large regions, dive cinematically, and reveal primitive-built full-bodied armies preparing for war."
+    tags: [{ label: "Painted Terrain", tone: "gold" }, { label: "Standard Morale", tone: "green" }, { label: "Nexus Engine", tone: "blue" }],
+    description: "High-fidelity DSK visual proof with pannable Roman terrain, region hover/cinematic dive interactions, primitive-built armies, and standard-bearer morale descriptors for aquila standards, vexillum rally routes, cohort cadence drums, guard rings, wounded standard litters, and dusk honor ledgers."
   },
   {
     id: "signal-bastion",
