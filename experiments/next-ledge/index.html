@@ -17,19 +17,20 @@
   </style>
 </head>
 <body>
-  <main id="app" data-upgrade="rescue-line-readiness-renderer-handoff-pass summit-bivouac-readiness-renderer-handoff-pass ravine-evacuation-readiness-renderer-handoff-pass glacier-supply-readiness-renderer-handoff-pass">
-    <canvas id="game" role="application" aria-label="Next Ledge glacier supply readiness game canvas"></canvas>
-    <aside id="hud" aria-label="Game state for screen readers"><header id="status" aria-live="polite">Loading Next Ledge glacier supply readiness</header><footer id="readout"></footer></aside>
+  <main id="app" data-upgrade="rescue-line-readiness-renderer-handoff-pass summit-bivouac-readiness-renderer-handoff-pass ravine-evacuation-readiness-renderer-handoff-pass glacier-supply-readiness-renderer-handoff-pass avalanche-beacon-rescue-readiness-renderer-handoff-pass">
+    <canvas id="game" role="application" aria-label="Next Ledge avalanche beacon rescue readiness game canvas"></canvas>
+    <aside id="hud" aria-label="Game state for screen readers"><header id="status" aria-live="polite">Loading Next Ledge avalanche beacon rescue readiness</header><footer id="readout"></footer></aside>
     <section id="errorPanel" role="alert" hidden></section>
   </main>
   <script type="module">
     import { attachNexusRealtimePageLoader } from "../_shared/nexus-realtime-page-loader.js";
-    attachNexusRealtimePageLoader({ title: "Next Ledge", loadingLabel: "Loading Next Ledge glacier supply readiness" });
+    attachNexusRealtimePageLoader({ title: "Next Ledge", loadingLabel: "Loading Next Ledge avalanche beacon rescue readiness" });
   </script>
-  <script type="module" src="./src/main.js?v=rescue-line-readiness-1-ravine-evacuation-1-glacier-supply-1"></script>
+  <script type="module" src="./src/main.js?v=rescue-line-readiness-1-ravine-evacuation-1-glacier-supply-1-avalanche-beacon-rescue-1"></script>
   <script type="module" src="./src/rescue-line-readiness-entry.js?v=rescue-line-readiness-1"></script>
   <script type="module" src="./src/summit-bivouac-readiness-entry.js?v=summit-bivouac-readiness-1"></script>
   <script type="module" src="./src/ravine-evacuation-readiness-entry.js?v=ravine-evacuation-readiness-1"></script>
   <script type="module" src="./src/glacier-supply-readiness-entry.js?v=glacier-supply-readiness-1"></script>
+  <script type="module" src="./src/avalanche-beacon-rescue-readiness-entry.js?v=avalanche-beacon-rescue-readiness-1"></script>
 </body>
 </html>
