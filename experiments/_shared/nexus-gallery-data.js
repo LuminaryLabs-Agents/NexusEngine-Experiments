@@ -146,8 +146,8 @@ export const games = Object.freeze([
     kind: "experiment",
     visual: "next",
     playLabel: "Play experiment",
-    tags: [{ label: "Controller", tone: "gold" }, { label: "Afterimage Rescue", tone: "green" }, { label: "Nexus Engine", tone: "blue" }],
-    description: "Third-person controller validation route with spring-arm camera, debug rays, locomotion readability, medevac overlays, traversal-course descriptors, and afterimage-rescue descriptors for motion echoes, landing dust, rescue flares, rope-swing arcs, signal drones, and dawn run ledgers."
+    tags: [{ label: "Controller", tone: "gold" }, { label: "Rooftop Rope", tone: "green" }, { label: "Nexus Engine", tone: "blue" }],
+    description: "Third-person controller validation route with spring-arm camera, debug rays, locomotion readability, medevac overlays, traversal-course descriptors, afterimage-rescue descriptors, wayfinding caches, and rooftop rope rescue descriptors for anchor bolts, rope bridge spans, stretcher routes, triage tarps, wind socks, and dusk evacuation ledgers."
   },
   {
     id: "sora-the-infinite",
