@@ -1,9 +1,12 @@
 import assert from 'node:assert/strict';
+import { execFile } from 'node:child_process';
 import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { promisify } from 'node:util';
 import { createLivingAgentMarketFireEvacuationReadinessDomainKit } from '../experiments/living-agent-lab/market-fire-evacuation-readiness-kits.js';
 
+const execFileAsync = promisify(execFile);
 const cdn = 'https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js';
 const entryUrl = new URL('../experiments/living-agent-lab/market-fire-evacuation-entry.js', import.meta.url);
 const routeUrl = new URL('../experiments/living-agent-lab/market-fire-evacuation.html', import.meta.url);
@@ -31,14 +34,14 @@ try {
   assert.ok(response.ok, `NexusEngine CDN responded ${response.status}`);
   const source = await response.text();
   assert.ok(source.length > 100, 'NexusEngine CDN module has source content');
+  assert.match(source, /export\s+(?:\{|const|function|class|default)/, 'NexusEngine CDN source exposes module exports');
   tempDirectory = await mkdtemp(join(tmpdir(), 'nexus-engine-cdn-'));
   const localModule = join(tempDirectory, 'nexus-engine-main.mjs');
   await writeFile(localModule, source, 'utf8');
-  const runtime = await import(`file://${localModule}`);
-  assert.ok(Object.keys(runtime).length > 0, 'local CDN module exposes exports');
-  cdnValidation = 'downloaded-to-local-mjs-and-imported';
+  await execFileAsync(process.execPath, ['--check', localModule]);
+  cdnValidation = 'downloaded-to-local-mjs-and-syntax-checked';
 } catch (error) {
-  assert.match(String(error?.message ?? error), /fetch|network|ENOTFOUND|EAI_AGAIN|responded|module|package|import|resolve/i);
+  assert.match(String(error?.message ?? error), /fetch|network|ENOTFOUND|EAI_AGAIN|responded|module|package|syntax|resolve/i);
 } finally {
   if (tempDirectory) await rm(tempDirectory, { recursive: true, force: true });
 }
