@@ -20,8 +20,9 @@
     "check:control-math": "node experiments/_tests/control-math-smoke.mjs",
     "check:sora-stormglass-courier": "node tests/sora-stormglass-courier-domain-kits-smoke.mjs && node tests/sora-stormglass-courier-cdn-state-input-smoke.mjs",
     "check:vr-board-breakwater-lighthouse": "node tests/vr-board-breakwater-lighthouse-rescue-readiness-kits-smoke.mjs && node tests/vr-board-breakwater-lighthouse-rescue-cdn-state-input-smoke.mjs",
-    "check": "npm run generate && npm run check:control-math && node scripts/run-checks.mjs && npm run check:sora-stormglass-courier && npm run check:vr-board-breakwater-lighthouse",
-    "check:deploy": "npm run generate && npm run check:control-math && node scripts/run-checks.mjs --deploy && npm run check:sora-stormglass-courier && npm run check:vr-board-breakwater-lighthouse"
+    "check:living-agent-canal-brigade": "node tests/living-agent-canal-bucket-brigade-readiness-kits-smoke.mjs && node tests/living-agent-canal-bucket-brigade-cdn-state-input-smoke.mjs",
+    "check": "npm run generate && npm run check:control-math && node scripts/run-checks.mjs && npm run check:sora-stormglass-courier && npm run check:vr-board-breakwater-lighthouse && npm run check:living-agent-canal-brigade",
+    "check:deploy": "npm run generate && npm run check:control-math && node scripts/run-checks.mjs --deploy && npm run check:sora-stormglass-courier && npm run check:vr-board-breakwater-lighthouse && npm run check:living-agent-canal-brigade"
   },
   "license": "MIT"
 }
