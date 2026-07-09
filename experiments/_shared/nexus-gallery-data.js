@@ -47,8 +47,8 @@ export const games = Object.freeze([
     kind: "experiment",
     visual: "sora",
     playLabel: "Play experiment",
-    tags: [{ label: "WebGL", tone: "gold" }, { label: "Procedural", tone: "green" }, { label: "DSK Cutover", tone: "blue" }],
-    description: "Procedural meadow scene composed from terrain, wind, vegetation, creature, fur, sky, VFX, and visual-target ProtoKit domains."
+    tags: [{ label: "WebGL", tone: "gold" }, { label: "Soil Mycelium", tone: "green" }, { label: "Nexus Engine", tone: "blue" }],
+    description: "Procedural meadow scene composed from terrain, wind, vegetation, creature, fur, sky, VFX, visual-target, ecology, creek irrigation, and soil mycelium restoration domains with descriptor-only underground threads, mushroom rings, beetle lanes, hedgerow windbreaks, and dawn soil health ledgers."
   },
   {
     id: "tiny-diffusion-lab",
