@@ -91,7 +91,8 @@ function mergeRendererHandoff(base, breakwater) {
 }
 
 function patchGameHost(host) {
-  if (!host || patchedHost === host) return true;
+  if (!host) return false;
+  if (patchedHost === host) return true;
   const originalGetState = host.getState?.bind(host);
   const originalTick = host.tick?.bind(host);
   const originalApplyInput = host.applyInput?.bind(host);
