@@ -47,7 +47,9 @@ function formatStatus(snapshot) {
   const anchorCables = snapshot.stormAnchorReadiness?.rendererHandoff?.counts?.anchorCables ?? 0;
   const triageSettlements = snapshot.harborReliefReadiness?.rendererHandoff?.counts?.woundedSettlements ?? 0;
   const skiffChannels = snapshot.harborReliefReadiness?.rendererHandoff?.counts?.skiffChannelThreads ?? 0;
-  return `${objective} · ${mode} · scan ${scans}/3 · shards ${shards} · flow ${visualCount} · cues ${cueCount}/${routeCount} · expedition ${scanSectors}/${retreatLanes} · storm ${stormCells}/${anchorCables} · harbor ${triageSettlements}/${skiffChannels}`;
+  const keepers = snapshot.lighthouseEvacuationReadiness?.rendererHandoff?.counts?.strandedKeepers ?? 0;
+  const rescueChannels = snapshot.lighthouseEvacuationReadiness?.rendererHandoff?.counts?.rescueBoatChannels ?? 0;
+  return `${objective} · ${mode} · scan ${scans}/3 · shards ${shards} · flow ${visualCount} · cues ${cueCount}/${routeCount} · expedition ${scanSectors}/${retreatLanes} · storm ${stormCells}/${anchorCables} · harbor ${triageSettlements}/${skiffChannels} · lighthouse ${keepers}/${rescueChannels}`;
 }
 
 function updateHud(snapshot) {
@@ -55,7 +57,7 @@ function updateHud(snapshot) {
   const rejection = composition.getLastRejection();
   controlsEl.textContent = rejection
     ? `Blocked: ${rejection.reason} · F/Mouse scan · E interact · B build · R reset`
-    : "F/Mouse scan · E interact/harvest/cargo · B build · WASD move · R reset · follow harbor relief skiff channels";
+    : "F/Mouse scan · E interact/harvest/cargo · B build · WASD move · R reset · guide lighthouse evacuation channels";
 }
 
 function frame(now) {
@@ -88,7 +90,7 @@ async function boot() {
   input = createSignalIslesInputAdapter({ canvas, composition, renderer });
 
   window.GameHost = createSignalIslesDebugHost({ composition, renderer, input, nexusRuntimeDescriptor });
-  statusEl.textContent = "Restore signal · harbor relief readiness online · NexusEngine CDN linked";
+  statusEl.textContent = "Restore signal · lighthouse evacuation readiness online · NexusEngine CDN linked";
   controlsEl.textContent = "Click for pointer lock · F/Mouse scan · E interact · B build · R reset";
 
   requestAnimationFrame(frame);
