@@ -91,8 +91,8 @@ export const games = Object.freeze([
     kind: "experiment",
     visual: "fogline",
     playLabel: "Play experiment",
-    tags: [{ label: "Field Engineer", tone: "gold" }, { label: "Field Hospital", tone: "green" }, { label: "Nexus Engine", tone: "blue" }],
-    description: "Field-engineer island slice with scan, harvest, build, pressure, gates, cargo, storm surge relay, and field-hospital triage descriptors for casualty flags, medicine caches, stretcher trails, lantern care posts, evac skiff moorings, and dawn care ledgers."
+    tags: [{ label: "Field Engineer", tone: "gold" }, { label: "Solar Desalination", tone: "green" }, { label: "Nexus Engine", tone: "blue" }],
+    description: "Field-engineer island slice with scan, harvest, build, pressure, gates, cargo, storm surge relay, field-hospital triage, and solar desalination descriptors for salt pan gauges, solar still frames, mangrove charcoal filters, cistern jars, ration buoys, and dawn water ledgers."
   },
   {
     id: "the-cavalry-of-rome",
