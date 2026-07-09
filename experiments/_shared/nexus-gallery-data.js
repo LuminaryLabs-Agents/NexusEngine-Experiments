@@ -25,8 +25,8 @@ export const games = Object.freeze([
     kind: "experiment",
     visual: "next",
     playLabel: "Play experiment",
-    tags: [{ label: "VR Board", tone: "gold" }, { label: "Storm Harbor", tone: "green" }, { label: "Nexus Engine", tone: "blue" }],
-    description: "Board-scale platformer evacuation pass with tide gauges, flare buoys, crane cable crossings, supply net caches, rescue skiff berths, animated harbor water, and descriptor-only storm harbor readiness over the jump/collect/hazard loop."
+    tags: [{ label: "VR Board", tone: "gold" }, { label: "Breakwater Lighthouse", tone: "green" }, { label: "Nexus Engine", tone: "blue" }],
+    description: "Board-scale platformer rescue pass with storm harbor traversal plus breakwater lighthouse descriptors for storm lamps, wave splash markers, prism rings, foghorn timing bells, lifeline rope lanes, and dawn lighthouse ledgers over the jump/collect/hazard loop."
   },
   {
     id: "infinite-radial-terrain",
