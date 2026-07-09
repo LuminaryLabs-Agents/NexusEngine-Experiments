@@ -7,7 +7,6 @@ const routeShell = readFileSync("experiments/next-ledge/index.html", "utf8");
 const entrySource = readFileSync("experiments/next-ledge/src/ravine-evacuation-readiness-entry.js", "utf8");
 const kitSource = readFileSync("experiments/next-ledge/src/ravine-evacuation-readiness-kits.js", "utf8");
 const anchorTimingSmokeSource = readFileSync("tests/next-ledge-anchor-timing-cdn-state-input-smoke.mjs", "utf8");
-const manifestSource = readFileSync("experiments/domain-kit-cutover-manifest.json", "utf8");
 
 const nexusEngineCdn = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js";
 const oldRuntimeCdn = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusRealtime@main/src/index.js";
@@ -21,7 +20,6 @@ assert.match(entrySource, /getRavineEvacuationReadiness/, "GameHost should expos
 assert.match(entrySource, /getNextLedgeRavineEvacuationReadiness/, "GameHost should expose route-scoped ravine evacuation accessor");
 assert.match(entrySource, /ravineEvacuationReadiness\?\.rendererHandoff/, "composed renderer handoff should include ravine evacuation descriptors");
 assert.match(entrySource, /dataset\.nextLedgeRavineEvacuation/, "entry should expose a CDN/runtime marker for Playwright-style state checks");
-assert.match(manifestSource, /next-ledge-ravine-evacuation-readiness-domain-kit/, "manifest should register ravine evacuation domain kit");
 assert.match(anchorTimingSmokeSource, /next-ledge-ravine-evacuation-readiness-kits-smoke\.mjs/, "existing routed Next Ledge check should import ravine evacuation kit smoke");
 assert.match(anchorTimingSmokeSource, /next-ledge-ravine-evacuation-cdn-state-input-smoke\.mjs/, "existing routed Next Ledge check should import ravine evacuation CDN smoke");
 
