@@ -1,3 +1,4 @@
+import "./meadow-pollinator-rescue-cdn-state-input-smoke.mjs";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { createMeadowVisualFractalDomainKit } from "../experiments/high-fidelity-meadow/src/meadow-visual-fractal-domain-kit.js";
@@ -20,6 +21,7 @@ assert.ok(files.main.includes("createMeadowVisualFractalDomainKit"), "main shoul
 assert.ok(files.main.includes("window.GameHost"), "main should expose GameHost state");
 assert.ok(files.main.includes("visualFractal"), "main should expose visualFractal state");
 assert.ok(files.index.includes("20260708-flock-safety-readiness-1"), "entrypoint should cache-bust the latest upgraded meadow route");
+assert.ok(files.index.includes("meadow-pollinator-rescue-entry.js?v=20260708-pollinator-rescue-readiness-1"), "entrypoint should load pollinator rescue readiness overlay");
 assert.ok(files.renderer.includes("createMeadowVisualFractalLayers"), "renderer should consume descriptors through a handoff adapter");
 
 const heightAt = (x = 0, z = 0) => Math.sin(x * 0.033) * 0.24 + Math.cos(z * 0.041) * 0.12;
