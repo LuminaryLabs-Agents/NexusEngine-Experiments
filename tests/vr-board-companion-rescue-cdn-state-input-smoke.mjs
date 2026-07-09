@@ -19,13 +19,21 @@ assert.ok(index.includes("companionRescueReadiness: latestCompanionRescueReadine
 const expectedTokens = [
   "VR_BOARD_COMPANION_RESCUE_READINESS_DOMAIN_TREE",
   "createVrBoardLostCompanionBeaconKit",
+  "createVrBoardMemoryShardTrailKit",
   "createVrBoardEscortLaneRibbonKit",
+  "createVrBoardGuardianBridgeRibbonKit",
   "createVrBoardRescueNetAnchorKit",
   "createVrBoardShieldBubbleTimingKit",
+  "createVrBoardCheckpointSanctuarySignalKit",
   "createVrBoardMedalCacheSignalKit",
+  "createVrBoardExitPortalBloomKit",
   "createVrBoardExitStretcherCommitKit",
   "createVrBoardCompanionRescueRendererHandoffKit",
   "createVrBoardCompanionRescueReadinessDomainKit",
+  "memory-shard-trail-domain",
+  "guardian-bridge-domain",
+  "checkpoint-sanctuary-domain",
+  "portal-bloom-domain",
   "renderer consumes companion rescue descriptors only; no DOM, browser input, Three.js, WebGL, audio, asset loading, or frame-loop ownership"
 ];
 for (const token of expectedTokens) assert.ok(companionKits.includes(token), token);
@@ -33,7 +41,7 @@ for (const token of expectedTokens) assert.ok(companionKits.includes(token), tok
 assert.ok(playSmoke.includes("vr-board-companion-rescue-readiness-kits-smoke.mjs"));
 assert.ok(playSmoke.includes("vr-board-companion-rescue-cdn-state-input-smoke.mjs"));
 assert.ok(manifest.includes("vr-board-companion-rescue-readiness-domain-kit"));
-assert.ok(manifest.includes("companion-rescue-readiness-renderer-handoff-pass"));
+assert.ok(manifest.includes("companion-guardian-bridge-readiness-renderer-handoff-pass"));
 
 const stateInputCases = Array.from({ length: 10 }, (_, index) => ({
   dt: index % 2 ? 1 / 90 : 1 / 30,
@@ -43,8 +51,12 @@ const stateInputCases = Array.from({ length: 10 }, (_, index) => ({
     restartPressed: index === 9,
     rescue: {
       companionsRemaining: Math.max(0, 4 - (index % 5)),
+      memoryShardBeacons: 4,
+      guardianBridgeRibbons: 5,
+      checkpointSanctuaries: 6,
       escortRisk: Math.max(0, Math.min(1, 0.16 + index * 0.07)),
       shieldReadiness: Math.max(0, Math.min(1, 0.2 + index * 0.08)),
+      portalBloom: Math.max(0, Math.min(1, index / 9)),
       exitCommitment: Math.max(0, Math.min(1, index / 9))
     }
   }
@@ -56,9 +68,13 @@ for (const stateCase of stateInputCases) {
   assert.equal(typeof stateCase.input.jumpPressed, "boolean");
   assert.equal(typeof stateCase.input.restartPressed, "boolean");
   assert.ok(stateCase.input.rescue.companionsRemaining >= 0 && stateCase.input.rescue.companionsRemaining <= 4);
+  assert.equal(stateCase.input.rescue.memoryShardBeacons, 4);
+  assert.equal(stateCase.input.rescue.guardianBridgeRibbons, 5);
+  assert.equal(stateCase.input.rescue.checkpointSanctuaries, 6);
   assert.ok(stateCase.input.rescue.escortRisk >= 0 && stateCase.input.rescue.escortRisk <= 1);
   assert.ok(stateCase.input.rescue.shieldReadiness >= 0 && stateCase.input.rescue.shieldReadiness <= 1);
+  assert.ok(stateCase.input.rescue.portalBloom >= 0 && stateCase.input.rescue.portalBloom <= 1);
   assert.ok(stateCase.input.rescue.exitCommitment >= 0 && stateCase.input.rescue.exitCommitment <= 1);
 }
 
-console.log("vr board companion rescue NexusEngine CDN/state-input smoke passed: 10 intake cases");
+console.log("vr board companion rescue guardian bridge NexusEngine CDN/state-input smoke passed: 10 intake cases");
