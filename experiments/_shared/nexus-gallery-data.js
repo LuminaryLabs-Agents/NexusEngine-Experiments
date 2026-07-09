@@ -153,12 +153,12 @@ export const games = Object.freeze([
     id: "sora-the-infinite",
     tab: "experiments",
     title: "Sora The Infinite",
-    route: "./experiments/sora-the-infinite/",
+    route: "./experiments/sora-the-infinite/stormglass-courier.html",
     kind: "experiment",
     visual: "sora",
-    playLabel: "Play experiment",
-    tags: [{ label: "Open Flight", tone: "gold" }, { label: "Cloud Clinic", tone: "green" }, { label: "Nexus Engine", tone: "blue" }],
-    description: "Open aerial traversal gateway into The Open Above with rescue, lighthouse, rookery, star orchard, sky radio beacon, and cloud clinic triage descriptors for landing pads, pulse kites, vapor sterilizer rings, medicine satchels, recovery hammocks, and dawn clinic ledgers."
+    playLabel: "Fly courier",
+    tags: [{ label: "Open Flight", tone: "gold" }, { label: "Stormglass Courier", tone: "green" }, { label: "Nexus Engine", tone: "blue" }],
+    description: "Playable procedural courier flight where players ride seeded thermal lanes, avoid charged storm cells, tune three signal buoys, preserve fragile stormglass cargo, and brake into a sanctuary runway through descriptor-only NexusEngine flight and objective kits."
   },
   {
     id: "zombie-orchard",
