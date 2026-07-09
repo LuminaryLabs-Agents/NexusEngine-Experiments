@@ -69,8 +69,8 @@ export const games = Object.freeze([
     kind: "experiment",
     visual: "next",
     playLabel: "Play drill",
-    tags: [{ label: "Response Agent", tone: "gold" }, { label: "Market Fire", tone: "green" }, { label: "Nexus Engine", tone: "blue" }],
-    description: "Procedural market fire evacuation drill where a response policy recommends actions while players inspect ember lanterns, clear smoke aisles, stage bucket relays, place stall firebreaks, account for merchants, reroute seeded market layouts, and close a dawn safety ledger through descriptor-only NexusEngine kits."
+    tags: [{ label: "Response Agent", tone: "gold" }, { label: "Canal Brigade", tone: "green" }, { label: "Nexus Engine", tone: "blue" }],
+    description: "Procedural market fire evacuation drill where a response policy recommends actions while players inspect ember lanterns, clear smoke aisles, stage bucket relays, place stall firebreaks, account for civilians, prime canal cisterns, pass bucket-chain handoffs, soak burlap screens, and close a dawn brigade ledger through descriptor-only NexusEngine kits."
   },
   {
     id: "fogline-relay",
