@@ -1,5 +1,7 @@
 import "./tropical-rainwater-purification-readiness-kits-smoke.mjs";
 import "./tropical-rainwater-purification-cdn-state-input-smoke.mjs";
+import "./tropical-mangrove-nursery-readiness-kits-smoke.mjs";
+import "./tropical-mangrove-nursery-cdn-state-input-smoke.mjs";
 import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
@@ -21,6 +23,8 @@ const kit = readFileSync(kitPath, "utf8");
 assert.ok(main.includes("https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js"), "changed runtime should import NexusEngine main CDN");
 assert.equal(main.includes("LuminaryLabs-Dev/NexusRealtime"), false, "changed runtime should not import old NexusRealtime runtime CDN");
 assert.ok(html.includes("tropical-island-scene-lagoon-fractal-20260708"), "route shell should cache-bust the lagoon fractal entry");
+assert.ok(html.includes("mangrove-nursery-readiness-renderer-handoff-pass"), "route shell should mark mangrove nursery readiness pass");
+assert.ok(html.includes("mangrove-nursery-readiness-entry.js?v=tropical-island-mangrove-nursery-20260709"), "route shell should load mangrove nursery readiness entry");
 assert.ok(main.includes("window.GameHost"), "runtime should expose GameHost");
 assert.ok(main.includes("getRendererHandoff"), "GameHost should expose renderer handoff");
 assert.ok(main.includes("visualFractal"), "runtime should expose visualFractal state");
