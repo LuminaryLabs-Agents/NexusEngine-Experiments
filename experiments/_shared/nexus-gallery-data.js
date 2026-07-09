@@ -2,7 +2,7 @@ export const galleryConfig = Object.freeze({
   title: "Experiments",
   subtitle: "Nexus Engine playable routes",
   repoUrl: "https://github.com/LuminaryLabs-Agents/NexusEngine-Experiments",
-  hint: "Browse the 15 collective experiment cards. Older removed routes live under deprecated/."
+  hint: "Browse the 16 collective experiment cards. Older removed routes live under deprecated/."
 });
 
 export const games = Object.freeze([
@@ -137,6 +137,17 @@ export const games = Object.freeze([
     playLabel: "Play experiment",
     tags: [{ label: "Grapple", tone: "gold" }, { label: "Drone Relay", tone: "green" }, { label: "Nexus Engine", tone: "blue" }],
     description: "Grapple-climb validation with action input, ledge routes, swing pressure, feedback descriptors, glacier supply, avalanche rescue, summit weather station readiness, and drone relay rescue descriptors for phosphor anchors, snow flags, drone perches, rescue cable spools, heat beacons, and extraction ledgers."
+  },
+  {
+    id: "third-person-follow-through",
+    tab: "experiments",
+    title: "Third Person Follow Through",
+    route: "./experiments/ThirdPersonFollowThrough/",
+    kind: "experiment",
+    visual: "next",
+    playLabel: "Play experiment",
+    tags: [{ label: "Controller", tone: "gold" }, { label: "Traversal Course", tone: "green" }, { label: "Nexus Engine", tone: "blue" }],
+    description: "Third-person controller validation route with spring-arm camera, debug rays, locomotion readability, medevac overlays, and traversal-course descriptors for checkpoint gates, ghost footsteps, balance beams, vault arcs, recovery pads, and coach ledgers."
   },
   {
     id: "sora-the-infinite",
