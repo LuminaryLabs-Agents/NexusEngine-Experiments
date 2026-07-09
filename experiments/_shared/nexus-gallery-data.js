@@ -80,8 +80,8 @@ export const games = Object.freeze([
     kind: "experiment",
     visual: "fogline",
     playLabel: "Play experiment",
-    tags: [{ label: "First Person", tone: "gold" }, { label: "Signal Courier", tone: "green" }, { label: "Nexus Engine", tone: "blue" }],
-    description: "First-person survey loop for scan targets, fog zones, timed pressure, hazard state, rescue/clinic/lighthouse/tide overlays, fog observatory calibration, and signal courier evacuation descriptors for semaphore lamp shutters, message ribbon spools, chalk arrows, stretcher caches, safehouse tokens, and dawn courier ledgers."
+    tags: [{ label: "First Person", tone: "gold" }, { label: "Search Dogs", tone: "green" }, { label: "Nexus Engine", tone: "blue" }],
+    description: "First-person survey loop for scan targets, fog zones, timed pressure, hazard state, rescue/clinic/lighthouse/tide overlays, fog observatory calibration, signal courier evacuation, and search dog rescue descriptors for scent ribbons, pawprint grids, handler whistle posts, thermal blanket caches, rescue sled routes, and dawn handler ledgers."
   },
   {
     id: "nexus-frontier-signal-isles",
