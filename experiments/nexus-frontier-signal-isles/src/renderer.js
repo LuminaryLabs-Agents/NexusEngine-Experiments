@@ -245,6 +245,16 @@ export async function createSignalIslesRenderer({ canvas, level, preset }) {
     for (const manifest of descriptors.departureManifests ?? []) if (manifest.active) addGroundRing({ ...manifest, intensity: manifest.readiness ?? 0.25 }, 0.1 + Number(manifest.readiness ?? 0) * 0.24);
   }
 
+  function drawLighthouseEvacuationDescriptors(snapshot) {
+    const descriptors = snapshot.lighthouseEvacuationReadiness?.rendererHandoff?.descriptors ?? snapshot.domain?.signalIslesLighthouseEvacuationReadiness?.rendererHandoff?.descriptors ?? {};
+    for (const keeper of descriptors.strandedKeepers ?? []) if (keeper.active) addGroundDisc({ ...keeper, intensity: keeper.urgency ?? 0.4 }, 0.05 + Number(keeper.urgency ?? 0) * 0.14);
+    for (const cache of descriptors.lanternFuelCaches ?? []) addGroundRing({ ...cache, intensity: cache.fuel ?? 0.35 }, cache.packed ? 0.17 : 0.24 + Number(cache.fuel ?? 0) * 0.18);
+    for (const gap of descriptors.reefGapWindows ?? []) if (gap.active) addGroundRing({ ...gap, intensity: gap.ready ? 0.9 : 0.34 + Number(gap.progress ?? 0) * 0.46 }, gap.ready ? 0.4 : 0.13 + Number(gap.progress ?? 0) * 0.22);
+    for (const channel of descriptors.rescueBoatChannels ?? []) addThread(channel);
+    for (const signal of descriptors.foghornSignals ?? []) if (signal.active) addGroundRing({ ...signal, intensity: signal.charge ?? 0.4 }, 0.12 + Number(signal.charge ?? 0) * 0.26);
+    for (const roster of descriptors.evacuationRosters ?? []) if (roster.active) addGroundRing({ ...roster, intensity: roster.readiness ?? 0.25 }, 0.1 + Number(roster.readiness ?? 0) * 0.25);
+  }
+
   function drawVisualDescriptors(snapshot) {
     clearLayer(visualLayer);
     const descriptors = snapshot.visualFractal?.rendererHandoff?.descriptors ?? {};
@@ -258,6 +268,7 @@ export async function createSignalIslesRenderer({ canvas, level, preset }) {
     drawExpeditionReadinessDescriptors(snapshot);
     drawStormAnchorDescriptors(snapshot);
     drawHarborReliefDescriptors(snapshot);
+    drawLighthouseEvacuationDescriptors(snapshot);
   }
 
   function draw(snapshot) {
