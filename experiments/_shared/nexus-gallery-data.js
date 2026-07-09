@@ -124,8 +124,8 @@ export const games = Object.freeze([
     kind: "game",
     visual: "fogline",
     playLabel: "Play game",
-    tags: [{ label: "Flood Rescue", tone: "gold" }, { label: "Puzzle Platformer", tone: "green" }, { label: "Nexus Engine", tone: "blue" }],
-    description: "Flooded cavern rescue game with block carrying, valve pressure, rune-plate gate logic, survivor echo pings, chalk path marks, air pockets, rope lifts, and rescue-bell extraction descriptors."
+    tags: [{ label: "Flood Rescue", tone: "gold" }, { label: "Pressure Lock", tone: "green" }, { label: "Nexus Engine", tone: "blue" }],
+    description: "Flooded cavern rescue game with block carrying, valve pressure, rune-plate gate logic, survivor echo pings, cave clinic triage, pressure gate wheels, pump chain tension, bellows air pockets, chalk depth marks, carbide lamp relays, and lockmaster readiness descriptors."
   },
   {
     id: "next-ledge",
