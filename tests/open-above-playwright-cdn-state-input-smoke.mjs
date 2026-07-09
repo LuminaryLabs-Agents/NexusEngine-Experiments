@@ -4,6 +4,8 @@ import "./open-above-aerial-courier-readiness-domain-kits-smoke.mjs";
 import "./open-above-aerial-courier-cdn-state-input-smoke.mjs";
 import "./open-above-storm-shelter-readiness-kits-smoke.mjs";
 import "./open-above-storm-shelter-cdn-state-input-smoke.mjs";
+import "./open-above-alpine-clinic-readiness-kits-smoke.mjs";
+import "./open-above-alpine-clinic-cdn-state-input-smoke.mjs";
 
 import assert from "node:assert/strict";
 import { createServer } from "node:http";
@@ -51,7 +53,7 @@ try {
   browser = await chromium.launch({ headless: true });
   const page = await browser.newPage();
   await page.goto(`http://127.0.0.1:${port}/experiments/the-open-above/`, { waitUntil: "domcontentloaded" });
-  await page.waitForFunction(() => Boolean(globalThis.GameHost?.getState && globalThis.GameHost?.getVisualDomains && globalThis.GameHost?.getFlightRouteReadability && globalThis.GameHost?.getAerialCourierReadiness && globalThis.GameHost?.getStormShelterReadiness), null, { timeout: 20000 });
+  await page.waitForFunction(() => Boolean(globalThis.GameHost?.getState && globalThis.GameHost?.getVisualDomains && globalThis.GameHost?.getFlightRouteReadability && globalThis.GameHost?.getAerialCourierReadiness && globalThis.GameHost?.getStormShelterReadiness && globalThis.GameHost?.getAlpineClinicReadiness), null, { timeout: 20000 });
   const state = await page.evaluate(() => {
     globalThis.GameHost.stop();
     globalThis.GameHost.setInput({ pitch: 0.2, bank: -0.4, boost: true });
@@ -62,10 +64,12 @@ try {
       route: globalThis.GameHost.getFlightRouteReadability(),
       courier: globalThis.GameHost.getAerialCourierReadiness(),
       shelter: globalThis.GameHost.getStormShelterReadiness(),
+      clinic: globalThis.GameHost.getAlpineClinicReadiness(),
       handoff: globalThis.GameHost.getRendererHandoff(),
       routeOverlay: document.querySelector("#open-above-flight-route-readability-overlay")?.dataset ?? {},
       courierOverlay: document.querySelector("#open-above-aerial-courier-overlay")?.dataset ?? {},
-      shelterOverlay: document.querySelector("#open-above-storm-shelter-overlay")?.dataset ?? {}
+      shelterOverlay: document.querySelector("#open-above-storm-shelter-overlay")?.dataset ?? {},
+      clinicOverlay: document.querySelector("#open-above-alpine-clinic-overlay")?.dataset ?? {}
     };
   });
   assert.ok(state.state.validation?.booted);
@@ -81,12 +85,16 @@ try {
   assert.equal(state.courier.rendererHandoff.contract, "renderer-consumes-descriptors-only");
   assert.ok(state.shelter?.summary?.descriptorCount >= 25);
   assert.equal(state.shelter.rendererHandoff.contract, "renderer-consumes-descriptors-only");
+  assert.ok(state.clinic?.summary?.descriptorCount >= 24);
+  assert.equal(state.clinic.rendererHandoff.contract, "renderer-consumes-descriptors-only");
   assert.ok(state.handoff?.counts?.openAboveFlightRoute >= 20);
   assert.ok(state.handoff?.counts?.openAboveAerialCourier >= 24);
   assert.ok(state.handoff?.counts?.openAboveStormShelter >= 25);
+  assert.ok(state.handoff?.counts?.openAboveAlpineClinic >= 24);
   assert.equal(state.routeOverlay.rendererConsumes, "descriptors-only");
   assert.equal(state.courierOverlay.rendererConsumes, "descriptors-only");
   assert.equal(state.shelterOverlay.rendererConsumes, "descriptors-only");
+  assert.equal(state.clinicOverlay.rendererConsumes, "descriptors-only");
   console.log("The Open Above CDN-backed Playwright state input smoke passed.");
 } finally {
   if (browser) await browser.close();
