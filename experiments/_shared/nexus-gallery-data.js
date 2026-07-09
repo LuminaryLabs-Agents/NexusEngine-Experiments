@@ -168,8 +168,8 @@ export const games = Object.freeze([
     kind: "experiment",
     visual: "zombie",
     playLabel: "Play experiment",
-    tags: [{ label: "Survival", tone: "gold" }, { label: "Radio Fence", tone: "green" }, { label: "Rescue", tone: "blue" }],
-    description: "Survival slice for rounds, horde pressure, pickups, weapons, orchard content, and rescue readiness overlays including cure crafting, seed quarantine, antiserum wellhouse, watchtower masts, radio beacons, thorn barricade lanes, flare tripwires, stretcher handoffs, and dusk perimeter ledgers."
+    tags: [{ label: "Survival", tone: "gold" }, { label: "Cider Mill Refuge", tone: "green" }, { label: "Nexus Engine", tone: "blue" }],
+    description: "Survival slice for rounds, horde pressure, pickups, weapons, orchard content, and rescue readiness overlays including cure crafting, seed quarantine, antiserum wellhouse, watchtower radio fences, and cider mill refuge descriptors for cider presses, root cellar caches, lantern routes, sawbuck barricades, refugee wagons, and dawn refuge ledgers."
   },
   {
     id: "rogue-lite-hellscape-siege",
