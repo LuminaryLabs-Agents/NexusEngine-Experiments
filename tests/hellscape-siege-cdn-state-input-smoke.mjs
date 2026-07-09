@@ -1,5 +1,7 @@
 import './hellscape-ash-caravan-readiness-domain-kits-smoke.mjs';
 import './hellscape-ash-caravan-readiness-cdn-state-input-smoke.mjs';
+import './hellscape-sanctuary-forge-readiness-domain-kits-smoke.mjs';
+import './hellscape-sanctuary-forge-readiness-cdn-state-input-smoke.mjs';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { createHellscapeSiegeFractalDomainKit } from '../games/rogue-lite-hellscape-siege/src/hellscape-siege-fractal-domain-kit.js';
