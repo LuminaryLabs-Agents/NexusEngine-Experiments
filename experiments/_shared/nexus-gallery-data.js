@@ -2,7 +2,7 @@ export const galleryConfig = Object.freeze({
   title: "Experiments",
   subtitle: "Nexus Engine playable routes",
   repoUrl: "https://github.com/LuminaryLabs-Agents/NexusEngine-Experiments",
-  hint: "Browse the 12 collective experiment cards. Older removed routes live under deprecated/."
+  hint: "Browse the 13 collective experiment cards. Older removed routes live under deprecated/."
 });
 
 export const games = Object.freeze([
@@ -49,6 +49,17 @@ export const games = Object.freeze([
     playLabel: "Play experiment",
     tags: [{ label: "WebGL", tone: "gold" }, { label: "Procedural", tone: "green" }, { label: "DSK Cutover", tone: "blue" }],
     description: "Procedural meadow scene composed from terrain, wind, vegetation, creature, fur, sky, VFX, and visual-target ProtoKit domains."
+  },
+  {
+    id: "tiny-diffusion-lab",
+    tab: "experiments",
+    title: "Tiny Diffusion Lab",
+    route: "./experiments/tiny-diffusion-lab/",
+    kind: "experiment",
+    visual: "sora",
+    playLabel: "Open lab",
+    tags: [{ label: "Diffusion", tone: "gold" }, { label: "Training", tone: "green" }, { label: "Nexus Engine", tone: "blue" }],
+    description: "Browser-host proof for the Nexus Engine diffusion module: train a tiny CPU denoiser, sample denoising frames, and save/load memory checkpoints through createNexusDiffusionKits."
   },
   {
     id: "fogline-relay",
