@@ -170,6 +170,17 @@ export const games = Object.freeze([
     playLabel: "Play game",
     tags: [{ label: "Action RPG", tone: "gold" }, { label: "Blood Moon Refuge", tone: "green" }, { label: "Harvest", tone: "red" }],
     description: "Base-siege action route for realm portals, inventory, harvesting, building, wave-defense, ash caravan and forge descriptors, plus blood moon refuge sigils, medicine caches, shelter wards, demon pressure fronts, soul ferry routes, and dawn refuge accounting."
+  },
+  {
+    id: "onnx-agent-lab",
+    tab: "experiments",
+    title: "ONNX Agent Lab",
+    route: "./experiments/onnx-agent-lab/signal-calibration.html",
+    kind: "experiment",
+    visual: "next",
+    playLabel: "Open lab",
+    tags: [{ label: "ONNX Workshop", tone: "gold" }, { label: "Signal Calibration", tone: "green" }, { label: "Nexus Engine", tone: "blue" }],
+    description: "Signal-calibration workshop route for model handshakes, fallback safety rails, tool bench cues, prompt intent threads, memory trace cards, and scene-open gates using descriptor-only NexusEngine readiness kits."
   }
 ]);
 
