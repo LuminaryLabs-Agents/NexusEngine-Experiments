@@ -21,12 +21,12 @@ export const games = Object.freeze([
     id: "vr-platformer-board",
     tab: "experiments",
     title: "VR Platformer Board",
-    route: "./experiments/vr-platformer-board/",
+    route: "./experiments/vr-platformer-board/skyline-medevac.html",
     kind: "experiment",
     visual: "next",
     playLabel: "Play experiment",
-    tags: [{ label: "VR Board", tone: "gold" }, { label: "Platformer", tone: "green" }, { label: "6DOF", tone: "blue" }],
-    description: "Floating platformer board validation for XR pose, input, comfort, spatial anchor, stereo descriptors, and renderer-neutral ProtoKit state."
+    tags: [{ label: "VR Board", tone: "gold" }, { label: "Skyline Medevac", tone: "green" }, { label: "Nexus Engine", tone: "blue" }],
+    description: "Board-scale platformer rescue pass with tether pylons, harness threads, crosswind ribbons, oxygen canisters, medevac pod staging, and descriptor-only skyline medevac readiness over the jump/coin/hazard loop."
   },
   {
     id: "infinite-radial-terrain",
