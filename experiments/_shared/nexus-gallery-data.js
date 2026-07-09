@@ -91,8 +91,8 @@ export const games = Object.freeze([
     kind: "experiment",
     visual: "fogline",
     playLabel: "Play experiment",
-    tags: [{ label: "Field Engineer", tone: "gold" }, { label: "Solar Desalination", tone: "green" }, { label: "Nexus Engine", tone: "blue" }],
-    description: "Field-engineer island slice with scan, harvest, build, pressure, gates, cargo, storm surge relay, field-hospital triage, and solar desalination descriptors for salt pan gauges, solar still frames, mangrove charcoal filters, cistern jars, ration buoys, and dawn water ledgers."
+    tags: [{ label: "Field Engineer", tone: "gold" }, { label: "Field Hospital", tone: "green" }, { label: "Nexus Engine", tone: "blue" }],
+    description: "Field-engineer island slice with scan, harvest, build, pressure, gates, cargo, storm surge relay, and field-hospital triage descriptors for casualty flags, medicine caches, stretcher trails, lantern care posts, evac skiff moorings, and dawn care ledgers."
   },
   {
     id: "the-cavalry-of-rome",
@@ -157,8 +157,8 @@ export const games = Object.freeze([
     kind: "experiment",
     visual: "zombie",
     playLabel: "Play experiment",
-    tags: [{ label: "Survival", tone: "gold" }, { label: "Horde", tone: "red" }, { label: "Scavenge", tone: "green" }],
-    description: "Survival slice for rounds, pressure, pickups, weapons, orchard content, and debug-friendly runtime state."
+    tags: [{ label: "Survival", tone: "gold" }, { label: "Radio Fence", tone: "green" }, { label: "Rescue", tone: "blue" }],
+    description: "Survival slice for rounds, horde pressure, pickups, weapons, orchard content, and rescue readiness overlays including cure crafting, seed quarantine, antiserum wellhouse, watchtower masts, radio beacons, thorn barricade lanes, flare tripwires, stretcher handoffs, and dusk perimeter ledgers."
   },
   {
     id: "rogue-lite-hellscape-siege",
