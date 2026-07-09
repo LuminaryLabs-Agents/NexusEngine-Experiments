@@ -2,7 +2,7 @@ export const galleryConfig = Object.freeze({
   title: "Experiments",
   subtitle: "Nexus Engine playable routes",
   repoUrl: "https://github.com/LuminaryLabs-Agents/NexusEngine-Experiments",
-  hint: "Browse the 13 collective experiment cards. Older removed routes live under deprecated/."
+  hint: "Browse the 14 collective experiment cards. Older removed routes live under deprecated/."
 });
 
 export const games = Object.freeze([
@@ -104,6 +104,17 @@ export const games = Object.freeze([
     playLabel: "Play game",
     tags: [{ label: "Tower Defense", tone: "gold" }, { label: "2.5D Cel", tone: "green" }, { label: "Tactics", tone: "blue" }],
     description: "2.5D cel-style defense game with gameplay HUD, tower cards, context panel, placement ghost, range rings, and content pass."
+  },
+  {
+    id: "stonewake-depths",
+    tab: "games",
+    title: "Stonewake Depths",
+    route: "./games/stonewake-depths/",
+    kind: "game",
+    visual: "fogline",
+    playLabel: "Play game",
+    tags: [{ label: "Flood Rescue", tone: "gold" }, { label: "Puzzle Platformer", tone: "green" }, { label: "Nexus Engine", tone: "blue" }],
+    description: "Flooded cavern rescue game with block carrying, valve pressure, rune-plate gate logic, survivor echo pings, chalk path marks, air pockets, rope lifts, and rescue-bell extraction descriptors."
   },
   {
     id: "next-ledge",
