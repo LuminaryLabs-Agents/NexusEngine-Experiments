@@ -41,7 +41,7 @@ for (const token of expectedTokens) assert.ok(companionKits.includes(token), tok
 assert.ok(playSmoke.includes("vr-board-companion-rescue-readiness-kits-smoke.mjs"));
 assert.ok(playSmoke.includes("vr-board-companion-rescue-cdn-state-input-smoke.mjs"));
 assert.ok(manifest.includes("vr-board-companion-rescue-readiness-domain-kit"));
-assert.ok(manifest.includes("companion-guardian-bridge-readiness-renderer-handoff-pass"));
+assert.ok(manifest.includes("companion-rescue-readiness-renderer-handoff-pass"));
 
 const stateInputCases = Array.from({ length: 10 }, (_, index) => ({
   dt: index % 2 ? 1 / 90 : 1 / 30,
