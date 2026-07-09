@@ -22,8 +22,9 @@
     "check:vr-board-breakwater-lighthouse": "node tests/vr-board-breakwater-lighthouse-rescue-readiness-kits-smoke.mjs && node tests/vr-board-breakwater-lighthouse-rescue-cdn-state-input-smoke.mjs",
     "check:living-agent-canal-brigade": "node tests/living-agent-canal-bucket-brigade-readiness-kits-smoke.mjs && node tests/living-agent-canal-bucket-brigade-cdn-state-input-smoke.mjs",
     "check:next-ledge-ridge-stretcher-relay": "node tests/next-ledge-ridge-stretcher-relay-readiness-kits-smoke.mjs && node tests/next-ledge-ridge-stretcher-relay-cdn-state-input-smoke.mjs",
-    "check": "npm run generate && npm run check:control-math && node scripts/run-checks.mjs && npm run check:sora-stormglass-courier && npm run check:vr-board-breakwater-lighthouse && npm run check:living-agent-canal-brigade && npm run check:next-ledge-ridge-stretcher-relay",
-    "check:deploy": "npm run generate && npm run check:control-math && node scripts/run-checks.mjs --deploy && npm run check:sora-stormglass-courier && npm run check:vr-board-breakwater-lighthouse && npm run check:living-agent-canal-brigade && npm run check:next-ledge-ridge-stretcher-relay"
+    "check:meadow-skylark-nest-rescue": "node tests/meadow-skylark-nest-rescue-readiness-kits-smoke.mjs && node tests/meadow-skylark-nest-rescue-cdn-state-input-smoke.mjs",
+    "check": "npm run generate && npm run check:control-math && node scripts/run-checks.mjs && npm run check:sora-stormglass-courier && npm run check:vr-board-breakwater-lighthouse && npm run check:living-agent-canal-brigade && npm run check:next-ledge-ridge-stretcher-relay && npm run check:meadow-skylark-nest-rescue",
+    "check:deploy": "npm run generate && npm run check:control-math && node scripts/run-checks.mjs --deploy && npm run check:sora-stormglass-courier && npm run check:vr-board-breakwater-lighthouse && npm run check:living-agent-canal-brigade && npm run check:next-ledge-ridge-stretcher-relay && npm run check:meadow-skylark-nest-rescue"
   },
   "license": "MIT"
 }
