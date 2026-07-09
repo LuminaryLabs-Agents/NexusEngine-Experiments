@@ -36,8 +36,8 @@ export const games = Object.freeze([
     kind: "experiment",
     visual: "sora",
     playLabel: "Play experiment",
-    tags: [{ label: "Terrain", tone: "gold" }, { label: "Radial LOD", tone: "green" }, { label: "3D", tone: "blue" }],
-    description: "Camera-driven radial terrain tessellation demo with WASD flight, 50m origin snapping, a 200m closest LOD band, and high-difference procedural terrain."
+    tags: [{ label: "Terrain", tone: "gold" }, { label: "Aquifer Cartography", tone: "green" }, { label: "Nexus Engine", tone: "blue" }],
+    description: "Camera-driven radial terrain tessellation demo with WASD flight, 50m origin snapping, a 200m closest LOD band, and aquifer cartography descriptors for spring seep markers, moraine well probes, dowsing thread lines, cistern basin catchments, dye marker beacons, and dawn water ledgers."
   },
   {
     id: "high-fidelity-meadow",
