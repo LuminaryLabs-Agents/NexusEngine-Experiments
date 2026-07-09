@@ -146,8 +146,8 @@ export const games = Object.freeze([
     kind: "experiment",
     visual: "next",
     playLabel: "Play experiment",
-    tags: [{ label: "Controller", tone: "gold" }, { label: "Traversal Course", tone: "green" }, { label: "Nexus Engine", tone: "blue" }],
-    description: "Third-person controller validation route with spring-arm camera, debug rays, locomotion readability, medevac overlays, and traversal-course descriptors for checkpoint gates, ghost footsteps, balance beams, vault arcs, recovery pads, and coach ledgers."
+    tags: [{ label: "Controller", tone: "gold" }, { label: "Afterimage Rescue", tone: "green" }, { label: "Nexus Engine", tone: "blue" }],
+    description: "Third-person controller validation route with spring-arm camera, debug rays, locomotion readability, medevac overlays, traversal-course descriptors, and afterimage-rescue descriptors for motion echoes, landing dust, rescue flares, rope-swing arcs, signal drones, and dawn run ledgers."
   },
   {
     id: "sora-the-infinite",
