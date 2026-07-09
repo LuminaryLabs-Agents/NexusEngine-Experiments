@@ -1,5 +1,7 @@
 import "./fogline-blackout-recovery-readiness-kits-smoke.mjs";
 import "./fogline-blackout-recovery-cdn-state-input-smoke.mjs";
+import "./fogline-ridge-ambulance-readiness-kits-smoke.mjs";
+import "./fogline-ridge-ambulance-cdn-state-input-smoke.mjs";
 import assert from "node:assert/strict";
 import { createServer } from "node:http";
 import { readFile } from "node:fs/promises";
@@ -31,11 +33,18 @@ assert.ok(sessionSource.includes("foglineVisualFractal"));
 const indexSource = await readFile(join(root, "experiments/fogline-relay/index.html"), "utf8");
 assert.ok(indexSource.includes("blackout-recovery-readiness-renderer-handoff-pass"), "route should advertise blackout recovery upgrade");
 assert.ok(indexSource.includes("blackout-recovery-readiness-entry.js?v=fogline-blackout-recovery-readiness-1"), "route should load blackout recovery entry");
+assert.ok(indexSource.includes("ridge-ambulance-readiness-renderer-handoff-pass"), "route should advertise ridge ambulance upgrade");
+assert.ok(indexSource.includes("ridge-ambulance-readiness-entry.js?v=fogline-ridge-ambulance-readiness-1"), "route should load ridge ambulance entry");
 
 const blackoutEntrySource = await readFile(join(root, "experiments/fogline-relay/src/blackout-recovery-readiness-entry.js"), "utf8");
 assert.ok(blackoutEntrySource.includes("https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js"), "blackout entry should use NexusEngine main CDN");
 assert.equal(blackoutEntrySource.includes("NexusRealtime@main"), false, "blackout entry should not import old NexusRealtime runtime CDN");
 assert.ok(blackoutEntrySource.includes("getFoglineBlackoutRecoveryReadiness"), "blackout entry should expose GameHost readiness accessor");
+
+const ridgeAmbulanceEntrySource = await readFile(join(root, "experiments/fogline-relay/src/ridge-ambulance-readiness-entry.js"), "utf8");
+assert.ok(ridgeAmbulanceEntrySource.includes("https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js"), "ridge ambulance entry should use NexusEngine main CDN");
+assert.equal(ridgeAmbulanceEntrySource.includes("NexusRealtime@main"), false, "ridge ambulance entry should not import old NexusRealtime runtime CDN");
+assert.ok(ridgeAmbulanceEntrySource.includes("getFoglineRidgeAmbulanceReadiness"), "ridge ambulance entry should expose GameHost readiness accessor");
 
 const mainSource = await readFile(join(root, "experiments/fogline-relay/src/main.js"), "utf8");
 assert.ok(mainSource.includes("getRendererHandoff"), "GameHost should expose renderer handoff descriptors");
@@ -62,6 +71,7 @@ try {
   const page = await browser.newPage();
   await page.goto(`${baseUrl}/experiments/fogline-relay/`, { waitUntil: "domcontentloaded" });
   await page.waitForFunction(() => Boolean(globalThis.GameHost?.getState), null, { timeout: 15000 });
+  await page.waitForFunction(() => Boolean(globalThis.GameHost?.getFoglineRidgeAmbulanceReadiness), null, { timeout: 15000 });
   await page.keyboard.press("KeyW");
   await page.keyboard.press("KeyE");
   await page.keyboard.press("ArrowRight");
@@ -73,7 +83,8 @@ try {
     globalThis.GameHost.engine.tick(1 / 30);
     return {
       snapshot: globalThis.GameHost.session.snapshot(),
-      handoff: globalThis.GameHost.getRendererHandoff()
+      handoff: globalThis.GameHost.getRendererHandoff(),
+      ridgeAmbulance: globalThis.GameHost.getFoglineRidgeAmbulanceReadiness()
     };
   });
 
@@ -94,6 +105,9 @@ try {
   assert.ok(Array.isArray(snapshot.visualFractal.pressureVignettes));
   assert.ok(Array.isArray(snapshot.visualFractal.safePockets));
   assert.ok(snapshot.visualFractal.rendererHandoff?.policy === "renderer-consumes-descriptors-only");
+  assert.equal(state.ridgeAmbulance?.rendererHandoff?.policy, "renderer-consumes-descriptors-only", "ridge ambulance should expose descriptor-only handoff");
+  assert.ok(state.ridgeAmbulance?.drawOrder?.length > 0, "ridge ambulance should emit descriptors");
+  assert.ok(state.handoff?.ridgeAmbulanceDescriptorCount >= state.ridgeAmbulance.drawOrder.length, "GameHost handoff should compose ridge ambulance descriptors");
   assert.ok(state.handoff?.descriptorCount >= snapshot.visualFractal.drawOrder.length, "GameHost handoff should mirror descriptor queue");
   assert.ok(snapshot.visualFractal.drawOrder.length >= 40, "descriptor handoff should contain a rich render queue");
   assert.ok(snapshot.visualFractal.drawOrder.every((entry) => entry.id && entry.archetype && entry.position), "each descriptor should be renderer-consumable");
