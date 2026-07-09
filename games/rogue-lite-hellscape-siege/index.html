@@ -6,16 +6,17 @@
   <title>Rogue-Lite Hellscape Siege</title>
   <link rel="stylesheet" href="./styles.css" />
 </head>
-<body data-hellscape-pass="ash-caravan-readiness-renderer-handoff-pass sanctuary-forge-readiness-renderer-handoff-pass blood-moon-refuge-readiness-renderer-handoff-pass">
+<body data-hellscape-pass="ash-caravan-readiness-renderer-handoff-pass sanctuary-forge-readiness-renderer-handoff-pass blood-moon-refuge-readiness-renderer-handoff-pass ember-well-purification-readiness-renderer-handoff-pass">
   <main id="app">
-    <canvas id="game"></canvas>
+    <canvas id="game" aria-label="Rogue-Lite Hellscape Siege game canvas with ember well purification readiness descriptors"></canvas>
     <section id="errorPanel" hidden></section>
   </main>
   <script type="module">
     import { attachNexusRealtimePageLoader } from "../../experiments/_shared/nexus-realtime-page-loader.js";
-    attachNexusRealtimePageLoader({ title: "Hellscape Blood Moon Refuge Readiness", loadingLabel: "Loading blood moon refuge readiness" });
+    attachNexusRealtimePageLoader({ title: "Hellscape Ember Well Purification Readiness", loadingLabel: "Loading ember well purification readiness" });
   </script>
   <script type="module" src="./src/main.js?v=infernal-contract-readiness-1-ash-caravan-readiness-1-sanctuary-forge-readiness-1-blood-moon-refuge-readiness-1"></script>
   <script type="module" src="./src/hellscape-blood-moon-refuge-readiness-entry.js?v=blood-moon-refuge-readiness-1"></script>
+  <script type="module" src="./src/hellscape-ember-well-purification-readiness-entry.js?v=ember-well-purification-readiness-1"></script>
 </body>
 </html>
