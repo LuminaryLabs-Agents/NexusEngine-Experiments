@@ -179,8 +179,8 @@ export const games = Object.freeze([
     kind: "game",
     visual: "hell",
     playLabel: "Play game",
-    tags: [{ label: "Action RPG", tone: "gold" }, { label: "Harvester Covenant", tone: "green" }, { label: "Nexus Engine", tone: "blue" }],
-    description: "Base-siege action route for realm portals, inventory, harvesting, building, wave-defense, ash caravan, forge, blood moon refuge, ember well purification, obsidian seed vault, and harvester covenant descriptors for bloodroot plots, ash sickle paths, ember tithe bowls, demon audit seals, covenant wagon wheels, and dawn covenant ledgers."
+    tags: [{ label: "Action RPG", tone: "gold" }, { label: "Soul Quarantine", tone: "green" }, { label: "Nexus Engine", tone: "blue" }],
+    description: "Base-siege action route for realm portals, inventory, harvesting, building, wave-defense, ash caravan, forge, blood moon refuge, ember well purification, obsidian seed vault, harvester covenant, and soul lantern quarantine descriptors for containment circles, lantern stakes, ashward trenches, plague mist vanes, cure totem caches, and dusk quarantine ledgers."
   },
   {
     id: "onnx-agent-lab",
