@@ -135,8 +135,8 @@ export const games = Object.freeze([
     kind: "experiment",
     visual: "next",
     playLabel: "Play experiment",
-    tags: [{ label: "Grapple", tone: "gold" }, { label: "Climb", tone: "green" }, { label: "Route", tone: "blue" }],
-    description: "Grapple-climb validation with action input, ledge routes, swing pressure, feedback descriptors, and a Three.js host."
+    tags: [{ label: "Grapple", tone: "gold" }, { label: "Climb", tone: "green" }, { label: "Glacier Supply", tone: "blue" }],
+    description: "Grapple-climb validation with action input, ledge routes, swing pressure, feedback descriptors, glacier storm lanterns, crampon rails, warmth caches, cornice warnings, and rescue-sled supply handoff."
   },
   {
     id: "sora-the-infinite",
