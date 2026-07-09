@@ -2,7 +2,7 @@ export const galleryConfig = Object.freeze({
   title: "Experiments",
   subtitle: "Nexus Engine playable routes",
   repoUrl: "https://github.com/LuminaryLabs-Agents/NexusEngine-Experiments",
-  hint: "Browse the 16 collective experiment cards. Older removed routes live under deprecated/."
+  hint: "Browse the 17 collective experiment cards. Older removed routes live under deprecated/."
 });
 
 export const games = Object.freeze([
