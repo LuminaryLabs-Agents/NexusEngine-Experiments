@@ -19,8 +19,7 @@ function makeFallbackLevel() {
   };
 }
 
-function readinessInput(host) {
-  const state = host?.getRenderSnapshot?.() ?? host?.getState?.() ?? {};
+function inputFromState(state = {}) {
   return {
     level: state.level ?? makeFallbackLevel(),
     preset: state.preset ?? {},
@@ -30,6 +29,12 @@ function readinessInput(host) {
     kitStates: state.kitStates ?? { scanSurvey: state.scan ?? { completedTargetIds: [] } },
     elapsed: state.session?.elapsed ?? 0
   };
+}
+
+function readinessInput(host) {
+  if (typeof host?.__stormSurgeRelayReadinessInput === "function") return host.__stormSurgeRelayReadinessInput();
+  const state = host?.getRenderSnapshot?.() ?? host?.getState?.() ?? {};
+  return inputFromState(state);
 }
 
 function computeReadiness(host = window.GameHost) {
@@ -53,6 +58,7 @@ function installHostPatch() {
   const previousGetState = host.getState?.bind(host);
   const previousGetRenderSnapshot = host.getRenderSnapshot?.bind(host);
   const previousGetRendererHandoff = host.getRendererHandoff?.bind(host);
+  host.__stormSurgeRelayReadinessInput = () => inputFromState(previousGetRenderSnapshot?.() ?? previousGetState?.() ?? {});
   host.getSignalIslesStormSurgeRelayReadiness = () => computeReadiness(host);
   host.getStormSurgeRelayReadiness = host.getSignalIslesStormSurgeRelayReadiness;
   host.getStormSurgeRelayReadinessTree = () => kit.tree;
@@ -64,7 +70,7 @@ function installHostPatch() {
     return { ...state, stormSurgeRelayReadiness, domain: { ...(state.domain ?? {}), signalIslesStormSurgeRelayReadiness: stormSurgeRelayReadiness } };
   };
   host.getRenderSnapshot = () => {
-    const snapshot = previousGetRenderSnapshot?.() ?? host.getState();
+    const snapshot = previousGetRenderSnapshot?.() ?? previousGetState?.() ?? {};
     const stormSurgeRelayReadiness = computeReadiness(host);
     return { ...snapshot, stormSurgeRelayReadiness, domain: { ...(snapshot.domain ?? {}), signalIslesStormSurgeRelayReadiness: stormSurgeRelayReadiness } };
   };
@@ -76,6 +82,22 @@ function project(descriptor, width, height) {
   const x = Number(descriptor.x ?? descriptor.from?.x ?? 0);
   const z = Number(descriptor.z ?? descriptor.from?.z ?? 0);
   return { x: width * 0.5 + x * 16, y: height * 0.55 + z * 11 };
+}
+
+function drawRoundedRect(ctx, x, y, width, height, radius) {
+  if (typeof ctx.roundRect === "function") {
+    ctx.roundRect(x, y, width, height, radius);
+    return;
+  }
+  ctx.moveTo(x + radius, y);
+  ctx.lineTo(x + width - radius, y);
+  ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+  ctx.lineTo(x + width, y + height - radius);
+  ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+  ctx.lineTo(x + radius, y + height);
+  ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+  ctx.lineTo(x, y + radius);
+  ctx.quadraticCurveTo(x, y, x + radius, y);
 }
 
 function drawOverlay(canvas, ctx, state) {
@@ -118,7 +140,7 @@ function drawOverlay(canvas, ctx, state) {
     ctx.fillStyle = "rgba(2,9,14,.72)";
     ctx.strokeStyle = ledger.phase === "launch" ? "rgba(143,255,181,.8)" : "rgba(255,211,109,.65)";
     ctx.beginPath();
-    ctx.roundRect?.(p.x - 58, p.y - 18, 116, 28, 12);
+    drawRoundedRect(ctx, p.x - 58, p.y - 18, 116, 28, 12);
     ctx.fill();
     ctx.stroke();
     ctx.fillStyle = "rgba(236,251,255,.88)";
