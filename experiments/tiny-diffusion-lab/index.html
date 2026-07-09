@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Tiny Diffusion Lab trains, samples, curates, repairs, and archives a small Nexus Engine diffusion model in the browser through createNexusDiffusionKits and renderer-neutral readiness kits." />
+  <meta name="description" content="Tiny Diffusion Lab trains, samples, curates, repairs, archives, and curriculum-gates a small Nexus Engine diffusion model in the browser through createNexusDiffusionKits and renderer-neutral readiness kits." />
   <title>Tiny Diffusion Lab — Nexus Engine Experiment</title>
   <style>
     :root {
@@ -58,17 +58,19 @@
     #latentMuseumReadiness .mission-list b { color: #cbb8ff; }
     #repairMuralReadiness .mission-list p { border-color: rgba(255,131,131,.20); background: rgba(255,131,131,.052); }
     #repairMuralReadiness .mission-list b { color: #ffa6a6; }
+    #curriculumKilnReadiness .mission-list p { border-color: rgba(255,180,99,.22); background: rgba(255,180,99,.060); }
+    #curriculumKilnReadiness .mission-list b { color: #ffcb8d; }
     .ok { color: var(--ok); }
     .danger { color: var(--danger); }
     @media (max-width: 860px) { .card, .card.wide { grid-column: 1 / -1; } .status, .mission-panel, .mission-list { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
-  <main id="app" data-experiment="tiny-diffusion-lab" data-upgrade="dataset-expedition-readiness-renderer-handoff-pass latent-museum-curator-readiness-renderer-handoff-pass repair-mural-readiness-renderer-handoff-pass">
+  <main id="app" data-experiment="tiny-diffusion-lab" data-upgrade="dataset-expedition-readiness-renderer-handoff-pass latent-museum-curator-readiness-renderer-handoff-pass repair-mural-readiness-renderer-handoff-pass curriculum-kiln-readiness-renderer-handoff-pass">
     <header class="hero">
       <div class="eyebrow">Nexus Engine · Diffusion Domain Proof</div>
       <h1>Tiny Diffusion Lab</h1>
-      <p class="lede">Train a tiny browser-side diffusion model with the new Nexus Engine diffusion subdomains. The reusable model, tensor, backend, training, sampling, checkpoint, preview, training mission, dataset expedition, sample clinic, latent museum curator, and repair mural readiness logic stays in Nexus Engine or renderer-neutral local kits; this route only renders descriptors and sends button intent.</p>
+      <p class="lede">Train a tiny browser-side diffusion model with the new Nexus Engine diffusion subdomains. The reusable model, tensor, backend, training, sampling, checkpoint, preview, training mission, dataset expedition, sample clinic, latent museum curator, repair mural, and curriculum kiln readiness logic stays in Nexus Engine or renderer-neutral local kits; this route only renders descriptors and sends button intent.</p>
     </header>
 
     <section class="toolbar" aria-label="Tiny diffusion lab controls">
@@ -131,6 +133,14 @@
         </div>
       </article>
 
+      <article class="card full">
+        <h2>Curriculum kiln readiness</h2>
+        <div id="curriculumKilnReadiness" class="mission-panel" aria-label="Curriculum kiln readiness descriptors" data-domain="tiny-diffusion-curriculum-kiln-readiness-domain">
+          <div class="metric"><span>Curriculum readiness</span><strong>waiting</strong></div>
+          <div class="metric"><span>Phase</span><strong>booting</strong></div>
+        </div>
+      </article>
+
       <article class="card wide">
         <h2>Procedural dataset samples</h2>
         <div id="dataset" class="strip" aria-label="Dataset sample canvases"></div>
@@ -164,5 +174,6 @@
   <script type="module" src="./app/sample-clinic-readiness-entry.js?v=tiny-diffusion-sample-clinic-20260709"></script>
   <script type="module" src="./app/latent-museum-curator-readiness-entry.js?v=tiny-diffusion-latent-museum-curator-20260709"></script>
   <script type="module" src="./app/repair-mural-readiness-entry.js?v=tiny-diffusion-repair-mural-20260709"></script>
+  <script type="module" src="./app/curriculum-kiln-readiness-entry.js?v=tiny-diffusion-curriculum-kiln-20260709"></script>
 </body>
 </html>
