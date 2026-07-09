@@ -4,6 +4,8 @@ import "./zombie-orchard-safehouse-evacuation-readiness-kits-smoke.mjs";
 import "./zombie-orchard-safehouse-evacuation-cdn-state-input-smoke.mjs";
 import "./zombie-orchard-well-restoration-readiness-kits-smoke.mjs";
 import "./zombie-orchard-well-restoration-cdn-state-input-smoke.mjs";
+import "./zombie-orchard-seed-bank-quarantine-readiness-kits-smoke.mjs";
+import "./zombie-orchard-seed-bank-quarantine-cdn-state-input-smoke.mjs";
 import assert from "node:assert/strict";
 import { createServer } from "node:http";
 import { readFile } from "node:fs/promises";
@@ -54,6 +56,7 @@ try {
   await page.waitForFunction(() => Boolean(globalThis.GameHost?.getZombieOrchardCureCraftingReadiness), null, { timeout: 15000 });
   await page.waitForFunction(() => Boolean(globalThis.GameHost?.getZombieOrchardSafehouseEvacuationReadiness), null, { timeout: 15000 });
   await page.waitForFunction(() => Boolean(globalThis.GameHost?.getZombieOrchardWellRestorationReadiness), null, { timeout: 15000 });
+  await page.waitForFunction(() => Boolean(globalThis.GameHost?.getZombieOrchardSeedBankQuarantineReadiness), null, { timeout: 15000 });
   await page.keyboard.press("KeyW");
   await page.keyboard.press("KeyE");
   await page.keyboard.press("KeyJ");
@@ -73,10 +76,12 @@ try {
       cure: globalThis.GameHost.getZombieOrchardCureCraftingReadiness(),
       safehouse: globalThis.GameHost.getZombieOrchardSafehouseEvacuationReadiness(),
       well: globalThis.GameHost.getZombieOrchardWellRestorationReadiness(),
+      seedBank: globalThis.GameHost.getZombieOrchardSeedBankQuarantineReadiness(),
       handoff: globalThis.GameHost.getRendererHandoff(),
       marker: document.documentElement.dataset.zombieCureCraftingReadiness,
       safehouseMarker: document.documentElement.dataset.zombieSafehouseEvacuationReadiness,
-      wellMarker: document.documentElement.dataset.zombieWellRestorationReadiness
+      wellMarker: document.documentElement.dataset.zombieWellRestorationReadiness,
+      seedBankMarker: document.documentElement.dataset.zombieSeedBankQuarantineReadiness
     };
   });
 
@@ -99,6 +104,7 @@ try {
   assert.equal(state.marker, "active");
   assert.equal(state.safehouseMarker, "active");
   assert.equal(state.wellMarker, "active");
+  assert.equal(state.seedBankMarker, "active");
   assert.ok(Array.isArray(state.cure.rendererHandoff.descriptors.infectedRootSamples));
   assert.ok(Array.isArray(state.cure.rendererHandoff.descriptors.antidotePressQueues));
   assert.ok(Array.isArray(state.cure.rendererHandoff.descriptors.sapDistillerNodes));
@@ -117,9 +123,16 @@ try {
   assert.ok(Array.isArray(state.well.rendererHandoff.descriptors.wellBarricadeLanterns));
   assert.ok(Array.isArray(state.well.rendererHandoff.descriptors.sprinklerMistGrids));
   assert.ok(Array.isArray(state.well.rendererHandoff.descriptors.dawnWaterRationLedgers));
+  assert.ok(Array.isArray(state.seedBank.rendererHandoff.descriptors.heirloomSeedCaches));
+  assert.ok(Array.isArray(state.seedBank.rendererHandoff.descriptors.graftScionRacks));
+  assert.ok(Array.isArray(state.seedBank.rendererHandoff.descriptors.sporeFenceLanterns));
+  assert.ok(Array.isArray(state.seedBank.rendererHandoff.descriptors.compostBurnPits));
+  assert.ok(Array.isArray(state.seedBank.rendererHandoff.descriptors.rowReplantCharters));
+  assert.ok(Array.isArray(state.seedBank.rendererHandoff.descriptors.dawnSeedLedgers));
   assert.ok(state.handoff.cureCraftingDescriptorCount >= 6);
   assert.ok(state.handoff.safehouseEvacuationDescriptorCount >= 14);
   assert.ok(state.handoff.wellRestorationDescriptorCount >= 15);
+  assert.ok(state.handoff.seedBankQuarantineDescriptorCount >= 17);
   console.log("zombie orchard NexusEngine CDN-backed Playwright state input smoke passed");
 } finally {
   if (browser) await browser.close();
