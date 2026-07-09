@@ -68,22 +68,36 @@ export const VR_BOARD_COMPANION_RESCUE_READINESS_DOMAIN_TREE = Object.freeze({
     {
       id: "companion-route-domain",
       subdomains: [
-        { id: "lost-companion-domain", kits: ["vr-board-lost-companion-beacon-kit"] },
-        { id: "escort-lane-domain", kits: ["vr-board-escort-lane-ribbon-kit"] }
+        {
+          id: "lost-companion-domain",
+          subdomains: [
+            { id: "lost-companion-beacon-domain", kits: ["vr-board-lost-companion-beacon-kit"] },
+            { id: "memory-shard-trail-domain", kits: ["vr-board-memory-shard-trail-kit"] }
+          ]
+        },
+        {
+          id: "escort-lane-domain",
+          subdomains: [
+            { id: "escort-lane-ribbon-domain", kits: ["vr-board-escort-lane-ribbon-kit"] },
+            { id: "guardian-bridge-domain", kits: ["vr-board-guardian-bridge-ribbon-kit"] }
+          ]
+        }
       ]
     },
     {
       id: "hazard-triage-domain",
       subdomains: [
         { id: "rescue-net-domain", kits: ["vr-board-rescue-net-anchor-kit"] },
-        { id: "shield-bubble-domain", kits: ["vr-board-shield-bubble-timing-kit"] }
+        { id: "shield-bubble-domain", kits: ["vr-board-shield-bubble-timing-kit"] },
+        { id: "checkpoint-sanctuary-domain", kits: ["vr-board-checkpoint-sanctuary-signal-kit"] }
       ]
     },
     {
       id: "exit-handoff-domain",
       subdomains: [
         { id: "medal-cache-domain", kits: ["vr-board-medal-cache-signal-kit"] },
-        { id: "exit-stretcher-domain", kits: ["vr-board-exit-stretcher-commit-kit"] }
+        { id: "exit-stretcher-domain", kits: ["vr-board-exit-stretcher-commit-kit"] },
+        { id: "portal-bloom-domain", kits: ["vr-board-exit-portal-bloom-kit"] }
       ]
     },
     {
@@ -124,6 +138,39 @@ export function createVrBoardLostCompanionBeaconKit() {
   };
 }
 
+export function createVrBoardMemoryShardTrailKit() {
+  return {
+    id: "n-vr-board-memory-shard-trail-kit",
+    domain: "vr-board-companion-rescue-readiness/memory-shard-trail",
+    describe({ avatar = {}, level = {}, objects = {}, time = 0 } = {}) {
+      const center = avatarCenter(avatar);
+      const progress = avatarProgress(avatar, level);
+      const collected = new Set(stableArray(objects.collectedIds));
+      return stableArray(level.collectibles).map((coin, index) => {
+        const secured = collected.has(coin.id);
+        const ahead = Number(coin.x ?? 0) >= center.x - 0.35;
+        const urgency = clamp01((secured ? 0.18 : 0.48) + (ahead ? 0.14 : 0.02) + progress * 0.18 + Math.sin(Number(time) * 0.8 + index) * 0.035);
+        return {
+          id: `memory-shard-${coin.id ?? index}`,
+          kind: "lost-companion-beacon",
+          companionId: `memory-${coin.id ?? index}`,
+          x: round(Number(coin.x ?? 0) + 0.22, 3),
+          y: round(Number(coin.y ?? 0) + 0.72 + Math.sin(Number(time) + index) * 0.08, 3),
+          urgency: round(urgency, 3),
+          callSign: secured ? "recalled" : urgency > 0.68 ? "urgent" : "echo",
+          shard: true,
+          secured,
+          rendererContract: notOwnRendererContract("vr-board-memory-shard-trail-kit")
+        };
+      });
+    },
+    snapshot(input) {
+      const shards = this.describe(input);
+      return { shards: shards.length, unresolved: shards.filter((shard) => !shard.secured).length };
+    }
+  };
+}
+
 export function createVrBoardEscortLaneRibbonKit() {
   return {
     id: "n-vr-board-escort-lane-ribbon-kit",
@@ -156,6 +203,42 @@ export function createVrBoardEscortLaneRibbonKit() {
     snapshot(input) {
       const ribbons = this.describe(input);
       return { ribbons: ribbons.length, riskiest: ribbons.reduce((best, ribbon) => Math.max(best, ribbon.risk), 0) };
+    }
+  };
+}
+
+export function createVrBoardGuardianBridgeRibbonKit() {
+  return {
+    id: "n-vr-board-guardian-bridge-ribbon-kit",
+    domain: "vr-board-companion-rescue-readiness/guardian-bridge",
+    describe({ level = {}, avatar = {}, objects = {} } = {}) {
+      const progress = avatarProgress(avatar, level);
+      const secured = stableArray(objects.collectedIds).length;
+      const platforms = stableArray(level.platforms);
+      return platforms.slice(0, -1).map((platform, index) => {
+        const next = platforms[index + 1];
+        const mid = (platformMidX(platform) + platformMidX(next)) * 0.5;
+        const hazardPressure = nearestHazardDistance(mid, level) < 1.4 ? 0.72 : 0.28;
+        const priority = clamp01(0.34 + progress * 0.24 + secured * 0.05 + (1 - hazardPressure) * 0.22);
+        return {
+          id: `guardian-bridge-${platform.id ?? index}-to-${next.id ?? index + 1}`,
+          kind: "escort-lane-ribbon",
+          from: platform.id ?? `platform-${index}`,
+          to: next.id ?? `platform-${index + 1}`,
+          x1: round(platformMidX(platform), 3),
+          y1: round(platformTop(platform) + 0.62, 3),
+          x2: round(platformMidX(next), 3),
+          y2: round(platformTop(next) + 0.62, 3),
+          risk: round(hazardPressure, 3),
+          priority: round(priority, 3),
+          bridge: true,
+          rendererContract: notOwnRendererContract("vr-board-guardian-bridge-ribbon-kit")
+        };
+      });
+    },
+    snapshot(input) {
+      const bridges = this.describe(input);
+      return { bridges: bridges.length, highPriority: bridges.filter((bridge) => bridge.priority > 0.62).length };
     }
   };
 }
@@ -216,6 +299,35 @@ export function createVrBoardShieldBubbleTimingKit() {
   };
 }
 
+export function createVrBoardCheckpointSanctuarySignalKit() {
+  return {
+    id: "n-vr-board-checkpoint-sanctuary-signal-kit",
+    domain: "vr-board-companion-rescue-readiness/checkpoint-sanctuary",
+    describe({ level = {}, avatar = {}, objects = {} } = {}) {
+      const progress = avatarProgress(avatar, level);
+      const securedCount = stableArray(objects.collectedIds).length;
+      return stableArray(level.platforms).map((platform, index) => {
+        const strength = clamp01(0.25 + progress * 0.22 + securedCount * 0.07 + (platform.id === "exit-pad" ? 0.28 : 0));
+        return {
+          id: `sanctuary-${platform.id ?? index}`,
+          kind: "medal-cache-signal",
+          coinId: `sanctuary-${platform.id ?? index}`,
+          x: round(platformMidX(platform), 3),
+          y: round(platformTop(platform) + 0.92, 3),
+          secured: strength > 0.72,
+          strength: round(strength, 3),
+          sanctuary: true,
+          rendererContract: notOwnRendererContract("vr-board-checkpoint-sanctuary-signal-kit")
+        };
+      });
+    },
+    snapshot(input) {
+      const signals = this.describe(input);
+      return { signals: signals.length, lit: signals.filter((signal) => signal.secured).length };
+    }
+  };
+}
+
 export function createVrBoardMedalCacheSignalKit() {
   return {
     id: "n-vr-board-medal-cache-signal-kit",
@@ -271,31 +383,85 @@ export function createVrBoardExitStretcherCommitKit() {
   };
 }
 
+export function createVrBoardExitPortalBloomKit() {
+  return {
+    id: "n-vr-board-exit-portal-bloom-kit",
+    domain: "vr-board-companion-rescue-readiness/exit-portal-bloom",
+    describe({ avatar = {}, level = {}, objects = {}, comfort = {} } = {}) {
+      const commit = createVrBoardExitStretcherCommitKit().describe({ avatar, level, objects });
+      const comfortPenalty = stableArray(comfort.warnings).length ? 0.12 : 0;
+      const bloom = clamp01(commit.readiness - comfortPenalty);
+      return {
+        id: "exit-portal-bloom",
+        kind: "exit-portal-bloom",
+        x: commit.x,
+        y: round(commit.y + 0.54, 3),
+        bloom: round(bloom, 3),
+        laneState: bloom > 0.82 ? "open" : bloom > 0.48 ? "warming" : "dim",
+        rendererContract: notOwnRendererContract("vr-board-exit-portal-bloom-kit")
+      };
+    },
+    snapshot(input) {
+      const portal = this.describe(input);
+      return { bloom: portal.bloom, laneState: portal.laneState };
+    }
+  };
+}
+
 export function createVrBoardCompanionRescueRendererHandoffKit({
   lostCompanionBeaconKit = createVrBoardLostCompanionBeaconKit(),
+  memoryShardTrailKit = createVrBoardMemoryShardTrailKit(),
   escortLaneRibbonKit = createVrBoardEscortLaneRibbonKit(),
+  guardianBridgeRibbonKit = createVrBoardGuardianBridgeRibbonKit(),
   rescueNetAnchorKit = createVrBoardRescueNetAnchorKit(),
   shieldBubbleTimingKit = createVrBoardShieldBubbleTimingKit(),
+  checkpointSanctuarySignalKit = createVrBoardCheckpointSanctuarySignalKit(),
   medalCacheSignalKit = createVrBoardMedalCacheSignalKit(),
-  exitStretcherCommitKit = createVrBoardExitStretcherCommitKit()
+  exitStretcherCommitKit = createVrBoardExitStretcherCommitKit(),
+  exitPortalBloomKit = createVrBoardExitPortalBloomKit()
 } = {}) {
   return {
     id: "n-vr-board-companion-rescue-renderer-handoff-kit",
     domain: "vr-board-companion-rescue-readiness/renderer-handoff",
-    kits: { lostCompanionBeaconKit, escortLaneRibbonKit, rescueNetAnchorKit, shieldBubbleTimingKit, medalCacheSignalKit, exitStretcherCommitKit },
+    kits: {
+      lostCompanionBeaconKit,
+      memoryShardTrailKit,
+      escortLaneRibbonKit,
+      guardianBridgeRibbonKit,
+      rescueNetAnchorKit,
+      shieldBubbleTimingKit,
+      checkpointSanctuarySignalKit,
+      medalCacheSignalKit,
+      exitStretcherCommitKit,
+      exitPortalBloomKit
+    },
     describe(input = {}) {
-      const lostCompanionBeacons = lostCompanionBeaconKit.describe(input);
-      const escortLaneRibbons = escortLaneRibbonKit.describe(input);
+      const baseLostCompanionBeacons = lostCompanionBeaconKit.describe(input);
+      const memoryShardBeacons = memoryShardTrailKit.describe(input);
+      const baseEscortLaneRibbons = escortLaneRibbonKit.describe(input);
+      const guardianBridgeRibbons = guardianBridgeRibbonKit.describe(input);
       const rescueNetAnchors = rescueNetAnchorKit.describe(input);
       const shieldBubbleWindows = shieldBubbleTimingKit.describe(input);
-      const medalCacheSignals = medalCacheSignalKit.describe(input);
+      const checkpointSanctuarySignals = checkpointSanctuarySignalKit.describe(input);
+      const baseMedalCacheSignals = medalCacheSignalKit.describe(input);
       const exitStretcherCommit = exitStretcherCommitKit.describe(input);
+      const exitPortalBloom = exitPortalBloomKit.describe(input);
+      const lostCompanionBeacons = [...baseLostCompanionBeacons, ...memoryShardBeacons];
+      const escortLaneRibbons = [...baseEscortLaneRibbons, ...guardianBridgeRibbons];
+      const medalCacheSignals = [...baseMedalCacheSignals, ...checkpointSanctuarySignals];
       const counts = {
         lostCompanionBeacons: lostCompanionBeacons.length,
+        baseLostCompanionBeacons: baseLostCompanionBeacons.length,
+        memoryShardBeacons: memoryShardBeacons.length,
         escortLaneRibbons: escortLaneRibbons.length,
+        baseEscortLaneRibbons: baseEscortLaneRibbons.length,
+        guardianBridgeRibbons: guardianBridgeRibbons.length,
         rescueNetAnchors: rescueNetAnchors.length,
         shieldBubbleWindows: shieldBubbleWindows.length,
+        checkpointSanctuarySignals: checkpointSanctuarySignals.length,
         medalCacheSignals: medalCacheSignals.length,
+        baseMedalCacheSignals: baseMedalCacheSignals.length,
+        exitPortalBlooms: exitPortalBloom ? 1 : 0,
         exitStretcherCommits: exitStretcherCommit ? 1 : 0
       };
       counts.total = Object.values(counts).reduce((sum, value) => sum + value, 0);
@@ -304,13 +470,31 @@ export function createVrBoardCompanionRescueRendererHandoffKit({
         domainTree: VR_BOARD_COMPANION_RESCUE_READINESS_DOMAIN_TREE,
         policy: "renderer-consumes-descriptors-only",
         rendererContract: notOwnRendererContract("vr-board-companion-rescue-renderer-handoff-kit"),
-        descriptors: { lostCompanionBeacons, escortLaneRibbons, rescueNetAnchors, shieldBubbleWindows, medalCacheSignals, exitStretcherCommit },
+        descriptors: {
+          lostCompanionBeacons,
+          memoryShardBeacons,
+          escortLaneRibbons,
+          guardianBridgeRibbons,
+          rescueNetAnchors,
+          shieldBubbleWindows,
+          checkpointSanctuarySignals,
+          medalCacheSignals,
+          exitPortalBloom,
+          exitStretcherCommit
+        },
         counts
       };
     },
     snapshot(input) {
       const handoff = this.describe(input);
-      return { total: handoff.counts.total, lostCompanionBeacons: handoff.counts.lostCompanionBeacons, phase: handoff.descriptors.exitStretcherCommit.phase };
+      return {
+        total: handoff.counts.total,
+        lostCompanionBeacons: handoff.counts.lostCompanionBeacons,
+        memoryShardBeacons: handoff.counts.memoryShardBeacons,
+        guardianBridgeRibbons: handoff.counts.guardianBridgeRibbons,
+        phase: handoff.descriptors.exitStretcherCommit.phase,
+        portal: handoff.descriptors.exitPortalBloom.laneState
+      };
     }
   };
 }
@@ -328,10 +512,14 @@ export function createVrBoardCompanionRescueReadinessDomainKit(options = {}) {
         domainTree: VR_BOARD_COMPANION_RESCUE_READINESS_DOMAIN_TREE,
         rendererHandoff,
         lostCompanionBeacons: rendererHandoff.descriptors.lostCompanionBeacons,
+        memoryShardBeacons: rendererHandoff.descriptors.memoryShardBeacons,
         escortLaneRibbons: rendererHandoff.descriptors.escortLaneRibbons,
+        guardianBridgeRibbons: rendererHandoff.descriptors.guardianBridgeRibbons,
         rescueNetAnchors: rendererHandoff.descriptors.rescueNetAnchors,
         shieldBubbleWindows: rendererHandoff.descriptors.shieldBubbleWindows,
+        checkpointSanctuarySignals: rendererHandoff.descriptors.checkpointSanctuarySignals,
         medalCacheSignals: rendererHandoff.descriptors.medalCacheSignals,
+        exitPortalBloom: rendererHandoff.descriptors.exitPortalBloom,
         exitStretcherCommit: rendererHandoff.descriptors.exitStretcherCommit,
         rendererContract: notOwnRendererContract("vr-board-companion-rescue-readiness-domain-kit")
       };
@@ -341,9 +529,12 @@ export function createVrBoardCompanionRescueReadinessDomainKit(options = {}) {
       return {
         total: descriptor.rendererHandoff.counts.total,
         beacons: descriptor.lostCompanionBeacons.length,
+        memoryShards: descriptor.memoryShardBeacons.length,
         ribbons: descriptor.escortLaneRibbons.length,
+        guardianBridges: descriptor.guardianBridgeRibbons.length,
         rescueNetAnchors: descriptor.rescueNetAnchors.length,
-        phase: descriptor.exitStretcherCommit.phase
+        phase: descriptor.exitStretcherCommit.phase,
+        portal: descriptor.exitPortalBloom.laneState
       };
     }
   };
