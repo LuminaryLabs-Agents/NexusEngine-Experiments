@@ -1,0 +1,20 @@
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { createZombieOrchardRadioFenceRescueReadinessDomainKit } from '../experiments/zombie-orchard/src/radio-fence-rescue-readiness-kits.js';
+const entry=readFileSync(new URL('../experiments/zombie-orchard/src/radio-fence-rescue-readiness-entry.js',import.meta.url),'utf8');
+const kitSource=readFileSync(new URL('../experiments/zombie-orchard/src/radio-fence-rescue-readiness-kits.js',import.meta.url),'utf8');
+const route=readFileSync(new URL('../experiments/zombie-orchard/index.html',import.meta.url),'utf8');
+assert.ok(entry.includes('https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js'));
+assert.ok(!entry.includes('NexusRealtime@'));
+assert.ok(route.includes('radio-fence-rescue-readiness-renderer-handoff-pass'));
+assert.ok(route.includes('radio-fence-rescue-readiness-entry.js'));
+assert.ok(entry.includes('getZombieOrchardRadioFenceRescueReadiness'));
+assert.ok(entry.includes('getRendererHandoff'));
+assert.ok(!/document\.|window\.|HTMLElement|CanvasRenderingContext2D|THREE\.|WebGL|AudioContext|requestAnimationFrame|localStorage/.test(kitSource));
+const domain=createZombieOrchardRadioFenceRescueReadinessDomainKit({seed:'cdn-state-input'});
+const cases=Array.from({length:10},(_,i)=>({seed:'case-'+i,round:i+1,pressure:[.18,.3,.37,.49,.58,.7,.64,.5,.42,.24][i],survivors:Math.min(7,i+1),rescued:Math.max(0,i-2),beaconsPowered:Math.min(6,i),barricadesBuilt:Math.min(9,i),flaresReady:Math.min(6,Math.floor(i*.75)),apples:i*2+1}));
+const outputs=cases.map(x=>domain.compose(x));
+assert.equal(outputs.length,10);
+for(const output of outputs){assert.ok(output.rendererHandoff.counts.total>=12);assert.ok(output.summary.readinessScore>=0&&output.summary.readinessScore<=1);assert.ok(output.rendererHandoff.flatDescriptors.every(d=>d.rendererHints.layer==='zombie-orchard-radio-fence-rescue'))}
+assert.ok(outputs.at(-1).summary.readinessScore>outputs[0].summary.readinessScore);
+console.log('Zombie Orchard radio fence rescue CDN/state/input smoke passed 10 simulated cases against NexusEngine main CDN wiring.');
