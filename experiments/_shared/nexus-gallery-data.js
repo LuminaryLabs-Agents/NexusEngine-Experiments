@@ -2,7 +2,7 @@ export const galleryConfig = Object.freeze({
   title: "Experiments",
   subtitle: "Nexus Engine playable routes",
   repoUrl: "https://github.com/LuminaryLabs-Agents/NexusEngine-Experiments",
-  hint: "Browse the 14 collective experiment cards. Older removed routes live under deprecated/."
+  hint: "Browse the 15 collective experiment cards. Older removed routes live under deprecated/."
 });
 
 export const games = Object.freeze([
@@ -60,6 +60,17 @@ export const games = Object.freeze([
     playLabel: "Open lab",
     tags: [{ label: "Diffusion", tone: "gold" }, { label: "Training", tone: "green" }, { label: "Nexus Engine", tone: "blue" }],
     description: "Browser-host proof for the Nexus Engine diffusion module: train a tiny CPU denoiser, sample denoising frames, and save/load memory checkpoints through createNexusDiffusionKits."
+  },
+  {
+    id: "living-agent-lab",
+    tab: "experiments",
+    title: "Living Agent Lab",
+    route: "./experiments/living-agent-lab/",
+    kind: "experiment",
+    visual: "next",
+    playLabel: "Open lab",
+    tags: [{ label: "ONNX Agent", tone: "gold" }, { label: "Trust Loop", tone: "green" }, { label: "Descriptors", tone: "blue" }],
+    description: "Small market-agent route where an ONNX or fallback guard chooses actions from visible state, while market-trust restoration kits expose witness, evidence, restitution, permit, crowd-calm, and mediator-oath descriptors."
   },
   {
     id: "fogline-relay",
