@@ -186,12 +186,12 @@ export const games = Object.freeze([
     id: "onnx-agent-lab",
     tab: "experiments",
     title: "ONNX Agent Lab",
-    route: "./experiments/onnx-agent-lab/incident-router.html",
+    route: "./experiments/onnx-agent-lab/red-team-evacuation.html",
     kind: "experiment",
     visual: "next",
     playLabel: "Open lab",
-    tags: [{ label: "ONNX Workshop", tone: "gold" }, { label: "Incident Router", tone: "green" }, { label: "Nexus Engine", tone: "blue" }],
-    description: "Incident-router workshop route for model failure operations with alert beacons, trace samplers, classifier lanes, fallback briefs, operator shift posts, and audit ledgers using descriptor-only NexusEngine readiness kits."
+    tags: [{ label: "ONNX Workshop", tone: "gold" }, { label: "Red-Team Evac", tone: "green" }, { label: "Nexus Engine", tone: "blue" }],
+    description: "Red-team evacuation workshop route for model failure containment with canary prompt strips, sandbox gate locks, evidence chain tags, rollback branch routes, operator evacuation cards, and dawn drill ledgers using descriptor-only NexusEngine readiness kits."
   }
 ]);
 
