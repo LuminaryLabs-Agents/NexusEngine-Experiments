@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Sora the Infinite — Stormglass Courier</title>
+  <style>
+    :root{color-scheme:dark;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#07101f;color:#f7fbff}
+    *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#07101f}button{font:inherit}
+    #app{position:fixed;inset:0;background:radial-gradient(circle at 70% 15%,rgba(242,189,112,.2),transparent 28%),linear-gradient(#162746,#08111f 68%,#050913)}
+    #sky{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
+    .hud{position:absolute;inset:0;pointer-events:none;padding:max(18px,env(safe-area-inset-top)) max(18px,env(safe-area-inset-right)) max(18px,env(safe-area-inset-bottom)) max(18px,env(safe-area-inset-left));display:grid;grid-template-columns:minmax(240px,360px) 1fr minmax(180px,280px);grid-template-rows:auto 1fr auto;gap:14px}
+    .panel{background:linear-gradient(145deg,rgba(8,18,34,.84),rgba(9,22,42,.58));border:1px solid rgba(190,226,255,.18);box-shadow:0 18px 50px rgba(0,0,0,.3);backdrop-filter:blur(14px);border-radius:18px;padding:14px 16px}
+    .mission{grid-column:1;grid-row:1}.telemetry{grid-column:3;grid-row:1}.brief{grid-column:1;grid-row:3;align-self:end}.status{grid-column:3;grid-row:3;align-self:end}
+    .eyebrow{margin:0 0 6px;color:#8edaf5;font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}.mission h1{margin:0;font-size:clamp(22px,3vw,38px);line-height:.96}.mission p,.brief p{margin:9px 0 0;color:#c7d8e9;font-size:13px;line-height:1.45}
+    .meter{margin-top:10px}.meter header{display:flex;justify-content:space-between;gap:10px;font-size:12px;color:#cfe3f6}.bar{height:7px;margin-top:6px;border-radius:99px;background:rgba(255,255,255,.1);overflow:hidden}.bar i{display:block;height:100%;width:calc(var(--value,0)*100%);background:linear-gradient(90deg,#8ad6ff,#fff1a8);box-shadow:0 0 14px rgba(138,214,255,.65);transition:width .15s linear}
+    .telemetry dl{display:grid;grid-template-columns:1fr auto;gap:7px 12px;margin:0;font-size:12px}.telemetry dt{color:#9fb6ca}.telemetry dd{margin:0;font-weight:800}.status strong{display:block;font-size:20px}.status span{display:block;margin-top:5px;color:#a9bed1;font-size:12px}.hint{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);padding:9px 13px;border-radius:99px;background:rgba(3,8,16,.58);border:1px solid rgba(255,255,255,.12);font-size:12px;color:#dbeeff;pointer-events:none;white-space:nowrap}
+    .controls{position:absolute;right:max(18px,env(safe-area-inset-right));top:50%;transform:translateY(-50%);display:none;grid-template-columns:52px 52px;gap:8px;pointer-events:auto}.controls button{width:52px;height:52px;border-radius:16px;border:1px solid rgba(255,255,255,.18);background:rgba(8,19,36,.7);color:white;font-weight:900}.controls .boost{grid-column:1/3;width:112px;color:#ffe9a1}
+    .complete{position:absolute;inset:0;display:none;place-items:center;background:rgba(2,7,15,.52);backdrop-filter:blur(8px);pointer-events:auto}.complete.open{display:grid}.complete article{width:min(92vw,440px);text-align:center;background:#0b1a2d;border:1px solid rgba(255,255,255,.17);border-radius:24px;padding:28px;box-shadow:0 28px 90px rgba(0,0,0,.5)}.complete h2{margin:0;font-size:34px}.complete p{color:#b9cee0;line-height:1.5}.complete button{border:0;border-radius:999px;padding:12px 20px;background:#e9f6ff;color:#08111f;font-weight:900;cursor:pointer}
+    @media(max-width:800px){.hud{grid-template-columns:1fr 150px}.telemetry,.status{grid-column:2}.controls{display:grid}.brief{max-width:65vw}.hint{display:none}}
+    @media(max-width:560px){.hud{grid-template-columns:1fr;grid-template-rows:auto 1fr auto}.telemetry{display:none}.mission{grid-column:1}.brief{grid-column:1;max-width:calc(100vw - 150px)}.status{display:none}}
+  </style>
+</head>
+<body>
+  <main id="app" data-upgrade="stormglass-courier-readiness-renderer-handoff-pass" data-renderer-consumes="descriptors-only">
+    <canvas id="sky" aria-label="Stormglass courier flight course"></canvas>
+    <section class="hud" aria-live="polite">
+      <article class="panel mission">
+        <p class="eyebrow">Sora route 17 · courier trial</p>
+        <h1>Stormglass Courier</h1>
+        <p>Tune three signal buoys, preserve the stormglass cargo, then slow into the sanctuary runway.</p>
+        <div class="meter"><header><span>Route readiness</span><strong id="readiness">0%</strong></header><div class="bar" id="readinessBar"><i></i></div></div>
+      </article>
+      <aside class="panel telemetry"><dl><dt>Signals</dt><dd id="signals">0 / 3</dd><dt>Cargo</dt><dd id="cargo">100%</dd><dt>Speed</dt><dd id="speed">0</dd><dt>Phase</dt><dd id="phase">launching</dd></dl></aside>
+      <article class="panel brief"><p class="eyebrow">Flight controls</p><p><b>W/S</b> pitch · <b>A/D</b> bank · <b>Space</b> boost · <b>Shift</b> brake · <b>R</b> restart</p></article>
+      <article class="panel status"><strong id="event">Courier launched</strong><span id="score">Score 0</span></article>
+    </section>
+    <div class="controls" aria-label="Touch flight controls"><button data-control="pitch-up">▲</button><button data-control="pitch-down">▼</button><button data-control="bank-left">◀</button><button data-control="bank-right">▶</button><button class="boost" data-control="boost">BOOST</button></div>
+    <p class="hint">Follow the warm thermals. Avoid charged storm cells.</p>
+    <section id="complete" class="complete"><article><p class="eyebrow">Dawn ledger sealed</p><h2>Stormglass delivered</h2><p id="completeCopy"></p><button id="restart">Fly another seeded route</button></article></section>
+  </main>
+  <script type="module" src="./sora-stormglass-courier-entry.js?v=stormglass-courier-1"></script>
+</body>
+</html>
