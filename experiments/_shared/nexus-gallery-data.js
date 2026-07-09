@@ -157,8 +157,8 @@ export const games = Object.freeze([
     kind: "experiment",
     visual: "sora",
     playLabel: "Play experiment",
-    tags: [{ label: "Open Flight", tone: "gold" }, { label: "Visual Domains", tone: "green" }, { label: "World", tone: "blue" }],
-    description: "Open aerial traversal route that redirects into The Open Above and now exposes visualDomains for cloud strata, horizon ridgelines, thermal markers, speed ribbons, wingtip contrails, and flight mood readability."
+    tags: [{ label: "Open Flight", tone: "gold" }, { label: "Radio Beacon", tone: "green" }, { label: "Nexus Engine", tone: "blue" }],
+    description: "Open aerial traversal gateway into The Open Above with rescue, lighthouse, rookery, star orchard, and sky radio beacon descriptors for cloud radio masts, distress frequency bands, lightning gaps, thermal relay buoys, sky stretcher cradles, and dawn radio ledgers."
   },
   {
     id: "zombie-orchard",
