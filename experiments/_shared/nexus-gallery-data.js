@@ -168,8 +168,8 @@ export const games = Object.freeze([
     kind: "game",
     visual: "hell",
     playLabel: "Play game",
-    tags: [{ label: "Action RPG", tone: "gold" }, { label: "Blood Moon Refuge", tone: "green" }, { label: "Harvest", tone: "red" }],
-    description: "Base-siege action route for realm portals, inventory, harvesting, building, wave-defense, ash caravan and forge descriptors, plus blood moon refuge sigils, medicine caches, shelter wards, demon pressure fronts, soul ferry routes, and dawn refuge accounting."
+    tags: [{ label: "Action RPG", tone: "gold" }, { label: "Ember Wells", tone: "green" }, { label: "Harvest", tone: "red" }],
+    description: "Base-siege action route for realm portals, inventory, harvesting, building, wave-defense, ash caravan, forge, blood moon refuge, and ember well purification descriptors for ash well scans, brimstone filters, coolant rune loops, sanctified cisterns, water bearer routes, and dawn purification ledgers."
   },
   {
     id: "onnx-agent-lab",
