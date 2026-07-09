@@ -1,3 +1,5 @@
+import "./tropical-rainwater-purification-readiness-kits-smoke.mjs";
+import "./tropical-rainwater-purification-cdn-state-input-smoke.mjs";
 import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
