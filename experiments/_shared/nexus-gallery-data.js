@@ -58,8 +58,8 @@ export const games = Object.freeze([
     kind: "experiment",
     visual: "sora",
     playLabel: "Open lab",
-    tags: [{ label: "Diffusion", tone: "gold" }, { label: "Training", tone: "green" }, { label: "Nexus Engine", tone: "blue" }],
-    description: "Browser-host proof for the Nexus Engine diffusion module: train a tiny CPU denoiser, sample denoising frames, and save/load memory checkpoints through createNexusDiffusionKits."
+    tags: [{ label: "Diffusion", tone: "gold" }, { label: "Latent Museum", tone: "green" }, { label: "Nexus Engine", tone: "blue" }],
+    description: "Browser-host diffusion proof with tiny CPU training, sampling, checkpoints, dataset expeditions, sample clinic review, and latent museum curator readiness for seed vitrines, noise tunnels, denoise witness frames, provenance plaques, export crates, and exhibition ledgers."
   },
   {
     id: "living-agent-lab",
