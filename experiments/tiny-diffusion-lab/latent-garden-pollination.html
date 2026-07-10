@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Tiny Diffusion Latent Garden Pollination composes renderer-neutral NexusEngine kits into a small prompt, denoise, checkpoint, and pollen-ledger objective route." />
+  <title>Tiny Diffusion Lab · Latent Garden</title>
+  <style>
+    :root { color-scheme: dark; --bg:#070910; --panel:rgba(17,22,34,.88); --line:rgba(255,255,255,.14); --text:#f7f1e8; --muted:#aab4c5; --accent:#8ee8ff; --gold:#f5cf78; }
+    * { box-sizing: border-box; }
+    body { margin:0; min-height:100vh; font-family: Inter, ui-sans-serif, system-ui, sans-serif; color:var(--text); background: radial-gradient(circle at 20% 12%, rgba(142,232,255,.18), transparent 32%), radial-gradient(circle at 82% 0%, rgba(245,207,120,.15), transparent 30%), var(--bg); }
+    main { width:min(1120px, calc(100% - 28px)); margin:0 auto; padding:32px 0 44px; }
+    h1 { margin:0; font-size:clamp(2.2rem, 6vw, 4.8rem); letter-spacing:-.06em; line-height:.9; }
+    p { color:var(--muted); max-width:820px; line-height:1.55; }
+    .eyebrow { color:var(--accent); font-weight:900; letter-spacing:.16em; text-transform:uppercase; font-size:.76rem; }
+    .grid { display:grid; grid-template-columns: repeat(12, 1fr); gap:14px; margin-top:20px; }
+    .card { grid-column:span 6; border:1px solid var(--line); border-radius:22px; padding:16px; background:linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.025)), var(--panel); box-shadow:0 24px 70px rgba(0,0,0,.28); }
+    .card.full { grid-column:1 / -1; }
+    h2 { margin:0 0 10px; color:var(--gold); font-size:.86rem; letter-spacing:.12em; text-transform:uppercase; }
+    button { border:1px solid rgba(255,255,255,.18); border-radius:999px; padding:10px 14px; margin:5px 7px 5px 0; background:rgba(255,255,255,.08); color:var(--text); font-weight:800; cursor:pointer; }
+    button:hover { border-color:rgba(142,232,255,.6); background:rgba(142,232,255,.12); }
+    .mission-panel { display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:10px; }
+    .metric, .mission-list p { border:1px solid rgba(142,232,255,.16); border-radius:14px; padding:10px; background:rgba(0,0,0,.22); margin:0; }
+    .metric span, .mission-list span { display:block; color:var(--muted); font-size:.72rem; text-transform:uppercase; letter-spacing:.08em; }
+    .metric strong, .mission-list b { color:var(--accent); font-size:1rem; }
+    .mission-list { grid-column:1 / -1; display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:8px; }
+    pre { white-space:pre-wrap; color:var(--muted); background:rgba(0,0,0,.22); border:1px solid var(--line); border-radius:14px; padding:12px; }
+    @media (max-width:760px) { .card { grid-column:1 / -1; } .mission-panel, .mission-list { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+  <main id="app" data-experiment="tiny-diffusion-lab" data-upgrade="latent-garden-pollination-readiness-renderer-handoff-pass">
+    <div class="eyebrow">Nexus Engine · Tiny Diffusion Objective Route</div>
+    <h1>Latent Garden Pollination</h1>
+    <p>Grow a tiny diffusion run like a garden. Training epochs germinate prompt seeds, sampling diversifies color soil, denoise steps lift gradient trellises, and checkpoint hives lower artifact pressure.</p>
+    <section class="grid">
+      <article class="card">
+        <h2>Garden controls</h2>
+        <button data-action="prepare">Prepare seed bed</button>
+        <button data-action="train">Train pollen pass</button>
+        <button data-action="sample">Sample bloom</button>
+        <button data-action="checkpoint">Seal hive</button>
+        <button data-action="reset">Reset garden</button>
+      </article>
+      <article class="card">
+        <h2>State</h2>
+        <pre id="stateReadout">waiting</pre>
+      </article>
+      <article class="card full">
+        <h2>Latent garden pollination</h2>
+        <div id="latentGardenPollinationReadiness" class="mission-panel" aria-label="Latent garden pollination descriptors" data-domain="tiny-diffusion-latent-garden-pollination-readiness-domain">
+          <div class="metric"><span>Garden readiness</span><strong>waiting</strong></div>
+          <div class="metric"><span>Mission state</span><strong>booting</strong></div>
+        </div>
+      </article>
+    </section>
+  </main>
+  <script>
+    const state = { seed: "route-latent-garden", selectedPrompt: "lantern moths in a tiny latent garden", epochs: 0, samples: 0, steps: 0, loss: .92, paletteDiversity: .22, artifactRate: .74, checkpointAge: 40, prepared: false };
+    const emit = () => {
+      document.querySelector("#stateReadout").textContent = JSON.stringify(state, null, 2);
+      dispatchEvent(new CustomEvent("tiny-diffusion-state-change"));
+    };
+    globalThis.TinyDiffusionLab = { getState: () => ({ ...state }), applyInput: (input = {}) => Object.assign(state, input), restart: () => location.reload() };
+    document.querySelectorAll("button[data-action]").forEach((button) => button.addEventListener("click", () => {
+      const action = button.dataset.action;
+      if (action === "reset") location.reload();
+      if (action === "prepare") Object.assign(state, { prepared: true, epochs: state.epochs + 2, samples: state.samples + 2, steps: state.steps + 4, loss: Math.max(.05, state.loss - .05) });
+      if (action === "train") Object.assign(state, { epochs: state.epochs + 8, steps: state.steps + 12, loss: Math.max(.05, state.loss - .1) });
+      if (action === "sample") Object.assign(state, { samples: state.samples + 10, paletteDiversity: Math.min(1, state.paletteDiversity + .12), artifactRate: Math.max(0, state.artifactRate - .09) });
+      if (action === "checkpoint") Object.assign(state, { checkpointAge: 0, artifactRate: Math.max(0, state.artifactRate - .06) });
+      emit();
+    }));
+    emit();
+  </script>
+  <script type="module" src="./app/latent-garden-pollination-readiness-entry.js?v=tiny-diffusion-latent-garden-20260710"></script>
+</body>
+</html>
