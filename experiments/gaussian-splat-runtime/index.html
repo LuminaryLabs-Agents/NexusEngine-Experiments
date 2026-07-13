@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Gaussian Splat Runtime</title>
+  <style>
+    :root{font-family:system-ui,sans-serif;color-scheme:dark}*{box-sizing:border-box}body{margin:0;min-height:100vh;background:#071018;color:#e8f4ff;display:grid;place-items:center;padding:24px}main{width:min(900px,100%);display:grid;gap:18px}.card{background:#10202d;border:1px solid #29475a;border-radius:18px;padding:20px}h1,p{margin:0}pre{white-space:pre-wrap;overflow:auto;background:#08131b;padding:16px;border-radius:12px;max-height:55vh}button{border:0;border-radius:999px;padding:10px 16px;font-weight:700;cursor:pointer}nav{display:flex;gap:10px;flex-wrap:wrap}.ok{color:#8ff0b3}.error{color:#ff9e9e}
+  </style>
+</head>
+<body>
+<main>
+  <section class="card"><h1>Gaussian Splat Runtime</h1><p>Headless NexusEngine composition proof. The page creates project, source, validation, reconstruction, asset, and presentation state without constructing renderer objects.</p></section>
+  <section class="card"><nav><button id="run">Run proof</button><button id="reset">Reset</button></nav><p id="status">Loading modules…</p><pre id="output"></pre></section>
+</main>
+<script type="module">
+const status=document.querySelector('#status');const output=document.querySelector('#output');
+let engine;
+async function boot(){
+  const NexusEngine=await import('https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js');
+  const Gaussian=await import('https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@main/protokits/gaussian-splat-domain/index.js');
+  engine=NexusEngine.createRealtimeGame({kits:Gaussian.createGaussianSplatKits(NexusEngine,{source:{minimumImages:2},validation:{minimumImages:2}})});
+  status.textContent='Ready';status.className='ok';
+}
+function run(){
+  engine.n.gaussianSplat.reset();
+  engine.n.gaussianSplat.createProject({id:'museum-room'});
+  engine.n.gaussianSplat.registerSourceSet({id:'museum-source',projectId:'museum-room'});
+  engine.n.gaussianSplatSource.registerSource('museum-source',{id:'image-1',uri:'project://input/1.png',mediaType:'image/png',width:1024,height:1024});
+  engine.n.gaussianSplatSource.registerSource('museum-source',{id:'image-2',uri:'project://input/2.png',mediaType:'image/png',width:1024,height:1024});
+  const validation=engine.n.gaussianSplat.validateSourceSet('museum-source');
+  const job=engine.n.gaussianSplat.requestReconstruction({id:'job-1',projectId:'museum-room',sourceSetId:'museum-source',providerId:'manual',status:'handoff-required',blockers:['manual-provider-upload-required']});
+  const asset=engine.n.gaussianSplat.importAsset({id:'asset-1',format:'ply',uri:'project://output/scene.ply',reconstructionJobId:job.id});
+  engine.n.gaussianSplat.createInstance({id:'instance-1',assetId:asset.id});
+  const snapshot=engine.n.gaussianSplat.getSnapshot();
+  structuredClone(snapshot);
+  output.textContent=JSON.stringify({validation,snapshot},null,2);status.textContent='Proof passed: snapshot is serializable';status.className='ok';
+}
+document.querySelector('#run').onclick=run;document.querySelector('#reset').onclick=()=>{engine.n.gaussianSplat.reset();output.textContent='';status.textContent='Reset';};
+boot().catch(error=>{status.textContent=error.message;status.className='error';output.textContent=error.stack||String(error)});
+</script>
+</body>
+</html>
