@@ -1,5 +1,9 @@
 # Cycle State
 
+## 2026-07-15 Game Production Pipeline
+
+The new durable production pipeline lives in `.agent/nexus-game-production/`. Phase A inventory is complete against NexusEngine `origin/main`, the synchronized ProtoKits checkout, and the synchronized Experiments checkout. Existing 514 ProtoKit folders, 100 flat AAA routes, 33 other experiment folders, and 4 games are baseline-only and count as zero toward the new 100-kit, 50-experiment, and 10-game targets. The next bounded unit is Phase B catalog entries 001-010; implementation remains blocked until those contracts pass the natural-language and duplication gates.
+
 Goal: grow reusable ProtoKit domain layers while shrinking local experiment JavaScript.
 
 Agent operating contract:

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "targetGames": 10,
+  "experimentsPerGame": 5,
+  "mappedExperimentCount": 0,
+  "status": "blocked-on-50-validated-experiments",
+  "sourcePreservationRequired": true,
+  "existingGamesExcluded": [
+    "next-ledge-grapple",
+    "rogue-lite-hellscape-siege",
+    "signal-bastion",
+    "stonewake-depths"
+  ],
+  "games": []
+}

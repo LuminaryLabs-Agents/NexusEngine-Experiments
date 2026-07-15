@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "target": 50,
+  "acceptedCount": 0,
+  "playableValidatedCount": 0,
+  "status": "blocked-on-kit-implementation-gate",
+  "compositionKitCount": {
+    "minimum": 3,
+    "maximum": 8
+  },
+  "requiredFields": [
+    "id",
+    "route",
+    "seed",
+    "candidateDraws",
+    "rejectedDraws",
+    "acceptedKitSignature",
+    "coherenceReason",
+    "uniqueFantasy",
+    "verb",
+    "pressureLoop",
+    "objective",
+    "visualIdentity",
+    "interactionStructure",
+    "validation"
+  ],
+  "legacyInventoryExcluded": {
+    "flatAaaRoutes": 100,
+    "otherTopLevelExperimentFolders": 33,
+    "reason": "Predates this production pipeline and has not passed the new seeded-composition gate."
+  },
+  "experiments": []
+}

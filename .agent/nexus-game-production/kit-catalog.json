@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "target": 100,
+  "acceptedCount": 0,
+  "implementedCount": 0,
+  "status": "catalog-not-started",
+  "requiredFields": [
+    "id",
+    "name",
+    "purpose",
+    "coreMapping",
+    "classification",
+    "ownership",
+    "exclusions",
+    "actions",
+    "resourcesAndState",
+    "events",
+    "methods",
+    "snapshotsAndDescriptors",
+    "dependencies",
+    "expectedCompositions",
+    "plausibleUses",
+    "experimentProof",
+    "idempotencyRule",
+    "duplicateAndMergeRisk",
+    "promotionPotential"
+  ],
+  "rejectionClasses": [
+    "duplicate-existing-kit",
+    "duplicate-catalog-candidate",
+    "core-rename-or-core-duplication",
+    "unrelated-bundle",
+    "renderer-or-browser-owner",
+    "one-scene-patch",
+    "game-branded-boundary",
+    "vague-or-blurred-scope",
+    "missing-deterministic-proof"
+  ],
+  "acceptedKits": [],
+  "rejectedCandidates": []
+}

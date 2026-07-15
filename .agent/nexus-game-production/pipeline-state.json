@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "automation": {
+    "name": "Nexus Engine Game Production Builder",
+    "id": "nexus-engine-game-production-builder"
+  },
+  "inventoryCapturedAt": "2026-07-15T12:02:05-04:00",
+  "activePhase": "B-catalog",
+  "completedPhases": [
+    "A-inventory"
+  ],
+  "status": "ready-for-next-bounded-unit",
+  "repositories": {
+    "core": {
+      "path": "/Users/crimsonwheeler/Documents/GitHub/NexusEngine",
+      "mode": "read-only"
+    },
+    "protokits": {
+      "path": "/Users/crimsonwheeler/Documents/GitHub/NexusEngine-ProtoKits",
+      "mode": "writable"
+    },
+    "experiments": {
+      "path": "/Users/crimsonwheeler/Documents/GitHub/NexusEngine-Experiments",
+      "mode": "writable"
+    }
+  },
+  "synchronizedStartingCommits": {
+    "coreRemoteDefault": "cd5c8f84cb00ff02970419f3316e1908ada5651d",
+    "protokits": "ffdcc962d3c984864a2d78e9276879adf04250eb",
+    "experiments": "615a7e1e2170164acef0edebdbe0b88b8c01fd1b"
+  },
+  "baseline": {
+    "naturalLanguageCoreDomainDocuments": 26,
+    "exportedCoreDomainCompositions": 12,
+    "exportedCoreCapabilityKits": 39,
+    "exportedCoreCapabilityKitsWithoutDedicatedCoreDomainDocs": 17,
+    "existingTopLevelProtoKitFolders": 514,
+    "existingProtoKitFoldersWithEntrypoints": 510,
+    "existingProtoKitFoldersWithNaturalLanguageReadmes": 188,
+    "existingProtoKitFoldersWithMachineContracts": 51,
+    "existingProtoKitFoldersWithLocalTestDirectoriesOrFiles": 42,
+    "legacyFlatAaaExperimentRoutes": 100,
+    "otherTopLevelExperimentFolders": 33,
+    "existingTopLevelGameFolders": 4
+  },
+  "missionTotals": {
+    "acceptedNewKits": 0,
+    "implementedNewKits": 0,
+    "playableNewExperiments": 0,
+    "consolidatedNewGames": 0,
+    "fullyDocumentedNewGames": 0
+  },
+  "targets": {
+    "acceptedNewKits": 100,
+    "implementedNewKits": 100,
+    "playableNewExperiments": 50,
+    "consolidatedNewGames": 10,
+    "experimentsPerGame": 5
+  },
+  "lastCompletedUnit": {
+    "packetId": "2026-07-15-phase-a-production-baseline",
+    "scope": "Phase A production baseline",
+    "result": "Mapped Core ownership, existing ProtoKit surfaces, legacy experiment routes, existing games, duplicate-name clusters, and zero mission totals."
+  },
+  "nextUnit": {
+    "phase": "B-catalog",
+    "scope": "catalog-batch-001-010",
+    "goal": "Propose and audit the first 10 unique kit definitions without implementing them."
+  }
+}

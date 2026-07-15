@@ -1,0 +1,6491 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-07-15T12:02:05-04:00",
+  "sourceCommits": {
+    "coreRemoteDefault": "cd5c8f84cb00ff02970419f3316e1908ada5651d",
+    "protoKits": "ffdcc962d3c984864a2d78e9276879adf04250eb",
+    "experiments": "615a7e1e2170164acef0edebdbe0b88b8c01fd1b"
+  },
+  "stats": {
+    "protoKitFolders": 514,
+    "protoKitEntrypoints": 510,
+    "protoKitReadmes": 188,
+    "protoKitMachineContracts": 51,
+    "protoKitLocalTests": 42,
+    "invalidProtoKitManifests": 0,
+    "rendererOrBrowserSignalFolders": 34,
+    "unseededRandomSignalFolders": 3,
+    "wallClockSignalFolders": 3,
+    "normalizedDuplicateClusters": 17,
+    "flatAaaRoutes": 100,
+    "otherExperimentFolders": 33,
+    "existingGames": 4,
+    "naturalLanguageCoreDomainDocuments": 26,
+    "exportedCoreDomainCompositions": 12,
+    "exportedCoreCapabilityKits": 39
+  },
+  "core": {
+    "coreKitDomainDocs": [
+      "src/core-kits/core-agent-kit/core-domain.md",
+      "src/core-kits/core-animation-kit/core-domain.md",
+      "src/core-kits/core-assets-kit/core-domain.md",
+      "src/core-kits/core-audio-kit/core-domain.md",
+      "src/core-kits/core-camera-kit/core-domain.md",
+      "src/core-kits/core-composition-kit/core-domain.md",
+      "src/core-kits/core-data-kit/core-domain.md",
+      "src/core-kits/core-diagnostics-kit/core-domain.md",
+      "src/core-kits/core-graphics-kit/core-domain.md",
+      "src/core-kits/core-input-kit/core-domain.md",
+      "src/core-kits/core-interaction-kit/core-domain.md",
+      "src/core-kits/core-mlnn-kit/core-domain.md",
+      "src/core-kits/core-motion-kit/core-domain.md",
+      "src/core-kits/core-network-kit/core-domain.md",
+      "src/core-kits/core-persistence-kit/core-domain.md",
+      "src/core-kits/core-physics-kit/core-domain.md",
+      "src/core-kits/core-platform-kit/core-domain.md",
+      "src/core-kits/core-policy-kit/core-domain.md",
+      "src/core-kits/core-scene-kit/core-domain.md",
+      "src/core-kits/core-simulation-kit/core-domain.md",
+      "src/core-kits/core-spatial-kit/core-domain.md",
+      "src/core-kits/core-ui-kit/core-domain.md"
+    ],
+    "standaloneCoreDomainDocs": [
+      "src/core-domains/core-capture-domain/core-domain.md",
+      "src/core-domains/core-compute-domain/core-domain.md",
+      "src/core-domains/core-object-fidelity-domain/core-domain.md",
+      "src/core-domains/core-world-domain/README.md"
+    ],
+    "coreDomainExportCount": 12,
+    "coreCapabilityKitExportCount": 39
+  },
+  "protoKits": [
+    {
+      "name": "2d-platformer-domain",
+      "path": "protokits/2d-platformer-domain",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "aaa-batch-deploy-bridge",
+      "path": "protokits/aaa-batch-deploy-bridge",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "adapter/host-name"
+      ]
+    },
+    {
+      "name": "acoustic-signal-domain-kit",
+      "path": "protokits/acoustic-signal-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "action-input-kit",
+      "path": "protokits/action-input-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": true,
+      "sourceFileCount": 2,
+      "boundarySignals": []
+    },
+    {
+      "name": "action-window-domain-kit",
+      "path": "protokits/action-window-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": true,
+      "sourceFileCount": 2,
+      "boundarySignals": [
+        "renderer/browser"
+      ]
+    },
+    {
+      "name": "actor-render-kit",
+      "path": "protokits/actor-render-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "adaptive-visual-core",
+      "path": "protokits/adaptive-visual-core",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "renderer/browser"
+      ]
+    },
+    {
+      "name": "adventure-domain",
+      "path": "protokits/adventure-domain",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "aerial-biome-fidelity-kits",
+      "path": "protokits/aerial-biome-fidelity-kits",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "composite-name",
+        "renderer/browser"
+      ]
+    },
+    {
+      "name": "aerial-camera-rig-domain-kit",
+      "path": "protokits/aerial-camera-rig-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "aerial-canyon-kits",
+      "path": "protokits/aerial-canyon-kits",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "composite-name",
+        "renderer/browser"
+      ]
+    },
+    {
+      "name": "aerial-cel-flight-feel-kits",
+      "path": "protokits/aerial-cel-flight-feel-kits",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "composite-name"
+      ]
+    },
+    {
+      "name": "aerial-combat-domain-kit",
+      "path": "protokits/aerial-combat-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "aerial-encounter-director-kit",
+      "path": "protokits/aerial-encounter-director-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "aerial-flight-kits",
+      "path": "protokits/aerial-flight-kits",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 10,
+      "boundarySignals": [
+        "composite-name",
+        "renderer/browser"
+      ]
+    },
+    {
+      "name": "aerial-mission-sequence-kit",
+      "path": "protokits/aerial-mission-sequence-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "aerial-patch-window-domain-kit",
+      "path": "protokits/aerial-patch-window-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "renderer/browser"
+      ]
+    },
+    {
+      "name": "aerial-procedural-object-domain-kit",
+      "path": "protokits/aerial-procedural-object-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "aerial-projectile-system-kit",
+      "path": "protokits/aerial-projectile-system-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "aerial-render-bundle-kits",
+      "path": "protokits/aerial-render-bundle-kits",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "composite-name",
+        "renderer/browser"
+      ]
+    },
+    {
+      "name": "aerial-ui-interaction-kits",
+      "path": "protokits/aerial-ui-interaction-kits",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "composite-name"
+      ]
+    },
+    {
+      "name": "aerial-vegetation-placement-domain-kit",
+      "path": "protokits/aerial-vegetation-placement-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "affordance-choice-kit",
+      "path": "protokits/affordance-choice-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "affordance-descriptor-domain-kit",
+      "path": "protokits/affordance-descriptor-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": true,
+      "sourceFileCount": 2,
+      "boundarySignals": []
+    },
+    {
+      "name": "agent-avatar-domain-kit",
+      "path": "protokits/agent-avatar-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "agent-command-bridge-kit",
+      "path": "protokits/agent-command-bridge-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "adapter/host-name"
+      ]
+    },
+    {
+      "name": "agent-eval-harness-kit",
+      "path": "protokits/agent-eval-harness-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "agent-group-kit",
+      "path": "protokits/agent-group-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "agent-kit",
+      "path": "protokits/agent-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 6,
+      "boundarySignals": [
+        "unseeded-random"
+      ]
+    },
+    {
+      "name": "agent-policy-validation-kit",
+      "path": "protokits/agent-policy-validation-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "agriculture-domain-kit",
+      "path": "protokits/agriculture-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [
+        "kit.manifest.json"
+      ],
+      "manifestValid": true,
+      "hasTests": true,
+      "sourceFileCount": 2,
+      "boundarySignals": []
+    },
+    {
+      "name": "anime-skybox-domain-kit",
+      "path": "protokits/anime-skybox-domain-kit",
+      "hasEntrypoint": false,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 0,
+      "boundarySignals": []
+    },
+    {
+      "name": "arcade-race-core",
+      "path": "protokits/arcade-race-core",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "arcade-race-visual-kit",
+      "path": "protokits/arcade-race-visual-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "asset-descriptor-kit",
+      "path": "protokits/asset-descriptor-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "asset-load-queue-kit",
+      "path": "protokits/asset-load-queue-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "asset-pack-manifest-kit",
+      "path": "protokits/asset-pack-manifest-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [
+        "kit.manifest.json"
+      ],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "asset-quality-kit",
+      "path": "protokits/asset-quality-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "async-domain-load-kit",
+      "path": "protokits/async-domain-load-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "async-kit-bundle",
+      "path": "protokits/async-kit-bundle",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "composite-name"
+      ]
+    },
+    {
+      "name": "atmosphere-domain-service-kit",
+      "path": "protokits/atmosphere-domain-service-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "audio-event-feedback-maker-kit",
+      "path": "protokits/audio-event-feedback-maker-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "audio-feedback-domain-kit",
+      "path": "protokits/audio-feedback-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": true,
+      "sourceFileCount": 2,
+      "boundarySignals": []
+    },
+    {
+      "name": "banded-infinite-terrain-kit",
+      "path": "protokits/banded-infinite-terrain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [
+        "kit.json"
+      ],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "billboard-prop-kit",
+      "path": "protokits/billboard-prop-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "biome-field-kit",
+      "path": "protokits/biome-field-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "blackwake-game-isles",
+      "path": "protokits/blackwake-game-isles",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "composite-name"
+      ]
+    },
+    {
+      "name": "blackwake-game-stormline-rescue",
+      "path": "protokits/blackwake-game-stormline-rescue",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "composite-name"
+      ]
+    },
+    {
+      "name": "blackwake-gameplay",
+      "path": "protokits/blackwake-gameplay",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 9,
+      "boundarySignals": [
+        "composite-name",
+        "renderer/browser"
+      ]
+    },
+    {
+      "name": "blackwake-kit-registry",
+      "path": "protokits/blackwake-kit-registry",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "blackwake-preset-kit",
+      "path": "protokits/blackwake-preset-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "boost-path-kit",
+      "path": "protokits/boost-path-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "build-placement-kit",
+      "path": "protokits/build-placement-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "camera-cinematic-maker-kit",
+      "path": "protokits/camera-cinematic-maker-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "camera-mode-domain",
+      "path": "protokits/camera-mode-domain",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [
+        "kit.manifest.json"
+      ],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "camera-shake-kit",
+      "path": "protokits/camera-shake-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "campfire-object-domain",
+      "path": "protokits/campfire-object-domain",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [
+        "kit.manifest.json"
+      ],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "canvas-render-adapter-kit",
+      "path": "protokits/canvas-render-adapter-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "adapter/host-name"
+      ]
+    },
+    {
+      "name": "canyon-terrain-domain-kit",
+      "path": "protokits/canyon-terrain-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "capability-graph-domain-kit",
+      "path": "protokits/capability-graph-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [
+        "kit.manifest.json"
+      ],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "cargo-delivery-kit",
+      "path": "protokits/cargo-delivery-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "cel-shading-domain-kit",
+      "path": "protokits/cel-shading-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "chat-io-domain-kit",
+      "path": "protokits/chat-io-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "checkpoint-volume-kit",
+      "path": "protokits/checkpoint-volume-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "climb-camera-kit",
+      "path": "protokits/climb-camera-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "climb-input-kit",
+      "path": "protokits/climb-input-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "climb-risk-kit",
+      "path": "protokits/climb-risk-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "cloud-zone-kit",
+      "path": "protokits/cloud-zone-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "combat-stance-domain-kit",
+      "path": "protokits/combat-stance-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": true,
+      "sourceFileCount": 2,
+      "boundarySignals": []
+    },
+    {
+      "name": "completion-ledger-kit",
+      "path": "protokits/completion-ledger-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "composition-planning-domain-kit",
+      "path": "protokits/composition-planning-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [
+        "kit.manifest.json"
+      ],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "condition-gate-domain-kit",
+      "path": "protokits/condition-gate-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "configurable-render-layer-kit",
+      "path": "protokits/configurable-render-layer-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": true,
+      "sourceFileCount": 2,
+      "boundarySignals": []
+    },
+    {
+      "name": "content-palette-kit",
+      "path": "protokits/content-palette-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "content-preset-kit",
+      "path": "protokits/content-preset-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "conversation-bubble-domain-kit",
+      "path": "protokits/conversation-bubble-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "course-director-kit",
+      "path": "protokits/course-director-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "cozy-hero-cloud-form-kit",
+      "path": "protokits/cozy-hero-cloud-form-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [
+        "kit.manifest.json"
+      ],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "damage-health-domain-kit",
+      "path": "protokits/damage-health-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "damage-health-kit",
+      "path": "protokits/damage-health-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "data-registry-kit",
+      "path": "protokits/data-registry-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "debug-overlay-kit",
+      "path": "protokits/debug-overlay-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "renderer/browser"
+      ]
+    },
+    {
+      "name": "decal-kit",
+      "path": "protokits/decal-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "deploy-manifest-kit",
+      "path": "protokits/deploy-manifest-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [
+        "kit.manifest.json"
+      ],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "deploy-registry-kit",
+      "path": "protokits/deploy-registry-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [
+        "kit.manifest.json"
+      ],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "depth-fog-kit",
+      "path": "protokits/depth-fog-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "deterministic-replay-harness",
+      "path": "protokits/deterministic-replay-harness",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "diegetic-feedback-kit",
+      "path": "protokits/diegetic-feedback-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "diegetic-feedback-signal-kit",
+      "path": "protokits/diegetic-feedback-signal-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "difficulty-curve-kit",
+      "path": "protokits/difficulty-curve-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "disk-world-surface-kit",
+      "path": "protokits/disk-world-surface-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [
+        "kit.json"
+      ],
+      "manifestValid": true,
+      "hasTests": true,
+      "sourceFileCount": 3,
+      "boundarySignals": []
+    },
+    {
+      "name": "domain-boundary-kit",
+      "path": "protokits/domain-boundary-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [
+        "kit.manifest.json"
+      ],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "domain-foundation",
+      "path": "protokits/domain-foundation",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "domain-inventory-domain-kit",
+      "path": "protokits/domain-inventory-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [
+        "kit.manifest.json"
+      ],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "domain-kits",
+      "path": "protokits/domain-kits",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "composite-name"
+      ]
+    },
+    {
+      "name": "domain-manifest-registry-domain-kit",
+      "path": "protokits/domain-manifest-registry-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [
+        "kit.manifest.json"
+      ],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "domain-service-kits",
+      "path": "protokits/domain-service-kits",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "composite-name"
+      ]
+    },
+    {
+      "name": "domain-taxonomy-domain-kit",
+      "path": "protokits/domain-taxonomy-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [
+        "kit.manifest.json"
+      ],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "downhill-race-kit",
+      "path": "protokits/downhill-race-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "embedding-memory-kit",
+      "path": "protokits/embedding-memory-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "encounter-director-kit",
+      "path": "protokits/encounter-director-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "endless-ascent-kit",
+      "path": "protokits/endless-ascent-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "enemy-agent-domain-kit",
+      "path": "protokits/enemy-agent-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "enemy-body-domain-kit",
+      "path": "protokits/enemy-body-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": true,
+      "sourceFileCount": 2,
+      "boundarySignals": []
+    },
+    {
+      "name": "enemy-object-domain-kit",
+      "path": "protokits/enemy-object-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "environment-content-kit",
+      "path": "protokits/environment-content-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "environment-domain",
+      "path": "protokits/environment-domain",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "environment-field-stream-kit",
+      "path": "protokits/environment-field-stream-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "environment-kits",
+      "path": "protokits/environment-kits",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "composite-name"
+      ]
+    },
+    {
+      "name": "fenced-clearing-domain",
+      "path": "protokits/fenced-clearing-domain",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [
+        "kit.manifest.json"
+      ],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "first-person-camera-kit",
+      "path": "protokits/first-person-camera-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "flight-camera-domain-kit",
+      "path": "protokits/flight-camera-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "flight-corridor-domain-kit",
+      "path": "protokits/flight-corridor-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "flight-motion-kit",
+      "path": "protokits/flight-motion-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": true,
+      "sourceFileCount": 2,
+      "boundarySignals": []
+    },
+    {
+      "name": "flock-agent-kit",
+      "path": "protokits/flock-agent-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "floor-casting-kit",
+      "path": "protokits/floor-casting-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "fluid-effects-kit",
+      "path": "protokits/fluid-effects-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "fluid-field-kit",
+      "path": "protokits/fluid-field-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "fluid-motion-kit",
+      "path": "protokits/fluid-motion-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "fluid-shading-kit",
+      "path": "protokits/fluid-shading-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "fogline-survey-pressure-bridge-kit",
+      "path": "protokits/fogline-survey-pressure-bridge-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "adapter/host-name"
+      ]
+    },
+    {
+      "name": "foliage-batch-descriptor-kit",
+      "path": "protokits/foliage-batch-descriptor-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "foliage-fps-composition-kit",
+      "path": "protokits/foliage-fps-composition-kit",
+      "hasEntrypoint": false,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 0,
+      "boundarySignals": []
+    },
+    {
+      "name": "foliage-impostor-kit",
+      "path": "protokits/foliage-impostor-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "footstep-feedback-kit",
+      "path": "protokits/footstep-feedback-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "foundation-kit",
+      "path": "protokits/foundation-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "fps-motion-kit",
+      "path": "protokits/fps-motion-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "gallery-registry-bridge",
+      "path": "protokits/gallery-registry-bridge",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "adapter/host-name"
+      ]
+    },
+    {
+      "name": "gamehost-standard-kit",
+      "path": "protokits/gamehost-standard-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "adapter/host-name"
+      ]
+    },
+    {
+      "name": "gaussian-splat-domain",
+      "path": "protokits/gaussian-splat-domain",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [
+        "kit.json"
+      ],
+      "manifestValid": true,
+      "hasTests": true,
+      "sourceFileCount": 2,
+      "boundarySignals": []
+    },
+    {
+      "name": "generated-route-host-bridge",
+      "path": "protokits/generated-route-host-bridge",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "adapter/host-name"
+      ]
+    },
+    {
+      "name": "generic-action-window-kit",
+      "path": "protokits/generic-action-window-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": true,
+      "sourceFileCount": 2,
+      "boundarySignals": [
+        "renderer/browser"
+      ]
+    },
+    {
+      "name": "generic-affordance-descriptor-kit",
+      "path": "protokits/generic-affordance-descriptor-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": true,
+      "sourceFileCount": 2,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-anchor-descriptor-kit",
+      "path": "protokits/generic-anchor-descriptor-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [
+        "kit.manifest.json"
+      ],
+      "manifestValid": true,
+      "hasTests": true,
+      "sourceFileCount": 2,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-avatar-on-foot-kit",
+      "path": "protokits/generic-avatar-on-foot-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-avatar-state-kit",
+      "path": "protokits/generic-avatar-state-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-avatar-vehicle-station-kit",
+      "path": "protokits/generic-avatar-vehicle-station-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-biome-field-kit",
+      "path": "protokits/generic-biome-field-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-browser-smoke-test-kit",
+      "path": "protokits/generic-browser-smoke-test-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-buoyancy-kit",
+      "path": "protokits/generic-buoyancy-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-camera-collision-kit",
+      "path": "protokits/generic-camera-collision-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-camera-comfort-kit",
+      "path": "protokits/generic-camera-comfort-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-camera-mode-kit",
+      "path": "protokits/generic-camera-mode-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-camera-sequence-kit",
+      "path": "protokits/generic-camera-sequence-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-camera-state-kit",
+      "path": "protokits/generic-camera-state-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-cargo-kit",
+      "path": "protokits/generic-cargo-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-cargo-transfer-kit",
+      "path": "protokits/generic-cargo-transfer-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-climbing-kit",
+      "path": "protokits/generic-climbing-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-clock-kit",
+      "path": "protokits/generic-clock-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-currency-kit",
+      "path": "protokits/generic-currency-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-current-field-kit",
+      "path": "protokits/generic-current-field-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-defense-aaa-dsk-bridge",
+      "path": "protokits/generic-defense-aaa-dsk-bridge",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "adapter/host-name"
+      ]
+    },
+    {
+      "name": "generic-defense-aaa-kits",
+      "path": "protokits/generic-defense-aaa-kits",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": true,
+      "sourceFileCount": 2,
+      "boundarySignals": [
+        "composite-name",
+        "wall-clock"
+      ]
+    },
+    {
+      "name": "generic-defense-dsk-boundaries",
+      "path": "protokits/generic-defense-dsk-boundaries",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-defense-kits",
+      "path": "protokits/generic-defense-kits",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": true,
+      "sourceFileCount": 2,
+      "boundarySignals": [
+        "composite-name"
+      ]
+    },
+    {
+      "name": "generic-defense-presentation-stack-kit",
+      "path": "protokits/generic-defense-presentation-stack-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": true,
+      "sourceFileCount": 2,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-defense-project-bridge",
+      "path": "protokits/generic-defense-project-bridge",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "adapter/host-name"
+      ]
+    },
+    {
+      "name": "generic-defense-project-kits",
+      "path": "protokits/generic-defense-project-kits",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "composite-name"
+      ]
+    },
+    {
+      "name": "generic-defense-session-command-kit",
+      "path": "protokits/generic-defense-session-command-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-discovery-kit",
+      "path": "protokits/generic-discovery-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-diving-kit",
+      "path": "protokits/generic-diving-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-docking-anchor-kit",
+      "path": "protokits/generic-docking-anchor-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-effects-three-kit",
+      "path": "protokits/generic-effects-three-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-error-overlay-kit",
+      "path": "protokits/generic-error-overlay-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-fail-state-kit",
+      "path": "protokits/generic-fail-state-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-fallback-renderer-kit",
+      "path": "protokits/generic-fallback-renderer-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "adapter/host-name",
+        "renderer/browser"
+      ]
+    },
+    {
+      "name": "generic-foam-field-kit",
+      "path": "protokits/generic-foam-field-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-game-preset-kit",
+      "path": "protokits/generic-game-preset-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "composite-name"
+      ]
+    },
+    {
+      "name": "generic-health-report-kit",
+      "path": "protokits/generic-health-report-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-hold-action-kit",
+      "path": "protokits/generic-hold-action-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-hud-dom-kit",
+      "path": "protokits/generic-hud-dom-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-input-actions-kit",
+      "path": "protokits/generic-input-actions-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-input-buffer-kit",
+      "path": "protokits/generic-input-buffer-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-input-context-kit",
+      "path": "protokits/generic-input-context-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-input-device-kit",
+      "path": "protokits/generic-input-device-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-interactable-kit",
+      "path": "protokits/generic-interactable-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-inventory-kit",
+      "path": "protokits/generic-inventory-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-kit-utils",
+      "path": "protokits/generic-kit-utils",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-kits",
+      "path": "protokits/generic-kits",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "composite-name"
+      ]
+    },
+    {
+      "name": "generic-market-kit",
+      "path": "protokits/generic-market-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-memory-pool-kit",
+      "path": "protokits/generic-memory-pool-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-mission-phase-kit",
+      "path": "protokits/generic-mission-phase-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-mode-port-upgrade-loop",
+      "path": "protokits/generic-mode-port-upgrade-loop",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-mode-projected-route",
+      "path": "protokits/generic-mode-projected-route",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": true,
+      "sourceFileCount": 3,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-mode-storm-navigation",
+      "path": "protokits/generic-mode-storm-navigation",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-mode-swim-dive-recovery",
+      "path": "protokits/generic-mode-swim-dive-recovery",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-mode-watercraft-exploration",
+      "path": "protokits/generic-mode-watercraft-exploration",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-objective-kit",
+      "path": "protokits/generic-objective-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-particle-background-kit",
+      "path": "protokits/generic-particle-background-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": true,
+      "sourceFileCount": 2,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-performance-budget-kit",
+      "path": "protokits/generic-performance-budget-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-poi-placement-kit",
+      "path": "protokits/generic-poi-placement-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-pressure-loop-kit",
+      "path": "protokits/generic-pressure-loop-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": true,
+      "sourceFileCount": 2,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-procedural-field-kit",
+      "path": "protokits/generic-procedural-field-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-recovery-site-kit",
+      "path": "protokits/generic-recovery-site-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-render-descriptor-kit",
+      "path": "protokits/generic-render-descriptor-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-replay-test-kit",
+      "path": "protokits/generic-replay-test-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-resource-loop-kit",
+      "path": "protokits/generic-resource-loop-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [
+        "kit.manifest.json"
+      ],
+      "manifestValid": true,
+      "hasTests": true,
+      "sourceFileCount": 2,
+      "boundarySignals": [
+        "renderer/browser"
+      ]
+    },
+    {
+      "name": "generic-route-cargo-extraction-kit",
+      "path": "protokits/generic-route-cargo-extraction-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [
+        "kit.manifest.json"
+      ],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-route-field-kit",
+      "path": "protokits/generic-route-field-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-route-progress-kit",
+      "path": "protokits/generic-route-progress-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [
+        "kit.manifest.json"
+      ],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-score-summary-kit",
+      "path": "protokits/generic-score-summary-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-sector-world-kit",
+      "path": "protokits/generic-sector-world-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-seed-kit",
+      "path": "protokits/generic-seed-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [
+        "kit.manifest.json"
+      ],
+      "manifestValid": true,
+      "hasTests": true,
+      "sourceFileCount": 2,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-spatial-index-kit",
+      "path": "protokits/generic-spatial-index-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-state-digest-kit",
+      "path": "protokits/generic-state-digest-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-station-interaction-kit",
+      "path": "protokits/generic-station-interaction-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-surface-field-kit",
+      "path": "protokits/generic-surface-field-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-surface-impact-kit",
+      "path": "protokits/generic-surface-impact-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-survival-domain-kits",
+      "path": "protokits/generic-survival-domain-kits",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "composite-name"
+      ]
+    },
+    {
+      "name": "generic-swimming-kit",
+      "path": "protokits/generic-swimming-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-tether-traversal-domain-kits",
+      "path": "protokits/generic-tether-traversal-domain-kits",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "composite-name"
+      ]
+    },
+    {
+      "name": "generic-three-renderer-kit",
+      "path": "protokits/generic-three-renderer-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "adapter/host-name"
+      ]
+    },
+    {
+      "name": "generic-tutorial-prompt-kit",
+      "path": "protokits/generic-tutorial-prompt-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-upgrade-kit",
+      "path": "protokits/generic-upgrade-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-upgrade-station-kit",
+      "path": "protokits/generic-upgrade-station-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-vehicle-control-kit",
+      "path": "protokits/generic-vehicle-control-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-vehicle-damage-kit",
+      "path": "protokits/generic-vehicle-damage-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-vehicle-state-kit",
+      "path": "protokits/generic-vehicle-state-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-vehicle-three-kit",
+      "path": "protokits/generic-vehicle-three-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-visual-fx-descriptor-kits",
+      "path": "protokits/generic-visual-fx-descriptor-kits",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 6,
+      "boundarySignals": [
+        "composite-name"
+      ]
+    },
+    {
+      "name": "generic-water-three-kit",
+      "path": "protokits/generic-water-three-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-watercraft-physics-kit",
+      "path": "protokits/generic-watercraft-physics-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-watercraft-sailing-kit",
+      "path": "protokits/generic-watercraft-sailing-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-watercraft-wake-kit",
+      "path": "protokits/generic-watercraft-wake-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-wave-spectrum-kit",
+      "path": "protokits/generic-wave-spectrum-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-weather-wind-kit",
+      "path": "protokits/generic-weather-wind-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "generic-world-three-kit",
+      "path": "protokits/generic-world-three-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "gpu-ambient-cave-dust-kit",
+      "path": "protokits/gpu-ambient-cave-dust-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "gpu-bubble-column-kit",
+      "path": "protokits/gpu-bubble-column-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "gpu-creature-alert-pulse-kit",
+      "path": "protokits/gpu-creature-alert-pulse-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "gpu-door-awakening-kit",
+      "path": "protokits/gpu-door-awakening-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "gpu-dust-cloud-kit",
+      "path": "protokits/gpu-dust-cloud-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "gpu-foam-line-kit",
+      "path": "protokits/gpu-foam-line-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "gpu-impact-chip-kit",
+      "path": "protokits/gpu-impact-chip-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "gpu-lantern-mote-kit",
+      "path": "protokits/gpu-lantern-mote-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "gpu-rune-spark-kit",
+      "path": "protokits/gpu-rune-spark-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "gpu-shadow-flicker-kit",
+      "path": "protokits/gpu-shadow-flicker-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "gpu-sound-wave-particle-kit",
+      "path": "protokits/gpu-sound-wave-particle-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "gpu-spark-burst-kit",
+      "path": "protokits/gpu-spark-burst-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "gpu-terrain-performance-circle-kit",
+      "path": "protokits/gpu-terrain-performance-circle-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [
+        "kit.manifest.json"
+      ],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "renderer/browser"
+      ]
+    },
+    {
+      "name": "gpu-water-mist-kit",
+      "path": "protokits/gpu-water-mist-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "gpu-water-surface-shimmer-kit",
+      "path": "protokits/gpu-water-surface-shimmer-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "grass-object-domain",
+      "path": "protokits/grass-object-domain",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [
+        "kit.manifest.json"
+      ],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "grass-texture-domain",
+      "path": "protokits/grass-texture-domain",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [
+        "kit.manifest.json"
+      ],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "grass-wind-domain",
+      "path": "protokits/grass-wind-domain",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [
+        "kit.manifest.json"
+      ],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "ground-contact-kit",
+      "path": "protokits/ground-contact-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "guard-domain-kit",
+      "path": "protokits/guard-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "renderer/browser"
+      ]
+    },
+    {
+      "name": "guided-kit-authoring-kit",
+      "path": "protokits/guided-kit-authoring-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "renderer/browser"
+      ]
+    },
+    {
+      "name": "hand-gesture-dsk",
+      "path": "protokits/hand-gesture-dsk",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "hazard-director-kit",
+      "path": "protokits/hazard-director-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "high-fidelity-meadow-kits",
+      "path": "protokits/high-fidelity-meadow-kits",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "composite-name",
+        "renderer/browser"
+      ]
+    },
+    {
+      "name": "host-shell-contract-kit",
+      "path": "protokits/host-shell-contract-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [
+        "kit.manifest.json"
+      ],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "adapter/host-name"
+      ]
+    },
+    {
+      "name": "huggingface-loader-kit",
+      "path": "protokits/huggingface-loader-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "inference-trace-domain-kit",
+      "path": "protokits/inference-trace-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "input-action-domain-kit",
+      "path": "protokits/input-action-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": true,
+      "sourceFileCount": 2,
+      "boundarySignals": []
+    },
+    {
+      "name": "input-kit",
+      "path": "protokits/input-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "renderer/browser"
+      ]
+    },
+    {
+      "name": "instance-batching-system-kit",
+      "path": "protokits/instance-batching-system-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "instanced-render-kit",
+      "path": "protokits/instanced-render-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "interaction-domain-kit",
+      "path": "protokits/interaction-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "interaction-domain-service-kit",
+      "path": "protokits/interaction-domain-service-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "interaction-dsk",
+      "path": "protokits/interaction-dsk",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "interaction-kit",
+      "path": "protokits/interaction-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "island-foliage-domain",
+      "path": "protokits/island-foliage-domain",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [
+        "kit.manifest.json"
+      ],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "island-object-library-domain",
+      "path": "protokits/island-object-library-domain",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [
+        "kit.manifest.json"
+      ],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "kit-boundary-lint-kit",
+      "path": "protokits/kit-boundary-lint-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "renderer/browser"
+      ]
+    },
+    {
+      "name": "kit-load-plan-kit",
+      "path": "protokits/kit-load-plan-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "kit-manifest-domain-kit",
+      "path": "protokits/kit-manifest-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [
+        "kit.manifest.json"
+      ],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "kit-registry",
+      "path": "protokits/kit-registry",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "kit-registry-domain-kit",
+      "path": "protokits/kit-registry-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [
+        "kit.manifest.json"
+      ],
+      "manifestValid": true,
+      "hasTests": true,
+      "sourceFileCount": 2,
+      "boundarySignals": [
+        "network",
+        "renderer/browser",
+        "unseeded-random",
+        "wall-clock"
+      ]
+    },
+    {
+      "name": "layered-drunk-walk-level-generation-kit",
+      "path": "protokits/layered-drunk-walk-level-generation-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "layered-object-kit",
+      "path": "protokits/layered-object-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "ledge-route-kit",
+      "path": "protokits/ledge-route-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "renderer/browser"
+      ]
+    },
+    {
+      "name": "lighting-descriptor-kit",
+      "path": "protokits/lighting-descriptor-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "lighting-domain-service-kit",
+      "path": "protokits/lighting-domain-service-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "lighting-mood-kit",
+      "path": "protokits/lighting-mood-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "lock-group-kit",
+      "path": "protokits/lock-group-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "lod-selection-system-kit",
+      "path": "protokits/lod-selection-system-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "loop-guard-domain-kit",
+      "path": "protokits/loop-guard-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "mana-meter-domain-kit",
+      "path": "protokits/mana-meter-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "material-domain-service-kit",
+      "path": "protokits/material-domain-service-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "material-palette-kit",
+      "path": "protokits/material-palette-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "mattatz-clouds-domain",
+      "path": "protokits/mattatz-clouds-domain",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [
+        "kit.manifest.json"
+      ],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "renderer/browser"
+      ]
+    },
+    {
+      "name": "meadow-area-kit",
+      "path": "protokits/meadow-area-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [
+        "kit.manifest.json"
+      ],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "meadow-webgl-render-kit",
+      "path": "protokits/meadow-webgl-render-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [
+        "kit.manifest.json"
+      ],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "renderer/browser"
+      ]
+    },
+    {
+      "name": "mesh-assembly-descriptor-kit",
+      "path": "protokits/mesh-assembly-descriptor-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "mesh-chunk-stream-kit",
+      "path": "protokits/mesh-chunk-stream-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "model-core-visual-domain-kit",
+      "path": "protokits/model-core-visual-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "model-download-cache-kit",
+      "path": "protokits/model-download-cache-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "model-loader-kit",
+      "path": "protokits/model-loader-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "model-manifest-kit",
+      "path": "protokits/model-manifest-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "model-output-decoder-domain-kit",
+      "path": "protokits/model-output-decoder-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "model-provider-adapter-kit",
+      "path": "protokits/model-provider-adapter-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "adapter/host-name"
+      ]
+    },
+    {
+      "name": "next-ledge-grapple-kit",
+      "path": "protokits/next-ledge-grapple-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": true,
+      "sourceFileCount": 2,
+      "boundarySignals": []
+    },
+    {
+      "name": "next-ledge-kit",
+      "path": "protokits/next-ledge-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 3,
+      "boundarySignals": []
+    },
+    {
+      "name": "nexus-dsk-adapter",
+      "path": "protokits/nexus-dsk-adapter",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "adapter/host-name"
+      ]
+    },
+    {
+      "name": "objaverse-asset-quality-kit",
+      "path": "protokits/objaverse-asset-quality-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "objaverse-availability-stream-kit",
+      "path": "protokits/objaverse-availability-stream-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "objaverse-catalog-kit",
+      "path": "protokits/objaverse-catalog-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "objaverse-impostor-descriptor-kit",
+      "path": "protokits/objaverse-impostor-descriptor-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "objaverse-license-kit",
+      "path": "protokits/objaverse-license-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "objaverse-manifest-kit",
+      "path": "protokits/objaverse-manifest-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "objaverse-manifest-register-kit",
+      "path": "protokits/objaverse-manifest-register-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "objaverse-mesh-cache-kit",
+      "path": "protokits/objaverse-mesh-cache-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "objaverse-mesh-request-kit",
+      "path": "protokits/objaverse-mesh-request-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "objaverse-metadata-delta-kit",
+      "path": "protokits/objaverse-metadata-delta-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "objaverse-metadata-index-kit",
+      "path": "protokits/objaverse-metadata-index-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "objaverse-metadata-stream-kit",
+      "path": "protokits/objaverse-metadata-stream-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "objaverse-object-stream-kit",
+      "path": "protokits/objaverse-object-stream-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "objaverse-preview-kit",
+      "path": "protokits/objaverse-preview-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "objaverse-provenance-kit",
+      "path": "protokits/objaverse-provenance-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "objaverse-runtime-object-kit",
+      "path": "protokits/objaverse-runtime-object-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "objaverse-scale-normalization-kit",
+      "path": "protokits/objaverse-scale-normalization-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "objaverse-streaming-bundle",
+      "path": "protokits/objaverse-streaming-bundle",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "composite-name"
+      ]
+    },
+    {
+      "name": "object-batch-delta-kit",
+      "path": "protokits/object-batch-delta-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "object-batch-lifecycle-kit",
+      "path": "protokits/object-batch-lifecycle-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "object-bounds-descriptor-kit",
+      "path": "protokits/object-bounds-descriptor-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "object-family-kit",
+      "path": "protokits/object-family-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "object-grounding-profile-kit",
+      "path": "protokits/object-grounding-profile-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "object-import-profile-kit",
+      "path": "protokits/object-import-profile-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "object-import-transform-kit",
+      "path": "protokits/object-import-transform-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "object-instance-stream-kit",
+      "path": "protokits/object-instance-stream-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "object-lod-policy-kit",
+      "path": "protokits/object-lod-policy-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "object-material-variant-kit",
+      "path": "protokits/object-material-variant-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "object-mesh-request-kit",
+      "path": "protokits/object-mesh-request-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "object-pivot-anchor-kit",
+      "path": "protokits/object-pivot-anchor-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "object-residency-kit",
+      "path": "protokits/object-residency-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "object-state-stream-kit",
+      "path": "protokits/object-state-stream-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "object-static-batch-kit",
+      "path": "protokits/object-static-batch-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "object-stream-plan-kit",
+      "path": "protokits/object-stream-plan-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "object-stream-priority-kit",
+      "path": "protokits/object-stream-priority-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "object-variant-selection-kit",
+      "path": "protokits/object-variant-selection-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "objective-bridge-kit",
+      "path": "protokits/objective-bridge-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "adapter/host-name"
+      ]
+    },
+    {
+      "name": "objective-flow-domain-kit",
+      "path": "protokits/objective-flow-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": true,
+      "sourceFileCount": 2,
+      "boundarySignals": []
+    },
+    {
+      "name": "objective-flow-kit",
+      "path": "protokits/objective-flow-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "ocean-boat-kit",
+      "path": "protokits/ocean-boat-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 2,
+      "boundarySignals": [
+        "renderer/browser",
+        "unseeded-random"
+      ]
+    },
+    {
+      "name": "ocean-floor-domain",
+      "path": "protokits/ocean-floor-domain",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [
+        "kit.manifest.json"
+      ],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "ocean-island-landform-domain",
+      "path": "protokits/ocean-island-landform-domain",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [
+        "kit.manifest.json"
+      ],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "onnx-loader-kit",
+      "path": "protokits/onnx-loader-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "onnx-workshop-threejs-kits",
+      "path": "protokits/onnx-workshop-threejs-kits",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "composite-name",
+        "renderer/browser"
+      ]
+    },
+    {
+      "name": "onnx-workspace-kits",
+      "path": "protokits/onnx-workspace-kits",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "composite-name"
+      ]
+    },
+    {
+      "name": "openxr-hand-adapter-dsk",
+      "path": "protokits/openxr-hand-adapter-dsk",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "adapter/host-name"
+      ]
+    },
+    {
+      "name": "parallax-kit",
+      "path": "protokits/parallax-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": true,
+      "sourceFileCount": 2,
+      "boundarySignals": []
+    },
+    {
+      "name": "parry-window-domain-kit",
+      "path": "protokits/parry-window-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "renderer/browser"
+      ]
+    },
+    {
+      "name": "patch-object-batch-kit",
+      "path": "protokits/patch-object-batch-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "path-meadow-composition-kit",
+      "path": "protokits/path-meadow-composition-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "perception-kit",
+      "path": "protokits/perception-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "performance-budget-kit",
+      "path": "protokits/performance-budget-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "persistence-domain-service-kit",
+      "path": "protokits/persistence-domain-service-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "persistence-dsk",
+      "path": "protokits/persistence-dsk",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "physics-body-lite-domain-kit",
+      "path": "protokits/physics-body-lite-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "platformer-avatar-domain-kit",
+      "path": "protokits/platformer-avatar-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "platformer-camera-domain-kit",
+      "path": "protokits/platformer-camera-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "platformer-collision-domain-kit",
+      "path": "protokits/platformer-collision-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "platformer-effects-domain-kit",
+      "path": "protokits/platformer-effects-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "platformer-level-domain-kit",
+      "path": "protokits/platformer-level-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "platformer-object-domain-kit",
+      "path": "protokits/platformer-object-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "platformer-objective-sequence-kit",
+      "path": "protokits/platformer-objective-sequence-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "platformer-parallax-domain-kit",
+      "path": "protokits/platformer-parallax-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "platformer-physics-system-kit",
+      "path": "protokits/platformer-physics-system-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "platformer-render-descriptor-kit",
+      "path": "protokits/platformer-render-descriptor-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "powered-aerial-flight-domain-kit",
+      "path": "protokits/powered-aerial-flight-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "pressure-domain-kit",
+      "path": "protokits/pressure-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": true,
+      "sourceFileCount": 2,
+      "boundarySignals": []
+    },
+    {
+      "name": "procedural-cloud-layer-kit",
+      "path": "protokits/procedural-cloud-layer-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "procedural-foliage-bundle",
+      "path": "protokits/procedural-foliage-bundle",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "composite-name"
+      ]
+    },
+    {
+      "name": "procedural-foliage-composition-kit",
+      "path": "protokits/procedural-foliage-composition-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "procedural-skybox-kit",
+      "path": "protokits/procedural-skybox-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "procedural-texture-kit",
+      "path": "protokits/procedural-texture-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "renderer/browser"
+      ]
+    },
+    {
+      "name": "procedural-tree-kits",
+      "path": "protokits/procedural-tree-kits",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [
+        "kit.manifest.json"
+      ],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 10,
+      "boundarySignals": [
+        "composite-name",
+        "renderer/browser"
+      ]
+    },
+    {
+      "name": "project-batch-deploy-bridge",
+      "path": "protokits/project-batch-deploy-bridge",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "adapter/host-name"
+      ]
+    },
+    {
+      "name": "projectile-lite-domain-kit",
+      "path": "protokits/projectile-lite-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "promotion-readiness-harness",
+      "path": "protokits/promotion-readiness-harness",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "prompt-composer-domain-kit",
+      "path": "protokits/prompt-composer-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "protokit-core",
+      "path": "protokits/protokit-core",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [
+        "kit.manifest.json"
+      ],
+      "manifestValid": true,
+      "hasTests": true,
+      "sourceFileCount": 2,
+      "boundarySignals": []
+    },
+    {
+      "name": "quaternius-pack-library-kit",
+      "path": "protokits/quaternius-pack-library-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [
+        "kit.json"
+      ],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "quaternius-terrain-walker-kit",
+      "path": "protokits/quaternius-terrain-walker-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [
+        "kit.json"
+      ],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "quest-domain-kit",
+      "path": "protokits/quest-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": true,
+      "sourceFileCount": 2,
+      "boundarySignals": []
+    },
+    {
+      "name": "race-hazard-kit",
+      "path": "protokits/race-hazard-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "race-pacing-kit",
+      "path": "protokits/race-pacing-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "racer-ai-kit",
+      "path": "protokits/racer-ai-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "racer-contact-kit",
+      "path": "protokits/racer-contact-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "renderer/browser"
+      ]
+    },
+    {
+      "name": "rapier-physics-domain-kit",
+      "path": "protokits/rapier-physics-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": true,
+      "sourceFileCount": 4,
+      "boundarySignals": []
+    },
+    {
+      "name": "raycast-placement-kit",
+      "path": "protokits/raycast-placement-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "raycaster-render-kit",
+      "path": "protokits/raycaster-render-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "reactive-particle-field-kit",
+      "path": "protokits/reactive-particle-field-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "render-capability-kit",
+      "path": "protokits/render-capability-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "render-culling-system-kit",
+      "path": "protokits/render-culling-system-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "render-descriptor-domain-kit",
+      "path": "protokits/render-descriptor-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": true,
+      "sourceFileCount": 2,
+      "boundarySignals": []
+    },
+    {
+      "name": "render-graph-kit",
+      "path": "protokits/render-graph-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "render-layer-kit",
+      "path": "protokits/render-layer-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "render-quality-budget-kit",
+      "path": "protokits/render-quality-budget-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "rendering-stack-kits",
+      "path": "protokits/rendering-stack-kits",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": true,
+      "sourceFileCount": 5,
+      "boundarySignals": [
+        "composite-name",
+        "renderer/browser"
+      ]
+    },
+    {
+      "name": "resource-node-kit",
+      "path": "protokits/resource-node-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "resource-pressure-kit",
+      "path": "protokits/resource-pressure-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "route-checkpoint-kit",
+      "path": "protokits/route-checkpoint-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "route-clearance-domain-kit",
+      "path": "protokits/route-clearance-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "rpg-social-domain-kits",
+      "path": "protokits/rpg-social-domain-kits",
+      "hasEntrypoint": false,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 0,
+      "boundarySignals": [
+        "composite-name"
+      ]
+    },
+    {
+      "name": "rpg-social-fact-kit",
+      "path": "protokits/rpg-social-fact-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "run-movement-kit",
+      "path": "protokits/run-movement-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "save-delta-kit",
+      "path": "protokits/save-delta-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [
+        "kit.manifest.json"
+      ],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "scan-affordance-domain-kit",
+      "path": "protokits/scan-affordance-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": true,
+      "sourceFileCount": 2,
+      "boundarySignals": []
+    },
+    {
+      "name": "scan-survey-kit",
+      "path": "protokits/scan-survey-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "scatter-object-kit",
+      "path": "protokits/scatter-object-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "scatter-placement-kit",
+      "path": "protokits/scatter-placement-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "scenario-qa-harness",
+      "path": "protokits/scenario-qa-harness",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "scenario-smoke-domain-kit",
+      "path": "protokits/scenario-smoke-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": true,
+      "sourceFileCount": 2,
+      "boundarySignals": []
+    },
+    {
+      "name": "scene-graph-domain-kit",
+      "path": "protokits/scene-graph-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [
+        "kit.manifest.json"
+      ],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "scene-lifecycle-kit",
+      "path": "protokits/scene-lifecycle-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [
+        "kit.manifest.json"
+      ],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "scene-recipe-kit",
+      "path": "protokits/scene-recipe-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "scene-transition-kit",
+      "path": "protokits/scene-transition-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [
+        "kit.manifest.json"
+      ],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "scoped-rpg-domain-kits-batch-02",
+      "path": "protokits/scoped-rpg-domain-kits-batch-02",
+      "hasEntrypoint": false,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 0,
+      "boundarySignals": []
+    },
+    {
+      "name": "selection-domain-service-kit",
+      "path": "protokits/selection-domain-service-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "selection-dsk",
+      "path": "protokits/selection-dsk",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "self-talk-loop-domain-kit",
+      "path": "protokits/self-talk-loop-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "semantic-bounded-domain-kits",
+      "path": "protokits/semantic-bounded-domain-kits",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [
+        "kit.manifest.json"
+      ],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "composite-name"
+      ]
+    },
+    {
+      "name": "sensory-agent-domain-kit",
+      "path": "protokits/sensory-agent-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "session-facade-kit",
+      "path": "protokits/session-facade-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [
+        "kit.manifest.json"
+      ],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "simple-rigid-body-kit",
+      "path": "protokits/simple-rigid-body-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "simple-swing-kit",
+      "path": "protokits/simple-swing-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "simulation-interest-kit",
+      "path": "protokits/simulation-interest-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "sky-atmosphere-kit",
+      "path": "protokits/sky-atmosphere-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "sky-gradient-kit",
+      "path": "protokits/sky-gradient-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "slope-traversal-kit",
+      "path": "protokits/slope-traversal-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "smoke-particle-domain",
+      "path": "protokits/smoke-particle-domain",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [
+        "kit.manifest.json"
+      ],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "spatial-anchor-domain-kit",
+      "path": "protokits/spatial-anchor-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "spatial-authoring-kits",
+      "path": "protokits/spatial-authoring-kits",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "composite-name",
+        "renderer/browser"
+      ]
+    },
+    {
+      "name": "spatial-authoring-toolkit-dsks",
+      "path": "protokits/spatial-authoring-toolkit-dsks",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "spatial-game-board-domain-kit",
+      "path": "protokits/spatial-game-board-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "composite-name"
+      ]
+    },
+    {
+      "name": "spatial-interaction-kit",
+      "path": "protokits/spatial-interaction-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "spatial-scene-graph-dsk",
+      "path": "protokits/spatial-scene-graph-dsk",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "spatial-scene-graph-kit",
+      "path": "protokits/spatial-scene-graph-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "spatial-surface-candidate-domain-kit",
+      "path": "protokits/spatial-surface-candidate-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [
+        "kit.manifest.json"
+      ],
+      "manifestValid": true,
+      "hasTests": true,
+      "sourceFileCount": 2,
+      "boundarySignals": [
+        "renderer/browser"
+      ]
+    },
+    {
+      "name": "spell-cast-domain-kit",
+      "path": "protokits/spell-cast-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": true,
+      "sourceFileCount": 2,
+      "boundarySignals": []
+    },
+    {
+      "name": "status-effect-domain-kit",
+      "path": "protokits/status-effect-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "stereoscopic-render-domain-kit",
+      "path": "protokits/stereoscopic-render-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "stonewake-systems-domain-kits",
+      "path": "protokits/stonewake-systems-domain-kits",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "composite-name"
+      ]
+    },
+    {
+      "name": "stonewake-visual-style-composition-kit",
+      "path": "protokits/stonewake-visual-style-composition-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "stream-backpressure-kit",
+      "path": "protokits/stream-backpressure-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "stream-channel-kit",
+      "path": "protokits/stream-channel-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "stream-delta-apply-kit",
+      "path": "protokits/stream-delta-apply-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "stream-session-kit",
+      "path": "protokits/stream-session-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "stream-subscription-kit",
+      "path": "protokits/stream-subscription-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "structure-runtime-kit",
+      "path": "protokits/structure-runtime-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "surface-material-kit",
+      "path": "protokits/surface-material-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "survival-crafting-domain",
+      "path": "protokits/survival-crafting-domain",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "renderer/browser"
+      ]
+    },
+    {
+      "name": "terrain-erosion-solver-domain-kit",
+      "path": "protokits/terrain-erosion-solver-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "terrain-ground-contact-domain-kit",
+      "path": "protokits/terrain-ground-contact-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "wall-clock"
+      ]
+    },
+    {
+      "name": "terrain-height-domain-kit",
+      "path": "protokits/terrain-height-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": true,
+      "sourceFileCount": 2,
+      "boundarySignals": []
+    },
+    {
+      "name": "terrain-horizon-lod-kit",
+      "path": "protokits/terrain-horizon-lod-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "terrain-hydrology-domain-kit",
+      "path": "protokits/terrain-hydrology-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "terrain-material-paint-domain-kit",
+      "path": "protokits/terrain-material-paint-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "terrain-sampler-kit",
+      "path": "protokits/terrain-sampler-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "terrain-shaping-domain-kit",
+      "path": "protokits/terrain-shaping-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "three-render-adapter-kit",
+      "path": "protokits/three-render-adapter-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "adapter/host-name"
+      ]
+    },
+    {
+      "name": "time-of-day-kit",
+      "path": "protokits/time-of-day-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "timed-pressure-director-kit",
+      "path": "protokits/timed-pressure-director-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "timed-pressure-domain-kit",
+      "path": "protokits/timed-pressure-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": true,
+      "sourceFileCount": 2,
+      "boundarySignals": []
+    },
+    {
+      "name": "token-registry-kit",
+      "path": "protokits/token-registry-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "tokenizer-loader-kit",
+      "path": "protokits/tokenizer-loader-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "toon-visual-kit",
+      "path": "protokits/toon-visual-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "transform-domain-service-kit",
+      "path": "protokits/transform-domain-service-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "transform-dsk",
+      "path": "protokits/transform-dsk",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "universal-game-domain-kits",
+      "path": "protokits/universal-game-domain-kits",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "composite-name",
+        "renderer/browser"
+      ]
+    },
+    {
+      "name": "updraft-volume-kit",
+      "path": "protokits/updraft-volume-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "vegetation-archetype-kit",
+      "path": "protokits/vegetation-archetype-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "vegetation-density-field-kit",
+      "path": "protokits/vegetation-density-field-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "vegetation-footprint-domain-kit",
+      "path": "protokits/vegetation-footprint-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": true,
+      "sourceFileCount": 2,
+      "boundarySignals": []
+    },
+    {
+      "name": "vegetation-lod-kit",
+      "path": "protokits/vegetation-lod-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "vegetation-placement-domain-kit",
+      "path": "protokits/vegetation-placement-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "vegetation-placement-kit",
+      "path": "protokits/vegetation-placement-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "vegetation-scale-domain-kit",
+      "path": "protokits/vegetation-scale-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": true,
+      "sourceFileCount": 2,
+      "boundarySignals": []
+    },
+    {
+      "name": "vertical-climb-core",
+      "path": "protokits/vertical-climb-core",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "view-rig-kit",
+      "path": "protokits/view-rig-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "visual-fidelity-maker-kit",
+      "path": "protokits/visual-fidelity-maker-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "visual-policy-domain-service-kit",
+      "path": "protokits/visual-policy-domain-service-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "vr-platformer-kit-suite",
+      "path": "protokits/vr-platformer-kit-suite",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "composite-name"
+      ]
+    },
+    {
+      "name": "water-audio-kit",
+      "path": "protokits/water-audio-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "water-behavior-kit",
+      "path": "protokits/water-behavior-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "water-data-kit",
+      "path": "protokits/water-data-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "water-effects-kit",
+      "path": "protokits/water-effects-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "water-mesh-kit",
+      "path": "protokits/water-mesh-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "water-mode-kit",
+      "path": "protokits/water-mode-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "water-physics-kit",
+      "path": "protokits/water-physics-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "water-shading-kit",
+      "path": "protokits/water-shading-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "water-stream-kit",
+      "path": "protokits/water-stream-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "water-surface-kit",
+      "path": "protokits/water-surface-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "webgl-render-adapter-kit",
+      "path": "protokits/webgl-render-adapter-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "adapter/host-name"
+      ]
+    },
+    {
+      "name": "webgpu-render-adapter-kit",
+      "path": "protokits/webgpu-render-adapter-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "adapter/host-name"
+      ]
+    },
+    {
+      "name": "webgpu-render-kit",
+      "path": "protokits/webgpu-render-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [
+        "kit.json"
+      ],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "webxr-hand-adapter-dsk",
+      "path": "protokits/webxr-hand-adapter-dsk",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "adapter/host-name"
+      ]
+    },
+    {
+      "name": "webxr-hit-test-adapter-domain-kit",
+      "path": "protokits/webxr-hit-test-adapter-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [
+        "kit.manifest.json"
+      ],
+      "manifestValid": true,
+      "hasTests": true,
+      "sourceFileCount": 2,
+      "boundarySignals": [
+        "adapter/host-name",
+        "renderer/browser"
+      ]
+    },
+    {
+      "name": "weighted-trigger-domain-kit",
+      "path": "protokits/weighted-trigger-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "wgsl-shader-library-kit",
+      "path": "protokits/wgsl-shader-library-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [
+        "kit.json"
+      ],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "widget-domain-service-kit",
+      "path": "protokits/widget-domain-service-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "widget-dsk",
+      "path": "protokits/widget-dsk",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "wind-field-kit",
+      "path": "protokits/wind-field-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "wind-response-kit",
+      "path": "protokits/wind-response-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "workspace-entity-domain-kit",
+      "path": "protokits/workspace-entity-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "workspace-layout-domain-kit",
+      "path": "protokits/workspace-layout-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "world-patch-kit",
+      "path": "protokits/world-patch-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "world-patch-stream-kit",
+      "path": "protokits/world-patch-stream-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "world-zone-domain-kit",
+      "path": "protokits/world-zone-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "xr-comfort-domain-kit",
+      "path": "protokits/xr-comfort-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "xr-frame-kit",
+      "path": "protokits/xr-frame-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "xr-grab-throw-kit",
+      "path": "protokits/xr-grab-throw-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "xr-house-demo-kit",
+      "path": "protokits/xr-house-demo-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "xr-input-adapter-kit",
+      "path": "protokits/xr-input-adapter-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "adapter/host-name"
+      ]
+    },
+    {
+      "name": "xr-input-kit",
+      "path": "protokits/xr-input-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "xr-layer-kit",
+      "path": "protokits/xr-layer-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "xr-platformer-render-adapter-kit",
+      "path": "protokits/xr-platformer-render-adapter-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": [
+        "adapter/host-name"
+      ]
+    },
+    {
+      "name": "xr-pose-domain-kit",
+      "path": "protokits/xr-pose-domain-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "xr-render-descriptor-kit",
+      "path": "protokits/xr-render-descriptor-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "xr-session-kit",
+      "path": "protokits/xr-session-kit",
+      "hasEntrypoint": true,
+      "hasReadme": true,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "zombie-orchard",
+      "path": "protokits/zombie-orchard",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    },
+    {
+      "name": "zone-field-kit",
+      "path": "protokits/zone-field-kit",
+      "hasEntrypoint": true,
+      "hasReadme": false,
+      "manifests": [],
+      "manifestValid": true,
+      "hasTests": false,
+      "sourceFileCount": 1,
+      "boundarySignals": []
+    }
+  ],
+  "normalizedDuplicateClusters": [
+    {
+      "normalizedName": "interaction",
+      "names": [
+        "interaction-domain-kit",
+        "interaction-domain-service-kit",
+        "interaction-dsk",
+        "interaction-kit"
+      ]
+    },
+    {
+      "normalizedName": "action-window",
+      "names": [
+        "action-window-domain-kit",
+        "generic-action-window-kit"
+      ]
+    },
+    {
+      "normalizedName": "affordance-descriptor",
+      "names": [
+        "affordance-descriptor-domain-kit",
+        "generic-affordance-descriptor-kit"
+      ]
+    },
+    {
+      "normalizedName": "biome-field",
+      "names": [
+        "biome-field-kit",
+        "generic-biome-field-kit"
+      ]
+    },
+    {
+      "normalizedName": "camera-mode",
+      "names": [
+        "camera-mode-domain",
+        "generic-camera-mode-kit"
+      ]
+    },
+    {
+      "normalizedName": "damage-health",
+      "names": [
+        "damage-health-domain-kit",
+        "damage-health-kit"
+      ]
+    },
+    {
+      "normalizedName": "environment",
+      "names": [
+        "environment-domain",
+        "environment-kits"
+      ]
+    },
+    {
+      "normalizedName": "kit-registry",
+      "names": [
+        "kit-registry",
+        "kit-registry-domain-kit"
+      ]
+    },
+    {
+      "normalizedName": "objective-flow",
+      "names": [
+        "objective-flow-domain-kit",
+        "objective-flow-kit"
+      ]
+    },
+    {
+      "normalizedName": "performance-budget",
+      "names": [
+        "generic-performance-budget-kit",
+        "performance-budget-kit"
+      ]
+    },
+    {
+      "normalizedName": "persistence",
+      "names": [
+        "persistence-domain-service-kit",
+        "persistence-dsk"
+      ]
+    },
+    {
+      "normalizedName": "render-descriptor",
+      "names": [
+        "generic-render-descriptor-kit",
+        "render-descriptor-domain-kit"
+      ]
+    },
+    {
+      "normalizedName": "selection",
+      "names": [
+        "selection-domain-service-kit",
+        "selection-dsk"
+      ]
+    },
+    {
+      "normalizedName": "spatial-scene-graph",
+      "names": [
+        "spatial-scene-graph-dsk",
+        "spatial-scene-graph-kit"
+      ]
+    },
+    {
+      "normalizedName": "transform",
+      "names": [
+        "transform-domain-service-kit",
+        "transform-dsk"
+      ]
+    },
+    {
+      "normalizedName": "vegetation-placement",
+      "names": [
+        "vegetation-placement-domain-kit",
+        "vegetation-placement-kit"
+      ]
+    },
+    {
+      "normalizedName": "widget",
+      "names": [
+        "widget-domain-service-kit",
+        "widget-dsk"
+      ]
+    }
+  ],
+  "experiments": {
+    "flatAaaRoutes": [
+      "abyssal-lift-diver",
+      "aether-thread-braider",
+      "amber-wasp-chorister",
+      "ashen-sommelier",
+      "ashfall-star-miner",
+      "aurora-ferromancer",
+      "aurora-lance-herder",
+      "basalt-gyro-calibrator",
+      "beetle-siege",
+      "bluefire-marrow-igniter",
+      "bone-orchard-courier",
+      "brass-moon-smuggler",
+      "catacomb-postmaster",
+      "chrome-basilisk-garden",
+      "cinder-ink-tracer",
+      "cinder-opera-siege",
+      "clockwork-verdict",
+      "comet-forge-runner",
+      "core-diver",
+      "crimson-monsoon-librarian",
+      "crimson-orbit-foundry",
+      "dusk-cannon-cartographer",
+      "echo-lock",
+      "eclipse-locksmith",
+      "ember-crown-duelist",
+      "ember-rail",
+      "frost-lantern-reclaimer",
+      "frostwire-bailiff",
+      "ghostline-bellwright",
+      "glacier-chain-towmaster",
+      "glass-dune-excavator",
+      "glass-harbor-notary",
+      "glass-leviathan-trench",
+      "glass-titan-choir",
+      "glyph-sprinter",
+      "grave-signal-diver",
+      "gravemark-cartographer",
+      "graveyard-satellite-choir",
+      "gravity-anvil",
+      "halo-mason",
+      "hollow-warden",
+      "inkstorm-cartel",
+      "iron-whale-vault",
+      "ironroot-colossus",
+      "ivory-dragon-ferryman",
+      "ivory-titan-forge",
+      "ivory-wolf-court",
+      "lantern-vow",
+      "lilac-crypt-whisperer",
+      "lumen-reef-cartographer",
+      "magma-choir-smith",
+      "mammoth-bell",
+      "marble-rift-magnetist",
+      "marble-wasp-catacomb",
+      "meteor-tailor",
+      "midnight-bridge-warden",
+      "mirage-stalker",
+      "mirror-hound-parallax",
+      "mirrorfall-prism",
+      "mirrorgrave-duelist",
+      "monolith-gardener",
+      "neon-abbey-exorcist",
+      "neon-courier-reef",
+      "nerve-forge",
+      "nocturne-lock-diviner",
+      "null-tide-anchorite",
+      "obsidian-luthier",
+      "onyx-sand-distiller",
+      "opal-wind-sculptor",
+      "opera-of-knives",
+      "orbit-suture-runner",
+      "orchid-mech-harvest",
+      "palladium-reef-harvester",
+      "plasma-calligrapher",
+      "prism-archivist",
+      "prism-bastion-sealer",
+      "quantum-puppet-bailiff",
+      "quartz-undertaker",
+      "rift-bazaar",
+      "rust-moon-sapper",
+      "saffron-anchor-priest",
+      "saffron-skull-market",
+      "signal-pyre-diplomat",
+      "silica-titan-mender",
+      "skyrig-suture",
+      "solar-mirror-bastion",
+      "sporewright-canopy",
+      "starforge-salvager",
+      "starwell-cartographer",
+      "stormglass-vanguard",
+      "sunken-choir",
+      "sunken-crown-dispatch",
+      "tarot-engine-broker",
+      "thunder-kite",
+      "thunder-orchard-rail",
+      "thunder-rail-outrider",
+      "tideglass-salvage",
+      "velvet-parasite",
+      "velvet-siege-orchestra",
+      "void-harbor-pilot"
+    ],
+    "otherExperimentFolders": [
+      {
+        "name": "_kits",
+        "fileCount": 58,
+        "javascriptFileCount": 58,
+        "htmlFileCount": 0,
+        "hasReadme": false
+      },
+      {
+        "name": "_shared",
+        "fileCount": 11,
+        "javascriptFileCount": 10,
+        "htmlFileCount": 0,
+        "hasReadme": false
+      },
+      {
+        "name": "_tests",
+        "fileCount": 1,
+        "javascriptFileCount": 1,
+        "htmlFileCount": 0,
+        "hasReadme": false
+      },
+      {
+        "name": "aaa-batch",
+        "fileCount": 209,
+        "javascriptFileCount": 106,
+        "htmlFileCount": 101,
+        "hasReadme": true
+      },
+      {
+        "name": "BirdRun",
+        "fileCount": 3,
+        "javascriptFileCount": 2,
+        "htmlFileCount": 1,
+        "hasReadme": false
+      },
+      {
+        "name": "cozy-island",
+        "fileCount": 16,
+        "javascriptFileCount": 15,
+        "htmlFileCount": 1,
+        "hasReadme": false
+      },
+      {
+        "name": "domain-mana-rift",
+        "fileCount": 4,
+        "javascriptFileCount": 2,
+        "htmlFileCount": 1,
+        "hasReadme": false
+      },
+      {
+        "name": "domain-wraith-bodies",
+        "fileCount": 1,
+        "javascriptFileCount": 0,
+        "htmlFileCount": 1,
+        "hasReadme": false
+      },
+      {
+        "name": "domain-zone-graph",
+        "fileCount": 1,
+        "javascriptFileCount": 0,
+        "htmlFileCount": 1,
+        "hasReadme": false
+      },
+      {
+        "name": "dsk-first-wave-proof",
+        "fileCount": 2,
+        "javascriptFileCount": 1,
+        "htmlFileCount": 1,
+        "hasReadme": false
+      },
+      {
+        "name": "fogline-relay",
+        "fileCount": 45,
+        "javascriptFileCount": 42,
+        "htmlFileCount": 1,
+        "hasReadme": true
+      },
+      {
+        "name": "gaussian-splat-runtime",
+        "fileCount": 2,
+        "javascriptFileCount": 0,
+        "htmlFileCount": 1,
+        "hasReadme": true
+      },
+      {
+        "name": "GTM Agentic Flow",
+        "fileCount": 1,
+        "javascriptFileCount": 0,
+        "htmlFileCount": 0,
+        "hasReadme": false
+      },
+      {
+        "name": "high-fidelity-meadow",
+        "fileCount": 33,
+        "javascriptFileCount": 30,
+        "htmlFileCount": 1,
+        "hasReadme": true
+      },
+      {
+        "name": "infinite-radial-terrain",
+        "fileCount": 17,
+        "javascriptFileCount": 15,
+        "htmlFileCount": 1,
+        "hasReadme": false
+      },
+      {
+        "name": "living-agent-lab",
+        "fileCount": 12,
+        "javascriptFileCount": 10,
+        "htmlFileCount": 2,
+        "hasReadme": false
+      },
+      {
+        "name": "next-ledge",
+        "fileCount": 38,
+        "javascriptFileCount": 35,
+        "htmlFileCount": 1,
+        "hasReadme": true
+      },
+      {
+        "name": "nexus-frontier-signal-isles",
+        "fileCount": 16,
+        "javascriptFileCount": 14,
+        "htmlFileCount": 1,
+        "hasReadme": true
+      },
+      {
+        "name": "onnx-agent-lab",
+        "fileCount": 14,
+        "javascriptFileCount": 9,
+        "htmlFileCount": 5,
+        "hasReadme": false
+      },
+      {
+        "name": "path-meadow",
+        "fileCount": 2,
+        "javascriptFileCount": 0,
+        "htmlFileCount": 1,
+        "hasReadme": true
+      },
+      {
+        "name": "peer-scene-transition",
+        "fileCount": 26,
+        "javascriptFileCount": 14,
+        "htmlFileCount": 7,
+        "hasReadme": true
+      },
+      {
+        "name": "riftbound-duel",
+        "fileCount": 3,
+        "javascriptFileCount": 1,
+        "htmlFileCount": 1,
+        "hasReadme": true
+      },
+      {
+        "name": "signal-bastion",
+        "fileCount": 1,
+        "javascriptFileCount": 0,
+        "htmlFileCount": 1,
+        "hasReadme": false
+      },
+      {
+        "name": "sora-the-infinite",
+        "fileCount": 24,
+        "javascriptFileCount": 16,
+        "htmlFileCount": 2,
+        "hasReadme": false
+      },
+      {
+        "name": "spatial-authoring-workbench",
+        "fileCount": 8,
+        "javascriptFileCount": 5,
+        "htmlFileCount": 1,
+        "hasReadme": true
+      },
+      {
+        "name": "The Cavalry of Rome",
+        "fileCount": 45,
+        "javascriptFileCount": 42,
+        "htmlFileCount": 1,
+        "hasReadme": true
+      },
+      {
+        "name": "the-open-above",
+        "fileCount": 18,
+        "javascriptFileCount": 16,
+        "htmlFileCount": 1,
+        "hasReadme": true
+      },
+      {
+        "name": "the-open-above-v2",
+        "fileCount": 4,
+        "javascriptFileCount": 3,
+        "htmlFileCount": 1,
+        "hasReadme": false
+      },
+      {
+        "name": "ThirdPersonFollowThrough",
+        "fileCount": 25,
+        "javascriptFileCount": 24,
+        "htmlFileCount": 1,
+        "hasReadme": false
+      },
+      {
+        "name": "tiny-diffusion-lab",
+        "fileCount": 19,
+        "javascriptFileCount": 15,
+        "htmlFileCount": 2,
+        "hasReadme": true
+      },
+      {
+        "name": "tropical-island-scene",
+        "fileCount": 24,
+        "javascriptFileCount": 23,
+        "htmlFileCount": 1,
+        "hasReadme": false
+      },
+      {
+        "name": "vr-platformer-board",
+        "fileCount": 8,
+        "javascriptFileCount": 4,
+        "htmlFileCount": 3,
+        "hasReadme": true
+      },
+      {
+        "name": "zombie-orchard",
+        "fileCount": 31,
+        "javascriptFileCount": 30,
+        "htmlFileCount": 1,
+        "hasReadme": false
+      }
+    ]
+  },
+  "games": [
+    {
+      "name": "next-ledge-grapple",
+      "fileCount": 4,
+      "javascriptFileCount": 1,
+      "htmlFileCount": 1,
+      "hasReadme": true
+    },
+    {
+      "name": "rogue-lite-hellscape-siege",
+      "fileCount": 23,
+      "javascriptFileCount": 20,
+      "htmlFileCount": 1,
+      "hasReadme": true
+    },
+    {
+      "name": "signal-bastion",
+      "fileCount": 22,
+      "javascriptFileCount": 21,
+      "htmlFileCount": 1,
+      "hasReadme": false
+    },
+    {
+      "name": "stonewake-depths",
+      "fileCount": 18,
+      "javascriptFileCount": 16,
+      "htmlFileCount": 1,
+      "hasReadme": false
+    }
+  ]
+}
