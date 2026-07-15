@@ -33,4 +33,4 @@ Accepted catalog definitions are tracked separately and do not count as created 
 | Packet | Epoch | Unit | Result | Publication |
 | --- | ---: | --- | --- | --- |
 | `2026-07-15-phase-a-production-baseline` | 0 | Phase A inventory | Baseline preserved; zero mission assets | published |
-| `2026-07-15-bootstrap-catalog-001-010` | 0 | Perpetual migration + catalog 001-010 | 10 definitions accepted; 6 candidates rejected; zero implementation | pending receipt |
+| `2026-07-15-bootstrap-catalog-001-010` | 0 | Perpetual migration + catalog 001-010 | 10 definitions accepted; 6 candidates rejected; zero implementation | production commit `63c73df322d228a430cedf3d76a25c2c6c091885` published |

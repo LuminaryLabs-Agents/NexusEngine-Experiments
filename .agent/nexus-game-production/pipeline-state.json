@@ -138,7 +138,12 @@
     "scope": "Perpetual-state migration plus bootstrap catalog batch 001-010",
     "result": "Migrated fixed terminal targets to bootstrap-plus-epoch tracking and accepted the first 10 renderer-agnostic kit contracts.",
     "validation": "passed: Phase A drift guard, production invariants, JSON parsing, Playwright reader/reviewer flow, screenshot comparison, zero console errors, and diff checks",
-    "publication": "pending"
+    "commits": {
+      "protokitsStartAndFinal": "ffdcc962d3c984864a2d78e9276879adf04250eb",
+      "experimentsStart": "f05ad5ab3cfce0f2be9479b0aa5f26df5c001a5c",
+      "experimentsProductionUnit": "63c73df322d228a430cedf3d76a25c2c6c091885"
+    },
+    "publication": "production commit published to origin/main; publication record commit intentionally not self-hashed"
   },
   "exactNextUnit": {
     "phase": "B-catalog",
