@@ -21,4 +21,4 @@ Build a durable, gated production pipeline that adds exactly 100 reusable ProtoK
 
 ## Current Gate
 
-Phase A inventory baseline is the active unit. Mission-created kit, experiment, and game totals remain zero until later gates accept real implementation and proof.
+Phase A inventory baseline is complete. Phase B `catalog-batch-001-010` is the next active bounded unit: define and audit 10 unique kit contracts without implementing them. Mission-created kit, experiment, and game totals remain zero until later gates accept real implementation and proof.
