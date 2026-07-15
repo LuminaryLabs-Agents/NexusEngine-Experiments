@@ -60,7 +60,14 @@
   "lastCompletedUnit": {
     "packetId": "2026-07-15-phase-a-production-baseline",
     "scope": "Phase A production baseline",
-    "result": "Mapped Core ownership, existing ProtoKit surfaces, legacy experiment routes, existing games, duplicate-name clusters, and zero mission totals."
+    "result": "Mapped Core ownership, existing ProtoKit surfaces, legacy experiment routes, existing games, duplicate-name clusters, and zero mission totals.",
+    "commits": {
+      "protokitsStartAndFinal": "ffdcc962d3c984864a2d78e9276879adf04250eb",
+      "experimentsStart": "615a7e1e2170164acef0edebdbe0b88b8c01fd1b",
+      "experimentsProductionUnit": "71a51c11847e99994a0cb8cdb6a137e27e806df9"
+    },
+    "validation": "passed",
+    "publication": "published to origin/main"
   },
   "nextUnit": {
     "phase": "B-catalog",

@@ -2,7 +2,7 @@
 
 Packet ID: `2026-07-15-phase-a-production-baseline`
 Automation: Nexus Engine Game Production Builder
-Status: validated; publication pending
+Status: complete and published
 
 ## Result
 
@@ -77,9 +77,11 @@ The scope lock is coordination state and will be released before commit.
 
 ## Commits And Push
 
-- ProtoKits: no owned changes planned.
-- Experiments commit: pending.
-- Push: pending.
+- ProtoKits start/final: `ffdcc962d3c984864a2d78e9276879adf04250eb`; no owned changes and no push required.
+- Experiments synchronized start: `615a7e1e2170164acef0edebdbe0b88b8c01fd1b`.
+- Experiments production-unit commit: `71a51c11847e99994a0cb8cdb6a137e27e806df9` (`Bootstrap game production Phase A inventory`).
+- Push: `615a7e1..71a51c1 main -> main` succeeded.
+- The later publication-record commit contains this push receipt and is intentionally not self-hashed inside its own packet contents.
 
 ## Exact Next Unit
 

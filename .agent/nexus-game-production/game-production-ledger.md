@@ -18,6 +18,12 @@ Target: 10 new games, exactly 5 source experiments per game
 
 These remain preserved legacy inventory. No mission game or gameplay-time claim exists yet.
 
+## Run History
+
+| Packet | Unit | ProtoKits start/final | Experiments start | Production commit | Validation | Push |
+| --- | --- | --- | --- | --- | --- | --- |
+| `2026-07-15-phase-a-production-baseline` | Phase A inventory | `ffdcc962d3c984864a2d78e9276879adf04250eb` | `615a7e1e2170164acef0edebdbe0b88b8c01fd1b` | `71a51c11847e99994a0cb8cdb6a137e27e806df9` | inventory check + JSON invariants passed | Experiments `origin/main` passed; ProtoKits unchanged |
+
 ## Required Game Gate
 
 Each mission game must preserve five source experiments; share progression/state; include at least five connected scenes or regions with persistent transitions, objectives, escalation, failure/recovery, and completion; provide at least three materially different interaction modes when appropriate; and maintain the complete required documentation set before initial completion.
