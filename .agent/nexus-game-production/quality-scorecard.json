@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Choose the lowest-scoring or least-recently-improved active game for each production epoch's bounded refinement-and-pruning slice.",
+  "selectionPolicy": [
+    "Prefer the lowest complete weighted score.",
+    "Treat an unscored active game as needing baseline scoring before a scored game is selected.",
+    "Break ties by oldest lastImprovedAt, then stable game ID.",
+    "Do not select a game with overlapping live work."
+  ],
+  "scoreDimensions": {
+    "gameplayDepth": 20,
+    "coherence": 15,
+    "sceneAndRegionContinuity": 15,
+    "interactionModeDiversity": 15,
+    "progressionAndRecovery": 15,
+    "feedbackAndReadability": 10,
+    "documentationAndProof": 10
+  },
+  "productionGames": {
+    "lifetimeScored": 0,
+    "activeScored": 0,
+    "nextRefinementCandidate": null
+  },
+  "legacyBaselineGames": [
+    {
+      "id": "next-ledge-grapple",
+      "lifecycleStatus": "active-legacy-baseline",
+      "score": null,
+      "lastImprovedAt": null
+    },
+    {
+      "id": "rogue-lite-hellscape-siege",
+      "lifecycleStatus": "active-legacy-baseline",
+      "score": null,
+      "lastImprovedAt": null
+    },
+    {
+      "id": "signal-bastion",
+      "lifecycleStatus": "active-legacy-baseline",
+      "score": null,
+      "lastImprovedAt": null
+    },
+    {
+      "id": "stonewake-depths",
+      "lifecycleStatus": "active-legacy-baseline",
+      "score": null,
+      "lastImprovedAt": null
+    }
+  ],
+  "games": []
+}

@@ -1,28 +1,55 @@
 # Core Domain Coverage Report
 
-Status: Phase A baseline
-Mission kit coverage: 0 accepted kits
-Mission experiment coverage: 0 playable experiments
+Status: bootstrap Phase B catalog in progress
+Accepted catalog definitions: 10 of 100 bootstrap definitions
+Implemented production kits: 0
+Playable production experiments: 0
 
 ## Coverage Rule
 
-Core is authoritative. A new kit must name the Core domains it configures or composes, explain the semantic responsibility Core does not own, and keep provider/renderer/browser concerns outside reusable state. Coverage does not reward duplicating Core.
+Core is authoritative. A new kit must name the Core domains it configures or composes, explain the semantic responsibility Core does not own, and keep provider, renderer, browser, authored content, and game fiction outside reusable state. Coverage does not reward duplicating Core.
+
+## Accepted Definition Coverage
+
+| Accepted definition | Core mapping | New semantic ownership | Boundary result |
+| --- | --- | --- | --- |
+| `contagion-transmission-domain-kit` | simulation + data; agent/spatial observations | exposure lineage and infection lifecycle | pass |
+| `ecosystem-population-cycle-domain-kit` | simulation + data + world regions | aggregate cohorts and trophic cycles | pass |
+| `structural-support-network-domain-kit` | simulation + physics + scene | support topology and ordered failure propagation | pass |
+| `collective-resolve-domain-kit` | simulation + agent + data | group resolve, break, and rally semantics | pass |
+| `territory-influence-domain-kit` | simulation + spatial + scene + data | faction influence, contest, and control | pass |
+| `rumor-propagation-domain-kit` | data + agent + policy | claim exposure, lineage, distortion, correction | pass |
+| `navigation-knowledge-domain-kit` | data + world + scene + spatial | observer-specific place/link knowledge | pass |
+| `rescue-triage-domain-kit` | simulation + interaction + data + agent | severity priority, stabilization, deterioration, transport readiness | pass |
+| `negotiation-commitment-domain-kit` | data + policy + simulation + agent | offers, obligations, fulfillment, breach, settlement | pass |
+| `habitat-suitability-domain-kit` | data + world + spatial + simulation | ecological fit and limiting-factor evaluation | pass |
+
+No definition claims Core state primitives, provider implementations, renderer ownership, raw input, browser lifecycle, or game-specific content.
+
+## Rejected Overlap Summary
+
+- `signal-triangulation-domain-kit`: existing universal survey/cartography declaration and adjacent acoustic/scan owners.
+- `investigation-evidence-domain-kit`: existing `engine.n.investigation` owns evidence and hypotheses.
+- `crafting-transformation-domain-kit`: existing crafting domain service and recipe-table owners.
+- `shelter-exposure-domain-kit`: existing survival-needs/weather meaning plus promoted resource/pressure primitives.
+- `crowd-flow-demand-domain-kit`: promoted Core `OccupantFlowKit` and `RequestQueueKit` semantics.
+- `formation-assignment-domain-kit`: existing Agent Group formation-state ownership.
 
 ## Baseline Risk Map
 
-| Existing ProtoKit family | Current Core authority | Phase B disposition |
+| Existing ProtoKit family | Current Core authority | Continuing disposition |
 | --- | --- | --- |
 | Registry, capability graph, composition planning | `core-composition-kit` | Treat wrappers as compatibility/history; reject new duplicates |
-| Seed streams, completion ledgers, state digests | `core-data-kit` | Require higher-level procedural or progression meaning |
-| Resource meters, pressure loops, action windows | `core-simulation-kit` | Require a composed game/system loop beyond the primitive |
-| Interaction/affordance aliases | `core-interaction-kit` | Merge/adapter review before accepting adjacent work |
-| Transform, spatial scene graph, zone aliases | `core-spatial-kit` + `core-scene-kit` | Require semantic spatial behavior, not renamed facts |
-| Render descriptor and visual wrapper aliases | `core-graphics-kit` | Descriptor composition is allowed; renderer ownership is not |
-| Camera modes and camera wrappers | `core-camera-kit` | Accept only specialized policy with distinct reuse proof |
-| Physics body/provider wrappers | `core-physics-kit` | Accept provider adapters or gameplay meaning, not contract copies |
-| World/terrain/content families | `core-world-domain` plus providers | Keep heavy terrain/content state provider-owned and portable snapshots light |
-| Capture, compute, object fidelity | Dedicated Core domains | Compose requests/builders/providers; do not create parallel orchestration |
+| Seed streams, completion ledgers, state digests | `core-data-kit` | Require higher-level procedural, knowledge, or progression meaning |
+| Resource meters, pressure loops, action windows | `core-simulation-kit` | Require a composed semantic loop beyond the primitive |
+| Interaction/affordance aliases | `core-interaction-kit` | Merge/adapter review before adjacent acceptance |
+| Transform, spatial scene graph, zones | `core-spatial-kit` + `core-scene-kit` | Require semantic spatial behavior, not renamed facts |
+| Render/visual descriptors | `core-graphics-kit` | Descriptor composition allowed; renderer ownership forbidden |
+| Camera modes | `core-camera-kit` | Specialized policy only with distinct reuse proof |
+| Physics wrappers | `core-physics-kit` | Provider adapters or gameplay meaning only |
+| World/terrain/content families | `core-world-domain` plus providers | Heavy terrain/content stays provider-owned; portable snapshots remain light |
+| Capture, compute, object fidelity | dedicated Core domains | Compose requests/builders/providers; no parallel orchestration |
 
-## Gap State
+## Exact Next Audit
 
-No new gap is accepted yet. Phase B must choose candidate domains only after checking all 514 existing top-level ProtoKit folders and the current remote Core map.
+Audit bootstrap catalog definitions 011-020 against all 514 existing top-level folders, nested declarations, package exports, and the current Core map before acceptance.

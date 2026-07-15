@@ -15,11 +15,13 @@ NexusEngine-Experiments owns playable browser proof, product-specific content an
 ## Production Pipeline
 
 - Durable state lives under `.agent/nexus-game-production/`.
-- Each run creates one `.agent/change-packets/<packet-id>/PACKET.md` and claims one narrow `.agent/locks/<scope-id>.lock/` scope after the global Git lock.
-- Gates are sequential: inventory, catalog, implementation, experiments, coverage, games, documentation, then round-robin expansion.
-- The kit catalog accepts exactly 100 unique definitions only after the natural-language ownership contract is complete.
-- Each of the 50 new experiments records seed, draws, rejections, accepted signature, coherence, fantasy, verb, pressure, objective, visual identity, and interaction structure.
-- Each of the 10 new games maps exactly five new source experiments and preserves those sources.
+- Each run creates one `.agent/change-packets/<packet-id>/PACKET.md`; global and repository lock artifacts are deprecated and must not be created, inspected, or honored.
+- Gates are sequential through bootstrap: inventory, catalog, implementation, experiments, coverage, games, and documentation.
+- Bootstrap epoch 0 requires 100 accepted and implemented kits, 50 playable seeded experiments, and 10 documented games. These are minimums, not terminal caps.
+- After bootstrap, numbered production epochs continue forever. Each epoch adds exactly 10 accepted and implemented kits, 5 playable seeded experiments, 1 documented game that merges those five experiments, and 1 bounded refinement-and-pruning slice.
+- Every experiment records epoch, lifecycle status, seed, draws, rejections, accepted signature, coherence, fantasy, verb, pressure, objective, visual identity, interaction structure, and validation.
+- Source experiments and superseded games may be removed only after their complete feature union is inventoried, mapped to a validated successor, cleared from references, and recorded in the retirement ledger.
+- Track bootstrap progress separately from lifetime-created, active, merged, archived, and retired totals. Accepted definitions do not count as created kits.
 
 ## Conventions
 

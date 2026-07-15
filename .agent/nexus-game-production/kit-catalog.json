@@ -1,9 +1,18 @@
 {
-  "schemaVersion": 1,
-  "target": 100,
-  "acceptedCount": 0,
-  "implementedCount": 0,
-  "status": "catalog-not-started",
+  "schemaVersion": 2,
+  "operatingMode": "bootstrap-plus-numbered-production-epochs",
+  "bootstrapTarget": 100,
+  "epochTarget": 10,
+  "counts": {
+    "acceptedBootstrap": 10,
+    "acceptedCurrentEpoch": 10,
+    "acceptedLifetime": 10,
+    "implementedBootstrap": 0,
+    "implementedCurrentEpoch": 0,
+    "implementedLifetime": 0,
+    "rejectedLifetime": 6
+  },
+  "status": "bootstrap-catalog-in-progress",
   "requiredFields": [
     "id",
     "name",
@@ -36,6 +45,288 @@
     "vague-or-blurred-scope",
     "missing-deterministic-proof"
   ],
-  "acceptedKits": [],
-  "rejectedCandidates": []
+  "acceptedKits": [
+    {
+      "id": "bootstrap-kit-001",
+      "name": "contagion-transmission-domain-kit",
+      "purpose": "Model deterministic exposure, infection-stage transitions, recovery, and transmission facts for authored contagions without owning medical fiction or individual movement.",
+      "coreMapping": {
+        "configures": ["core-simulation-kit", "core-data-kit"],
+        "composesWith": ["core-agent-kit", "core-spatial-kit"],
+        "nonDuplicatedMeaning": "Core owns resources, thresholds, agents, and spatial facts; this domain owns contagion-specific exposure chains and infection lifecycle meaning."
+      },
+      "classification": "feature-domain",
+      "ownership": ["contagion definitions", "subject exposure doses", "infection stage per subject", "source-to-subject transmission ledger", "recovery and immunity windows", "deterministic outbreak summaries"],
+      "exclusions": ["pathogen or medicine content", "damage/health primitives", "agent motion", "contact detection", "renderer effects", "UI", "network transport", "wall-clock time"],
+      "actions": ["register contagion", "record exposure", "advance fixed tick", "apply treatment fact", "reset outbreak", "load snapshot"],
+      "resourcesAndState": ["contagionTransmission.definitions", "contagionTransmission.subjects", "contagionTransmission.transmissions", "contagionTransmission.tick"],
+      "events": ["contagion.exposureRecorded", "contagion.stageChanged", "contagion.transmitted", "contagion.recovered", "contagion.commandRejected", "contagion.reset"],
+      "methods": ["registerContagion(definition)", "recordExposure(fact)", "applyTreatment(fact)", "advance(ticks)", "getSubject(subjectId)", "getSnapshot()", "loadSnapshot(snapshot)", "reset()"],
+      "snapshotsAndDescriptors": ["versioned contagion snapshot", "subject infection-status descriptors", "transmission-chain descriptors", "outbreak summary descriptor"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "core-data deterministic streams and snapshots", "explicit contact/exposure observations supplied by hosts or adjacent domains"],
+      "expectedCompositions": ["rescue-triage-domain-kit", "rumor-propagation-domain-kit", "habitat-suitability-domain-kit", "generic-pressure-loop-kit"],
+      "plausibleUses": ["quarantine a spreading blight across greenhouse workers", "trace a supernatural curse through witnesses in a village"],
+      "experimentProof": "A seeded Quarantine Lantern route must replay the same contact facts into identical infection stages, transmission chains, recovery outcomes, and rejection events without browser or renderer state.",
+      "idempotencyRule": "Definition registration is stable by ID; repeated exposure command IDs are ignored without adding dose or duplicate transmission facts; reset and repeated loadSnapshot converge on the same digest.",
+      "duplicateAndMergeRisk": "No existing ProtoKit contains contagion, infection, epidemic, or pathogen behavior. It must not collapse into generic resource/pressure meters because transmission lineage and infection stages are the distinct reusable meaning.",
+      "promotionPotential": "Experimental until two unrelated contagion configurations, fixed-tick replay, snapshot migration, and one playable consumer pass."
+    },
+    {
+      "id": "bootstrap-kit-002",
+      "name": "ecosystem-population-cycle-domain-kit",
+      "purpose": "Advance aggregate species cohorts through feeding, predation, reproduction, mortality, and carrying-capacity pressure using explicit fixed ticks and seeded resolution.",
+      "coreMapping": {
+        "configures": ["core-simulation-kit", "core-data-kit"],
+        "composesWith": ["core-world-domain"],
+        "nonDuplicatedMeaning": "Core owns deterministic resolution and world cells; this domain owns ecological cohort and trophic-flow meaning."
+      },
+      "classification": "feature-domain",
+      "ownership": ["species cohort definitions", "regional population counts", "feeding links", "birth and mortality rules", "carrying-capacity effects", "seeded population transitions"],
+      "exclusions": ["individual creature AI", "spawn placement", "terrain or biome generation", "weather simulation", "rendered wildlife", "asset loading", "game-authored species lore"],
+      "actions": ["register species cohort", "register feeding link", "set regional capacity", "apply migration fact", "advance cycle", "reset ecosystem"],
+      "resourcesAndState": ["ecosystemPopulation.species", "ecosystemPopulation.regions", "ecosystemPopulation.feedingLinks", "ecosystemPopulation.cycle"],
+      "events": ["ecosystem.populationChanged", "ecosystem.capacityExceeded", "ecosystem.localExtinction", "ecosystem.recoveryStarted", "ecosystem.commandRejected", "ecosystem.reset"],
+      "methods": ["registerSpecies(definition)", "registerFeedingLink(link)", "setCapacity(regionId, values)", "applyMigration(fact)", "advanceCycle(ticks)", "getRegion(regionId)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned cohort snapshot", "regional population descriptors", "trophic-flow descriptors", "capacity-pressure summary"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "core-data named deterministic stream", "portable region IDs", "authored species and feeding data"],
+      "expectedCompositions": ["habitat-suitability-domain-kit", "territory-influence-domain-kit", "contagion-transmission-domain-kit", "core-world-domain"],
+      "plausibleUses": ["restore a reef until grazer and predator populations stabilize", "manage an alpine reserve through prey decline and predator recovery"],
+      "experimentProof": "A seeded Rewilding Basin route must produce identical multi-cycle cohort totals and trophic events while two distinct authored ecosystems demonstrate reuse.",
+      "idempotencyRule": "Stable IDs prevent duplicate species or feeding links; each cycle command ID commits once; reset plus the same seed and inputs reproduces the same population snapshot.",
+      "duplicateAndMergeRisk": "No current kit owns carrying capacity, population cohorts, reproduction, or trophic flows. Creature rosters and agent kits own individuals or content, not aggregate ecology.",
+      "promotionPotential": "Hold until scale proof, two ecosystem datasets, snapshot/replay proof, and clear separation from individual-agent simulation."
+    },
+    {
+      "id": "bootstrap-kit-003",
+      "name": "structural-support-network-domain-kit",
+      "purpose": "Resolve authored support graphs, loads, capacity margins, and deterministic failure propagation above provider-neutral physics observations.",
+      "coreMapping": {
+        "configures": ["core-simulation-kit"],
+        "composesWith": ["core-physics-kit", "core-scene-kit"],
+        "nonDuplicatedMeaning": "Core Physics owns bodies, contacts, and constraints; this domain owns gameplay-level support topology and failure meaning."
+      },
+      "classification": "feature-domain",
+      "ownership": ["support node and edge definitions", "applied semantic loads", "capacity margins", "unsupported component detection", "ordered failure propagation", "repairable support-state descriptors"],
+      "exclusions": ["rigid-body integration", "collision or constraint solving", "mesh fracture", "renderer debris", "build placement", "asset damage visuals", "scene-specific bridge content"],
+      "actions": ["register support network", "apply load observation", "remove or restore support", "resolve propagation", "inspect margin", "reset network"],
+      "resourcesAndState": ["structuralSupport.networks", "structuralSupport.loads", "structuralSupport.failures", "structuralSupport.tick"],
+      "events": ["structure.loadApplied", "structure.supportLost", "structure.failurePropagated", "structure.supportRestored", "structure.commandRejected", "structure.reset"],
+      "methods": ["registerNetwork(definition)", "applyLoad(observation)", "setSupportState(nodeId, state)", "resolve(ticks)", "getMargin(nodeId)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned support-graph snapshot", "capacity-margin descriptors", "at-risk support descriptors", "failure-chain descriptors"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "portable scene IDs", "optional normalized load/contact observations from Core Physics"],
+      "expectedCompositions": ["rescue-triage-domain-kit", "collective-resolve-domain-kit", "generic-defense-build-placement-dsk", "core-interaction-kit"],
+      "plausibleUses": ["brace a storm-damaged suspension bridge before evacuation", "undermine and reinforce fortress sections during a siege"],
+      "experimentProof": "A seeded Bridge Under Siege route must reproduce capacity margins and the same ordered failure chain for identical support edits and load observations.",
+      "idempotencyRule": "Network and observation command IDs are unique; repeated support state writes are no-ops; resolution at the same tick cannot propagate the same failure twice.",
+      "duplicateAndMergeRisk": "structure-runtime-kit owns placed structure durability and operation state, while Core Physics owns constraints. Neither owns portable support graphs, capacity margins, or failure propagation.",
+      "promotionPotential": "Experimental until provider-free and Core-Physics-fed fixtures agree, large-graph budgets pass, and two structural configurations prove reuse."
+    },
+    {
+      "id": "bootstrap-kit-004",
+      "name": "collective-resolve-domain-kit",
+      "purpose": "Model a group's shared resolve from member readiness, leadership, shocks, isolation, recovery, break, and rally facts without replacing individual emotions or generic meters.",
+      "coreMapping": {
+        "configures": ["core-simulation-kit"],
+        "composesWith": ["core-agent-kit", "core-data-kit"],
+        "nonDuplicatedMeaning": "Core owns agents and pressure primitives; this domain owns group-level resolve aggregation and rally/break semantics."
+      },
+      "classification": "feature-domain",
+      "ownership": ["collective definitions", "member readiness contributions", "leadership anchors", "shock and recovery facts", "broken/rallying/steady states", "group readiness descriptors"],
+      "exclusions": ["individual relationship facts", "agent planning", "combat resolution", "formation movement", "dialogue", "animation", "UI", "audio playback"],
+      "actions": ["register collective", "set member readiness", "record shock", "set leader state", "attempt rally", "advance recovery", "reset collective"],
+      "resourcesAndState": ["collectiveResolve.collectives", "collectiveResolve.members", "collectiveResolve.shocks", "collectiveResolve.tick"],
+      "events": ["resolve.changed", "resolve.shaken", "resolve.broken", "resolve.rallyStarted", "resolve.rallied", "resolve.commandRejected", "resolve.reset"],
+      "methods": ["registerCollective(definition)", "setMemberReadiness(fact)", "recordShock(fact)", "setLeaderState(fact)", "attemptRally(command)", "advance(ticks)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned collective snapshot", "resolve-state descriptor", "member contribution descriptor", "rally eligibility descriptor"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable agent or member IDs", "explicit semantic shock and recovery facts"],
+      "expectedCompositions": ["territory-influence-domain-kit", "structural-support-network-domain-kit", "negotiation-commitment-domain-kit", "core-agent-kit"],
+      "plausibleUses": ["keep an evacuation team coordinated while infrastructure fails", "break or rally a squad defending contested ground"],
+      "experimentProof": "A seeded Bridge Under Siege route must show identical break and rally transitions from the same member, leader, and shock facts across replay.",
+      "idempotencyRule": "Member state upserts replace by stable ID, shock and rally command IDs commit once, and a repeated fixed tick cannot emit duplicate threshold transitions.",
+      "duplicateAndMergeRisk": "generic-pressure-loop-kit can hold a morale-shaped scalar and rpg-social-fact-kit owns individual trust/fear, but neither aggregates collective membership, leaders, shocks, break, and rally meaning.",
+      "promotionPotential": "Hold until military and non-combat teams both prove the boundary and replay demonstrates threshold-event stability."
+    },
+    {
+      "id": "bootstrap-kit-005",
+      "name": "territory-influence-domain-kit",
+      "purpose": "Resolve authored factions' influence contributions, contest state, control transitions, and decay across portable region IDs.",
+      "coreMapping": {
+        "configures": ["core-simulation-kit"],
+        "composesWith": ["core-spatial-kit", "core-scene-kit", "core-data-kit"],
+        "nonDuplicatedMeaning": "Core owns regions and deterministic state; this domain owns faction influence and control semantics."
+      },
+      "classification": "feature-domain",
+      "ownership": ["faction references", "region influence ledgers", "contest and control thresholds", "influence decay", "control transition history", "region-control descriptors"],
+      "exclusions": ["faction lore", "combat", "economy", "zone geometry", "scene lifecycle", "agent movement", "map rendering", "network authority"],
+      "actions": ["register region policy", "apply influence contribution", "withdraw contribution", "advance decay", "lock or release contest", "reset territory"],
+      "resourcesAndState": ["territoryInfluence.regions", "territoryInfluence.contributions", "territoryInfluence.transitions", "territoryInfluence.tick"],
+      "events": ["territory.influenceChanged", "territory.contested", "territory.controlChanged", "territory.neutralized", "territory.commandRejected", "territory.reset"],
+      "methods": ["registerRegion(definition)", "contribute(fact)", "withdraw(command)", "advance(ticks)", "getController(regionId)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned influence snapshot", "region contest descriptors", "control transition descriptors", "influence contribution read model"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "portable region and faction IDs", "explicit influence contributions from adjacent domains"],
+      "expectedCompositions": ["collective-resolve-domain-kit", "negotiation-commitment-domain-kit", "ecosystem-population-cycle-domain-kit", "generic-defense-map-dsk"],
+      "plausibleUses": ["shift a strategy frontline through supply, diplomacy, and combat facts", "compete for civic districts through services and public support"],
+      "experimentProof": "A seeded Border Accord route must replay the same contribution order into identical contested and controlled regions, including tied influence and decay cases.",
+      "idempotencyRule": "Contribution command IDs apply once, region registration is stable by ID, and control transitions emit only when the resolved controller changes.",
+      "duplicateAndMergeRisk": "Generic defense maps own paths, slots, and vital targets; Core Spatial owns region facts. Neither owns multi-faction influence ledgers, contest rules, or control transitions.",
+      "promotionPotential": "Experimental until three-faction, neutralization, snapshot restore, and two genre configurations pass."
+    },
+    {
+      "id": "bootstrap-kit-006",
+      "name": "rumor-propagation-domain-kit",
+      "purpose": "Track authored claims as they pass between witnesses with source lineage, credibility, distortion policy, exposure, and correction facts.",
+      "coreMapping": {
+        "configures": ["core-data-kit"],
+        "composesWith": ["core-agent-kit", "core-policy-kit"],
+        "nonDuplicatedMeaning": "Core owns agents, deterministic streams, and policy; this domain owns rumor lineage and belief-exposure semantics."
+      },
+      "classification": "feature-domain",
+      "ownership": ["claim definitions", "source and witness lineage", "recipient exposure records", "credibility adjustments", "seeded distortion policy", "correction and retirement state"],
+      "exclusions": ["dialogue text", "LLM inference", "agent choice", "relationship state", "truth adjudication outside authored facts", "network messaging", "UI"],
+      "actions": ["register claim", "share claim", "correct claim", "adjust credibility", "retire claim", "reset propagation"],
+      "resourcesAndState": ["rumorPropagation.claims", "rumorPropagation.exposures", "rumorPropagation.lineage", "rumorPropagation.tick"],
+      "events": ["rumor.registered", "rumor.shared", "rumor.distorted", "rumor.corrected", "rumor.retired", "rumor.commandRejected", "rumor.reset"],
+      "methods": ["registerClaim(definition)", "share(command)", "correct(command)", "adjustCredibility(fact)", "retire(claimId)", "getExposure(subjectId)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned claim snapshot", "source-lineage descriptors", "subject exposure descriptors", "credibility and correction read model"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "core-data named deterministic stream for configured distortion", "stable subject IDs", "authored claims"],
+      "expectedCompositions": ["negotiation-commitment-domain-kit", "territory-influence-domain-kit", "navigation-knowledge-domain-kit", "contagion-transmission-domain-kit"],
+      "plausibleUses": ["spread and correct evacuation guidance through a storm town", "trace compromised intelligence through rival courts"],
+      "experimentProof": "A seeded Border Accord route must reproduce claim lineage, configured distortions, exposure sets, credibility changes, and corrections from the same share commands.",
+      "idempotencyRule": "Share command IDs commit once per source-recipient pair, claim registration is stable by ID, and corrections replace state without duplicating lineage events.",
+      "duplicateAndMergeRisk": "rpg-social-fact-kit owns trust, suspicion, crime, and relationships; semantic investigation owns evidence and conclusions. Neither owns transmissible claims, exposure lineage, distortion, or correction.",
+      "promotionPotential": "Hold until deterministic distortion can be disabled and seeded, two non-dialogue consumers pass, and privacy-sensitive authored data remains outside the kit."
+    },
+    {
+      "id": "bootstrap-kit-007",
+      "name": "navigation-knowledge-domain-kit",
+      "purpose": "Represent what an observer knows about places, links, hazards, closures, and route confidence separately from world truth and pathfinding.",
+      "coreMapping": {
+        "configures": ["core-data-kit"],
+        "composesWith": ["core-world-domain", "core-scene-kit", "core-spatial-kit"],
+        "nonDuplicatedMeaning": "Core owns world, scene, and spatial truth; this domain owns observer-specific navigation knowledge and confidence."
+      },
+      "classification": "feature-domain",
+      "ownership": ["observer knowledge records", "known place and link facts", "closure and hazard observations", "confidence and staleness", "source provenance", "knowledge-delta descriptors"],
+      "exclusions": ["world truth", "pathfinding", "navmesh generation", "movement", "map rendering", "fog graphics", "quest progress", "persistence transport"],
+      "actions": ["register observer", "observe place", "observe link", "mark closure", "share knowledge packet", "decay confidence", "reset knowledge"],
+      "resourcesAndState": ["navigationKnowledge.observers", "navigationKnowledge.facts", "navigationKnowledge.provenance", "navigationKnowledge.tick"],
+      "events": ["navigationKnowledge.discovered", "navigationKnowledge.updated", "navigationKnowledge.shared", "navigationKnowledge.stale", "navigationKnowledge.commandRejected", "navigationKnowledge.reset"],
+      "methods": ["registerObserver(definition)", "observe(fact)", "markClosure(fact)", "share(packet)", "advance(ticks)", "getKnownGraph(observerId)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned observer knowledge snapshot", "known-place descriptors", "known-link descriptors", "stale or disputed navigation fact descriptors"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "portable place/link IDs", "explicit observations from world, scan, or authored sources"],
+      "expectedCompositions": ["habitat-suitability-domain-kit", "rumor-propagation-domain-kit", "territory-influence-domain-kit", "generic-route-progress-kit"],
+      "plausibleUses": ["chart safe mountain passages while storms invalidate old knowledge", "share partial dungeon routes between separated explorers"],
+      "experimentProof": "A seeded Lost Migration route must prove two observers can hold different known graphs, share a bounded packet, age facts, and replay identical confidence transitions.",
+      "idempotencyRule": "Observation IDs update once, repeated shares merge by fact/version rather than append duplicates, and confidence decay applies once per resolved tick.",
+      "duplicateAndMergeRisk": "map coverage and discovery kits track global coverage; route kits track authoritative progress. This domain is observer-specific epistemic navigation state and must not become a pathfinder.",
+      "promotionPotential": "Experimental until multi-observer merge, stale-fact, snapshot migration, and two world-structure configurations pass."
+    },
+    {
+      "id": "bootstrap-kit-008",
+      "name": "rescue-triage-domain-kit",
+      "purpose": "Prioritize and advance casualty stabilization, treatment, transport readiness, deterioration, and outcome facts from authored severity data.",
+      "coreMapping": {
+        "configures": ["core-simulation-kit", "core-interaction-kit", "core-data-kit"],
+        "composesWith": ["core-agent-kit"],
+        "nonDuplicatedMeaning": "Core owns timers, resources, interactions, and actors; this domain owns triage priority and care-stage semantics."
+      },
+      "classification": "feature-domain",
+      "ownership": ["casualty records", "severity dimensions", "triage categories", "stabilization and deterioration windows", "treatment prerequisites", "transport readiness and outcome ledger"],
+      "exclusions": ["damage combat", "medical diagnosis content", "inventory consumption", "agent transport movement", "animation", "gore", "UI", "real-world clinical guidance"],
+      "actions": ["register casualty", "assess", "begin or complete treatment", "mark transported", "advance deterioration", "resolve outcome", "reset incident"],
+      "resourcesAndState": ["rescueTriage.casualties", "rescueTriage.treatments", "rescueTriage.outcomes", "rescueTriage.tick"],
+      "events": ["triage.assessed", "triage.categoryChanged", "triage.treatmentStarted", "triage.stabilized", "triage.deteriorated", "triage.transportReady", "triage.outcomeResolved", "triage.commandRejected", "triage.reset"],
+      "methods": ["registerCasualty(definition)", "assess(command)", "beginTreatment(command)", "completeTreatment(command)", "markTransported(command)", "advance(ticks)", "getPriorityQueue()", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned incident snapshot", "triage priority descriptors", "treatment readiness descriptors", "transport and outcome descriptors"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "core-simulation timers and resources", "explicit semantic treatment and transport commands"],
+      "expectedCompositions": ["contagion-transmission-domain-kit", "structural-support-network-domain-kit", "collective-resolve-domain-kit", "generic-route-cargo-extraction-kit"],
+      "plausibleUses": ["stabilize climbers before a storm evacuation", "prioritize civilians during a collapsing-city rescue"],
+      "experimentProof": "A seeded Quarantine Lantern route must replay the same assessment and treatment commands into identical priorities, deterioration, stabilization, and transport-ready events.",
+      "idempotencyRule": "Assessment and treatment command IDs apply once, stage transitions are monotonic unless an explicit deterioration rule permits reversal, and outcomes resolve once.",
+      "duplicateAndMergeRisk": "damage-health kits own health values and defeat; request queues own generic work ordering. Neither owns severity-based triage, stabilization stages, deterioration, or transport readiness.",
+      "promotionPotential": "Hold until non-medical rescue configurations prove the generic boundary and documentation explicitly rejects real-world clinical use."
+    },
+    {
+      "id": "bootstrap-kit-009",
+      "name": "negotiation-commitment-domain-kit",
+      "purpose": "Manage offers, concessions, accepted terms, obligations, deadlines, fulfillment, breach, release, and settlement as deterministic domain facts.",
+      "coreMapping": {
+        "configures": ["core-data-kit", "core-policy-kit", "core-simulation-kit"],
+        "composesWith": ["core-agent-kit"],
+        "nonDuplicatedMeaning": "Core owns ledgers, policy validation, timers, and agents; this domain owns negotiated commitment lifecycle meaning."
+      },
+      "classification": "feature-domain",
+      "ownership": ["negotiation sessions", "offers and counteroffers", "term acceptance", "party obligations", "fulfillment and breach facts", "release and settlement history"],
+      "exclusions": ["dialogue generation", "agent decision making", "currency or inventory transfer", "legal enforcement", "relationship scores", "UI", "network messaging"],
+      "actions": ["open negotiation", "propose offer", "counter or withdraw", "accept terms", "record fulfillment", "record breach", "release obligation", "settle session"],
+      "resourcesAndState": ["negotiationCommitment.sessions", "negotiationCommitment.offers", "negotiationCommitment.obligations", "negotiationCommitment.tick"],
+      "events": ["negotiation.opened", "negotiation.offerProposed", "negotiation.offerWithdrawn", "negotiation.termsAccepted", "commitment.fulfilled", "commitment.breached", "commitment.released", "negotiation.settled", "negotiation.commandRejected", "negotiation.reset"],
+      "methods": ["openSession(definition)", "propose(command)", "counter(command)", "withdraw(command)", "accept(command)", "recordFulfillment(fact)", "recordBreach(fact)", "release(command)", "advance(ticks)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned session snapshot", "offer comparison descriptors", "active obligation descriptors", "fulfillment and breach ledger descriptors"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable party IDs", "core-policy guards for allowed term types", "explicit fulfillment facts from adjacent domains"],
+      "expectedCompositions": ["territory-influence-domain-kit", "rumor-propagation-domain-kit", "collective-resolve-domain-kit", "rpg-social-fact-kit"],
+      "plausibleUses": ["broker safe passage between rival factions", "negotiate delivery terms with dynamic obligations in a trading game"],
+      "experimentProof": "A seeded Border Accord route must replay an offer/counter/accept sequence and identical fulfillment facts into the same obligations, breaches, releases, and settlement snapshot.",
+      "idempotencyRule": "Command IDs commit once, only one terminal disposition is allowed per offer or obligation, and repeated fulfillment facts merge by obligation/version without duplicate events.",
+      "duplicateAndMergeRisk": "relationship-state and social-fact kits own trust and crime facts; economy kits own value transfer. This domain owns explicit negotiated terms and obligation lifecycle without performing transfers.",
+      "promotionPotential": "Experimental until bilateral and multi-party fixtures, policy rejection, deadline replay, and two genre consumers pass."
+    },
+    {
+      "id": "bootstrap-kit-010",
+      "name": "habitat-suitability-domain-kit",
+      "purpose": "Evaluate authored species or population requirements against portable regional condition observations and produce suitability, limiting-factor, and occupancy-policy facts.",
+      "coreMapping": {
+        "configures": ["core-data-kit"],
+        "composesWith": ["core-world-domain", "core-spatial-kit", "core-simulation-kit"],
+        "nonDuplicatedMeaning": "Core owns world regions and state primitives; this domain owns ecological requirement evaluation and limiting-factor meaning."
+      },
+      "classification": "feature-domain",
+      "ownership": ["habitat requirement profiles", "regional condition observations", "weighted suitability evaluation", "limiting-factor identification", "occupancy eligibility", "suitability change history"],
+      "exclusions": ["biome or terrain generation", "weather simulation", "population advancement", "spawn placement", "individual creature AI", "rendered habitat", "species content"],
+      "actions": ["register requirement profile", "set region conditions", "evaluate suitability", "set occupancy policy", "invalidate observation", "reset habitat state"],
+      "resourcesAndState": ["habitatSuitability.profiles", "habitatSuitability.regions", "habitatSuitability.evaluations", "habitatSuitability.revision"],
+      "events": ["habitat.conditionsChanged", "habitat.suitabilityChanged", "habitat.thresholdCrossed", "habitat.limitingFactorChanged", "habitat.commandRejected", "habitat.reset"],
+      "methods": ["registerProfile(definition)", "setConditions(regionId, observations)", "evaluate(profileId, regionId)", "setOccupancyPolicy(policy)", "invalidate(observationId)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned habitat snapshot", "regional suitability descriptors", "limiting-factor descriptors", "occupancy eligibility descriptors"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "portable region IDs", "authored requirement profiles", "explicit normalized condition observations"],
+      "expectedCompositions": ["ecosystem-population-cycle-domain-kit", "navigation-knowledge-domain-kit", "contagion-transmission-domain-kit", "core-world-domain"],
+      "plausibleUses": ["select restoration sites for reef species", "guide a migrating herd toward viable seasonal habitat"],
+      "experimentProof": "A seeded Rewilding Basin route must evaluate identical region observations into identical scores and limiting factors while profile changes visibly alter occupancy eligibility.",
+      "idempotencyRule": "Profiles and observations upsert by stable ID and revision, unchanged inputs reuse the same evaluation digest, and threshold events emit only on crossings.",
+      "duplicateAndMergeRisk": "biome fields report world conditions and ecosystem population cycles advance cohorts. This domain only evaluates ecological fit and must not absorb either source truth or population simulation.",
+      "promotionPotential": "Hold until two species families, invalid observation handling, snapshot migration, and composition with the population-cycle kit pass."
+    }
+  ],
+  "rejectedCandidates": [
+    {
+      "name": "signal-triangulation-domain-kit",
+      "rejectionClass": "duplicate-existing-kit",
+      "reason": "The existing universal game-domain inventory already declares triangulation-kit inside survey/cartography map coverage, and acoustic-signal plus scan/survey families already own adjacent signal observations."
+    },
+    {
+      "name": "investigation-evidence-domain-kit",
+      "rejectionClass": "duplicate-existing-kit",
+      "reason": "semantic-bounded-domain-kits already installs engine.n.investigation and owns cases, observations, evidence, hypotheses, and conclusions."
+    },
+    {
+      "name": "crafting-transformation-domain-kit",
+      "rejectionClass": "duplicate-existing-kit",
+      "reason": "survival-crafting-domain already declares crafting-domain-service-kit plus recipe tables, inputs, outputs, stations, and failure rules."
+    },
+    {
+      "name": "shelter-exposure-domain-kit",
+      "rejectionClass": "duplicate-existing-kit",
+      "reason": "survival-needs and weather domain services already own temperature and exposure descriptors, while generic resource/pressure kits own the reusable scalar transitions."
+    },
+    {
+      "name": "crowd-flow-demand-domain-kit",
+      "rejectionClass": "core-rename-or-core-duplication",
+      "reason": "Current NexusEngine already exports promoted OccupantFlowKit and RequestQueueKit operations semantics; a new ProtoKit would be a rename without a distinct higher-level responsibility."
+    },
+    {
+      "name": "formation-assignment-domain-kit",
+      "rejectionClass": "duplicate-existing-kit",
+      "reason": "The existing Agent Group domain explicitly owns groups, agents, goals, basic movement, and formation state; a slot-assignment-only candidate did not clear the adjacent-domain split gate."
+    }
+  ]
 }

@@ -1,9 +1,18 @@
 {
-  "schemaVersion": 1,
-  "target": 50,
-  "acceptedCount": 0,
-  "playableValidatedCount": 0,
-  "status": "blocked-on-kit-implementation-gate",
+  "schemaVersion": 2,
+  "operatingMode": "bootstrap-plus-numbered-production-epochs",
+  "bootstrapTarget": 50,
+  "epochTarget": 5,
+  "counts": {
+    "playableValidatedBootstrap": 0,
+    "playableValidatedCurrentEpoch": 0,
+    "lifetimeCreated": 0,
+    "active": 0,
+    "merged": 0,
+    "archived": 0,
+    "retired": 0
+  },
+  "status": "blocked-on-bootstrap-kit-implementation-gate",
   "compositionKitCount": {
     "minimum": 3,
     "maximum": 8
@@ -11,6 +20,8 @@
   "requiredFields": [
     "id",
     "route",
+    "epoch",
+    "lifecycleStatus",
     "seed",
     "candidateDraws",
     "rejectedDraws",

@@ -1,20 +1,29 @@
 # Kit Implementation Ledger
 
-Status: blocked on Phase B catalog acceptance
-Target: exactly 100 accepted and implemented new ProtoKits
+Status: blocked on completion of bootstrap Phase B catalog
+Operating mode: 100 bootstrap kits, then exactly 10 new kits per numbered production epoch
 
 ## Counting Rule
 
-- Existing ProtoKit folders are baseline inventory and count as zero mission kits.
-- A kit counts only after its full natural-language contract is accepted, implementation is deterministic and non-placeholder, exports/contracts are reconciled, existing harness proof passes, and the post-code boundary audit passes.
+- Existing ProtoKit folders are baseline inventory and count as zero production kits.
+- Accepted natural-language definitions do not count as created or implemented kits.
+- A kit counts only after its contract is accepted, implementation is deterministic and non-placeholder, exports/contracts are reconciled, existing harness proof passes, and the post-code boundary audit passes.
 - Renderer/browser owners, Core renames, game-branded patches, vague helpers, duplicate aliases, and unrelated bundles never count.
 
-## Totals
+## Progress
 
-| Accepted | Implemented | Validated | Rejected after implementation |
-| ---: | ---: | ---: | ---: |
-| 0 | 0 | 0 | 0 |
+| Scope | Accepted definitions | Implemented | Validated | Rejected after implementation |
+| --- | ---: | ---: | ---: | ---: |
+| Bootstrap epoch 0 | 10 / 100 | 0 / 100 | 0 / 100 | 0 |
+| Current numbered epoch | not open | not open | not open | 0 |
+| Lifetime | 10 | 0 | 0 | 0 |
+
+## Lifecycle Totals
+
+| Lifetime created | Active | Merged | Archived | Retired |
+| ---: | ---: | ---: | ---: | ---: |
+| 0 | 0 | 0 | 0 | 0 |
 
 ## Entries
 
-No mission kit has entered implementation.
+No production kit has entered implementation. The exact next unit is contract-only `catalog-batch-011-020`.

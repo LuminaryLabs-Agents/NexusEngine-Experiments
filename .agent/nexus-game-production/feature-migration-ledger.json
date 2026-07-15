@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Prove valuable source mechanics, interactions, scenes, presentation details, and reusable systems survive before any experiment or superseded game source is pruned.",
+  "requiredDispositionValues": [
+    "keep",
+    "upgrade",
+    "merge",
+    "drop"
+  ],
+  "requiredFields": [
+    "sourceId",
+    "sourceType",
+    "successorGameId",
+    "featureInventory",
+    "disposition",
+    "rationale",
+    "successorProof",
+    "validation",
+    "retirementEntry"
+  ],
+  "requiredFeatureCategories": [
+    "mechanics",
+    "interactions",
+    "scenesAndRegions",
+    "presentationDetails",
+    "reusableSystems",
+    "environmentalSystems",
+    "water",
+    "traversal",
+    "combat",
+    "objectives",
+    "progression",
+    "feedback"
+  ],
+  "counts": {
+    "sourcesInventoried": 0,
+    "featuresInventoried": 0,
+    "kept": 0,
+    "upgraded": 0,
+    "merged": 0,
+    "dropped": 0,
+    "sourcesClearedForRetirement": 0
+  },
+  "entries": []
+}

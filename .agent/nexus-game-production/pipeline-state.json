@@ -1,10 +1,11 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "automation": {
     "name": "Nexus Engine Game Production Builder",
     "id": "nexus-engine-game-production-builder"
   },
   "inventoryCapturedAt": "2026-07-15T12:02:05-04:00",
+  "operatingMode": "bootstrap-plus-numbered-production-epochs",
   "activePhase": "B-catalog",
   "completedPhases": [
     "A-inventory"
@@ -27,7 +28,8 @@
   "synchronizedStartingCommits": {
     "coreRemoteDefault": "cd5c8f84cb00ff02970419f3316e1908ada5651d",
     "protokits": "ffdcc962d3c984864a2d78e9276879adf04250eb",
-    "experiments": "615a7e1e2170164acef0edebdbe0b88b8c01fd1b"
+    "experiments": "615a7e1e2170164acef0edebdbe0b88b8c01fd1b",
+    "experimentsBaseline": "615a7e1e2170164acef0edebdbe0b88b8c01fd1b"
   },
   "baseline": {
     "naturalLanguageCoreDomainDocuments": 26,
@@ -43,35 +45,105 @@
     "otherTopLevelExperimentFolders": 33,
     "existingTopLevelGameFolders": 4
   },
-  "missionTotals": {
-    "acceptedNewKits": 0,
-    "implementedNewKits": 0,
-    "playableNewExperiments": 0,
-    "consolidatedNewGames": 0,
-    "fullyDocumentedNewGames": 0
-  },
-  "targets": {
-    "acceptedNewKits": 100,
-    "implementedNewKits": 100,
-    "playableNewExperiments": 50,
-    "consolidatedNewGames": 10,
-    "experimentsPerGame": 5
-  },
-  "lastCompletedUnit": {
-    "packetId": "2026-07-15-phase-a-production-baseline",
-    "scope": "Phase A production baseline",
-    "result": "Mapped Core ownership, existing ProtoKit surfaces, legacy experiment routes, existing games, duplicate-name clusters, and zero mission totals.",
-    "commits": {
-      "protokitsStartAndFinal": "ffdcc962d3c984864a2d78e9276879adf04250eb",
-      "experimentsStart": "615a7e1e2170164acef0edebdbe0b88b8c01fd1b",
-      "experimentsProductionUnit": "71a51c11847e99994a0cb8cdb6a137e27e806df9"
+  "bootstrap": {
+    "epochNumber": 0,
+    "status": "in-progress",
+    "targets": {
+      "acceptedNewKits": 100,
+      "implementedNewKits": 100,
+      "playableNewExperiments": 50,
+      "consolidatedNewGames": 10,
+      "fullyDocumentedNewGames": 10,
+      "experimentsPerGame": 5,
+      "refinementSlices": 0
     },
-    "validation": "passed",
-    "publication": "published to origin/main"
+    "progress": {
+      "acceptedNewKits": 10,
+      "implementedNewKits": 0,
+      "playableNewExperiments": 0,
+      "consolidatedNewGames": 0,
+      "fullyDocumentedNewGames": 0,
+      "refinementSlices": 0
+    }
   },
-  "nextUnit": {
-    "phase": "B-catalog",
+  "productionEpochPolicy": {
+    "firstEpochNumber": 1,
+    "status": "blocked-until-bootstrap-complete",
+    "targetsPerEpoch": {
+      "acceptedAndImplementedNewKits": 10,
+      "playableNewExperiments": 5,
+      "consolidatedAndDocumentedNewGames": 1,
+      "experimentsPerGame": 5,
+      "refinementAndPruningSlices": 1
+    },
+    "closeRule": "An epoch closes only after all creation targets and its bounded refinement-and-pruning slice pass validation and publication."
+  },
+  "currentEpoch": {
+    "number": 0,
+    "kind": "bootstrap",
+    "status": "in-progress",
+    "targets": {
+      "acceptedNewKits": 100,
+      "implementedNewKits": 100,
+      "playableNewExperiments": 50,
+      "consolidatedNewGames": 10,
+      "refinementSlices": 0
+    },
+    "progress": {
+      "acceptedNewKits": 10,
+      "implementedNewKits": 0,
+      "playableNewExperiments": 0,
+      "consolidatedNewGames": 0,
+      "refinementSlices": 0
+    }
+  },
+  "catalogTotals": {
+    "acceptedDefinitionsLifetime": 10,
+    "acceptedDefinitionsBootstrap": 10,
+    "acceptedDefinitionsCurrentEpoch": 10,
+    "rejectedCandidatesLifetime": 6
+  },
+  "assetTotals": {
+    "kits": {
+      "lifetimeCreated": 0,
+      "active": 0,
+      "merged": 0,
+      "archived": 0,
+      "retired": 0
+    },
+    "experiments": {
+      "lifetimeCreated": 0,
+      "active": 0,
+      "merged": 0,
+      "archived": 0,
+      "retired": 0
+    },
+    "games": {
+      "lifetimeCreated": 0,
+      "active": 0,
+      "merged": 0,
+      "archived": 0,
+      "retired": 0
+    }
+  },
+  "lastCatalogUnit": {
+    "packetId": "2026-07-15-bootstrap-catalog-001-010",
     "scope": "catalog-batch-001-010",
-    "goal": "Propose and audit the first 10 unique kit definitions without implementing them."
+    "result": "Accepted 10 genuinely new natural-language kit contracts after six duplicate or Core-overlap rejections; no implementation was created."
+  },
+  "lastCreationUnit": null,
+  "lastRefinementUnit": null,
+  "lastCompletedUnit": {
+    "packetId": "2026-07-15-bootstrap-catalog-001-010",
+    "scope": "Perpetual-state migration plus bootstrap catalog batch 001-010",
+    "result": "Migrated fixed terminal targets to bootstrap-plus-epoch tracking and accepted the first 10 renderer-agnostic kit contracts.",
+    "validation": "passed: Phase A drift guard, production invariants, JSON parsing, Playwright reader/reviewer flow, screenshot comparison, zero console errors, and diff checks",
+    "publication": "pending"
+  },
+  "exactNextUnit": {
+    "phase": "B-catalog",
+    "epoch": 0,
+    "scope": "catalog-batch-011-020",
+    "goal": "Propose and audit bootstrap kit definitions 011-020 without implementing them."
   }
 }
