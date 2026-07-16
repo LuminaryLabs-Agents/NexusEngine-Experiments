@@ -11,6 +11,7 @@ const coreRoot = path.resolve(experimentsRoot, "../NexusEngine");
 const pipelineStatePath = path.join(productionRoot, "pipeline-state.json");
 const markdownPath = path.join(productionRoot, "existing-kit-inventory.md");
 const jsonPath = path.join(productionRoot, "existing-inventory-baseline.json");
+const kitCatalogPath = path.join(productionRoot, "kit-catalog.json");
 const checkOnly = process.argv.includes("--check");
 
 function readJson(file) {
@@ -120,7 +121,8 @@ function writeOrCheck(file, expected) {
 }
 
 const pipelineState = readJson(pipelineStatePath);
-const protoKitNames = directories(path.join(protoKitsRoot, "protokits"));
+const productionKitNames = new Set((readJson(kitCatalogPath).implementedKits ?? []).map((entry) => entry.name));
+const protoKitNames = directories(path.join(protoKitsRoot, "protokits")).filter((name) => !productionKitNames.has(name));
 const protoKits = protoKitNames.map(inspectProtoKit);
 const duplicateGroups = new Map();
 for (const kit of protoKits) {

@@ -1,6 +1,6 @@
 # Composition Diversity Report
 
-Status: catalog-only; experiment gate remains blocked
+Status: first 10 production kits implemented; experiment gate remains blocked until all 100 bootstrap kits pass
 Accepted production experiment signatures: 0 of 50 bootstrap experiments
 Accepted bootstrap kit contracts: 100 of 100
 
@@ -108,4 +108,6 @@ Every accepted experiment must record epoch, lifecycle status, seed, full candid
 - Exact duplicate production signatures: 0 because no production signatures are accepted.
 - Near-duplicate production signatures: 0 because no production signatures are accepted.
 - Catalog boundary duplication: 0 accepted; sixty candidates were rejected before acceptance across all ten bootstrap catalog batches.
+- Implemented boundary duplication: 0 across contracts 001-010 after source, export, API, resource, event, ownership, and exclusion comparison.
+- Real composition pressure now exists for Quarantine Lantern, Rewilding Basin, Bridge Under Siege, Border Accord, and Lost Migration, but no seeded experiment draw or playable signature is claimed before the implementation gate closes.
 - Diversity claim: contract pressure only; no playable diversity claim yet.

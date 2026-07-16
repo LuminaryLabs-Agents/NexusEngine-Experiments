@@ -7,12 +7,12 @@
     "acceptedBootstrap": 100,
     "acceptedCurrentEpoch": 100,
     "acceptedLifetime": 100,
-    "implementedBootstrap": 0,
-    "implementedCurrentEpoch": 0,
-    "implementedLifetime": 0,
+    "implementedBootstrap": 10,
+    "implementedCurrentEpoch": 10,
+    "implementedLifetime": 10,
     "rejectedLifetime": 60
   },
-  "status": "bootstrap-catalog-complete",
+  "status": "bootstrap-implementation-in-progress",
   "requiredFields": [
     "id",
     "name",
@@ -2545,6 +2545,128 @@
       "idempotencyRule": "Symbol, corruption, parity, erasure, correction, acceptance, and exhaustion IDs commit once, blocks and symbols resolve in stable index order, and correction attempts never exceed the authored recovery budget.",
       "duplicateAndMergeRisk": "Core Data owns digests and schemas, Core Network owns transport, and model-output decoders parse inference responses. Live inventory has no reusable owner for parity checks, syndrome state, erasures, bounded correction attempts, decoded payload references, and recovery confidence.",
       "promotionPotential": "Experimental until multiple finite-code profiles, erasure and corruption replay, recovery-budget bounds, snapshot migration, transport-observation parity, and communications plus archival consumers pass."
+    }
+  ],
+  "implementedKits": [
+    {
+      "catalogId": "bootstrap-kit-001",
+      "name": "contagion-transmission-domain-kit",
+      "epoch": 0,
+      "lifecycleStatus": "active",
+      "implementationStatus": "validated",
+      "folder": "protokits/contagion-transmission-domain-kit",
+      "exportPath": "./contagion-transmission-domain-kit",
+      "api": "engine.n.contagionTransmission",
+      "resource": "contagionTransmission.state",
+      "proof": "tests/semantic-bounded-domain-kits-smoke.mjs"
+    },
+    {
+      "catalogId": "bootstrap-kit-002",
+      "name": "ecosystem-population-cycle-domain-kit",
+      "epoch": 0,
+      "lifecycleStatus": "active",
+      "implementationStatus": "validated",
+      "folder": "protokits/ecosystem-population-cycle-domain-kit",
+      "exportPath": "./ecosystem-population-cycle-domain-kit",
+      "api": "engine.n.ecosystemPopulation",
+      "resource": "ecosystemPopulation.state",
+      "proof": "tests/semantic-bounded-domain-kits-smoke.mjs"
+    },
+    {
+      "catalogId": "bootstrap-kit-003",
+      "name": "structural-support-network-domain-kit",
+      "epoch": 0,
+      "lifecycleStatus": "active",
+      "implementationStatus": "validated",
+      "folder": "protokits/structural-support-network-domain-kit",
+      "exportPath": "./structural-support-network-domain-kit",
+      "api": "engine.n.structuralSupport",
+      "resource": "structuralSupport.state",
+      "proof": "tests/semantic-bounded-domain-kits-smoke.mjs"
+    },
+    {
+      "catalogId": "bootstrap-kit-004",
+      "name": "collective-resolve-domain-kit",
+      "epoch": 0,
+      "lifecycleStatus": "active",
+      "implementationStatus": "validated",
+      "folder": "protokits/collective-resolve-domain-kit",
+      "exportPath": "./collective-resolve-domain-kit",
+      "api": "engine.n.collectiveResolve",
+      "resource": "collectiveResolve.state",
+      "proof": "tests/semantic-bounded-domain-kits-smoke.mjs"
+    },
+    {
+      "catalogId": "bootstrap-kit-005",
+      "name": "territory-influence-domain-kit",
+      "epoch": 0,
+      "lifecycleStatus": "active",
+      "implementationStatus": "validated",
+      "folder": "protokits/territory-influence-domain-kit",
+      "exportPath": "./territory-influence-domain-kit",
+      "api": "engine.n.territoryInfluence",
+      "resource": "territoryInfluence.state",
+      "proof": "tests/semantic-bounded-domain-kits-smoke.mjs"
+    },
+    {
+      "catalogId": "bootstrap-kit-006",
+      "name": "rumor-propagation-domain-kit",
+      "epoch": 0,
+      "lifecycleStatus": "active",
+      "implementationStatus": "validated",
+      "folder": "protokits/rumor-propagation-domain-kit",
+      "exportPath": "./rumor-propagation-domain-kit",
+      "api": "engine.n.rumorPropagation",
+      "resource": "rumorPropagation.state",
+      "proof": "tests/semantic-bounded-domain-kits-smoke.mjs"
+    },
+    {
+      "catalogId": "bootstrap-kit-007",
+      "name": "navigation-knowledge-domain-kit",
+      "epoch": 0,
+      "lifecycleStatus": "active",
+      "implementationStatus": "validated",
+      "folder": "protokits/navigation-knowledge-domain-kit",
+      "exportPath": "./navigation-knowledge-domain-kit",
+      "api": "engine.n.navigationKnowledge",
+      "resource": "navigationKnowledge.state",
+      "proof": "tests/semantic-bounded-domain-kits-smoke.mjs"
+    },
+    {
+      "catalogId": "bootstrap-kit-008",
+      "name": "rescue-triage-domain-kit",
+      "epoch": 0,
+      "lifecycleStatus": "active",
+      "implementationStatus": "validated",
+      "folder": "protokits/rescue-triage-domain-kit",
+      "exportPath": "./rescue-triage-domain-kit",
+      "api": "engine.n.rescueTriage",
+      "resource": "rescueTriage.state",
+      "proof": "tests/semantic-bounded-domain-kits-smoke.mjs"
+    },
+    {
+      "catalogId": "bootstrap-kit-009",
+      "name": "negotiation-commitment-domain-kit",
+      "epoch": 0,
+      "lifecycleStatus": "active",
+      "implementationStatus": "validated",
+      "folder": "protokits/negotiation-commitment-domain-kit",
+      "exportPath": "./negotiation-commitment-domain-kit",
+      "api": "engine.n.negotiationCommitment",
+      "resource": "negotiationCommitment.state",
+      "proof": "tests/semantic-bounded-domain-kits-smoke.mjs"
+    },
+    {
+      "catalogId": "bootstrap-kit-010",
+      "name": "habitat-suitability-domain-kit",
+      "epoch": 0,
+      "lifecycleStatus": "active",
+      "implementationStatus": "validated",
+      "folder": "protokits/habitat-suitability-domain-kit",
+      "exportPath": "./habitat-suitability-domain-kit",
+      "api": "engine.n.habitatSuitability",
+      "resource": "habitatSuitability.state",
+      "proof": "tests/semantic-bounded-domain-kits-smoke.mjs"
     }
   ],
   "rejectedCandidates": [

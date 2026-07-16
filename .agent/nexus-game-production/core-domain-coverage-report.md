@@ -1,13 +1,30 @@
 # Core Domain Coverage Report
 
-Status: bootstrap Phase B catalog complete; Phase C implementation ready
+Status: bootstrap Phase C implementation in progress
 Accepted catalog definitions: 100 of 100 bootstrap definitions
-Implemented production kits: 0
+Implemented production kits: 10
 Playable production experiments: 0
 
 ## Coverage Rule
 
 Core is authoritative. A new kit must name the Core domains it configures or composes, explain the semantic responsibility Core does not own, and keep provider, renderer, browser, authored content, and game fiction outside reusable state. Coverage does not reward duplicating Core.
+
+## Post-Code Audit 001-010
+
+| Kit | Implemented semantic owner | Core relationship preserved | Exclusions verified | Result |
+| --- | --- | --- | --- | --- |
+| contagion transmission | exposure lineage and infection lifecycle | uses DSK/data/simulation primitives; consumes contact observations | no health, motion, contact detection, renderer, browser, UI, network, clock | pass |
+| ecosystem population | cohorts, trophic flow, capacity, seeded cycles | uses deterministic runtime and portable region IDs | no individuals, placement, terrain, weather, renderer, assets, lore | pass |
+| structural support | support topology, loads, margins, ordered failures | optional normalized Physics facts only | no body/constraint solver, fracture, placement, debris, renderer | pass |
+| collective resolve | group readiness, shocks, break/rally | stable Agent/member IDs; no agent lifecycle replacement | no emotion, planning, combat, movement, dialogue, presentation | pass |
+| territory influence | contributions, contests, decay, control | regions remain Core Spatial/Scene truth | no combat, economy, geometry, lifecycle, map rendering, authority | pass |
+| rumor propagation | claim exposure, lineage, distortion, correction | deterministic Data semantics; no Agent choice ownership | no dialogue/model/relationship/truth/network/UI ownership | pass |
+| navigation knowledge | observer facts, confidence, provenance, sharing | World/Scene/Spatial remain authoritative truth | no pathfinding, navmesh, motion, map/fog rendering, quest, persistence transport | pass |
+| rescue triage | abstract fictional priority and care stages | composes simulation/interaction/data facts | no combat damage, diagnosis, inventory, movement, gore, UI, clinical guidance | pass |
+| negotiation commitment | offers, terms, obligations, deadlines, settlement | composes Data/Policy/Simulation/Agent facts | no decisions, dialogue, transfers, enforcement, relationships, UI, network | pass |
+| habitat suitability | ecological-fit evaluation and limiting factors | consumes portable World/Spatial observations | no generation, population simulation, placement, AI, renderer, species content | pass |
+
+All ten use `defineDomainServiceKit`, explicit `engine.n.*` APIs, versioned serializable resources, deterministic explicit ticks or pure evaluation, renderer-neutral descriptors, schema-checked snapshot load, reset, stable IDs, and bounded command/event history. Static source scanning found no DOM, Canvas, WebGL, Three.js, `fetch`, browser input, wall-clock, or unseeded-random ownership.
 
 ## Accepted Definition Coverage
 
@@ -197,4 +214,4 @@ No definition claims Core state primitives, provider implementations, renderer o
 
 ## Exact Next Audit
 
-Implement bootstrap contracts 001-010 in `implementation-batch-001-010`, then audit their deterministic behavior, exports, natural-language contracts, harness proof, Core relationship, renderer/browser exclusions, and reuse boundaries before counting them as created.
+Implement bootstrap contracts 011-020 in `implementation-batch-011-020`, then repeat deterministic behavior, export, natural-language contract, harness, Core relationship, renderer/browser exclusion, and reuse-boundary audits before counting them as created.

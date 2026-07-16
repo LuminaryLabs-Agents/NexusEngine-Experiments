@@ -16,13 +16,13 @@ Bootstrap minimums are not terminal caps. Epoch 1 must open after bootstrap docu
 
 | Epoch | Status | Accepted kits | Implemented kits | Playable experiments | Games | Refinement slices | Last unit | Exact next unit |
 | ---: | --- | ---: | ---: | ---: | ---: | ---: | --- | --- |
-| 0 | in progress | 100 / 100 | 0 / 100 | 0 / 50 | 0 / 10 | 0 / 0 | `catalog-batch-091-100` | `implementation-batch-001-010` |
+| 0 | in progress | 100 / 100 | 10 / 100 | 0 / 50 | 0 / 10 | 0 / 0 | `implementation-batch-001-010` | `implementation-batch-011-020` |
 
 ## Lifecycle Totals
 
 | Asset | Lifetime created | Active | Merged | Archived | Retired |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| Mission ProtoKits | 0 | 0 | 0 | 0 | 0 |
+| Mission ProtoKits | 10 | 10 | 0 | 0 | 0 |
 | Mission experiments | 0 | 0 | 0 | 0 | 0 |
 | Mission games | 0 | 0 | 0 | 0 | 0 |
 
@@ -43,3 +43,4 @@ Accepted catalog definitions are tracked separately and do not count as created 
 | `2026-07-16-bootstrap-catalog-071-080` | 0 | Catalog 071-080 | 10 definitions accepted; 6 candidates rejected; zero implementation | production commit `42326f8019a2a36efff7757e4e9c2f09c3196d5b` published |
 | `2026-07-16-bootstrap-catalog-081-090` | 0 | Catalog 081-090 | 10 definitions accepted; 6 candidates rejected; zero implementation | production commit `17355e2cc9e12e1978720fd9d7a8dab4e3b782e3` published |
 | `2026-07-16-bootstrap-catalog-091-100` | 0 | Catalog 091-100 | 10 definitions accepted; 6 candidates rejected; Phase B complete; zero implementation | production commit `922211b48ab50201309bc7192d550a42e2eb0a0f` published |
+| `2026-07-16-bootstrap-implementation-001-010` | 0 | Implementation 001-010 | 10 deterministic DSKs implemented and validated; zero experiments, games, merges, archives, or retirements | publication pending |

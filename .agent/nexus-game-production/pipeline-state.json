@@ -11,7 +11,7 @@
     "A-inventory",
     "B-catalog"
   ],
-  "status": "ready-for-next-bounded-unit",
+  "status": "bounded-unit-validated-publication-pending",
   "repositories": {
     "core": {
       "path": "/Users/crimsonwheeler/Documents/GitHub/NexusEngine",
@@ -60,7 +60,7 @@
     },
     "progress": {
       "acceptedNewKits": 100,
-      "implementedNewKits": 0,
+      "implementedNewKits": 10,
       "playableNewExperiments": 0,
       "consolidatedNewGames": 0,
       "fullyDocumentedNewGames": 0,
@@ -92,7 +92,7 @@
     },
     "progress": {
       "acceptedNewKits": 100,
-      "implementedNewKits": 0,
+      "implementedNewKits": 10,
       "playableNewExperiments": 0,
       "consolidatedNewGames": 0,
       "refinementSlices": 0
@@ -106,8 +106,8 @@
   },
   "assetTotals": {
     "kits": {
-      "lifetimeCreated": 0,
-      "active": 0,
+      "lifetimeCreated": 10,
+      "active": 10,
       "merged": 0,
       "archived": 0,
       "retired": 0
@@ -132,24 +132,29 @@
     "scope": "catalog-batch-091-100",
     "result": "Accepted 10 genuinely new natural-language kit contracts after six additional duplicate, catalog-overlap, or blurred-scope rejections; no implementation was created."
   },
-  "lastCreationUnit": null,
+  "lastCreationUnit": {
+    "packetId": "2026-07-16-bootstrap-implementation-001-010",
+    "scope": "implementation-batch-001-010",
+    "result": "Implemented accepted bootstrap contracts 001-010 as ten renderer-agnostic Domain Service Kits with real deterministic behavior, explicit exports, manifests, READMEs, reset/snapshot/load behavior, command idempotency, and existing-harness proof."
+  },
   "lastRefinementUnit": null,
   "lastCompletedUnit": {
-    "packetId": "2026-07-16-bootstrap-catalog-091-100",
-    "scope": "Bootstrap catalog batch 091-100",
-    "result": "Accepted 10 renderer-agnostic contracts across polymer networks, rheology, protein conformation, gene regulation, cell differentiation, endocrine signaling, soil profiles, lithospheric boundaries, stellar evolution, and error correction; rejected six adjacent duplicates or blurred scopes and completed bootstrap Phase B.",
-    "validation": "passed: current Core authority and Phase A drift guard, production invariants, JSON parsing, folder/export/name collision checks, Playwright reader/reviewer interaction, screenshot comparison, zero console errors or warnings, and diff checks",
+    "packetId": "2026-07-16-bootstrap-implementation-001-010",
+    "scope": "Bootstrap implementation batch 001-010",
+    "result": "Ten accepted contracts now have real NexusEngine DSK implementations and count as active production kits; no experiment, game, merge, archive, retirement, or gameplay-time claim changed.",
+    "validation": "Targeted syntax, manifests, docs, exports, semantic runtime replay, snapshot/reset/load, boundary scan, frozen inventory, pipeline JSON invariants, diff checks, and Playwright/Human View passed. The broader repository check reached the pre-existing package test reference tests/generic-defense-session-command-kit-smoke.mjs and stopped because that file is absent from the starting commit.",
     "commits": {
-      "protokitsStartAndFinal": "ffdcc962d3c984864a2d78e9276879adf04250eb",
-      "experimentsStart": "47e2a7afcf55b854bf064a4fb93fb19e69f16673",
-      "experimentsProductionUnit": "922211b48ab50201309bc7192d550a42e2eb0a0f"
+      "protokitsStart": "ffdcc962d3c984864a2d78e9276879adf04250eb",
+      "protokitsProductionUnit": "16e444d8f8fc43def17986fce2556dfb76d17be9",
+      "experimentsStart": "17ece5e5a64d745abb455b92d1647cf02d3ebfe1",
+      "experimentsProductionUnit": null
     },
-    "publication": "production commit published to origin/main; publication record commit intentionally not self-hashed"
+    "publication": "pending"
   },
   "exactNextUnit": {
     "phase": "C-implementation",
     "epoch": 0,
-    "scope": "implementation-batch-001-010",
-    "goal": "Implement accepted bootstrap kit contracts 001-010 with deterministic behavior, compatible exports, accurate natural-language contracts, existing-harness proof, and post-code domain audits."
+    "scope": "implementation-batch-011-020",
+    "goal": "Implement accepted bootstrap kit contracts 011-020 with deterministic behavior, compatible exports, accurate natural-language contracts, existing-harness proof, and post-code domain audits."
   }
 }
