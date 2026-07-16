@@ -137,13 +137,13 @@
     "packetId": "2026-07-16-bootstrap-catalog-051-060",
     "scope": "Bootstrap catalog batch 051-060",
     "result": "Accepted 10 renderer-agnostic contracts across material fatigue, mechanical wear, phase transition, watershed runoff, salinity, aquatic oxygen, carbon cycling, conditioning, cultural norms, and magnetic interaction; rejected six adjacent duplicates.",
-    "validation": "pending bounded-unit validation and publication",
+    "validation": "passed: refreshed Core authority, Phase A drift guard, production invariants, JSON parsing, folder/export/name collision checks, Playwright reader/reviewer interaction, clean screenshot comparison, zero console errors or warnings, and diff checks",
     "commits": {
       "protokitsStartAndFinal": "ffdcc962d3c984864a2d78e9276879adf04250eb",
       "experimentsStart": "40ed1bff0bacb3b5fafdb83845451e505bc1bb51",
-      "experimentsProductionUnit": "pending"
+      "experimentsProductionUnit": "4771dc0dfb503fd57f8669d260e4b8a4fde690a7"
     },
-    "publication": "pending"
+    "publication": "production commit published to origin/main; publication record commit intentionally not self-hashed"
   },
   "exactNextUnit": {
     "phase": "B-catalog",
