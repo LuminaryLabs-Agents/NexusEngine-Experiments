@@ -2,7 +2,7 @@
 
 Packet ID: `2026-07-16-next-ledge-counterwind-handoff`
 Automation: Nexus Engine Game Production Builder
-Status: validated; publication receipt pending
+Status: validated and published
 
 ## Intent
 
@@ -96,5 +96,5 @@ The primary FPS metric improved by about 30.9 percent. Counterwind steady state 
 
 - Starting Experiments commit: `67cb1fc02fda06c75f12f8a46ee60347317ff27b`.
 - Starting and final ProtoKits commit: `04d34f049f58ae359cf71d43466c429dac2a6d08`.
-- Experiments production commit: `pending-owned-commit`.
+- Experiments production commit: `f7f2ddc91c77f7ee9260a8cb266ad4903574d21f`, published on `origin/main` after fetch-before-push verification.
 - Exact next playable improvement: make the four-anchor counterwind opening a stronger pressure crescendo with earlier gust anticipation and a more satisfying recovery confirmation at Counterwind Rest.
