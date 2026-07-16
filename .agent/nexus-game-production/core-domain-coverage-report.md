@@ -1,7 +1,7 @@
 # Core Domain Coverage Report
 
 Status: bootstrap Phase B catalog in progress
-Accepted catalog definitions: 10 of 100 bootstrap definitions
+Accepted catalog definitions: 20 of 100 bootstrap definitions
 Implemented production kits: 0
 Playable production experiments: 0
 
@@ -23,6 +23,16 @@ Core is authoritative. A new kit must name the Core domains it configures or com
 | `rescue-triage-domain-kit` | simulation + interaction + data + agent | severity priority, stabilization, deterioration, transport readiness | pass |
 | `negotiation-commitment-domain-kit` | data + policy + simulation + agent | offers, obligations, fulfillment, breach, settlement | pass |
 | `habitat-suitability-domain-kit` | data + world + spatial + simulation | ecological fit and limiting-factor evaluation | pass |
+| `wildfire-propagation-domain-kit` | simulation + data + world + spatial | fuel, ignition, spread, suppression, and containment | pass |
+| `power-distribution-domain-kit` | simulation + data + world + scene + policy | sources, loads, switches, faults, islands, and service allocation | pass |
+| `environmental-contamination-domain-kit` | data + simulation + world + spatial | contaminant release lineage, concentration, cleanup, and clearance | pass |
+| `supply-chain-fulfillment-domain-kit` | data + simulation + world + policy | allocation, backorders, shipment milestones, and fulfillment outcomes | pass |
+| `perishability-storage-domain-kit` | simulation + data + world observations | batch freshness, storage exposure, preservation, and spoilage | pass |
+| `habitat-corridor-domain-kit` | data + world + spatial | species-specific ecological connectivity and isolation | pass |
+| `pollination-network-domain-kit` | data + simulation + agent + world + spatial | visits, pollen lineage, compatibility, fertilization, and readiness | pass |
+| `lineage-succession-domain-kit` | data + policy + agent | descent, inherited eligibility, precedence, and succession | pass |
+| `governance-resolution-domain-kit` | data + policy + simulation + agent | proposals, quorum, ballots, ratification, and enactment | pass |
+| `language-comprehension-domain-kit` | data + agent + policy + optional ML observations | proficiency, mutual intelligibility, semantic comprehension, and learning | pass |
 
 No definition claims Core state primitives, provider implementations, renderer ownership, raw input, browser lifecycle, or game-specific content.
 
@@ -34,6 +44,12 @@ No definition claims Core state primitives, provider implementations, renderer o
 - `shelter-exposure-domain-kit`: existing survival-needs/weather meaning plus promoted resource/pressure primitives.
 - `crowd-flow-demand-domain-kit`: promoted Core `OccupantFlowKit` and `RequestQueueKit` semantics.
 - `formation-assignment-domain-kit`: existing Agent Group formation-state ownership.
+- `infrastructure-restoration-domain-kit`: existing semantic `engine.n.restoration` owner.
+- `stealth-suspicion-domain-kit`: existing sensory/perception observations plus RPG social suspicion.
+- `item-ownership-transfer-domain-kit`: existing RPG social ownership, theft, and return facts.
+- `utility-network-domain-kit`: blurred electricity, water, fuel, data, repair, and service semantics; split to power distribution.
+- `incident-priority-domain-kit`: Core RequestQueue priority plus rescue-triage severity ownership.
+- `signal-relay-domain-kit`: existing acoustic signal owner plus universal signal/relay declarations.
 
 ## Baseline Risk Map
 
@@ -52,4 +68,4 @@ No definition claims Core state primitives, provider implementations, renderer o
 
 ## Exact Next Audit
 
-Audit bootstrap catalog definitions 011-020 against all 514 existing top-level folders, nested declarations, package exports, and the current Core map before acceptance.
+Audit bootstrap catalog definitions 021-030 against all 514 existing top-level folders, nested declarations, package exports, and the current Core map before acceptance.

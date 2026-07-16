@@ -14,9 +14,9 @@ Operating mode: 100 bootstrap kits, then exactly 10 new kits per numbered produc
 
 | Scope | Accepted definitions | Implemented | Validated | Rejected after implementation |
 | --- | ---: | ---: | ---: | ---: |
-| Bootstrap epoch 0 | 10 / 100 | 0 / 100 | 0 / 100 | 0 |
+| Bootstrap epoch 0 | 20 / 100 | 0 / 100 | 0 / 100 | 0 |
 | Current numbered epoch | not open | not open | not open | 0 |
-| Lifetime | 10 | 0 | 0 | 0 |
+| Lifetime | 20 | 0 | 0 | 0 |
 
 ## Lifecycle Totals
 
@@ -26,4 +26,4 @@ Operating mode: 100 bootstrap kits, then exactly 10 new kits per numbered produc
 
 ## Entries
 
-No production kit has entered implementation. The exact next unit is contract-only `catalog-batch-011-020`.
+No production kit has entered implementation. The exact next unit is contract-only `catalog-batch-021-030`.

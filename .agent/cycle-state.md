@@ -2,7 +2,7 @@
 
 ## 2026-07-15 Game Production Pipeline
 
-The durable production pipeline lives in `.agent/nexus-game-production/`. Its schemas now separate bootstrap epoch 0 from perpetual numbered production epochs and track lifetime-created, active, merged, archived, and retired assets without resetting the baseline. Existing 514 ProtoKit folders, 100 flat AAA routes, 33 other experiment folders, and 4 games remain baseline-only. Bootstrap Phase B has accepted catalog entries 001-010 after six duplicate/Core-overlap rejections; no kit implementation or production asset exists yet. The exact next bounded unit is contract-only `catalog-batch-011-020`.
+The durable production pipeline lives in `.agent/nexus-game-production/`. Its schemas separate bootstrap epoch 0 from perpetual numbered production epochs and track lifetime-created, active, merged, archived, and retired assets without resetting the baseline. Existing 514 ProtoKit folders, 100 flat AAA routes, 33 other experiment folders, and 4 games remain baseline-only. Bootstrap Phase B has accepted catalog entries 001-020 after twelve duplicate/Core-overlap/blurred-scope rejections; no kit implementation or production asset exists yet. The exact next bounded unit is contract-only `catalog-batch-021-030`.
 
 After bootstrap reaches 100 implemented kits, 50 playable experiments, and 10 documented games, every numbered epoch must add exactly 10 new kits, 5 experiments, 1 game, and 1 bounded refinement-and-pruning slice. Source folders can be retired only after complete feature inventory and validated successor proof.
 

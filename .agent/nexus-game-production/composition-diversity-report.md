@@ -2,16 +2,22 @@
 
 Status: catalog-only; experiment gate remains blocked
 Accepted production experiment signatures: 0 of 50 bootstrap experiments
+Accepted bootstrap kit contracts: 20 of 100
 
 ## Catalog Composition Pressure
 
-The first ten definitions are not route shells. They support at least five mechanically distinct future seeded proof clusters:
+The first twenty definitions are not route shells. They support at least ten mechanically distinct future seeded proof clusters:
 
 - Quarantine Lantern: contagion + triage + rumor + navigation knowledge.
 - Rewilding Basin: ecosystem population + habitat suitability + territory influence.
 - Bridge Under Siege: structural support + collective resolve + triage + territory influence.
 - Border Accord: territory influence + rumor + negotiation commitments + collective resolve.
 - Lost Migration: navigation knowledge + habitat suitability + ecosystem population + collective resolve.
+- Emberline Evacuation: wildfire propagation + environmental contamination + structural support + rescue triage.
+- Blackout Archipelago: power distribution + supply-chain fulfillment + perishability storage + negotiation commitments.
+- Pollinator Passage: habitat corridor + pollination network + habitat suitability + ecosystem population.
+- Crown Ledger: lineage succession + governance resolution + negotiation commitments + rumor propagation.
+- Broken Tongues: language comprehension + negotiation commitments + rumor propagation + navigation knowledge.
 
 These are proof targets, not accepted experiment records. Seeds, candidate draw order, rejections, kit signatures, routes, and playable validation do not exist yet and therefore do not count.
 
@@ -30,5 +36,5 @@ Every accepted experiment must record epoch, lifecycle status, seed, full candid
 
 - Exact duplicate production signatures: 0 because no production signatures are accepted.
 - Near-duplicate production signatures: 0 because no production signatures are accepted.
-- Catalog boundary duplication: 0 accepted; six candidates were rejected before acceptance.
+- Catalog boundary duplication: 0 accepted; twelve candidates were rejected before acceptance across the first two batches.
 - Diversity claim: contract pressure only; no playable diversity claim yet.

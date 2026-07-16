@@ -16,7 +16,7 @@ Bootstrap minimums are not terminal caps. Epoch 1 must open after bootstrap docu
 
 | Epoch | Status | Accepted kits | Implemented kits | Playable experiments | Games | Refinement slices | Last unit | Exact next unit |
 | ---: | --- | ---: | ---: | ---: | ---: | ---: | --- | --- |
-| 0 | in progress | 10 / 100 | 0 / 100 | 0 / 50 | 0 / 10 | 0 / 0 | `catalog-batch-001-010` | `catalog-batch-011-020` |
+| 0 | in progress | 20 / 100 | 0 / 100 | 0 / 50 | 0 / 10 | 0 / 0 | `catalog-batch-011-020` | `catalog-batch-021-030` |
 
 ## Lifecycle Totals
 
@@ -34,3 +34,4 @@ Accepted catalog definitions are tracked separately and do not count as created 
 | --- | ---: | --- | --- | --- |
 | `2026-07-15-phase-a-production-baseline` | 0 | Phase A inventory | Baseline preserved; zero mission assets | published |
 | `2026-07-15-bootstrap-catalog-001-010` | 0 | Perpetual migration + catalog 001-010 | 10 definitions accepted; 6 candidates rejected; zero implementation | production commit `63c73df322d228a430cedf3d76a25c2c6c091885` published |
+| `2026-07-15-bootstrap-catalog-011-020` | 0 | Catalog 011-020 | 10 definitions accepted; 6 candidates rejected; zero implementation | pending validation and publication |

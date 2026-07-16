@@ -4,13 +4,13 @@
   "bootstrapTarget": 100,
   "epochTarget": 10,
   "counts": {
-    "acceptedBootstrap": 10,
-    "acceptedCurrentEpoch": 10,
-    "acceptedLifetime": 10,
+    "acceptedBootstrap": 20,
+    "acceptedCurrentEpoch": 20,
+    "acceptedLifetime": 20,
     "implementedBootstrap": 0,
     "implementedCurrentEpoch": 0,
     "implementedLifetime": 0,
-    "rejectedLifetime": 6
+    "rejectedLifetime": 12
   },
   "status": "bootstrap-catalog-in-progress",
   "requiredFields": [
@@ -295,6 +295,256 @@
       "idempotencyRule": "Profiles and observations upsert by stable ID and revision, unchanged inputs reuse the same evaluation digest, and threshold events emit only on crossings.",
       "duplicateAndMergeRisk": "biome fields report world conditions and ecosystem population cycles advance cohorts. This domain only evaluates ecological fit and must not absorb either source truth or population simulation.",
       "promotionPotential": "Hold until two species families, invalid observation handling, snapshot migration, and composition with the population-cycle kit pass."
+    },
+    {
+      "id": "bootstrap-kit-011",
+      "name": "wildfire-propagation-domain-kit",
+      "purpose": "Resolve deterministic ignition, fuel consumption, fire-front spread, suppression, containment, and burn-state transitions across an authored portable cell graph.",
+      "coreMapping": {
+        "configures": ["core-simulation-kit", "core-data-kit"],
+        "composesWith": ["core-world-domain", "core-spatial-kit"],
+        "nonDuplicatedMeaning": "Core owns hazards, timers, random streams, world cells, and spatial facts; this domain owns wildfire-specific fuel, ignition, spread, suppression, and containment meaning."
+      },
+      "classification": "feature-domain",
+      "ownership": ["authored burn-cell graph", "fuel and moisture profiles", "ignition facts", "seeded spread resolution", "suppression contributions", "contained, active, smoldering, and burned states", "fire-front summaries"],
+      "exclusions": ["weather truth", "fluid or thermal physics", "damage and health", "agent movement", "smoke or flame rendering", "audio", "terrain mutation", "browser timing", "real-world fire prediction"],
+      "actions": ["register burn region", "record ignition", "set condition observation", "apply suppression", "advance fixed tick", "mark firebreak", "reset incident"],
+      "resourcesAndState": ["wildfirePropagation.regions", "wildfirePropagation.cells", "wildfirePropagation.fronts", "wildfirePropagation.tick"],
+      "events": ["wildfire.ignited", "wildfire.spread", "wildfire.suppressed", "wildfire.contained", "wildfire.cellBurned", "wildfire.commandRejected", "wildfire.reset"],
+      "methods": ["registerRegion(definition)", "ignite(command)", "setConditions(observation)", "suppress(command)", "setFirebreak(command)", "advance(ticks)", "getFront(regionId)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned wildfire snapshot", "burn-cell state descriptors", "active-front descriptors", "containment and fuel summary descriptors"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "core-data named deterministic stream", "portable world-cell IDs", "explicit weather and condition observations"],
+      "expectedCompositions": ["structural-support-network-domain-kit", "rescue-triage-domain-kit", "environmental-contamination-domain-kit", "core-world-domain"],
+      "plausibleUses": ["contain a rail-corridor wildfire while evacuating settlements", "manage magical fire spreading across linked fortress districts"],
+      "experimentProof": "A seeded Emberline Evacuation route must reproduce identical fire fronts, fuel consumption, firebreak effects, suppression outcomes, and containment events from the same cell graph and commands.",
+      "idempotencyRule": "Ignition, suppression, and firebreak command IDs commit once; registration replaces by stable region revision; a resolved tick cannot burn or spread through the same edge twice.",
+      "duplicateAndMergeRisk": "Hazard directors schedule generic threats and environment domains hold portable fields, but no implemented kit owns wildfire fuel, fire fronts, suppression, and containment. It must not become a generic hazard propagator or renderer.",
+      "promotionPotential": "Experimental until two unrelated fuel graphs, seeded replay, snapshot migration, scale budgets, and explicit non-predictive safety wording pass."
+    },
+    {
+      "id": "bootstrap-kit-012",
+      "name": "power-distribution-domain-kit",
+      "purpose": "Resolve a portable authored electrical service graph of sources, loads, switches, segments, faults, islands, overloads, outages, and restoration state.",
+      "coreMapping": {
+        "configures": ["core-simulation-kit", "core-data-kit"],
+        "composesWith": ["core-world-domain", "core-scene-kit", "core-policy-kit"],
+        "nonDuplicatedMeaning": "Core owns graph-capable state, resources, thresholds, and policy; this domain owns simplified gameplay electrical distribution and service-state meaning."
+      },
+      "classification": "feature-domain",
+      "ownership": ["power-network definitions", "source availability", "load demand observations", "switch and breaker state", "energized islands", "capacity allocation", "fault and overload history", "service restoration descriptors"],
+      "exclusions": ["real circuit or electromagnetic simulation", "provider hardware", "building content", "repair work execution", "inventory or fuel consumption", "renderer lighting", "UI", "real-world engineering guidance"],
+      "actions": ["register network", "set source output", "set load demand", "open or close switch", "record fault", "clear fault", "resolve distribution", "reset grid"],
+      "resourcesAndState": ["powerDistribution.networks", "powerDistribution.nodes", "powerDistribution.segments", "powerDistribution.service", "powerDistribution.tick"],
+      "events": ["power.switchChanged", "power.faultRecorded", "power.overloaded", "power.outageStarted", "power.serviceRestored", "power.commandRejected", "power.reset"],
+      "methods": ["registerNetwork(definition)", "setSource(fact)", "setLoad(fact)", "setSwitch(command)", "recordFault(fact)", "clearFault(command)", "resolve(ticks)", "getService(nodeId)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned power-network snapshot", "energized-island descriptors", "load-service descriptors", "fault, overload, and outage descriptors"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "portable facility and edge IDs", "core-simulation resource and threshold primitives", "explicit source/load observations"],
+      "expectedCompositions": ["supply-chain-fulfillment-domain-kit", "structural-support-network-domain-kit", "wildfire-propagation-domain-kit", "semantic infrastructure restoration DSK"],
+      "plausibleUses": ["island a storm-damaged city grid and restore critical facilities", "reroute power through a derelict starship while faults cascade"],
+      "experimentProof": "A seeded Blackout Archipelago route must replay identical switch operations, faults, load shedding, energized islands, and restored-service events without a renderer or real circuit solver.",
+      "idempotencyRule": "Network revisions upsert by stable ID, switch and fault command IDs apply once, and repeated resolution at one tick cannot emit duplicate outage or restoration transitions.",
+      "duplicateAndMergeRisk": "The semantic restoration DSK owns repair plans and generic utilities is only a family namespace. No implemented owner resolves sources, loads, switches, faults, electrical islands, and service allocation. The boundary stays power-specific rather than absorbing every utility.",
+      "promotionPotential": "Hold until city and vehicle-scale networks, islanding, overload, snapshot restore, and explicit simplified-model limits pass."
+    },
+    {
+      "id": "bootstrap-kit-013",
+      "name": "environmental-contamination-domain-kit",
+      "purpose": "Track authored contaminants through source releases, portable region observations, concentration changes, transfer lineage, cleanup, residual risk, and clearance state.",
+      "coreMapping": {
+        "configures": ["core-data-kit", "core-simulation-kit"],
+        "composesWith": ["core-world-domain", "core-spatial-kit"],
+        "nonDuplicatedMeaning": "Core owns world regions, fields, resources, and deterministic resolution; this domain owns contaminant identity, release lineage, concentration, cleanup, residual risk, and clearance meaning."
+      },
+      "classification": "feature-domain",
+      "ownership": ["contaminant definitions", "release-source facts", "regional concentration records", "transfer lineage", "cleanup contributions", "residual-risk thresholds", "quarantined and cleared state"],
+      "exclusions": ["fluid dynamics", "weather truth", "pathogen transmission between subjects", "medical effects", "damage and health", "waste content", "rendered haze or decals", "real-world environmental assessment"],
+      "actions": ["register contaminant", "record release", "apply transfer observation", "apply cleanup", "sample region", "resolve clearance", "reset contamination"],
+      "resourcesAndState": ["environmentalContamination.definitions", "environmentalContamination.regions", "environmentalContamination.releases", "environmentalContamination.tick"],
+      "events": ["contamination.released", "contamination.transferred", "contamination.thresholdCrossed", "contamination.cleanupApplied", "contamination.regionCleared", "contamination.commandRejected", "contamination.reset"],
+      "methods": ["registerContaminant(definition)", "release(command)", "transfer(observation)", "cleanup(command)", "sample(observation)", "advance(ticks)", "getRegion(regionId)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned contamination snapshot", "regional concentration descriptors", "source-lineage descriptors", "residual-risk and clearance descriptors"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "portable region IDs", "explicit transport and sample observations", "core-simulation thresholds"],
+      "expectedCompositions": ["wildfire-propagation-domain-kit", "rescue-triage-domain-kit", "habitat-suitability-domain-kit", "power-distribution-domain-kit"],
+      "plausibleUses": ["trace and clean industrial runoff across wetlands", "purge magical corruption moving through connected shrine pools"],
+      "experimentProof": "A seeded Emberline Evacuation route must replay releases, transfers, samples, cleanup, residual thresholds, and clearances into the same regional and lineage snapshot.",
+      "idempotencyRule": "Release, transfer, sample, and cleanup command IDs apply once; region observations upsert by revision; clearance events emit only on resolved threshold transitions.",
+      "duplicateAndMergeRisk": "Contagion transmission owns subject-to-subject infection, fluid fields own provider-neutral motion data, and environment owns generic fields. This boundary owns named environmental contaminants, release lineage, cleanup, and clearance without simulating transport physics.",
+      "promotionPotential": "Experimental until water and airborne observation adapters, two fictional contaminants, snapshot migration, and safety exclusions pass."
+    },
+    {
+      "id": "bootstrap-kit-014",
+      "name": "supply-chain-fulfillment-domain-kit",
+      "purpose": "Coordinate deterministic demand orders through allocation, reservation references, shipment milestones, backorders, substitutions, delivery acceptance, and fulfillment outcomes.",
+      "coreMapping": {
+        "configures": ["core-data-kit", "core-simulation-kit"],
+        "composesWith": ["core-world-domain", "core-policy-kit"],
+        "nonDuplicatedMeaning": "Core owns ledgers, completion, routes, and policy primitives; this domain owns order-line allocation and end-to-end fulfillment lifecycle meaning across external stock and cargo owners."
+      },
+      "classification": "composite-domain",
+      "ownership": ["demand orders and lines", "allocation decisions", "reservation references", "approved substitutions", "shipment milestones", "backorder state", "delivery acceptance", "fulfillment outcome ledger"],
+      "exclusions": ["inventory quantities", "market pricing", "currency transfer", "cargo physics", "route pathfinding", "vehicle movement", "warehouse rendering", "purchase UI", "network transport"],
+      "actions": ["open order", "offer allocation", "reserve allocation", "approve substitution", "dispatch shipment", "record milestone", "accept delivery", "cancel order", "reset fulfillment"],
+      "resourcesAndState": ["supplyChainFulfillment.orders", "supplyChainFulfillment.allocations", "supplyChainFulfillment.shipments", "supplyChainFulfillment.tick"],
+      "events": ["fulfillment.orderOpened", "fulfillment.allocated", "fulfillment.backordered", "fulfillment.substituted", "fulfillment.shipped", "fulfillment.deliveryAccepted", "fulfillment.completed", "fulfillment.commandRejected", "fulfillment.reset"],
+      "methods": ["openOrder(definition)", "offerAllocation(fact)", "reserve(command)", "substitute(command)", "dispatch(command)", "recordMilestone(fact)", "acceptDelivery(command)", "cancel(command)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned fulfillment snapshot", "order-line status descriptors", "allocation and backorder descriptors", "shipment milestone and outcome descriptors"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable item, source, destination, and shipment IDs", "explicit stock, reservation, cargo, and delivery facts from adjacent domains"],
+      "expectedCompositions": ["negotiation-commitment-domain-kit", "perishability-storage-domain-kit", "power-distribution-domain-kit", "generic-route-cargo-extraction-kit"],
+      "plausibleUses": ["allocate scarce relief supplies across storm islands", "fulfill interplanetary fabrication orders through substitute parts and delayed shipments"],
+      "experimentProof": "A seeded Blackout Archipelago route must reproduce allocation order, backorders, substitutions, shipment milestones, accepted deliveries, and terminal fulfillment outcomes from the same facts.",
+      "idempotencyRule": "Order, allocation, shipment, and milestone command IDs commit once; terminal order lines cannot reopen without a new revision; repeated acceptance cannot duplicate fulfillment.",
+      "duplicateAndMergeRisk": "Generic cargo owns carried items, inventory owns stock, markets own offers, and negotiated commitments own obligations. This coordinator owns fulfillment across those references and must not absorb their authoritative state.",
+      "promotionPotential": "Hold until emergency and commercial configurations, partial fulfillment, cancellation, snapshot restore, and adjacent-owner adapters pass."
+    },
+    {
+      "id": "bootstrap-kit-015",
+      "name": "perishability-storage-domain-kit",
+      "purpose": "Advance authored item batches through freshness, preservation, exposure, spoilage, and disposal-readiness transitions from explicit fixed-tick storage-condition observations.",
+      "coreMapping": {
+        "configures": ["core-simulation-kit", "core-data-kit"],
+        "composesWith": ["core-world-domain"],
+        "nonDuplicatedMeaning": "Core owns timers, resources, thresholds, and snapshots; this domain owns batch-level perishability, preservation, exposure accumulation, and spoilage meaning."
+      },
+      "classification": "feature-domain",
+      "ownership": ["perishability profiles", "item-batch freshness state", "storage-condition observations", "exposure accumulation", "preservation effects", "fresh, degraded, spoiled, and disposal-ready transitions", "batch lineage through splits and merges"],
+      "exclusions": ["inventory slot ownership", "food or medicine content", "real-world safety guidance", "market pricing", "consumption effects", "refrigeration hardware simulation", "renderer decay effects", "wall-clock time"],
+      "actions": ["register profile", "register batch", "set storage observation", "apply preservation", "split or merge batch", "advance fixed tick", "mark disposed", "reset storage"],
+      "resourcesAndState": ["perishabilityStorage.profiles", "perishabilityStorage.batches", "perishabilityStorage.conditions", "perishabilityStorage.tick"],
+      "events": ["perishability.batchRegistered", "perishability.conditionChanged", "perishability.stageChanged", "perishability.batchSplit", "perishability.batchMerged", "perishability.disposalReady", "perishability.commandRejected", "perishability.reset"],
+      "methods": ["registerProfile(definition)", "registerBatch(definition)", "setConditions(observation)", "preserve(command)", "split(command)", "merge(command)", "advance(ticks)", "dispose(command)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned perishability snapshot", "batch freshness descriptors", "storage exposure descriptors", "spoilage and disposal-readiness descriptors"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable external item and storage IDs", "explicit normalized condition observations", "core-simulation timers and thresholds"],
+      "expectedCompositions": ["supply-chain-fulfillment-domain-kit", "power-distribution-domain-kit", "rescue-triage-domain-kit", "generic-inventory-kit"],
+      "plausibleUses": ["protect medicine shipments through a rolling blackout", "preserve harvested alchemical ingredients during a long expedition"],
+      "experimentProof": "A seeded Blackout Archipelago route must replay storage changes, power-loss observations, preservation actions, batch splits, and delivery timing into identical freshness and spoilage outcomes.",
+      "idempotencyRule": "Batch and condition revisions upsert by stable ID, split/merge/preserve commands apply once, and stage events emit only when the resolved batch stage changes.",
+      "duplicateAndMergeRisk": "The universal catalog projects a shallow cargo-decay name, but no implemented kit owns batch lineage, storage observations, preservation, freshness stages, and spoilage. This domain must not own inventory or consumption.",
+      "promotionPotential": "Experimental until medical and non-food fictional profiles, split/merge lineage, replay, snapshot migration, and safety wording pass."
+    },
+    {
+      "id": "bootstrap-kit-016",
+      "name": "habitat-corridor-domain-kit",
+      "purpose": "Evaluate ecological connectivity between suitable regions through authored corridor links, passage constraints, disruption observations, restoration, and species-profile reachability.",
+      "coreMapping": {
+        "configures": ["core-data-kit"],
+        "composesWith": ["core-world-domain", "core-spatial-kit"],
+        "nonDuplicatedMeaning": "Core owns world regions, spatial links, and graph facts; this domain owns ecological corridor viability and species-specific connectivity meaning."
+      },
+      "classification": "feature-domain",
+      "ownership": ["corridor link definitions", "species passage profiles", "link condition observations", "viability and capacity evaluation", "connected habitat components", "isolation detection", "corridor restoration history"],
+      "exclusions": ["pathfinding", "agent or herd movement", "terrain generation", "habitat suitability scoring", "population advancement", "road routing", "map rendering", "authored species lore"],
+      "actions": ["register corridor graph", "register passage profile", "set link conditions", "evaluate connectivity", "close or restore link", "inspect reachable habitats", "reset corridors"],
+      "resourcesAndState": ["habitatCorridor.graphs", "habitatCorridor.profiles", "habitatCorridor.links", "habitatCorridor.revision"],
+      "events": ["habitatCorridor.linkChanged", "habitatCorridor.componentChanged", "habitatCorridor.isolated", "habitatCorridor.reconnected", "habitatCorridor.commandRejected", "habitatCorridor.reset"],
+      "methods": ["registerGraph(definition)", "registerProfile(definition)", "setLinkConditions(observation)", "setLinkState(command)", "evaluate(profileId)", "getReachable(profileId, regionId)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned corridor snapshot", "species-specific link viability descriptors", "connected-component descriptors", "isolation and restoration descriptors"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "portable region and link IDs", "authored passage profiles", "explicit link condition observations"],
+      "expectedCompositions": ["habitat-suitability-domain-kit", "ecosystem-population-cycle-domain-kit", "pollination-network-domain-kit", "navigation-knowledge-domain-kit"],
+      "plausibleUses": ["restore pollinator paths between fragmented meadows", "reopen safe migration corridors for fantasy megafauna"],
+      "experimentProof": "A seeded Pollinator Passage route must reproduce species-specific components, isolation events, restored links, and reachable habitat sets as corridor conditions change.",
+      "idempotencyRule": "Graph/profile/link revisions replace by stable ID, identical evaluations reuse the same digest, and component-change events emit only when membership changes.",
+      "duplicateAndMergeRisk": "Navigation knowledge owns observer belief, route kits own authoritative progress, and habitat suitability scores individual regions. This domain owns ecological connectivity between regions and never computes movement paths.",
+      "promotionPotential": "Hold until two species profiles, fragmented and cyclic graphs, snapshot migration, and composition with habitat suitability pass."
+    },
+    {
+      "id": "bootstrap-kit-017",
+      "name": "pollination-network-domain-kit",
+      "purpose": "Track deterministic pollinator visits, compatible pollen transfer, reproductive windows, fertilization progress, and seed-readiness facts across authored plant and pollinator profiles.",
+      "coreMapping": {
+        "configures": ["core-data-kit", "core-simulation-kit"],
+        "composesWith": ["core-agent-kit", "core-world-domain", "core-spatial-kit"],
+        "nonDuplicatedMeaning": "Core owns agents, regions, interactions, timers, and deterministic resolution; this domain owns pollination visit, compatibility, fertilization, and reproductive-readiness meaning."
+      },
+      "classification": "feature-domain",
+      "ownership": ["plant reproductive profiles", "pollinator compatibility profiles", "visit facts", "pollen-source lineage", "fertilization windows and progress", "pollination deficits", "seed or fruit readiness descriptors"],
+      "exclusions": ["individual pollinator AI", "flight or pathfinding", "plant growth simulation", "population advancement", "spawn placement", "rendered flowers or insects", "agricultural content", "real-world crop guidance"],
+      "actions": ["register plant profile", "register pollinator profile", "open reproductive window", "record visit", "resolve transfer", "advance window", "harvest readiness fact", "reset network"],
+      "resourcesAndState": ["pollinationNetwork.plants", "pollinationNetwork.pollinators", "pollinationNetwork.visits", "pollinationNetwork.tick"],
+      "events": ["pollination.windowOpened", "pollination.visitRecorded", "pollination.transferResolved", "pollination.fertilized", "pollination.deficitDetected", "pollination.ready", "pollination.commandRejected", "pollination.reset"],
+      "methods": ["registerPlant(definition)", "registerPollinator(definition)", "openWindow(command)", "recordVisit(fact)", "resolveTransfer(command)", "advance(ticks)", "markHarvested(command)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned pollination snapshot", "visit and pollen-lineage descriptors", "fertilization-progress descriptors", "deficit and readiness descriptors"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable plant, pollinator, and region IDs", "explicit visit observations", "core-simulation fixed ticks"],
+      "expectedCompositions": ["habitat-corridor-domain-kit", "habitat-suitability-domain-kit", "ecosystem-population-cycle-domain-kit", "agriculture-domain-kit"],
+      "plausibleUses": ["restore a meadow pollination web across broken habitat corridors", "manage luminous moth visits needed to awaken an enchanted orchard"],
+      "experimentProof": "A seeded Pollinator Passage route must replay visit order and reproductive windows into identical compatibility decisions, pollen lineage, fertilization progress, deficits, and readiness events.",
+      "idempotencyRule": "Visit and transfer command IDs apply once, profile/window revisions replace by stable ID, and a plant can emit one readiness transition per reproductive cycle.",
+      "duplicateAndMergeRisk": "Ecosystem population cycles own aggregate cohorts and agriculture owns crop state; neither owns visit-level pollen transfer, compatibility, fertilization windows, or reproductive readiness.",
+      "promotionPotential": "Experimental until wild and cultivated plant profiles, multi-source pollen lineage, replay, snapshot migration, and explicit non-advisory limits pass."
+    },
+    {
+      "id": "bootstrap-kit-018",
+      "name": "lineage-succession-domain-kit",
+      "purpose": "Maintain parentage and descent facts, authored inheritable entitlements, eligibility rules, precedence, succession resolution, renunciation, and transfer history.",
+      "coreMapping": {
+        "configures": ["core-data-kit", "core-policy-kit"],
+        "composesWith": ["core-agent-kit"],
+        "nonDuplicatedMeaning": "Core owns identities, ledgers, and policy guards; this domain owns lineage graph and succession-specific eligibility, precedence, and transfer meaning."
+      },
+      "classification": "feature-domain",
+      "ownership": ["lineage graph", "parentage and adoption facts", "inheritable entitlement definitions", "candidate eligibility", "precedence resolution", "renunciation and disqualification facts", "succession outcome history"],
+      "exclusions": ["genetic simulation", "relationship emotion", "character creation", "inventory or currency transfer", "territory control", "legal advice", "dialogue", "authored dynasty fiction"],
+      "actions": ["register lineage", "record relationship", "define entitlement", "set eligibility fact", "renounce claim", "resolve succession", "confirm transfer fact", "reset lineage"],
+      "resourcesAndState": ["lineageSuccession.lineages", "lineageSuccession.relationships", "lineageSuccession.entitlements", "lineageSuccession.resolutions"],
+      "events": ["lineage.relationshipRecorded", "succession.eligibilityChanged", "succession.claimRenounced", "succession.resolved", "succession.transferConfirmed", "succession.commandRejected", "succession.reset"],
+      "methods": ["registerLineage(definition)", "recordRelationship(fact)", "defineEntitlement(definition)", "setEligibility(fact)", "renounce(command)", "resolve(command)", "confirmTransfer(fact)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned lineage snapshot", "descent graph descriptors", "succession candidate and precedence descriptors", "resolution and transfer-history descriptors"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable subject IDs", "core-policy guards", "authored relationship, eligibility, and entitlement facts"],
+      "expectedCompositions": ["governance-resolution-domain-kit", "negotiation-commitment-domain-kit", "rumor-propagation-domain-kit", "collective-resolve-domain-kit"],
+      "plausibleUses": ["resolve a contested royal succession after multiple renunciations", "track inherited guild stewardship across adopted and biological family lines"],
+      "experimentProof": "A seeded Crown Ledger route must replay lineage facts, eligibility changes, renunciations, and policy precedence into the same successor and transfer history.",
+      "idempotencyRule": "Relationship and entitlement facts upsert by stable revision, resolution command IDs commit once, and a confirmed succession cannot resolve again without a new entitlement revision.",
+      "duplicateAndMergeRisk": "RPG social facts own item ownership and interpersonal trust, while negotiation commitments own accepted obligations. Neither owns descent graphs, inherited eligibility, precedence, renunciation, or succession outcomes.",
+      "promotionPotential": "Hold until biological and non-biological lineage structures, disputed eligibility, cycle rejection, snapshot migration, and two genre configurations pass."
+    },
+    {
+      "id": "bootstrap-kit-019",
+      "name": "governance-resolution-domain-kit",
+      "purpose": "Resolve authored proposals through eligibility, quorum, ballots, voting rules, abstention, tie policy, ratification, enactment status, and decision history.",
+      "coreMapping": {
+        "configures": ["core-data-kit", "core-policy-kit", "core-simulation-kit"],
+        "composesWith": ["core-agent-kit"],
+        "nonDuplicatedMeaning": "Core owns identities, policy validation, timers, and ledgers; this domain owns collective proposal, quorum, ballot, tally, ratification, and enactment lifecycle meaning."
+      },
+      "classification": "feature-domain",
+      "ownership": ["governing-body definitions", "proposal lifecycle", "participant eligibility", "quorum rules", "ballots and abstentions", "deterministic tally and tie policy", "ratification and enactment status", "decision history"],
+      "exclusions": ["agent choice", "dialogue or campaigning", "public trust", "territory control", "policy effects enforcement", "real-world election systems", "network voting", "UI"],
+      "actions": ["register body", "open proposal", "set eligibility fact", "cast or withdraw ballot", "close vote", "ratify decision", "record enactment", "void decision", "reset governance"],
+      "resourcesAndState": ["governanceResolution.bodies", "governanceResolution.proposals", "governanceResolution.ballots", "governanceResolution.decisions", "governanceResolution.tick"],
+      "events": ["governance.proposalOpened", "governance.ballotCast", "governance.quorumChanged", "governance.voteClosed", "governance.ratified", "governance.enacted", "governance.voided", "governance.commandRejected", "governance.reset"],
+      "methods": ["registerBody(definition)", "openProposal(definition)", "setEligibility(fact)", "castBallot(command)", "withdrawBallot(command)", "closeVote(command)", "ratify(command)", "recordEnactment(fact)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned governance snapshot", "proposal and quorum descriptors", "ballot and tally descriptors", "ratification and enactment-history descriptors"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable body, participant, and proposal IDs", "core-policy validation", "explicit enactment facts from adjacent domains"],
+      "expectedCompositions": ["lineage-succession-domain-kit", "negotiation-commitment-domain-kit", "territory-influence-domain-kit", "rumor-propagation-domain-kit"],
+      "plausibleUses": ["settle a council succession crisis through weighted houses", "let a cooperative colony vote on emergency resource policy"],
+      "experimentProof": "A seeded Crown Ledger route must replay eligibility, ballots, abstentions, quorum shifts, ties, ratification, and enactment facts into an identical decision history.",
+      "idempotencyRule": "Ballot command IDs commit once and replace only under explicit revision policy, close and ratify commands are terminal once, and enactment facts merge by decision revision.",
+      "duplicateAndMergeRisk": "Core Policy validates allowed actions and negotiation owns party commitments; no implemented kit owns proposal voting, quorum, tally, ratification, and enactment state. Authored political rules remain data.",
+      "promotionPotential": "Experimental until simple-majority and weighted-rule bodies, tie/quorum edge cases, snapshot migration, replay, and non-real-world framing pass."
+    },
+    {
+      "id": "bootstrap-kit-020",
+      "name": "language-comprehension-domain-kit",
+      "purpose": "Evaluate authored languages and dialects, mutual-intelligibility relationships, participant proficiency, semantic message facets, comprehension confidence, misunderstanding, and learning evidence.",
+      "coreMapping": {
+        "configures": ["core-data-kit"],
+        "composesWith": ["core-agent-kit", "core-policy-kit", "core-mlnn-kit"],
+        "nonDuplicatedMeaning": "Core owns agents, data, policy, and optional inference requests; this domain owns authored language proficiency and deterministic semantic-comprehension meaning without generating or translating text."
+      },
+      "classification": "feature-domain",
+      "ownership": ["language and dialect definitions", "mutual-intelligibility relationships", "participant proficiency records", "semantic message-facet requirements", "comprehension and misunderstanding outcomes", "confidence and provenance", "learning evidence and mastery transitions"],
+      "exclusions": ["dialogue text", "translation generation", "speech recognition", "LLM inference", "audio playback", "agent decisions", "relationship state", "UI", "real-world language assessment"],
+      "actions": ["register language", "set intelligibility", "set proficiency", "evaluate message facets", "record clarification", "record learning evidence", "invalidate assessment", "reset comprehension"],
+      "resourcesAndState": ["languageComprehension.languages", "languageComprehension.intelligibility", "languageComprehension.proficiencies", "languageComprehension.assessments", "languageComprehension.revision"],
+      "events": ["language.proficiencyChanged", "language.messageAssessed", "language.facetUnderstood", "language.facetMisunderstood", "language.clarified", "language.masteryReached", "language.commandRejected", "language.reset"],
+      "methods": ["registerLanguage(definition)", "setIntelligibility(fact)", "setProficiency(fact)", "assessMessage(command)", "clarify(command)", "recordLearning(fact)", "invalidate(assessmentId)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned comprehension snapshot", "language and intelligibility descriptors", "participant proficiency descriptors", "message-facet comprehension and confidence descriptors"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable participant and language IDs", "authored semantic message facets", "optional external inference observations supplied as facts"],
+      "expectedCompositions": ["negotiation-commitment-domain-kit", "rumor-propagation-domain-kit", "navigation-knowledge-domain-kit", "governance-resolution-domain-kit"],
+      "plausibleUses": ["decode a damaged alien warning through repeated contextual evidence", "negotiate safe passage across mutually intelligible fantasy dialects"],
+      "experimentProof": "A seeded Broken Tongues route must replay proficiency, dialect relationships, message facets, clarifications, and learning evidence into identical comprehension and mastery outcomes without generating text.",
+      "idempotencyRule": "Language, intelligibility, and proficiency facts upsert by stable revision; assessment and clarification command IDs apply once; mastery events emit only on threshold crossings.",
+      "duplicateAndMergeRisk": "Dialogue kits own authored line flow, rumor propagation owns claim exposure, and MLNN owns inference requests. No implemented kit owns language/dialect proficiency, mutual intelligibility, semantic facet comprehension, and learning evidence.",
+      "promotionPotential": "Hold until fictional dialect and code-language configurations, clarification, snapshot migration, deterministic replay, and inference-free operation pass."
     }
   ],
   "rejectedCandidates": [
@@ -327,6 +577,36 @@
       "name": "formation-assignment-domain-kit",
       "rejectionClass": "duplicate-existing-kit",
       "reason": "The existing Agent Group domain explicitly owns groups, agents, goals, basic movement, and formation state; a slot-assignment-only candidate did not clear the adjacent-domain split gate."
+    },
+    {
+      "name": "infrastructure-restoration-domain-kit",
+      "rejectionClass": "duplicate-existing-kit",
+      "reason": "semantic-bounded-domain-kits already installs engine.n.restoration and owns assets, diagnosis, plans, work contributions, commissioning, snapshots, and reset."
+    },
+    {
+      "name": "stealth-suspicion-domain-kit",
+      "rejectionClass": "duplicate-existing-kit",
+      "reason": "sensory-agent-domain-kit and perception-kit already own reusable detection observations, while rpg-social-fact-kit owns suspicion; the candidate added no coherent semantic owner above those boundaries."
+    },
+    {
+      "name": "item-ownership-transfer-domain-kit",
+      "rejectionClass": "duplicate-existing-kit",
+      "reason": "rpg-social-fact-kit already exposes ownership set, theft, return, crime, and suspicion facts for items; a transfer-only wrapper would duplicate that implemented surface."
+    },
+    {
+      "name": "utility-network-domain-kit",
+      "rejectionClass": "vague-or-blurred-scope",
+      "reason": "A generic utility graph blurred electricity, water, fuel, data, repair, and service semantics. It was split down to the accepted power-distribution boundary with explicit exclusions."
+    },
+    {
+      "name": "incident-priority-domain-kit",
+      "rejectionClass": "core-rename-or-core-duplication",
+      "reason": "Core RequestQueue/priority operations plus the accepted rescue-triage severity boundary already cover generic ordering and casualty priority; the candidate supplied no additional incident lifecycle meaning."
+    },
+    {
+      "name": "signal-relay-domain-kit",
+      "rejectionClass": "duplicate-existing-kit",
+      "reason": "acoustic-signal-domain-kit is implemented and universal-game-domain-kits already declares signal strength, sync, relay, scramble, and beacon-link surfaces; a new relay wrapper would deepen an existing overlap cluster."
     }
   ]
 }
