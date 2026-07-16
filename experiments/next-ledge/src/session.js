@@ -3,8 +3,8 @@ import { createGenericAnchorDescriptorKit } from "https://cdn.jsdelivr.net/gh/Lu
 import { createGenericModeProjectedRoute, createProjectedRoute } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-mode-projected-route/index.js";
 import { createGenericRouteProgressKit } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-route-progress-kit/index.js";
 import { createGenericTetherTraversalDomainKits, createGenericTetherTraversalPreset } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-tether-traversal-domain-kits/index.js";
-import { createNextLedgeClimbPreset } from "./climb-preset.js?v=cacheline-one-launch-3";
-import { adaptProjectedRouteToClimbRoute } from "./climb-anchor-adapter.js?v=cacheline-one-launch-3";
+import { createNextLedgeClimbPreset } from "./climb-preset.js?v=windglass-rejoin-1";
+import { adaptProjectedRouteToClimbRoute } from "./climb-anchor-adapter.js?v=windglass-rejoin-1";
 import { createClimbActionAdapter } from "./climb-action-adapter.js";
 
 const clamp = (v, a, b) => Math.max(a, Math.min(b, Number.isFinite(Number(v)) ? Number(v) : a));
@@ -107,6 +107,7 @@ function createInitialRouteChoice(route) {
     payoffShortcutAnchorId: choice.payoffShortcutAnchorId,
     payoffTargetId: null,
     convergenceAnchorId: choice.convergenceAnchorId,
+    genericRejoinAnchorId: choice.genericRejoinAnchorId,
     scoreMetric: null,
     scoreValue: 0,
     convergenceScore: null,
@@ -292,6 +293,9 @@ function openingWindStage(state) {
   if (choice?.status === "convergence-active") {
     return { phase: "windglass-convergence", intensity: 0.22, resolved: true };
   }
+  if (choice?.status === "rejoin-active") {
+    return { phase: "windglass-rejoin", intensity: 0.08, resolved: true };
+  }
   const ledges = state.route?.ledges ?? [];
   const currentIndex = ledges.findIndex((ledge) => ledge.id === state.currentAnchorId);
   if (currentIndex <= 0) {
@@ -352,6 +356,7 @@ function enabledTargets(state) {
       if (choice.status === "consequence-active") return ledge.id === choice.postRejoinAnchorId;
       if (choice.status === "payoff-active") return ledge.id === choice.payoffTargetId;
       if (choice.status === "convergence-active") return ledge.id === choice.convergenceAnchorId;
+      if (choice.status === "rejoin-active") return ledge.id === choice.genericRejoinAnchorId;
       return true;
     })
     .map((ledge) => ledge.id);
@@ -391,6 +396,22 @@ function protectedRecoveryWindow(state) {
   } : null;
 }
 
+function genericRejoinRecoveryWindow(state) {
+  const choice = state.routeChoice;
+  if (choice?.status !== "rejoin-active" || !choice.genericRejoinAnchorId) return null;
+  const target = ledgeMap(state)[choice.genericRejoinAnchorId];
+  const convergence = ledgeMap(state)[choice.convergenceAnchorId];
+  return target && convergence ? {
+    targetId: target.id,
+    failFloorBonus: n(convergence.metadata?.routeChoiceGenericRejoinFailFloorBonus, 0),
+    aimAssistBonus: n(convergence.metadata?.routeChoiceGenericRejoinAimAssistBonus, 0)
+  } : null;
+}
+
+function activeRecoveryWindow(state) {
+  return protectedRecoveryWindow(state) ?? genericRejoinRecoveryWindow(state);
+}
+
 function payoffTargetTuning(state) {
   const choice = state.routeChoice;
   if (choice?.status !== "payoff-active") return null;
@@ -420,7 +441,7 @@ function setRope(state, a, b, slack = 8) {
 function assistedAim(state) {
   const cfg = state.tuning ?? {};
   const maxDistance = n(cfg.aimAssistDistance, 185);
-  const recoveryWindow = protectedRecoveryWindow(state);
+  const recoveryWindow = activeRecoveryWindow(state);
   const payoffTuning = payoffTargetTuning(state);
   const assistRadius = n(cfg.aimAssistRadius, 28) + n(recoveryWindow?.aimAssistBonus, 0) + n(payoffTuning?.aimAssistBonus, 0);
   const strength = clamp(n(cfg.aimAssistStrength, 0.72) + (recoveryWindow ? 0.14 : 0) + (payoffTuning ? 0.1 : 0), 0, 1);
@@ -657,23 +678,39 @@ function lock(state, ledge) {
   } else if (state.routeChoice?.status === "convergence-active" && ledge.id === state.routeChoice.convergenceAnchorId) {
     const shortcut = state.routeChoice.selectedRole === "pressure-shortcut";
     const scoreValue = Math.max(0, Math.round(n(state.routeChoice.scoreValue)));
-    state.routeChoice.status = "resolved";
+    state.routeChoice.status = "rejoin-active";
     state.routeChoice.convergenceScore = {
       metric: state.routeChoice.scoreMetric,
       value: scoreValue,
       selectedRole: state.routeChoice.selectedRole
     };
     state.camera.trauma = Math.max(state.camera.trauma ?? 0, 0.38);
-    state.status = scoreCopy(
-      shortcut ? ledge.metadata?.routeChoiceResolvedShortcutStatus : ledge.metadata?.routeChoiceResolvedSafeStatus,
-      scoreValue
-    );
+    state.status = scoreCopy(shortcut ? ledge.metadata?.routeChoiceRejoinShortcutStatus : ledge.metadata?.routeChoiceRejoinSafeStatus, scoreValue);
     addEvent(state, "windglass-relay-scored", {
       targetId: ledge.id,
       routeChoiceId: state.routeChoice.id,
       selectedRole: state.routeChoice.selectedRole,
       scoreMetric: state.routeChoice.scoreMetric,
       scoreValue
+    });
+    addEvent(state, "windglass-rejoin-opened", {
+      targetId: state.routeChoice.genericRejoinAnchorId,
+      routeChoiceId: state.routeChoice.id,
+      selectedRole: state.routeChoice.selectedRole,
+      failFloorBonus: n(ledge.metadata?.routeChoiceGenericRejoinFailFloorBonus, 0),
+      aimAssistBonus: n(ledge.metadata?.routeChoiceGenericRejoinAimAssistBonus, 0)
+    });
+  } else if (state.routeChoice?.status === "rejoin-active" && ledge.id === state.routeChoice.genericRejoinAnchorId) {
+    const convergence = ledgeMap(state)[state.routeChoice.convergenceAnchorId];
+    state.routeChoice.status = "resolved";
+    state.camera.trauma = Math.max(state.camera.trauma ?? 0, 0.24);
+    state.status = convergence?.metadata?.routeChoiceRejoinResolvedStatus ?? "Windglass rejoin confirmed. Generic ascent is stable.";
+    addEvent(state, "windglass-rejoin-secured", {
+      targetId: ledge.id,
+      routeChoiceId: state.routeChoice.id,
+      selectedRole: state.routeChoice.selectedRole,
+      scoreMetric: state.routeChoice.scoreMetric,
+      scoreValue: state.routeChoice.scoreValue
     });
   }
 }
@@ -824,7 +861,7 @@ function stepState(state, dt) {
       if (["swinging", "reeling"].includes(state.mode)) release(state);
     }
     const safeAnchorY = n(ledgeMap(state)[state.currentAnchorId]?.y, 0);
-    const recoveryWindow = protectedRecoveryWindow(state);
+    const recoveryWindow = activeRecoveryWindow(state);
     const failFloorDistance = n(state.tuning.failFloorDistance, 520) + n(recoveryWindow?.failFloorBonus, 0);
     if (["falling", "retracting"].includes(state.mode) && state.player.y < safeAnchorY - failFloorDistance) fail(state, "Host aborted. Anchor connection lost below sector floor.");
   }

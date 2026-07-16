@@ -26,18 +26,18 @@
       "id": "next-ledge-grapple",
       "lifecycleStatus": "active-legacy-baseline",
       "score": 99,
-      "lastImprovedAt": "2026-07-16T18:12:53-04:00",
+      "lastImprovedAt": "2026-07-16T19:05:50-04:00",
       "feelScores": {
         "responsiveness": 9,
         "predictability": 9,
         "readability": 9,
         "impact": 9,
-        "recovery": 8,
+        "recovery": 9,
         "delight": 9,
         "replayDesire": 9,
-        "average": 8.9
+        "average": 9.0
       },
-      "nextFeelProblem": "Add a short branch-neutral rejoin cue and recovery window from Windglass Relay to the original anchor-11 so the scored beat flows into generic ascent without a blind long shot."
+      "nextFeelProblem": "Retune the initial Signal Cut commitment from Counterwind Rest so the amber shortcut opens with one readable high-build launch without making it as safe as Shelter Rise."
     },
     {
       "id": "rogue-lite-hellscape-siege",

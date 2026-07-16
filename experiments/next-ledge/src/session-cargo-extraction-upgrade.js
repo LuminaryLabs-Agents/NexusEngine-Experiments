@@ -1,6 +1,6 @@
 import * as NexusEngine from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js";
 import { createGenericRouteCargoExtractionKit } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-route-cargo-extraction-kit/index.js";
-import { createNextLedgeSession as createVisualNextLedgeSession } from "./session-visual-upgrade.js?v=cacheline-one-launch-3";
+import { createNextLedgeSession as createVisualNextLedgeSession } from "./session-visual-upgrade.js?v=windglass-rejoin-1";
 import { createNextLedgeRouteCargoDomainKit } from "./route-cargo-fractal-kits.js";
 import { createNextLedgeTraversalReadabilityDomainKit } from "./traversal-readability-kits.js";
 import { createNextLedgeAnchorTimingReadabilityDomainKit } from "./anchor-timing-readability-kits.js";

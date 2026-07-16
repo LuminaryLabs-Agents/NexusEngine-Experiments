@@ -50,12 +50,18 @@ function choiceBeatLedge(source, beat, choiceId, defaultStaminaRestore = 45) {
       routeChoiceCargoRequired: Number(beat.cargoRequired ?? 0),
       routeChoiceScoreMetric: beat.scoreMetric ?? null,
       routeChoiceScoreMultiplier: Number(beat.scoreMultiplier ?? 100),
+      routeChoiceGenericRejoinFailFloorBonus: Number(beat.rejoinFailFloorBonus ?? 0),
+      routeChoiceGenericRejoinAimAssistBonus: Number(beat.rejoinAimAssistBonus ?? 0),
+      routeChoiceGenericRejoinCameraZoomBonus: Number(beat.rejoinCameraZoomBonus ?? 0),
       routeChoiceStatus: beat.status ?? null,
       routeChoiceResolvedStatus: beat.resolvedStatus ?? null,
       routeChoiceSafeStatus: beat.safeStatus ?? null,
       routeChoiceShortcutStatus: beat.shortcutStatus ?? null,
       routeChoiceResolvedSafeStatus: beat.resolvedSafeStatus ?? null,
       routeChoiceResolvedShortcutStatus: beat.resolvedShortcutStatus ?? null,
+      routeChoiceRejoinSafeStatus: beat.rejoinSafeStatus ?? null,
+      routeChoiceRejoinShortcutStatus: beat.rejoinShortcutStatus ?? null,
+      routeChoiceRejoinResolvedStatus: beat.rejoinResolvedStatus ?? null,
       authoredRouteBeat: true
     }
   };
@@ -120,6 +126,7 @@ export function adaptProjectedRouteToClimbRoute(projectedRoute, climb = {}) {
   const postRejoinBeat = postRestChoice?.postRejoin ?? null;
   const payoffBeats = [postRestChoice?.payoff?.safe, postRestChoice?.payoff?.shortcut].filter(Boolean);
   const convergenceBeat = postRestChoice?.convergence ?? null;
+  let genericRejoinAnchorId = null;
   for (const beat of [...choiceBranchBeats, postRejoinBeat, ...payoffBeats].filter(Boolean)) {
     const index = Math.max(1, Math.min(ledges.length - 2, Math.floor(Number(beat.index ?? 1))));
     const source = ledges[index];
@@ -132,6 +139,7 @@ export function adaptProjectedRouteToClimbRoute(projectedRoute, climb = {}) {
     if (source) {
       ledges.splice(index, 0, choiceBeatLedge(source, convergenceBeat, postRestChoice.id ?? "post-rest-signal-fork", climb.staminaRestore));
       ledges.forEach((ledge, ledgeIndex) => { ledge.index = ledgeIndex; });
+      genericRejoinAnchorId = ledges[index + 1]?.id ?? null;
     }
   }
   const crest = climb.masteryCrest;
@@ -193,6 +201,7 @@ export function adaptProjectedRouteToClimbRoute(projectedRoute, climb = {}) {
       payoffSafeAnchorId: postRestChoice?.payoff?.safe?.id ?? null,
       payoffShortcutAnchorId: postRestChoice?.payoff?.shortcut?.id ?? null,
       convergenceAnchorId: convergenceBeat?.id ?? null,
+      genericRejoinAnchorId,
       safe: { ...postRestChoice.safe },
       shortcut: { ...postRestChoice.shortcut },
       rejoin: { ...postRestChoice.rejoin },

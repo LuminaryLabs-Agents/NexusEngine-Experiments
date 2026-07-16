@@ -1,5 +1,11 @@
 # Cycle State
 
+## 2026-07-16 Windglass Generic Rejoin Feel Refinement
+
+`experiments/next-ledge/` now carries either Windglass score into one explicit, branch-neutral recovery catch at the preserved original `anchor-11`. The authored convergence descriptor supplies fail-floor, aim-assist, camera, and copy tuning; the existing route-choice state owns `rejoin-active` and resolution; the renderer reuses its bounded consequence line and target entity. Human View shows one enlarged cyan destination and high-build hero prompt with diagnostics closed. Playwright completed the mint loop, deliberately missed and recovered with a second grapple, secured `anchor-11`, preserved the `134` score, opened and closed Advanced without entity growth, held 236 scene nodes / 69 DOM nodes / one canvas / 72 descriptors, improved matched FPS from `12.00` to `18.59`, and reported zero console errors or warnings.
+
+Exact next playable unit: retune the initial Signal Cut commitment from Counterwind Rest so the amber shortcut opens with one readable high-build launch without making it as safe as Shelter Rise.
+
 ## 2026-07-16 Cacheline One-Launch Feel Refinement
 
 `experiments/next-ledge/` now turns the `175`-cargo shortcut into one deliberate, readable rightward launch. Authored Cacheline position, catch radius, aim lead, assist, and camera zoom remain declarative; the existing route-choice and cable-launch owners consume them without a second launch state. Camera framing now centers the live player and target, pointer projection uses that same presented camera, and the UI owns the foreground compositor layer. Final cleanup also restricts unassisted cable sweep to enabled targets, so inactive branch anchors cannot steal the post-Windglass continuation. Playwright completed the shortcut through Cacheline in one launch, scored `175` cargo at Windglass, caught the original `anchor-11`, proved real failure/keyboard retry, kept Advanced closed by default, held settled entity counts, passed all 28 existing Next Ledge tests, and reported zero console messages.

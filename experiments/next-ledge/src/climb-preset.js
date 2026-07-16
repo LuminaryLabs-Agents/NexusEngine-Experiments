@@ -155,10 +155,16 @@ export function createNextLedgeClimbPreset(options = {}) {
       y: 1156,
       radius: 11.8,
       gustIntensity: 0.22,
+      rejoinFailFloorBonus: 260,
+      rejoinAimAssistBonus: 34,
+      rejoinCameraZoomBonus: 96,
       safeStatus: "Windglass Relay is reading the Slipstream overcharge. Preserve the mint velocity into the shared catch.",
       shortcutStatus: "Windglass Relay is reading the Cacheline transfer. Carry the amber cargo mastery into the shared catch.",
       resolvedSafeStatus: "Windglass Relay scored {score} SPEED. Slipstream velocity preserved—generic ascent restored.",
       resolvedShortcutStatus: "Windglass Relay scored {score} CARGO. Cacheline mastery banked—generic ascent restored.",
+      rejoinSafeStatus: "Windglass Relay scored {score} SPEED. Rejoin window open—build high, then fire for the cyan ascent anchor.",
+      rejoinShortcutStatus: "Windglass Relay scored {score} CARGO. Rejoin window open—build high, then fire for the cyan ascent anchor.",
+      rejoinResolvedStatus: "Windglass rejoin confirmed. Generic ascent is stable.",
       tags: ["windglass-relay", "route-convergence", "branch-mastery-score"]
     }
   };

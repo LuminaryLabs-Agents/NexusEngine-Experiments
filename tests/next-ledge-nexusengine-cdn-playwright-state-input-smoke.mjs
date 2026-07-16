@@ -57,7 +57,7 @@ for (const visibleSurface of ["Next Ledge", "A / D", "SPACE / CLICK", "R</b> ret
 for (const masterySurface of ["Stormbreak rest", "Commit perch", "Crosswind catch", "Relay crown", "Summit relay"]) {
   assert.ok(climbPreset.includes(masterySurface), `authored mastery crest should include ${masterySurface}`);
 }
-for (const choiceSurface of ["Shelter rise", "Signal cut", "Fork relay", "Stormlock restore", "Slipstream launch", "Cacheline high", "Windglass relay", "pressureDelta: 46", "cargoBonus: 1.75", "protectedFailFloorBonus: 210", "pressureRecovery: 100", "launchSpeedMultiplier: 1.34", "cargoRequired: 1.75", "scoreMetric: \"preserved-speed\"", "scoreMetric: \"cargo-mastery\""]) {
+for (const choiceSurface of ["Shelter rise", "Signal cut", "Fork relay", "Stormlock restore", "Slipstream launch", "Cacheline high", "Windglass relay", "pressureDelta: 46", "cargoBonus: 1.75", "protectedFailFloorBonus: 210", "rejoinFailFloorBonus: 260", "rejoinAimAssistBonus: 34", "rejoinCameraZoomBonus: 96", "pressureRecovery: 100", "launchSpeedMultiplier: 1.34", "cargoRequired: 1.75", "scoreMetric: \"preserved-speed\"", "scoreMetric: \"cargo-mastery\""]) {
   assert.ok(climbPreset.includes(choiceSurface), `authored post-rest choice should include ${choiceSurface}`);
 }
 assert.match(climbAdapter, /postRestChoice/, "route adapter should expose the authored post-rest choice descriptor");
@@ -74,7 +74,11 @@ assert.match(session, /post-stormlock-payoff-opened/, "Stormlock should open one
 assert.match(session, /post-stormlock-payoff-secured/, "the selected payoff anchor should advance the existing route-choice state");
 assert.match(session, /convergence-active/, "the existing route-choice state should own the shared convergence beat");
 assert.match(session, /windglass-relay-scored/, "Windglass Relay should publish one semantic branch score event");
+assert.match(session, /windglass-rejoin-opened/, "Windglass Relay should publish one semantic generic-rejoin event");
+assert.match(session, /windglass-rejoin-secured/, "the original generic anchor should publish one semantic rejoin confirmation");
 assert.match(session, /convergenceScore/, "the branch score should remain inside the existing route-choice state");
+assert.match(session, /genericRejoinRecoveryWindow/, "the branch-neutral rejoin should extend the existing recovery owner");
+assert.match(climbAdapter, /genericRejoinAnchorId/, "route adaptation should preserve the original generic anchor instead of authoring a duplicate target");
 assert.match(cargoWrapper, /post-rest-route-choice-committed/, "shortcut commitment should bridge into the existing route-cargo facade");
 assert.match(cargoWrapper, /post-rejoin-pressure-vented/, "the post-rejoin vent should bridge into the existing route-cargo pressure facade");
 assert.match(cargoWrapper, /amber-high-line-unlock/, "the shortcut payoff should spend banked cargo through the existing route-cargo facade");
@@ -84,6 +88,7 @@ assert.match(renderer, /shortcutChoiceLine/, "renderer should expose the amber b
 assert.match(renderer, /consequenceLine/, "renderer should expose one bounded post-rejoin consequence line");
 assert.match(renderer, /payoffTargetActive/, "renderer should reuse the bounded consequence line for the selected payoff target");
 assert.match(renderer, /convergenceTargetActive/, "renderer should reuse the bounded consequence line for the Windglass convergence target");
+assert.match(renderer, /rejoinTargetActive/, "renderer should reuse the bounded consequence line for the original generic rejoin target");
 assert.match(hud, /MINT — Shelter recovery · AMBER — Signal shortcut/, "the contextual hero prompt should explain both routes without adding a control");
 assert.match(hud, /MINT WINDOW — Protected grapple to Stormlock Restore/, "the contextual hero prompt should explain the safe post-rejoin consequence");
 assert.match(hud, /AMBER PRESSURE — Grapple Stormlock Restore to vent/, "the contextual hero prompt should explain the shortcut vent demand");
@@ -91,6 +96,7 @@ assert.match(hud, /MINT OVERCHARGE — Fire for Slipstream Launch/, "the safe pa
 assert.match(hud, /AMBER HIGH LINE — Commit to Cacheline High/, "the shortcut payoff prompt should expose the harder cargo-unlocked line");
 assert.match(hud, /WINDGLASS RELAY — Preserve/, "the shared convergence prompt should expose the preserved-speed score");
 assert.match(hud, /WINDGLASS RELAY — Bank/, "the shared convergence prompt should expose the cargo-mastery score");
+assert.match(hud, /REJOIN WINDOW — Build high · Fire for cyan ascent anchor/, "the contextual hero prompt should expose the branch-neutral recovery catch");
 assert.match(climbAdapter, /masteryCrestId/, "route adapter should preserve mastery crest metadata");
 assert.match(climbAdapter, /authoredRouteBeat/, "route adapter should mark authored late-route beats");
 assert.match(index, /id="completionPanel"/, "route shell should provide an unmistakable summit completion surface");

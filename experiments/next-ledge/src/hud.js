@@ -45,6 +45,10 @@ function promptFor(snapshot) {
       : `WINDGLASS RELAY — Preserve ${Math.round(number(choice.scoreValue))} speed`,
     tone: "success"
   };
+  if (choice?.status === "rejoin-active") return {
+    text: "REJOIN WINDOW — Build high · Fire for cyan ascent anchor",
+    tone: "success"
+  };
   const speed = Math.hypot(number(snapshot.player?.vx), number(snapshot.player?.vy));
   return speed >= 1.7
     ? { text: "Space / click — Release now", tone: "ready" }
@@ -109,6 +113,8 @@ export function createHud(nodes = {}) {
           ? snapshot.routeChoice.selectedRole === "pressure-shortcut"
             ? `Cacheline High banked ${Math.round(number(snapshot.routeChoice.scoreValue))} cargo mastery. Carry it into the shared Windglass Relay catch.`
             : `Slipstream Launch preserved ${Math.round(number(snapshot.routeChoice.scoreValue))} speed. Carry it into the shared Windglass Relay catch.`
+        : snapshot.routeChoice?.status === "rejoin-active"
+          ? `Windglass banked ${Math.round(number(snapshot.routeChoice.scoreValue))} ${snapshot.routeChoice.scoreMetric === "cargo-mastery" ? "cargo mastery" : "speed"}. Build above the relay and fire for the bright cyan ascent anchor; this catch has a protected recovery window.`
         : snapshot.completed
           ? "Signal delivered. The summit relay is broadcasting through the storm."
         : cargoAmount > 0

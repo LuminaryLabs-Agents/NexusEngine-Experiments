@@ -101,6 +101,10 @@ export function createCinematicSynth() {
     else if (type === "windglass-relay-scored") {
       [659.25, 987.77, 1318.5, 1975.53].forEach((frequency, index) => setTimeout(() => tone(frequency, 0.46, index % 2 ? "triangle" : "sine", 0.065, frequency * 1.16), index * 68));
     }
+    else if (type === "windglass-rejoin-secured") {
+      tone(659.25, 0.08, "triangle", 0.045, 987.77);
+      setTimeout(() => tone(987.77, 0.15, "sine", 0.042, 1318.5), 72);
+    }
   }
 
   return {

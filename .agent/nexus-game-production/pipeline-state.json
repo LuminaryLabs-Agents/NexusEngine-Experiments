@@ -30,7 +30,7 @@
     "coreRemoteDefault": "80146b8947e0877e26b851563bd17f5cdfcbf38a",
     "coreLocalReadOnly": "8b57b03904889cdbc71021d3bdb1d4070af5c8d3",
     "protokits": "04d34f049f58ae359cf71d43466c429dac2a6d08",
-    "experiments": "2ca326d85220e78c527057e2a3f9e63a4f07135c",
+    "experiments": "71ddcfcfc5677cd86ff42756863f48b21077e9e2",
     "experimentsBaseline": "615a7e1e2170164acef0edebdbe0b88b8c01fd1b"
   },
   "baseline": {
@@ -147,28 +147,28 @@
     "result": "Upgraded Next Ledge so Slipstream Launch and Cacheline High converge at Windglass Relay, banking 134 preserved speed or 175 cargo mastery before generic ascent resumes; production creation counts remain unchanged."
   },
   "lastRefinementUnit": {
-    "packetId": "2026-07-16-next-ledge-cacheline-one-launch-refinement",
-    "scope": "Next Ledge Cacheline High readable one-launch shortcut",
-    "result": "The 175-cargo Cacheline shortcut now frames the live player and target together, applies authored target lead, and clears in one deliberate rightward launch while remaining smaller than Slipstream Launch."
+    "packetId": "2026-07-16-next-ledge-windglass-rejoin-cue-refinement",
+    "scope": "Next Ledge Windglass branch-neutral generic rejoin",
+    "result": "Windglass now preserves either branch score into one explicit cyan high-build recovery catch at the original anchor-11 before generic ascent resumes."
   },
   "lastCompletedUnit": {
-    "packetId": "2026-07-16-next-ledge-cacheline-one-launch-refinement",
-    "scope": "Next Ledge Cacheline High readable one-launch feel refinement",
-    "result": "Cacheline High now clears in one 36-frame rightward launch, scores 175 cargo at Windglass Relay, and returns to the preserved original anchor-11 without inactive branch anchors stealing cable sweep.",
-    "validation": "All 28 existing Next Ledge test entrypoints, changed JavaScript syntax, JSON, and diff checks passed. Playwright completed the sector-two shortcut through one Cacheline launch, scored 175 cargo at Windglass, caught the original anchor-11 with anchor-12 enabled next, proved a real dead state and keyboard retry, checked closed/open/closed Advanced disclosure, stable settled DOM/entity counts, and a zero-message console. Human View passed the first screen, Cacheline target framing, and scored Windglass state with diagnostics closed and no WebGL overlap. A contemporaneous start-commit checkout measured 21.71 FPS versus 25.40 after, a 17.0 percent improvement; p95 remained 66.8 versus 66.7 ms, long tasks fell from 18 to 6, and no steady-state entity or DOM growth appeared.",
+    "packetId": "2026-07-16-next-ledge-windglass-rejoin-cue-refinement",
+    "scope": "Next Ledge Windglass branch-neutral generic rejoin feel refinement",
+    "result": "Windglass now keeps the 134-speed or 175-cargo score live while one readable cyan high-build catch and protected miss-recovery window return the player to original anchor-11.",
+    "validation": "All 28 existing Next Ledge test entrypoints, changed JavaScript syntax, JSON, and diff checks passed. Playwright completed the sector-two mint route, scored 134 speed, deliberately missed and recovered with a second grapple, caught original anchor-11, exercised keyboard retry, checked closed/open/closed Advanced disclosure, stable DOM/entity/descriptor counts, and a zero-message console. Human View passed the first screen, open rejoin, and resolved rejoin with diagnostics closed. Matched fresh-browser performance improved from 12.00 to 18.59 FPS, p95 improved from 100.60 to 66.70 ms, and no steady-state entity, descriptor, DOM, or canvas growth appeared.",
     "commits": {
       "coreReadOnly": "8b57b03904889cdbc71021d3bdb1d4070af5c8d3",
       "protokitsStart": "04d34f049f58ae359cf71d43466c429dac2a6d08",
       "protokitsProductionUnit": "04d34f049f58ae359cf71d43466c429dac2a6d08",
-      "experimentsStart": "2ca326d85220e78c527057e2a3f9e63a4f07135c",
-      "experimentsProductionUnit": "56d02fa388a4c3c4cd2474e03ccb96fe6ed48dcd"
+      "experimentsStart": "71ddcfcfc5677cd86ff42756863f48b21077e9e2",
+      "experimentsProductionUnit": "PENDING_PRODUCTION_COMMIT"
     },
-    "publication": "Experiments production commit 56d02fa388a4c3c4cd2474e03ccb96fe6ed48dcd is published on origin/main after fetch-before-push verification; ProtoKits is unchanged and synchronized at 04d34f049f58ae359cf71d43466c429dac2a6d08."
+    "publication": "Experiments publication pending final fetch-before-push verification; ProtoKits is unchanged and synchronized at 04d34f049f58ae359cf71d43466c429dac2a6d08."
   },
   "exactNextUnit": {
     "phase": "playable-experiment-upgrade",
     "epoch": 0,
-    "scope": "next-ledge-windglass-generic-rejoin-cue",
-    "goal": "Add a short branch-neutral rejoin cue and recovery window from Windglass Relay to the original anchor-11 so the scored beat flows into generic ascent without a blind long shot."
+    "scope": "next-ledge-signal-cut-one-launch-commitment",
+    "goal": "Retune the initial Signal Cut commitment from Counterwind Rest so the amber shortcut opens with one readable high-build launch without making it as safe as Shelter Rise."
   }
 }
