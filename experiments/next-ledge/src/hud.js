@@ -35,6 +35,10 @@ function promptFor(snapshot) {
     text: choice.selectedRole === "pressure-shortcut" ? "AMBER PRESSURE — Grapple Stormlock Restore to vent" : "MINT WINDOW — Protected grapple to Stormlock Restore",
     tone: choice.selectedRole === "pressure-shortcut" ? "danger" : "success"
   };
+  if (choice?.status === "payoff-active") return {
+    text: choice.selectedRole === "pressure-shortcut" ? "AMBER HIGH LINE — Commit to Cacheline High" : "MINT OVERCHARGE — Fire for Slipstream Launch",
+    tone: choice.selectedRole === "pressure-shortcut" ? "danger" : "success"
+  };
   const speed = Math.hypot(number(snapshot.player?.vx), number(snapshot.player?.vy));
   return speed >= 1.7
     ? { text: "Space / click — Release now", tone: "ready" }
@@ -91,6 +95,10 @@ export function createHud(nodes = {}) {
           ? snapshot.routeChoice.selectedRole === "pressure-shortcut"
             ? "Retained pressure is still live. Grapple the amber-marked Stormlock Restore to deliberately vent it."
             : "Shelter Rise earned one protected grapple window. Use it now to secure Stormlock Restore."
+        : snapshot.routeChoice?.status === "payoff-active"
+          ? snapshot.routeChoice.selectedRole === "pressure-shortcut"
+            ? "Your banked signal cargo unlocked Cacheline High. Commit to the smaller amber anchor above the crosswind."
+            : "Stormlock converted shelter protection into a faster cable launch. Fire through the mint Slipstream Launch now."
         : snapshot.completed
           ? "Signal delivered. The summit relay is broadcasting through the storm."
         : cargoAmount > 0

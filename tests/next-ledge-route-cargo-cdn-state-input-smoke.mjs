@@ -24,9 +24,11 @@ assert.match(wrapperSource, /recoverPressure/, "wrapper should bridge recovery i
 assert.match(wrapperSource, /syncCurrentCargoCheckpoint/, "wrapper should align route-cargo progress with the session's current anchor");
 assert.match(wrapperSource, /post-rest-route-choice-committed/, "wrapper should consume the authored signal-shortcut commitment event");
 assert.match(wrapperSource, /post-rejoin-pressure-vented/, "wrapper should consume the authored post-rejoin pressure vent event");
+assert.match(wrapperSource, /post-stormlock-payoff-opened/, "wrapper should consume the authored shortcut payoff unlock event");
 assert.match(wrapperSource, /shortcut-cache/, "shortcut should bank its authored cargo bonus through the cargo facade");
 assert.match(wrapperSource, /shortcut-pressure/, "shortcut should raise the existing fall-pressure channel instead of creating another owner");
 assert.match(wrapperSource, /stormlock-vent/, "Stormlock Restore should recover through the existing pressure channel facade");
+assert.match(wrapperSource, /cacheline-unlock/, "Cacheline High should spend its banked cargo through the existing resource facade");
 assert.match(wrapperSource, /routeCargoExtraction/, "snapshots should expose routeCargoExtraction state");
 assert.match(wrapperSource, /routeCargoVisual/, "snapshots should expose routeCargoVisual descriptors");
 

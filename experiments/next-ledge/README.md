@@ -12,6 +12,8 @@ Counterwind Rest now opens a short two-line decision without adding a control: g
 
 That choice now persists beyond the rejoin. Shelter Rise grants one protected grapple window to the authored Stormlock Restore, extending the existing traversal-recovery floor and aim-assist tuning until the catch lands. Signal Cut keeps its amber pressure live through Fork Relay and names Stormlock Restore as the deliberate vent target; the existing route-cargo pressure facade performs the recovery when the player secures it. The same route-choice state owns both consequences, and no new control or pressure ledger is introduced.
 
+Stormlock now pays that choice off immediately. Shelter Rise converts its protection into a mint Slipstream Launch with `1.34x` cable speed, extra lift, and stronger aim assistance. Signal Cut spends `1.75` banked cargo through the existing resource facade to reveal the smaller Cacheline High anchor inside a stronger amber gust. Both targets extend the existing route-choice state, reuse one bounded consequence line, and disappear when inactive; the final cleanup also pins WebGL to the canvas layer so foreground geometry cannot cover HUD text.
+
 The playable route composes real reusable features from NexusEngine-ProtoKits:
 
 ```txt

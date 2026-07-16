@@ -3,9 +3,9 @@ import { createDiegeticEffects, updateDiegeticPlayerSignals } from "./diegetic-e
 
 const matFor = (m, type, hover, routeChoiceRole = null) => hover
   ? m.hover
-  : routeChoiceRole === "pressure-shortcut"
+  : ["pressure-shortcut", "shortcut-payoff"].includes(routeChoiceRole)
     ? m.shortcutChoice
-    : routeChoiceRole === "safe-recovery"
+    : ["safe-recovery", "safe-payoff"].includes(routeChoiceRole)
       ? m.safeChoice
       : type === "rest"
         ? m.rest
@@ -348,7 +348,7 @@ export function createThreeRenderer({ canvas }) {
     const ledges = snapshot.route?.ledges ?? [];
     const currentIndex = Math.max(0, ledges.findIndex((ledge) => ledge.id === snapshot.currentAnchorId));
     const choice = snapshot.routeChoice;
-    const shortcutActive = ["committed", "consequence-active"].includes(choice?.status) && choice.selectedRole === "pressure-shortcut";
+    const shortcutActive = ["committed", "consequence-active", "payoff-active"].includes(choice?.status) && choice.selectedRole === "pressure-shortcut";
     const visible = Boolean(opening && (snapshot.sectorTransition?.phase === "opening" || currentIndex <= num(opening.endIndex, 4) || choice?.status === "open" || shortcutActive));
     counterwindField.visible = visible;
     if (!visible) return;
@@ -403,7 +403,7 @@ export function createThreeRenderer({ canvas }) {
       }
     }
     const choice = snapshot.route?.postRestChoice;
-    const choiceTargetIds = new Set([choice?.safeAnchorId, choice?.shortcutAnchorId].filter(Boolean));
+    const choiceTargetIds = new Set([choice?.safeAnchorId, choice?.shortcutAnchorId, choice?.payoffSafeAnchorId, choice?.payoffShortcutAnchorId].filter(Boolean));
     const routePoints = [];
     for (const l of snapshot.route?.ledges ?? []) {
       const g = new THREE.Group();
@@ -470,11 +470,14 @@ export function createThreeRenderer({ canvas }) {
     const trauma = clamp01(snapshot.camera?.trauma ?? 0);
     const summit = snapshot.route?.ledges?.find((ledge) => ledge.type === "summit");
     const openingReveal = snapshot.sectorTransition?.phase === "opening";
-    const choiceFraming = ["open", "consequence-active"].includes(snapshot.routeChoice?.status);
+    const choiceFraming = ["open", "consequence-active", "payoff-active"].includes(snapshot.routeChoice?.status);
     const choiceRest = snapshot.route?.ledges?.find((ledge) => ledge.id === snapshot.routeChoice?.restAnchorId);
     const choiceRejoin = snapshot.route?.ledges?.find((ledge) => ledge.id === snapshot.routeChoice?.rejoinAnchorId);
     const postRejoin = snapshot.route?.ledges?.find((ledge) => ledge.id === snapshot.routeChoice?.postRejoinAnchorId);
-    const choiceCameraY = snapshot.routeChoice?.status === "consequence-active" && choiceRejoin && postRejoin
+    const payoffTarget = snapshot.route?.ledges?.find((ledge) => ledge.id === snapshot.routeChoice?.payoffTargetId);
+    const choiceCameraY = snapshot.routeChoice?.status === "payoff-active" && postRejoin && payoffTarget
+      ? (postRejoin.y + payoffTarget.y) * 0.5
+      : snapshot.routeChoice?.status === "consequence-active" && choiceRejoin && postRejoin
       ? (choiceRejoin.y + postRejoin.y) * 0.5
       : choiceRest && choiceRejoin ? (choiceRest.y + choiceRejoin.y) * 0.5 : snapshot.camera?.y ?? 0;
     const targetCameraY = openingReveal ? 242 : choiceFraming ? choiceCameraY : snapshot.completed && summit ? summit.y - 42 : snapshot.camera?.y ?? 0;
@@ -494,22 +497,31 @@ export function createThreeRenderer({ canvas }) {
       safeChoiceLine.material.opacity = choice.status === "committed" && choice.selectedRole !== "safe-recovery" ? 0.08 : 0.56;
       shortcutChoiceLine.material.opacity = choice.status === "committed" && choice.selectedRole !== "pressure-shortcut" ? 0.08 : 0.58;
     }
-    consequenceLine.visible = choice?.status === "consequence-active";
+    consequenceLine.visible = ["consequence-active", "payoff-active"].includes(choice?.status);
     if (consequenceLine.visible) {
+      const routeLedges = snapshot.route?.ledges ?? [];
+      const anchor = (id) => routeLedges.find((ledge) => ledge.id === id);
+      const points = choice.status === "payoff-active"
+        ? [anchor(choice.postRejoinAnchorId), anchor(choice.payoffTargetId)]
+        : [anchor(choice.rejoinAnchorId), anchor(choice.postRejoinAnchorId)];
+      setLine(consequenceLine, points.filter(Boolean).map(({ x, y }) => ({ x, y, z: 24 })));
       consequenceLine.material.color.setHex(choice.selectedRole === "pressure-shortcut" ? 0xffb83d : 0x3dffa3);
       consequenceLine.material.opacity = 0.56 + (0.5 + 0.5 * Math.sin(time * 7.5)) * 0.24;
     }
 
     const staminaPct = Math.max(0, Math.min(1, (snapshot.stamina ?? 0) / Math.max(1, snapshot.constants?.maxStamina ?? 100)));
     for (const [id, g] of ledgeMap) {
-      const unselected = ["committed", "consequence-active", "resolved"].includes(choice?.status) && id === choice.unselectedAnchorId;
+      const unselected = ["committed", "consequence-active", "payoff-active", "resolved"].includes(choice?.status) && id === choice.unselectedAnchorId;
+      const payoffAnchor = [choice?.payoffSafeAnchorId, choice?.payoffShortcutAnchorId].includes(id);
+      const inactivePayoff = payoffAnchor && !(["payoff-active", "resolved"].includes(choice?.status) && id === choice?.payoffTargetId);
       const selected = id === choice?.selectedAnchorId;
       const consequenceTarget = choice?.status === "consequence-active" && id === choice.postRejoinAnchorId;
-      g.visible = !unselected;
-      const hot = id === snapshot.hoveredId || snapshot.enabledTargetIds?.includes(id) || id === snapshot.aimAssistTargetId || selected || consequenceTarget;
+      const payoffTargetActive = choice?.status === "payoff-active" && id === choice.payoffTargetId;
+      g.visible = !unselected && !inactivePayoff;
+      const hot = id === snapshot.hoveredId || snapshot.enabledTargetIds?.includes(id) || id === snapshot.aimAssistTargetId || selected || consequenceTarget || payoffTargetActive;
       const pulse = 1 + Math.sin(time * 6 + (g.position.y || 0) * 0.01) * 0.045;
       g.scale.setScalar((id === snapshot.hoveredId || id === snapshot.aimAssistTargetId ? 1.3 : hot ? 1.12 : 1) * pulse);
-      g.userData.core.material = consequenceTarget
+      g.userData.core.material = consequenceTarget || payoffTargetActive
         ? choice.selectedRole === "pressure-shortcut" ? m.shortcutChoice : m.safeChoice
         : matFor(m, g.userData.type, id === snapshot.hoveredId || id === snapshot.aimAssistTargetId, g.userData.choiceRole);
       g.userData.halo.visible = hot || g.userData.type !== "normal" || Boolean(g.userData.choiceRole && choice?.status === "open");
@@ -517,7 +529,7 @@ export function createThreeRenderer({ canvas }) {
       g.userData.halo.rotation.z += 0.012;
     }
     for (const beam of beacons.children) {
-      beam.visible = !(["committed", "consequence-active", "resolved"].includes(choice?.status) && beam.userData.id === choice.unselectedAnchorId);
+      beam.visible = !(["committed", "consequence-active", "payoff-active", "resolved"].includes(choice?.status) && beam.userData.id === choice.unselectedAnchorId);
       const consequenceBeam = beam.userData.id === choice?.postRejoinAnchorId;
       if (consequenceBeam) {
         beam.visible = ["consequence-active", "resolved"].includes(choice?.status);

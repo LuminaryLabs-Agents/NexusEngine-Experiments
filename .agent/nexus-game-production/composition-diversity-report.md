@@ -103,6 +103,7 @@ These are proof targets, not accepted experiment records. Seeds, candidate draw 
 - The pressure-crescendo refinement makes that four-beat opening more readable and recoverable through authored gust stages and the existing generic pressure facade. It adds no kit, experiment, route family, signature, or production count.
 - The post-rest signal fork deepens the same composition with a safe recovery line and a pressure-for-reward shortcut that rejoin inside one route. It preserves the eight-feature signature and creates no new experiment, route family, or production count.
 - The post-rejoin consequence upgrade carries that fork into one protected grapple or one retained-pressure vent at Stormlock Restore. It preserves the same fantasy, verb, interaction structure, and eight-feature signature, so creation and diversity counts remain unchanged.
+- The post-Stormlock payoff upgrade turns the same branch state into mint launch tempo or an amber cargo-funded high line. It preserves the same fantasy, hero verb, pressure loop, interaction structure, and eight-feature signature, so creation and diversity counts remain unchanged.
 
 ## Diversity Gate
 
@@ -119,4 +120,5 @@ Every accepted experiment must record epoch, lifecycle status, seed, full candid
 - The Next Ledge counterwind pressure crescendo remains inside the same eight-feature signature; exact and near-duplicate production-signature totals remain zero.
 - The Next Ledge post-rest route choice remains an in-place legacy refinement; its safe and shortcut branches share one route-progress/cargo/pressure composition and do not create a duplicate production signature.
 - The Next Ledge Stormlock consequence remains an in-place legacy refinement; it adds no kit, experiment, route family, production signature, or production count.
+- The Next Ledge post-Stormlock payoff remains an in-place legacy refinement; it composes existing launch, assist, cargo, route, cue, and feedback features without adding a kit or duplicate production signature.
 - Diversity claim: contract pressure only; no playable diversity claim yet.

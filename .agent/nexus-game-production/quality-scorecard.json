@@ -26,18 +26,18 @@
       "id": "next-ledge-grapple",
       "lifecycleStatus": "active-legacy-baseline",
       "score": 98,
-      "lastImprovedAt": "2026-07-16T15:52:30-04:00",
+      "lastImprovedAt": "2026-07-16T16:38:45-04:00",
       "feelScores": {
-        "responsiveness": 9,
+        "responsiveness": 10,
         "predictability": 9,
         "readability": 10,
-        "impact": 10,
-        "recovery": 10,
-        "delight": 10,
+        "impact": 9,
+        "recovery": 9,
+        "delight": 9,
         "replayDesire": 10,
-        "average": 9.7
+        "average": 9.4
       },
-      "nextFeelProblem": "Make Stormlock resolution pay off immediately: safe protection should become faster launch tempo while shortcut cargo should open a harder amber high line."
+      "nextFeelProblem": "Add one Windglass Relay convergence beat that scores preserved speed from Slipstream Launch versus elevated cargo mastery from Cacheline High before generic ascent resumes."
     },
     {
       "id": "rogue-lite-hellscape-siege",

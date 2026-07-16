@@ -103,6 +103,39 @@ export function createNextLedgeClimbPreset(options = {}) {
       resolvedSafeStatus: "Protected catch confirmed. Stormlock Restore is stable.",
       resolvedShortcutStatus: "Stormlock vent secured. Retained signal pressure released.",
       tags: ["post-rest-choice", "post-rejoin-restore", "pressure-vent", "protected-catch"]
+    },
+    payoff: {
+      safe: {
+        index: 9,
+        id: "slipstream-launch",
+        role: "safe-payoff",
+        label: "Slipstream launch",
+        type: "normal",
+        x: 18 * windDirection,
+        y: 970,
+        radius: 9.4,
+        launchSpeedMultiplier: 1.34,
+        launchLiftBonus: 0.16,
+        aimAssistBonus: 18,
+        status: "Shelter protection converted. Fire through the mint Slipstream Launch while the cable is overcharged.",
+        resolvedStatus: "Slipstream Launch secured. Shelter protection paid out as immediate speed.",
+        tags: ["post-stormlock-payoff", "safe-launch-window", "mint-route"]
+      },
+      shortcut: {
+        index: 10,
+        id: "cacheline-high",
+        role: "shortcut-payoff",
+        label: "Cacheline high",
+        type: "normal",
+        x: -82 * windDirection,
+        y: 1012,
+        radius: 5.8,
+        cargoRequired: 1.75,
+        gustIntensity: 0.94,
+        status: "Signal cache committed. The smaller amber Cacheline High is unlocked above the crosswind.",
+        resolvedStatus: "Cacheline High secured. The shortcut cargo bought a harder, higher line.",
+        tags: ["post-stormlock-payoff", "cargo-unlocked-high-line", "amber-route"]
+      }
     }
   };
   return {

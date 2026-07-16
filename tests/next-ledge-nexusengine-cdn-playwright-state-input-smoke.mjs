@@ -57,7 +57,7 @@ for (const visibleSurface of ["Next Ledge", "A / D", "SPACE / CLICK", "R</b> ret
 for (const masterySurface of ["Stormbreak rest", "Commit perch", "Crosswind catch", "Relay crown", "Summit relay"]) {
   assert.ok(climbPreset.includes(masterySurface), `authored mastery crest should include ${masterySurface}`);
 }
-for (const choiceSurface of ["Shelter rise", "Signal cut", "Fork relay", "Stormlock restore", "pressureDelta: 46", "cargoBonus: 1.75", "protectedFailFloorBonus: 210", "pressureRecovery: 100"]) {
+for (const choiceSurface of ["Shelter rise", "Signal cut", "Fork relay", "Stormlock restore", "Slipstream launch", "Cacheline high", "pressureDelta: 46", "cargoBonus: 1.75", "protectedFailFloorBonus: 210", "pressureRecovery: 100", "launchSpeedMultiplier: 1.34", "cargoRequired: 1.75"]) {
   assert.ok(climbPreset.includes(choiceSurface), `authored post-rest choice should include ${choiceSurface}`);
 }
 assert.match(climbAdapter, /postRestChoice/, "route adapter should expose the authored post-rest choice descriptor");
@@ -67,15 +67,22 @@ assert.match(session, /route-choice-skipped/, "unselected branch should reconcil
 assert.match(session, /protectedRecoveryWindow/, "the safe consequence should extend the existing recovery window rather than add a second recovery owner");
 assert.match(session, /post-rejoin-protected-grapple-consumed/, "the safe consequence should resolve after one protected grapple");
 assert.match(session, /post-rejoin-pressure-vented/, "the shortcut consequence should publish one semantic pressure vent event");
+assert.match(session, /payoffLaunchWindow/, "the safe payoff should modulate the existing cable launch settings without adding a second launch owner");
+assert.match(session, /post-stormlock-payoff-opened/, "Stormlock should open one branch-specific payoff through the existing route-choice state");
+assert.match(session, /post-stormlock-payoff-secured/, "the selected payoff anchor should resolve the existing route-choice state");
 assert.match(cargoWrapper, /post-rest-route-choice-committed/, "shortcut commitment should bridge into the existing route-cargo facade");
 assert.match(cargoWrapper, /post-rejoin-pressure-vented/, "the post-rejoin vent should bridge into the existing route-cargo pressure facade");
+assert.match(cargoWrapper, /amber-high-line-unlock/, "the shortcut payoff should spend banked cargo through the existing route-cargo facade");
 assert.match(cargoWrapper, /syncCurrentCargoCheckpoint/, "route-cargo progress should begin from the current anchor instead of a stale base checkpoint");
 assert.match(renderer, /safeChoiceLine/, "renderer should expose the mint branch through a bounded line entity");
 assert.match(renderer, /shortcutChoiceLine/, "renderer should expose the amber branch through a bounded line entity");
 assert.match(renderer, /consequenceLine/, "renderer should expose one bounded post-rejoin consequence line");
+assert.match(renderer, /payoffTargetActive/, "renderer should reuse the bounded consequence line for the selected payoff target");
 assert.match(hud, /MINT — Shelter recovery · AMBER — Signal shortcut/, "the contextual hero prompt should explain both routes without adding a control");
 assert.match(hud, /MINT WINDOW — Protected grapple to Stormlock Restore/, "the contextual hero prompt should explain the safe post-rejoin consequence");
 assert.match(hud, /AMBER PRESSURE — Grapple Stormlock Restore to vent/, "the contextual hero prompt should explain the shortcut vent demand");
+assert.match(hud, /MINT OVERCHARGE — Fire for Slipstream Launch/, "the safe payoff prompt should expose the faster launch window without a new control");
+assert.match(hud, /AMBER HIGH LINE — Commit to Cacheline High/, "the shortcut payoff prompt should expose the harder cargo-unlocked line");
 assert.match(climbAdapter, /masteryCrestId/, "route adapter should preserve mastery crest metadata");
 assert.match(climbAdapter, /authoredRouteBeat/, "route adapter should mark authored late-route beats");
 assert.match(index, /id="completionPanel"/, "route shell should provide an unmistakable summit completion surface");

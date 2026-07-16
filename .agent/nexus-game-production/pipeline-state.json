@@ -30,7 +30,7 @@
     "coreRemoteDefault": "80146b8947e0877e26b851563bd17f5cdfcbf38a",
     "coreLocalReadOnly": "8b57b03904889cdbc71021d3bdb1d4070af5c8d3",
     "protokits": "04d34f049f58ae359cf71d43466c429dac2a6d08",
-    "experiments": "87e3a1b10d1bba9d21b520b5b8f316f365a3050d",
+    "experiments": "c23914419b58a066e99a8cb3830cf80d99e40d69",
     "experimentsBaseline": "615a7e1e2170164acef0edebdbe0b88b8c01fd1b"
   },
   "baseline": {
@@ -142,9 +142,9 @@
     "result": "Accepted 10 genuinely new natural-language kit contracts after six additional duplicate, catalog-overlap, or blurred-scope rejections; no implementation was created."
   },
   "lastCreationUnit": {
-    "packetId": "2026-07-16-next-ledge-post-rejoin-consequence",
+    "packetId": "2026-07-16-next-ledge-post-stormlock-payoff",
     "scope": "legacy-active-experiment-player-visible-upgrade",
-    "result": "Upgraded Next Ledge so Shelter Rise earns one protected post-rejoin grapple while Signal Cut retains fall pressure until a deliberate Stormlock vent; production creation counts remain unchanged."
+    "result": "Upgraded Next Ledge so Stormlock converts Shelter Rise protection into a faster mint launch while Signal Cut cargo unlocks a harder amber high line; production creation counts remain unchanged."
   },
   "lastRefinementUnit": {
     "packetId": "2026-07-16-next-ledge-post-rest-route-choice",
@@ -152,23 +152,23 @@
     "result": "Counterwind Rest now opens one readable mint recovery line and one amber signal shortcut at +46 pressure; both paths use the existing route/cargo/pressure owners and converge at Fork Relay."
   },
   "lastCompletedUnit": {
-    "packetId": "2026-07-16-next-ledge-post-rejoin-consequence",
-    "scope": "Next Ledge first post-rejoin branch consequence",
-    "result": "Fork Relay now carries the chosen branch into Stormlock Restore: Shelter Rise grants one protected grapple and Signal Cut retains 45 fall pressure until a deliberate vent.",
-    "validation": "All 28 Next Ledge test entrypoints and changed-file syntax passed. Playwright traversed both changed branches through public session input, proved the protected safe catch and retained-pressure shortcut vent, reached a real dead state and keyboard retry, completed the final cleanup replay, checked closed/open/closed Advanced disclosure, stable settled DOM/entity/descriptor counts, and zero console messages. Human View passed first-screen, active consequence, and resolved screenshots; matched clean-browser FPS improved from 16.54 to 33.96 and p95 frame time improved from 82.50 ms to 34.30 ms.",
+    "packetId": "2026-07-16-next-ledge-post-stormlock-payoff",
+    "scope": "Next Ledge immediate post-Stormlock branch payoff",
+    "result": "Stormlock now selects one immediate payoff: Slipstream Launch applies a 1.34x safe launch window, while Cacheline High spends 1.75 existing cargo for a smaller target inside a stronger amber gust.",
+    "validation": "All 28 Next Ledge test entrypoints, changed JavaScript syntax, and diff checks passed. Playwright traversed both payoff branches through public session input, proved the launch multiplier and cargo spend, reached a real dead state and keyboard retry, checked closed/open/closed Advanced disclosure, stable settled DOM/entity/descriptor counts, and a hidden error panel. Human View moved the mint target for clarity and caught then verified the WebGL/HUD layer repair. Final matched FPS was 28.69 versus 29.13 before, a 1.5 percent change within budget, with one long task in both samples and no steady-state entity growth.",
     "commits": {
       "coreReadOnly": "8b57b03904889cdbc71021d3bdb1d4070af5c8d3",
       "protokitsStart": "04d34f049f58ae359cf71d43466c429dac2a6d08",
       "protokitsProductionUnit": "04d34f049f58ae359cf71d43466c429dac2a6d08",
-      "experimentsStart": "87e3a1b10d1bba9d21b520b5b8f316f365a3050d",
-      "experimentsProductionUnit": "a9c1a94570100cf9f6a640dfbafe44f7de713a2e"
+      "experimentsStart": "c23914419b58a066e99a8cb3830cf80d99e40d69",
+      "experimentsProductionUnit": "PENDING_THIS_COMMIT"
     },
-    "publication": "Experiments production commit a9c1a94570100cf9f6a640dfbafe44f7de713a2e is published on origin/main after fetch-before-push verification; ProtoKits is unchanged and synchronized at 04d34f049f58ae359cf71d43466c429dac2a6d08."
+    "publication": "Pending production commit and fetch-before-push verification; ProtoKits is unchanged and synchronized at 04d34f049f58ae359cf71d43466c429dac2a6d08."
   },
   "exactNextUnit": {
     "phase": "playable-experiment-upgrade",
     "epoch": 0,
-    "scope": "next-ledge-post-stormlock-payoff",
-    "goal": "Add one immediate post-Stormlock payoff anchor where safe protection becomes a faster launch window and shortcut cargo opens a harder amber high line, without a new control or state owner."
+    "scope": "next-ledge-windglass-relay-convergence",
+    "goal": "Add one Windglass Relay convergence beat that scores preserved speed from Slipstream Launch versus elevated cargo mastery from Cacheline High before generic ascent resumes, without a new control or state owner."
   }
 }

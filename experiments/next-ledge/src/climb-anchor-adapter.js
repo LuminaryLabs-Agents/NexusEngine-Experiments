@@ -76,7 +76,8 @@ export function adaptProjectedRouteToClimbRoute(projectedRoute, climb = {}) {
   const postRestChoice = climb.postRestChoice;
   const choiceBranchBeats = [postRestChoice?.safe, postRestChoice?.shortcut, postRestChoice?.rejoin].filter(Boolean);
   const postRejoinBeat = postRestChoice?.postRejoin ?? null;
-  for (const beat of [...choiceBranchBeats, postRejoinBeat].filter(Boolean)) {
+  const payoffBeats = [postRestChoice?.payoff?.safe, postRestChoice?.payoff?.shortcut].filter(Boolean);
+  for (const beat of [...choiceBranchBeats, postRejoinBeat, ...payoffBeats].filter(Boolean)) {
     const index = Math.max(1, Math.min(ledges.length - 2, Math.floor(Number(beat.index ?? 1))));
     const source = ledges[index];
     if (!source) continue;
@@ -101,7 +102,12 @@ export function adaptProjectedRouteToClimbRoute(projectedRoute, climb = {}) {
         routeChoicePressureRecovery: Number(beat.pressureRecovery ?? 0),
         routeChoiceProtectedFailFloorBonus: Number(beat.protectedFailFloorBonus ?? 0),
         routeChoiceProtectedAimAssistBonus: Number(beat.protectedAimAssistBonus ?? 0),
+        routeChoiceLaunchSpeedMultiplier: Number(beat.launchSpeedMultiplier ?? 1),
+        routeChoiceLaunchLiftBonus: Number(beat.launchLiftBonus ?? 0),
+        routeChoicePayoffAimAssistBonus: Number(beat.aimAssistBonus ?? 0),
+        routeChoiceCargoRequired: Number(beat.cargoRequired ?? 0),
         routeChoiceStatus: beat.status ?? null,
+        routeChoiceResolvedStatus: beat.resolvedStatus ?? null,
         routeChoiceSafeStatus: beat.safeStatus ?? null,
         routeChoiceShortcutStatus: beat.shortcutStatus ?? null,
         routeChoiceResolvedSafeStatus: beat.resolvedSafeStatus ?? null,
@@ -166,10 +172,16 @@ export function adaptProjectedRouteToClimbRoute(projectedRoute, climb = {}) {
       shortcutAnchorId: postRestChoice.shortcut.id,
       rejoinAnchorId: postRestChoice.rejoin.id,
       postRejoinAnchorId: postRejoinBeat?.id ?? null,
+      payoffSafeAnchorId: postRestChoice?.payoff?.safe?.id ?? null,
+      payoffShortcutAnchorId: postRestChoice?.payoff?.shortcut?.id ?? null,
       safe: { ...postRestChoice.safe },
       shortcut: { ...postRestChoice.shortcut },
       rejoin: { ...postRestChoice.rejoin },
-      postRejoin: postRejoinBeat ? { ...postRejoinBeat } : null
+      postRejoin: postRejoinBeat ? { ...postRejoinBeat } : null,
+      payoff: payoffBeats.length === 2 ? {
+        safe: { ...postRestChoice.payoff.safe },
+        shortcut: { ...postRestChoice.payoff.shortcut }
+      } : null
     } : null,
     masteryCrest: crestBeats.length ? {
       id: crest.id ?? "summit-mastery-crest",

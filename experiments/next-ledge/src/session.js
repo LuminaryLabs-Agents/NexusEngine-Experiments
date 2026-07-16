@@ -3,8 +3,8 @@ import { createGenericAnchorDescriptorKit } from "https://cdn.jsdelivr.net/gh/Lu
 import { createGenericModeProjectedRoute, createProjectedRoute } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-mode-projected-route/index.js";
 import { createGenericRouteProgressKit } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-route-progress-kit/index.js";
 import { createGenericTetherTraversalDomainKits, createGenericTetherTraversalPreset } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-tether-traversal-domain-kits/index.js";
-import { createNextLedgeClimbPreset } from "./climb-preset.js?v=post-rejoin-consequence-1";
-import { adaptProjectedRouteToClimbRoute } from "./climb-anchor-adapter.js?v=post-rejoin-consequence-1";
+import { createNextLedgeClimbPreset } from "./climb-preset.js?v=post-stormlock-payoff-1";
+import { adaptProjectedRouteToClimbRoute } from "./climb-anchor-adapter.js?v=post-stormlock-payoff-1";
 import { createClimbActionAdapter } from "./climb-action-adapter.js";
 
 const clamp = (v, a, b) => Math.max(a, Math.min(b, Number.isFinite(Number(v)) ? Number(v) : a));
@@ -102,6 +102,9 @@ function createInitialRouteChoice(route) {
     shortcutAnchorId: choice.shortcutAnchorId,
     rejoinAnchorId: choice.rejoinAnchorId,
     postRejoinAnchorId: choice.postRejoinAnchorId,
+    payoffSafeAnchorId: choice.payoffSafeAnchorId,
+    payoffShortcutAnchorId: choice.payoffShortcutAnchorId,
+    payoffTargetId: null,
     pressureDelta: 0,
     cargoBonus: 0,
     protectedGrapplesRemaining: 0,
@@ -274,6 +277,13 @@ function openingWindStage(state) {
       resolved: choice.selectedRole !== "pressure-shortcut"
     };
   }
+  if (choice?.status === "payoff-active") {
+    return {
+      phase: choice.selectedRole === "pressure-shortcut" ? "cacheline-high" : "slipstream-launch",
+      intensity: choice.selectedRole === "pressure-shortcut" ? 0.94 : 0.04,
+      resolved: choice.selectedRole !== "pressure-shortcut"
+    };
+  }
   const ledges = state.route?.ledges ?? [];
   const currentIndex = ledges.findIndex((ledge) => ledge.id === state.currentAnchorId);
   if (currentIndex <= 0) {
@@ -313,14 +323,25 @@ function updateOpeningWind(state, dt) {
 function enabledTargets(state) {
   if (!state.alive || state.completed) return [];
   const choice = state.routeChoice;
+  const ownedChoiceIds = choice ? new Set([
+    choice.restAnchorId,
+    choice.safeAnchorId,
+    choice.shortcutAnchorId,
+    choice.rejoinAnchorId,
+    choice.postRejoinAnchorId,
+    choice.payoffSafeAnchorId,
+    choice.payoffShortcutAnchorId
+  ].filter(Boolean)) : null;
   return (state.route?.ledges ?? [])
     .filter((ledge) => ledge.id !== state.lastLedgeId && d2(ledge, state.player) <= state.constants.maxCableLength + ledge.r)
     .filter((ledge) => {
       if (!choice) return true;
+      if (choice.status === "resolved" && ownedChoiceIds.has(ledge.id)) return false;
       if (choice.status === "open") return [choice.safeAnchorId, choice.shortcutAnchorId].includes(ledge.id);
       if (choice.status === "committed" && state.currentAnchorId !== choice.rejoinAnchorId) return ledge.id === choice.rejoinAnchorId;
       if (choice.status === "committed" && ledge.id === choice.unselectedAnchorId) return false;
       if (choice.status === "consequence-active") return ledge.id === choice.postRejoinAnchorId;
+      if (choice.status === "payoff-active") return ledge.id === choice.payoffTargetId;
       return true;
     })
     .map((ledge) => ledge.id);
@@ -360,6 +381,18 @@ function protectedRecoveryWindow(state) {
   } : null;
 }
 
+function payoffLaunchWindow(state) {
+  const choice = state.routeChoice;
+  if (choice?.status !== "payoff-active" || choice.selectedRole !== "safe-recovery") return null;
+  const target = ledgeMap(state)[choice.payoffTargetId];
+  return target ? {
+    targetId: target.id,
+    speedMultiplier: n(target.metadata?.routeChoiceLaunchSpeedMultiplier, 1),
+    liftBonus: n(target.metadata?.routeChoiceLaunchLiftBonus, 0),
+    aimAssistBonus: n(target.metadata?.routeChoicePayoffAimAssistBonus, 0)
+  } : null;
+}
+
 function setRope(state, a, b, slack = 8) {
   state.rope = { ...state.rope, start: { x: a.x, y: a.y, z: 1 }, end: { x: b.x, y: b.y, z: 1 }, nodes: ropeNodes(a, b, state.constants.ropeNodeCount, state.wind.strength * n(state.wind.direction, 1) * n(state.tuning.windCoupling, 14), slack), targetLength: d2(a, b) + slack };
 }
@@ -368,8 +401,9 @@ function assistedAim(state) {
   const cfg = state.tuning ?? {};
   const maxDistance = n(cfg.aimAssistDistance, 185);
   const recoveryWindow = protectedRecoveryWindow(state);
-  const assistRadius = n(cfg.aimAssistRadius, 28) + n(recoveryWindow?.aimAssistBonus, 0);
-  const strength = clamp(n(cfg.aimAssistStrength, 0.72) + (recoveryWindow ? 0.14 : 0), 0, 1);
+  const launchWindow = payoffLaunchWindow(state);
+  const assistRadius = n(cfg.aimAssistRadius, 28) + n(recoveryWindow?.aimAssistBonus, 0) + n(launchWindow?.aimAssistBonus, 0);
+  const strength = clamp(n(cfg.aimAssistStrength, 0.72) + (recoveryWindow ? 0.14 : 0) + (launchWindow ? 0.1 : 0), 0, 1);
   let best = null;
   for (const id of enabledTargets(state)) {
     const ledge = ledgeMap(state)[id];
@@ -409,15 +443,22 @@ function launch(state) {
   if (state.stamina <= 0) return;
   const aim = assistedAim(state);
   state.aim = { ...state.aim, ...aim };
-  const speed = n(state.tuning.projectileSpeed, 10.8);
+  const launchWindow = payoffLaunchWindow(state);
+  const speed = n(state.tuning.projectileSpeed, 10.8) * n(launchWindow?.speedMultiplier, 1);
   state.mode = "launched";
   state.lastLedgeId = state.currentAnchorId;
-  state.probe = { x: state.player.x + state.aim.x * n(state.tuning.launchOffset, 9), y: state.player.y + state.aim.y * n(state.tuning.launchOffset, 9), z: 1, vx: state.aim.x * speed, vy: state.aim.y * speed + speed * n(state.tuning.liftBoost, 0.52), ticks: 0, visible: true };
+  state.probe = { x: state.player.x + state.aim.x * n(state.tuning.launchOffset, 9), y: state.player.y + state.aim.y * n(state.tuning.launchOffset, 9), z: 1, vx: state.aim.x * speed, vy: state.aim.y * speed + speed * (n(state.tuning.liftBoost, 0.52) + n(launchWindow?.liftBonus, 0)), ticks: 0, visible: true };
   state.rope.visible = true;
   state.stamina = clamp(state.stamina - n(state.tuning.launchStaminaCost, 3), 0, state.constants.maxStamina);
   state.stats.launches += 1;
   state.status = state.aimAssistTargetId ? "Grapple magnetized to viable anchor." : "Grapple fired. Cable sweep can latch nearby anchors.";
   addEvent(state, "grapple-fired", { x: state.probe.x, y: state.probe.y, targetId: state.aimAssistTargetId });
+  if (launchWindow) addEvent(state, "post-stormlock-launch-window-fired", {
+    targetId: launchWindow.targetId,
+    routeChoiceId: state.routeChoice.id,
+    speedMultiplier: launchWindow.speedMultiplier,
+    liftBonus: launchWindow.liftBonus
+  });
 }
 
 function grab(state, ledge) {
@@ -524,11 +565,15 @@ function lock(state, ledge) {
     });
   } else if (state.routeChoice?.status === "consequence-active" && ledge.id === state.routeChoice.postRejoinAnchorId) {
     const role = state.routeChoice.selectedRole;
-    state.routeChoice.status = "resolved";
+    state.routeChoice.status = "payoff-active";
     state.routeChoice.protectedGrapplesRemaining = 0;
     state.routeChoice.ventRequired = false;
+    state.routeChoice.payoffTargetId = role === "pressure-shortcut"
+      ? state.routeChoice.payoffShortcutAnchorId
+      : state.routeChoice.payoffSafeAnchorId;
+    const payoff = ledgeMap(state)[state.routeChoice.payoffTargetId];
     if (role === "pressure-shortcut") {
-      state.status = ledge.metadata?.routeChoiceResolvedShortcutStatus ?? "Retained pressure vented. Stormlock Restore secured.";
+      state.status = payoff?.metadata?.routeChoiceStatus ?? ledge.metadata?.routeChoiceResolvedShortcutStatus ?? "Retained pressure vented. Stormlock Restore secured.";
       addEvent(state, "post-rejoin-pressure-vented", {
         targetId: ledge.id,
         routeChoiceId: state.routeChoice.id,
@@ -536,13 +581,31 @@ function lock(state, ledge) {
         pressureRecovery: n(ledge.metadata?.routeChoicePressureRecovery, 100)
       });
     } else {
-      state.status = ledge.metadata?.routeChoiceResolvedSafeStatus ?? "Protected grapple confirmed. Stormlock Restore secured.";
+      state.status = payoff?.metadata?.routeChoiceStatus ?? ledge.metadata?.routeChoiceResolvedSafeStatus ?? "Protected grapple confirmed. Stormlock Restore secured.";
       addEvent(state, "post-rejoin-protected-grapple-consumed", {
         targetId: ledge.id,
         routeChoiceId: state.routeChoice.id,
         selectedRole: role
       });
     }
+    addEvent(state, "post-stormlock-payoff-opened", {
+      targetId: state.routeChoice.payoffTargetId,
+      routeChoiceId: state.routeChoice.id,
+      selectedRole: role,
+      cargoRequired: n(payoff?.metadata?.routeChoiceCargoRequired, 0),
+      speedMultiplier: n(payoff?.metadata?.routeChoiceLaunchSpeedMultiplier, 1),
+      liftBonus: n(payoff?.metadata?.routeChoiceLaunchLiftBonus, 0),
+      gustIntensity: n(payoff?.metadata?.routeChoiceGustIntensity, 0)
+    });
+  } else if (state.routeChoice?.status === "payoff-active" && ledge.id === state.routeChoice.payoffTargetId) {
+    state.routeChoice.status = "resolved";
+    state.camera.trauma = Math.max(state.camera.trauma ?? 0, state.routeChoice.selectedRole === "pressure-shortcut" ? 0.3 : 0.2);
+    state.status = ledge.metadata?.routeChoiceResolvedStatus ?? "Stormlock payoff secured. Carry the line upward.";
+    addEvent(state, "post-stormlock-payoff-secured", {
+      targetId: ledge.id,
+      routeChoiceId: state.routeChoice.id,
+      selectedRole: state.routeChoice.selectedRole
+    });
   }
 }
 

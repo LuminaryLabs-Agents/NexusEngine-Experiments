@@ -1,5 +1,11 @@
 # Cycle State
 
+## 2026-07-16 Post-Stormlock Payoff Upgrade
+
+`experiments/next-ledge/` now converts the resolved sector-two choice into one immediate branch-specific reward. Shelter Rise opens mint Slipstream Launch with a `1.34x` cable-speed window, extra lift, and stronger assist; Signal Cut spends `1.75` existing cargo to reveal the smaller Cacheline High anchor inside a stronger amber gust. Authored targets and tuning remain in the preset, the single route-choice state selects and resolves one payoff, the existing cable/resource facades own deterministic mutations, and renderer/HUD/audio consume the same events. Human View moved the mint target out from behind the hero and exposed a WebGL/HUD compositor overlap; the final cleanup isolates the transformed canvas below an untransformed UI. Both branches, real failure/retry, disclosure, all 28 Next Ledge tests, bounded counts, performance, and a zero-error console passed.
+
+Exact next playable unit: add one Windglass Relay convergence beat that scores preserved speed from Slipstream Launch versus elevated cargo mastery from Cacheline High before returning to generic ascent, without adding a control or another state owner.
+
 ## 2026-07-16 Post-Rejoin Consequence Upgrade
 
 `experiments/next-ledge/` now preserves the safe-versus-shortcut decision after Fork Relay. Shelter Rise earns one protected grapple to Stormlock Restore through the existing recovery and aim-assist path; Signal Cut retains 45 fall pressure and marks Stormlock as the single amber vent target until the existing pressure facade resolves it. Authored descriptors remain in the preset, the existing route-choice state remains the only consequence owner, and HUD/renderer/audio consume its events. Both branches, a real dead/retry path, the final cleanup replay, disclosure, stable counts, fresh-browser performance, Human View, and a zero-message console passed.

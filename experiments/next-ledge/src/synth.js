@@ -82,6 +82,18 @@ export function createCinematicSynth() {
       tone(174.61, 0.5, "sawtooth", 0.07, 87.31);
       [392, 587.33, 880].forEach((frequency, index) => setTimeout(() => tone(frequency, 0.38, "triangle", 0.06, frequency * 1.18), 110 + index * 76));
     }
+    else if (type === "post-stormlock-payoff-opened") {
+      if (event.selectedRole === "pressure-shortcut") {
+        tone(220, 0.44, "sawtooth", 0.07, 110);
+        setTimeout(() => tone(987.77, 0.46, "triangle", 0.065, 1480), 90);
+      } else {
+        [440, 659.25, 1046.5].forEach((frequency, index) => setTimeout(() => tone(frequency, 0.34, "sine", 0.058, frequency * 1.32), index * 64));
+      }
+    }
+    else if (type === "post-stormlock-launch-window-fired") tone(1174.66, 0.3, "triangle", 0.075, 1760);
+    else if (type === "post-stormlock-payoff-secured") {
+      [523.25, 783.99, 1174.66].forEach((frequency, index) => setTimeout(() => tone(frequency, 0.34, "sine", 0.06, frequency * 1.2), index * 70));
+    }
   }
 
   return {
