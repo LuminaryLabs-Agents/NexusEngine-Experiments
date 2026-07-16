@@ -13,6 +13,7 @@ function pressureState(snapshot) {
 
 function promptFor(snapshot) {
   const transition = snapshot.sectorTransition;
+  const choice = snapshot.routeChoice;
   if (transition?.active) {
     if (transition.phase === "broadcast") return { text: "Broadcasting recovered signal…", tone: "success" };
     if (transition.phase === "handshake") return { text: `Sector ${transition.targetSector} handshake · wind reversing`, tone: "success" };
@@ -25,6 +26,11 @@ function promptFor(snapshot) {
   if (snapshot.mode === "launched") return { text: "Guide the line · Click to retract", tone: "ready" };
   if (snapshot.mode === "retracting") return { text: "Steer while the line resets", tone: "danger" };
   if (snapshot.mode === "reeling") return { text: "Latch incoming · Click to cut line", tone: "success" };
+  if (choice?.status === "open") return { text: "MINT — Shelter recovery · AMBER — Signal shortcut (+46 pressure)", tone: "ready" };
+  if (choice?.status === "committed") return {
+    text: choice.selectedRole === "pressure-shortcut" ? "AMBER ROUTE — Hold pressure to Fork Relay" : "MINT ROUTE — Recover through Fork Relay",
+    tone: choice.selectedRole === "pressure-shortcut" ? "danger" : "success"
+  };
   const speed = Math.hypot(number(snapshot.player?.vx), number(snapshot.player?.vy));
   return speed >= 1.7
     ? { text: "Space / click — Release now", tone: "ready" }
@@ -71,6 +77,12 @@ export function createHud(nodes = {}) {
         ? transition.phase === "opening"
           ? "Read the four-anchor counterwind zig-zag, then carry the new signal line upward."
           : `Carry the restored relay into sector ${transition.targetSector}. The wind field will reverse during handoff.`
+        : snapshot.routeChoice?.status === "open"
+          ? "Choose mint Shelter Rise for stamina recovery or amber Signal Cut for a faster cache at +46 fall pressure. Both rejoin at Fork Relay."
+        : snapshot.routeChoice?.status === "committed"
+          ? snapshot.routeChoice.selectedRole === "pressure-shortcut"
+            ? "Hold the amber shortcut under pressure and secure Fork Relay before continuing upward."
+            : "Climb the protected mint ascent and secure Fork Relay before continuing upward."
         : snapshot.completed
           ? "Signal delivered. The summit relay is broadcasting through the storm."
         : cargoAmount > 0

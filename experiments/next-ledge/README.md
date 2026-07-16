@@ -8,6 +8,8 @@ After delivery, the advanced `N` action broadcasts the restored relay, waits for
 
 That opening is an authored pressure crescendo: the fixed-size wind field accelerates and strengthens across the first three beats, the existing fall-pressure service records each gust load, and Counterwind Rest vents the pressure with a distinct recovery signal. Gust strength, pressure deltas, copy, and recovery live in the declarative climb preset; session, renderer, HUD, and audio consume the same state and events.
 
+Counterwind Rest now opens a short two-line decision without adding a control: grapple onto the mint Shelter Rise for a protected stamina recovery, or commit to the amber Signal Cut for a faster cache while the existing fall-pressure service rises to 46%. Both authored lines rejoin at Fork Relay, the unselected branch closes, and the same route-progress/cargo services preserve state across the decision.
+
 The playable route composes real reusable features from NexusEngine-ProtoKits:
 
 ```txt

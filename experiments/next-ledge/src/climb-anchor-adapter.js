@@ -73,6 +73,35 @@ export function adaptProjectedRouteToClimbRoute(projectedRoute, climb = {}) {
       }
     };
   }
+  const postRestChoice = climb.postRestChoice;
+  const choiceBeats = [postRestChoice?.safe, postRestChoice?.shortcut, postRestChoice?.rejoin].filter(Boolean);
+  for (const beat of choiceBeats) {
+    const index = Math.max(1, Math.min(ledges.length - 2, Math.floor(Number(beat.index ?? 1))));
+    const source = ledges[index];
+    if (!source) continue;
+    const type = beat.type ?? source.type;
+    ledges[index] = {
+      ...source,
+      id: beat.id ?? source.id,
+      x: Number(beat.x ?? source.x),
+      y: Number(beat.y ?? source.y),
+      r: Number(beat.radius ?? source.r),
+      type,
+      label: beat.label ?? source.label,
+      staminaRestore: type === "rest" ? Number(beat.staminaRestore ?? source.staminaRestore ?? climb.staminaRestore ?? 45) : 0,
+      tags: [...new Set([...(source.tags ?? []), ...(beat.tags ?? []), type])],
+      metadata: {
+        ...(source.metadata ?? {}),
+        routeChoiceId: postRestChoice.id ?? "post-rest-signal-fork",
+        routeChoiceRole: beat.role,
+        routeChoicePressureDelta: Number(beat.pressureDelta ?? 0),
+        routeChoiceCargoBonus: Number(beat.cargoBonus ?? 0),
+        routeChoiceGustIntensity: Number(beat.gustIntensity ?? 0),
+        routeChoiceStatus: beat.status ?? null,
+        authoredRouteBeat: true
+      }
+    };
+  }
   const crest = climb.masteryCrest;
   const crestBeats = Array.isArray(crest?.beats) ? crest.beats : [];
   const lastIndex = ledges.length - 1;
@@ -118,6 +147,19 @@ export function adaptProjectedRouteToClimbRoute(projectedRoute, climb = {}) {
       approach: { ...(opening.approach ?? {}) },
       beatIds: openingBeats.map((beat) => beat.id).filter(Boolean),
       endIndex: Math.min(ledges.length - 1, openingBeats.length)
+    } : null,
+    postRestChoice: choiceBeats.length === 3 ? {
+      id: postRestChoice.id ?? "post-rest-signal-fork",
+      label: postRestChoice.label ?? "Signal fork",
+      status: postRestChoice.status ?? "Signal fork open.",
+      prompt: postRestChoice.prompt ?? "Choose a route.",
+      restAnchorId: postRestChoice.restAnchorId ?? openingBeats.at(-1)?.id ?? null,
+      safeAnchorId: postRestChoice.safe.id,
+      shortcutAnchorId: postRestChoice.shortcut.id,
+      rejoinAnchorId: postRestChoice.rejoin.id,
+      safe: { ...postRestChoice.safe },
+      shortcut: { ...postRestChoice.shortcut },
+      rejoin: { ...postRestChoice.rejoin }
     } : null,
     masteryCrest: crestBeats.length ? {
       id: crest.id ?? "summit-mastery-crest",

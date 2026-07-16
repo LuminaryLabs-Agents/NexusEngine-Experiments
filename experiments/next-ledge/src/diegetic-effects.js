@@ -204,6 +204,9 @@ export function createDiegeticEffects({ scene }) {
         else if (evt.type === "restored" || evt.type === "rest") makeSparks(origin, 0x3dffa3, 42, 34, 1.1, 1.1);
         else if (evt.type === "failed") makeSparks(snapshot.player, 0xff3858, 48, 38, 1.2, 1.2);
         else if (evt.type === "summit-reached" || evt.type === "summit") makeSparks(origin, 0xffd65a, 80, 54, 1.6, 1.3);
+        else if (evt.type === "post-rest-route-choice-opened") makeSparks(origin, 0x77e8ff, 34, 28, 1.25, 0.9);
+        else if (evt.type === "post-rest-route-choice-committed") makeSparks(origin, evt.selectedRole === "pressure-shortcut" ? 0xffb83d : 0x3dffa3, 64, 44, 1.45, 1.1);
+        else if (evt.type === "post-rest-route-choice-rejoined") makeSparks(origin, 0xffd65a, 52, 36, 1.35, 1.05);
       }
       if (seen.size > 96) {
         const keep = Array.from(seen).slice(-48);

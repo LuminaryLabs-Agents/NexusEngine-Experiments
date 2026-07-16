@@ -59,6 +59,22 @@ export function createCinematicSynth() {
       tone(146.83, 0.65, "triangle", 0.09, 293.66);
       [440, 659.25, 880].forEach((frequency, index) => setTimeout(() => tone(frequency, 0.42, "sine", 0.065, frequency * 1.25), index * 90));
     }
+    else if (type === "post-rest-route-choice-opened") {
+      tone(392, 0.38, "sine", 0.05, 587.33);
+      setTimeout(() => tone(220, 0.42, "triangle", 0.05, 440), 90);
+    }
+    else if (type === "post-rest-route-choice-committed") {
+      if (event.selectedRole === "pressure-shortcut") {
+        tone(164.81, 0.55, "sawtooth", 0.08, 82.41);
+        setTimeout(() => tone(659.25, 0.34, "triangle", 0.07, 987.77), 90);
+      } else {
+        tone(293.66, 0.48, "triangle", 0.07, 587.33);
+        setTimeout(() => tone(783.99, 0.4, "sine", 0.055, 1046.5), 90);
+      }
+    }
+    else if (type === "post-rest-route-choice-rejoined") {
+      [392, 523.25, 783.99].forEach((frequency, index) => setTimeout(() => tone(frequency, 0.32, "sine", 0.05, frequency * 1.2), index * 70));
+    }
   }
 
   return {

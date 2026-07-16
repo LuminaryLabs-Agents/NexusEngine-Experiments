@@ -10,6 +10,7 @@ const diagnostics = readFileSync("experiments/next-ledge/src/advanced-diagnostic
 const climbPreset = readFileSync("experiments/next-ledge/src/climb-preset.js", "utf8");
 const climbAdapter = readFileSync("experiments/next-ledge/src/climb-anchor-adapter.js", "utf8");
 const renderer = readFileSync("experiments/next-ledge/src/renderer-three-fidelity.js", "utf8");
+const cargoWrapper = readFileSync("experiments/next-ledge/src/session-cargo-extraction-upgrade.js", "utf8");
 
 assert.ok(sessionVisual.includes("https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js"));
 assert.ok(!sessionVisual.includes("LuminaryLabs-Dev/NexusRealtime@0.0.2"));
@@ -56,6 +57,18 @@ for (const visibleSurface of ["Next Ledge", "A / D", "SPACE / CLICK", "R</b> ret
 for (const masterySurface of ["Stormbreak rest", "Commit perch", "Crosswind catch", "Relay crown", "Summit relay"]) {
   assert.ok(climbPreset.includes(masterySurface), `authored mastery crest should include ${masterySurface}`);
 }
+for (const choiceSurface of ["Shelter rise", "Signal cut", "Fork relay", "pressureDelta: 46", "cargoBonus: 1.75"]) {
+  assert.ok(climbPreset.includes(choiceSurface), `authored post-rest choice should include ${choiceSurface}`);
+}
+assert.match(climbAdapter, /postRestChoice/, "route adapter should expose the authored post-rest choice descriptor");
+assert.match(climbAdapter, /routeChoiceRole/, "route adapter should preserve safe, shortcut, and rejoin roles");
+assert.match(session, /routeChoice: createInitialRouteChoice/, "session should own one deterministic route-choice state");
+assert.match(session, /route-choice-skipped/, "unselected branch should reconcile through the existing route-progress ledger");
+assert.match(cargoWrapper, /post-rest-route-choice-committed/, "shortcut commitment should bridge into the existing route-cargo facade");
+assert.match(cargoWrapper, /syncCurrentCargoCheckpoint/, "route-cargo progress should begin from the current anchor instead of a stale base checkpoint");
+assert.match(renderer, /safeChoiceLine/, "renderer should expose the mint branch through a bounded line entity");
+assert.match(renderer, /shortcutChoiceLine/, "renderer should expose the amber branch through a bounded line entity");
+assert.match(hud, /MINT — Shelter recovery · AMBER — Signal shortcut/, "the contextual hero prompt should explain both routes without adding a control");
 assert.match(climbAdapter, /masteryCrestId/, "route adapter should preserve mastery crest metadata");
 assert.match(climbAdapter, /authoredRouteBeat/, "route adapter should mark authored late-route beats");
 assert.match(index, /id="completionPanel"/, "route shell should provide an unmistakable summit completion surface");

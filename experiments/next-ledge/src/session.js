@@ -3,8 +3,8 @@ import { createGenericAnchorDescriptorKit } from "https://cdn.jsdelivr.net/gh/Lu
 import { createGenericModeProjectedRoute, createProjectedRoute } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-mode-projected-route/index.js";
 import { createGenericRouteProgressKit } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-route-progress-kit/index.js";
 import { createGenericTetherTraversalDomainKits, createGenericTetherTraversalPreset } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-tether-traversal-domain-kits/index.js";
-import { createNextLedgeClimbPreset } from "./climb-preset.js?v=counterwind-crescendo-1";
-import { adaptProjectedRouteToClimbRoute } from "./climb-anchor-adapter.js?v=counterwind-crescendo-1";
+import { createNextLedgeClimbPreset } from "./climb-preset.js?v=post-rest-choice-3";
+import { adaptProjectedRouteToClimbRoute } from "./climb-anchor-adapter.js?v=post-rest-choice-3";
 import { createClimbActionAdapter } from "./climb-action-adapter.js";
 
 const clamp = (v, a, b) => Math.max(a, Math.min(b, Number.isFinite(Number(v)) ? Number(v) : a));
@@ -87,6 +87,25 @@ function createInitialWind(route, sector, tuning) {
   };
 }
 
+function createInitialRouteChoice(route) {
+  const choice = route?.postRestChoice;
+  if (!choice) return null;
+  return {
+    id: choice.id,
+    label: choice.label,
+    status: "approaching",
+    selectedRole: null,
+    selectedAnchorId: null,
+    unselectedAnchorId: null,
+    restAnchorId: choice.restAnchorId,
+    safeAnchorId: choice.safeAnchorId,
+    shortcutAnchorId: choice.shortcutAnchorId,
+    rejoinAnchorId: choice.rejoinAnchorId,
+    pressureDelta: 0,
+    cargoBonus: 0
+  };
+}
+
 function aimFrom(state, payload = {}) {
   if (Number.isFinite(Number(payload.x)) || Number.isFinite(Number(payload.y))) {
     const dx = n(payload.x, state.player.x) - state.player.x;
@@ -152,7 +171,7 @@ function syncRouteProgressEvents(engine, state, beforeEvents) {
   for (const evt of state.recentEvents.filter((event) => !beforeEvents.has(event))) {
     const checkpointId = evt.targetId;
     if (!checkpointId || synced.has(checkpointId)) continue;
-    if (!["anchor-locked", "restored", "summit-reached"].includes(evt.type)) continue;
+    if (!["anchor-locked", "restored", "summit-reached", "route-choice-skipped"].includes(evt.type)) continue;
     facade.enter?.(checkpointId, {
       actorId: "next-ledge-climber",
       commandId: `frame-${state.frame}:enter:${checkpointId}`
@@ -198,6 +217,7 @@ function createInitialState(options = {}, status = "SYS_STATUS: ACTIVE") {
     stamina: maxStamina,
     maxHeight: 0,
     wind: createInitialWind(route, sector, tuning),
+    routeChoice: createInitialRouteChoice(route),
     sectorTransition: {
       active: false,
       phase: "idle",
@@ -233,6 +253,17 @@ function ledgeMap(state) {
 function openingWindStage(state) {
   const opening = state.route?.openingPattern;
   if (!opening) return null;
+  const choice = state.routeChoice;
+  if (choice?.status === "open") {
+    return { phase: "choice-open", intensity: 0.12, resolved: true };
+  }
+  if (choice?.status === "committed" && state.currentAnchorId !== choice.rejoinAnchorId) {
+    return {
+      phase: choice.selectedRole === "pressure-shortcut" ? "signal-shortcut" : "shelter-ascent",
+      intensity: choice.selectedRole === "pressure-shortcut" ? 0.88 : 0.14,
+      resolved: choice.selectedRole !== "pressure-shortcut"
+    };
+  }
   const ledges = state.route?.ledges ?? [];
   const currentIndex = ledges.findIndex((ledge) => ledge.id === state.currentAnchorId);
   if (currentIndex <= 0) {
@@ -271,9 +302,40 @@ function updateOpeningWind(state, dt) {
 
 function enabledTargets(state) {
   if (!state.alive || state.completed) return [];
+  const choice = state.routeChoice;
   return (state.route?.ledges ?? [])
     .filter((ledge) => ledge.id !== state.lastLedgeId && d2(ledge, state.player) <= state.constants.maxCableLength + ledge.r)
+    .filter((ledge) => {
+      if (!choice) return true;
+      if (choice.status === "open") return [choice.safeAnchorId, choice.shortcutAnchorId].includes(ledge.id);
+      if (choice.status === "committed" && state.currentAnchorId !== choice.rejoinAnchorId) return ledge.id === choice.rejoinAnchorId;
+      if (choice.status === "committed" && ledge.id === choice.unselectedAnchorId) return false;
+      return true;
+    })
     .map((ledge) => ledge.id);
+}
+
+function prepareRouteChoiceLock(state, ledge) {
+  const choice = state.routeChoice;
+  const role = ledge.metadata?.routeChoiceRole;
+  if (!choice || !["safe-recovery", "pressure-shortcut"].includes(role) || ["committed", "rejoined"].includes(choice.status)) return null;
+  const unselectedAnchorId = role === "safe-recovery" ? choice.shortcutAnchorId : choice.safeAnchorId;
+  choice.status = "committed";
+  choice.selectedRole = role;
+  choice.selectedAnchorId = ledge.id;
+  choice.unselectedAnchorId = unselectedAnchorId;
+  choice.pressureDelta = n(ledge.metadata?.routeChoicePressureDelta, 0);
+  choice.cargoBonus = n(ledge.metadata?.routeChoiceCargoBonus, 0);
+  addEvent(state, "route-choice-skipped", { targetId: unselectedAnchorId, routeChoiceId: choice.id, selectedRole: role });
+  return {
+    targetId: ledge.id,
+    routeChoiceId: choice.id,
+    selectedRole: role,
+    pressureDelta: choice.pressureDelta,
+    cargoBonus: choice.cargoBonus,
+    gustIntensity: n(ledge.metadata?.routeChoiceGustIntensity, 0),
+    status: ledge.metadata?.routeChoiceStatus
+  };
 }
 
 function setRope(state, a, b, slack = 8) {
@@ -364,6 +426,7 @@ function lock(state, ledge) {
   state.player.vx = 0;
   state.player.vy = 0;
   state.aimAssistTargetId = null;
+  const choiceCommit = prepareRouteChoiceLock(state, ledge);
   addEvent(state, "anchor-locked", { targetId: ledge.id, ledgeType: ledge.type, masteryRole: ledge.metadata?.masteryRole, openingRole: ledge.metadata?.openingRole });
   if (ledge.type === "summit") {
     state.mode = "won";
@@ -388,6 +451,16 @@ function lock(state, ledge) {
           pressureRecovery: n(ledge.metadata.openingPressureRecovery, 100),
           gustIntensity: n(ledge.metadata.openingGustIntensity, 0.08)
         });
+        if (state.routeChoice) {
+          state.routeChoice.status = "open";
+          state.status = state.route?.postRestChoice?.status ?? "Choose a route beyond Counterwind Rest.";
+          addEvent(state, "post-rest-route-choice-opened", {
+            targetId: ledge.id,
+            routeChoiceId: state.routeChoice.id,
+            safeAnchorId: state.routeChoice.safeAnchorId,
+            shortcutAnchorId: state.routeChoice.shortcutAnchorId
+          });
+        }
       }
     } else {
       const masteryCopy = {
@@ -405,6 +478,19 @@ function lock(state, ledge) {
         });
       }
     }
+  }
+  if (choiceCommit) {
+    state.camera.trauma = Math.max(state.camera.trauma ?? 0, choiceCommit.selectedRole === "pressure-shortcut" ? 0.24 : 0.12);
+    state.status = choiceCommit.status ?? state.status;
+    addEvent(state, "post-rest-route-choice-committed", choiceCommit);
+  } else if (state.routeChoice?.status === "committed" && ledge.id === state.routeChoice.rejoinAnchorId) {
+    state.routeChoice.status = "rejoined";
+    state.status = ledge.metadata?.routeChoiceStatus ?? "Fork Relay secured. Route choice banked.";
+    addEvent(state, "post-rest-route-choice-rejoined", {
+      targetId: ledge.id,
+      routeChoiceId: state.routeChoice.id,
+      selectedRole: state.routeChoice.selectedRole
+    });
   }
 }
 

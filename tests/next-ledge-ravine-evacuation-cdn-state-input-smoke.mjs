@@ -16,7 +16,7 @@ assert.ok(entrySource.includes(nexusEngineCdn), "ravine evacuation entry should 
 assert.doesNotMatch(entrySource, new RegExp(oldRuntimeCdn.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")), "changed ravine evacuation entry must not import old NexusRealtime runtime CDN");
 assert.match(routeShell, /ravine-evacuation-readiness-renderer-handoff-pass/, "route shell should identify ravine evacuation readiness pass");
 assert.doesNotMatch(routeShell, /ravine-evacuation-readiness-entry\.js/, "clean playable route should not auto-load ravine evacuation overlay");
-assert.match(routeShell, /main\.js\?v=counterwind-crescendo-1/, "route shell should cache-bust changed playable route load");
+assert.match(routeShell, /main\.js\?v=post-rest-choice-3/, "route shell should cache-bust changed playable route load");
 assert.match(diagnosticsSource, /"ravine-evacuation": "Ravine evacuation:/, "advanced disclosure should preserve ravine context");
 assert.match(entrySource, /getRavineEvacuationReadiness/, "GameHost should expose ravine evacuation readiness state");
 assert.match(entrySource, /getNextLedgeRavineEvacuationReadiness/, "GameHost should expose route-scoped ravine evacuation accessor");

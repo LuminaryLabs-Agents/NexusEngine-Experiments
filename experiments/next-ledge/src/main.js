@@ -8,12 +8,12 @@ function showFatal(error) {
 
 async function boot() {
   const [sessionModule, rendererModule, inputModule, hudModule, loopModule, synthModule] = await Promise.all([
-    import("./session-cargo-extraction-upgrade.js?v=counterwind-crescendo-1"),
-    import("./renderer-three-fidelity.js?v=counterwind-crescendo-1"),
+    import("./session-cargo-extraction-upgrade.js?v=post-rest-choice-3"),
+    import("./renderer-three-fidelity.js?v=post-rest-choice-3"),
     import("./input.js"),
-    import("./hud.js?v=counterwind-crescendo-1"),
+    import("./hud.js?v=post-rest-choice-3"),
     import("./runtime-loop.js?v=counterwind-crescendo-1"),
-    import("./synth.js?v=counterwind-crescendo-1")
+    import("./synth.js?v=post-rest-choice-3")
   ]);
 
   const canvas = document.querySelector("#game");

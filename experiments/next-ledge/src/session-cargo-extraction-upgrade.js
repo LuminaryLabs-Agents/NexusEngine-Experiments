@@ -1,6 +1,6 @@
 import * as NexusEngine from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js";
 import { createGenericRouteCargoExtractionKit } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-route-cargo-extraction-kit/index.js";
-import { createNextLedgeSession as createVisualNextLedgeSession } from "./session-visual-upgrade.js?v=counterwind-crescendo-1";
+import { createNextLedgeSession as createVisualNextLedgeSession } from "./session-visual-upgrade.js?v=post-rest-choice-3";
 import { createNextLedgeRouteCargoDomainKit } from "./route-cargo-fractal-kits.js";
 import { createNextLedgeTraversalReadabilityDomainKit } from "./traversal-readability-kits.js";
 import { createNextLedgeAnchorTimingReadabilityDomainKit } from "./anchor-timing-readability-kits.js";
@@ -31,12 +31,22 @@ function eventKey(event = {}) {
   return `${event.at}:${event.type}:${event.targetId ?? event.reason ?? event.sector ?? ""}`;
 }
 
+function syncCurrentCargoCheckpoint(engine, snapshot = {}, reason = "route-cargo-current-anchor") {
+  const facade = cargoFacade(engine);
+  const checkpointId = snapshot.currentAnchorId;
+  if (!facade || !checkpointId) return;
+  facade.enterCheckpoint?.(checkpointId, { actorId: "next-ledge-climber", commandId: `${reason}:${checkpointId}:enter` });
+  facade.completeCheckpoint?.(checkpointId, { allowOutOfOrder: true, actorId: "next-ledge-climber", commandId: `${reason}:${checkpointId}:complete` });
+}
+
 function createCargoRuntime(snapshot = {}, cargoDomain) {
   const config = cargoDomain.createConfig(snapshot);
   const engine = createRuntimeEngine({
     kits: [createGenericRouteCargoExtractionKit(NexusEngine, config)],
     renderer: createHeadlessRenderer()
   });
+  engine.tick?.(0);
+  syncCurrentCargoCheckpoint(engine, snapshot, "route-cargo-initial-anchor");
   engine.tick?.(0);
   return { engine, config, key: routeKey(snapshot) };
 }
@@ -57,6 +67,8 @@ export function createNextLedgeSession(options = {}) {
       pressureChannels: config.pressureChannels,
       reason
     });
+    runtime.engine.tick?.(0);
+    syncCurrentCargoCheckpoint(runtime.engine, snapshot, `${reason}:current-anchor`);
     runtime.engine.tick?.(0);
     runtime = { ...runtime, config, key: routeKey(snapshot) };
     syncedEvents.clear();
@@ -81,7 +93,7 @@ export function createNextLedgeSession(options = {}) {
       const anchorRole = ["normal", "rest", "summit"].includes(evt.type) ? evt.type : evt.anchorType;
       const isAnchorLock = evt.type === "anchor-locked" || Boolean(anchorRole && evt.targetId);
 
-      if ((isAnchorLock || ["restored", "summit-reached"].includes(evt.type)) && evt.targetId) {
+      if ((isAnchorLock || ["restored", "summit-reached", "route-choice-skipped"].includes(evt.type)) && evt.targetId) {
         facade.enterCheckpoint?.(evt.targetId, { actorId: "next-ledge-climber", commandId: `cargo:${key}:enter` });
         facade.completeCheckpoint?.(evt.targetId, { allowOutOfOrder: true, actorId: "next-ledge-climber", commandId: `cargo:${key}:complete` });
       }
@@ -103,6 +115,10 @@ export function createNextLedgeSession(options = {}) {
       if (evt.type === "failed") facade.adjustPressure?.("fall-pressure", 100, { commandId: `cargo:${key}:fail-pressure`, reason: "failed" });
       if (evt.type === "counterwind-pressure-surged") facade.adjustPressure?.("fall-pressure", Number(evt.pressureDelta ?? 0), { commandId: `cargo:${key}:counterwind-surge`, reason: evt.openingRole ?? "counterwind-surge" });
       if (evt.type === "counterwind-recovered") facade.recoverPressure?.("fall-pressure", Number(evt.pressureRecovery ?? 100), { commandId: `cargo:${key}:counterwind-recovery`, reason: "counterwind-rest" });
+      if (evt.type === "post-rest-route-choice-committed" && evt.selectedRole === "pressure-shortcut") {
+        facade.pickupCargo?.("anchor-signal-cargo", Number(evt.cargoBonus ?? 0), { commandId: `cargo:${key}:shortcut-cache`, reason: "signal-shortcut" });
+        facade.adjustPressure?.("fall-pressure", Number(evt.pressureDelta ?? 0), { commandId: `cargo:${key}:shortcut-pressure`, reason: "signal-shortcut" });
+      }
     }
 
     if (syncedEvents.size > 128) {

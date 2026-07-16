@@ -1,7 +1,17 @@
 import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js";
 import { createDiegeticEffects, updateDiegeticPlayerSignals } from "./diegetic-effects.js";
 
-const matFor = (m, type, hover) => hover ? m.hover : type === "rest" ? m.rest : type === "summit" ? m.summit : m.ledge;
+const matFor = (m, type, hover, routeChoiceRole = null) => hover
+  ? m.hover
+  : routeChoiceRole === "pressure-shortcut"
+    ? m.shortcutChoice
+    : routeChoiceRole === "safe-recovery"
+      ? m.safeChoice
+      : type === "rest"
+        ? m.rest
+        : type === "summit"
+          ? m.summit
+          : m.ledge;
 const num = (v, f = 0) => Number.isFinite(Number(v)) ? Number(v) : f;
 const clamp01 = (v) => Math.max(0, Math.min(1, v));
 
@@ -101,6 +111,8 @@ export function createThreeRenderer({ canvas }) {
     ledge: new THREE.MeshStandardMaterial({ color: 0x00f0ff, emissive: 0x00f0ff, emissiveIntensity: 2.2, roughness: 0.1 }),
     rest: new THREE.MeshStandardMaterial({ color: 0x3dffa3, emissive: 0x3dffa3, emissiveIntensity: 2.4, roughness: 0.1 }),
     summit: new THREE.MeshStandardMaterial({ color: 0xffd65a, emissive: 0xffd65a, emissiveIntensity: 3.4, roughness: 0.1 }),
+    safeChoice: new THREE.MeshStandardMaterial({ color: 0x66ffc4, emissive: 0x3dffa3, emissiveIntensity: 3.1, roughness: 0.08 }),
+    shortcutChoice: new THREE.MeshStandardMaterial({ color: 0xffb83d, emissive: 0xff7b2f, emissiveIntensity: 3.3, roughness: 0.08 }),
     hover: new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xffffff, emissiveIntensity: 4.3, roughness: 0.1 }),
     player: new THREE.MeshStandardMaterial({ color: 0xffb83d, emissive: 0xffb83d, emissiveIntensity: 1.55, roughness: 0.05, transparent: true, opacity: 0.97 }),
     probe: new THREE.MeshStandardMaterial({ color: 0x00f0ff, emissive: 0x00f0ff, emissiveIntensity: 3.2, roughness: 0.1 }),
@@ -140,6 +152,10 @@ export function createThreeRenderer({ canvas }) {
   const probe = new THREE.Mesh(new THREE.OctahedronGeometry(3.8, 0), m.probe);
   const rope = new THREE.Line(new THREE.BufferGeometry(), makeLineMaterial(0x00f0ff, 0.9));
   const routeLine = new THREE.Line(new THREE.BufferGeometry(), makeLineMaterial(0x133a4a, 0.42));
+  const safeChoiceLine = new THREE.Line(new THREE.BufferGeometry(), makeLineMaterial(0x3dffa3, 0.5));
+  const shortcutChoiceLine = new THREE.Line(new THREE.BufferGeometry(), makeLineMaterial(0xffb83d, 0.52));
+  safeChoiceLine.visible = false;
+  shortcutChoiceLine.visible = false;
   const traj = new THREE.Line(new THREE.BufferGeometry(), makeLineMaterial(0xffb83d, 0.42));
   const aim = new THREE.Line(new THREE.BufferGeometry(), makeLineMaterial(0xfff3bd, 0.86));
   const reach = new THREE.Mesh(new THREE.RingGeometry(148.8, 150, 64), m.reach);
@@ -170,7 +186,7 @@ export function createThreeRenderer({ canvas }) {
   summitLight.position.z = 38;
   summitCelebration.add(summitLight);
   summitCelebration.visible = false;
-  scene.add(routeLine, player, staminaHalo, dangerHalo, probe, rope, traj, aim, reach, aimHead, aimEnd, aimCore, aimParticles, counterwindField, summitCelebration);
+  scene.add(routeLine, safeChoiceLine, shortcutChoiceLine, player, staminaHalo, dangerHalo, probe, rope, traj, aim, reach, aimHead, aimEnd, aimCore, aimParticles, counterwindField, summitCelebration);
 
   const diegeticEffects = createDiegeticEffects({ scene });
   let routeKey = "";
@@ -329,7 +345,9 @@ export function createThreeRenderer({ canvas }) {
     const opening = snapshot.route?.openingPattern;
     const ledges = snapshot.route?.ledges ?? [];
     const currentIndex = Math.max(0, ledges.findIndex((ledge) => ledge.id === snapshot.currentAnchorId));
-    const visible = Boolean(opening && (snapshot.sectorTransition?.phase === "opening" || currentIndex <= num(opening.endIndex, 4)));
+    const choice = snapshot.routeChoice;
+    const shortcutActive = choice?.status === "committed" && choice.selectedRole === "pressure-shortcut";
+    const visible = Boolean(opening && (snapshot.sectorTransition?.phase === "opening" || currentIndex <= num(opening.endIndex, 4) || choice?.status === "open" || shortcutActive));
     counterwindField.visible = visible;
     if (!visible) return;
     const direction = num(snapshot.wind?.direction, opening.windDirection ?? -1) < 0 ? -1 : 1;
@@ -359,7 +377,7 @@ export function createThreeRenderer({ canvas }) {
       windPositions[offset + 5] = 18 + (i % 3) * 5;
     }
     windGeometry.attributes.position.needsUpdate = true;
-    windMaterial.color.setHex(recoveryPulse > 0 ? 0x3dffa3 : 0x77e8ff);
+    windMaterial.color.setHex(shortcutActive ? 0xffb83d : recoveryPulse > 0 ? 0x3dffa3 : 0x77e8ff);
     windMaterial.opacity = 0.18 + intensity * 0.42 + (0.5 + 0.5 * Math.sin(time * (4.4 + intensity * 3.6))) * 0.14 + recoveryPulse * 0.24;
   }
 
@@ -382,15 +400,18 @@ export function createThreeRenderer({ canvas }) {
         world.add(mesh);
       }
     }
+    const choice = snapshot.route?.postRestChoice;
+    const choiceTargetIds = new Set([choice?.safeAnchorId, choice?.shortcutAnchorId].filter(Boolean));
     const routePoints = [];
     for (const l of snapshot.route?.ledges ?? []) {
       const g = new THREE.Group();
       g.position.set(l.x, l.y, 0);
       const plate = new THREE.Mesh(new THREE.CylinderGeometry(l.r * 1.55, l.r * 1.55, 3.5, 6), m.metal);
       plate.rotation.x = Math.PI / 2;
-      const core = new THREE.Mesh(new THREE.SphereGeometry(l.r, 14, 14), matFor(m, l.type, false));
+      const choiceRole = l.metadata?.routeChoiceRole ?? null;
+      const core = new THREE.Mesh(new THREE.SphereGeometry(l.r, 14, 14), matFor(m, l.type, false, choiceRole));
       core.position.z = 1.5;
-      const haloMaterial = matFor(m, l.type, false).clone();
+      const haloMaterial = matFor(m, l.type, false, choiceRole).clone();
       haloMaterial.transparent = true;
       haloMaterial.opacity = l.type === "normal" ? 0.18 : 0.42;
       haloMaterial.blending = THREE.AdditiveBlending;
@@ -398,19 +419,32 @@ export function createThreeRenderer({ canvas }) {
       const halo = new THREE.Mesh(new THREE.TorusGeometry(l.r * 2.25, 0.35, 8, 48), haloMaterial);
       halo.userData.ownsMaterial = true;
       g.add(plate, core, halo);
-      g.userData = { id: l.id, type: l.type, core, halo };
+      g.userData = { id: l.id, type: l.type, choiceRole, core, halo };
       ledges.add(g);
       ledgeMap.set(l.id, g);
-      routePoints.push({ x: l.x, y: l.y, z: -0.5 });
-      if (l.type === "rest" || l.type === "summit") {
+      if (!choiceTargetIds.has(l.id)) routePoints.push({ x: l.x, y: l.y, z: -0.5 });
+      if (l.type === "summit" || (l.type === "rest" && !choiceRole)) {
         const height = l.type === "summit" ? 420 : 120;
-        const beam = new THREE.Mesh(new THREE.CylinderGeometry(l.type === "summit" ? 7 : 4, l.type === "summit" ? 1.8 : 0.8, height, 18, 1, true), l.type === "summit" ? m.summitBeam : m.beacon);
+        const beamMaterial = l.type === "summit" ? m.summitBeam : m.beacon;
+        const beam = new THREE.Mesh(new THREE.CylinderGeometry(l.type === "summit" ? 7 : 4, l.type === "summit" ? 1.8 : 0.8, height, 18, 1, true), beamMaterial);
         beam.position.set(l.x, l.y + height / 2, -2);
-        beam.userData = { sourceY: l.y, type: l.type };
+        beam.userData = { id: l.id, sourceY: l.y, type: l.type, choiceRole };
         beacons.add(beam);
       }
     }
     setLine(routeLine, routePoints);
+    if (choice) {
+      const byId = Object.fromEntries((snapshot.route?.ledges ?? []).map((ledge) => [ledge.id, ledge]));
+      const rest = byId[choice.restAnchorId];
+      const safe = byId[choice.safeAnchorId];
+      const shortcut = byId[choice.shortcutAnchorId];
+      const rejoin = byId[choice.rejoinAnchorId];
+      setLine(safeChoiceLine, [rest, safe, rejoin].filter(Boolean).map(({ x, y }) => ({ x, y, z: 0 })));
+      setLine(shortcutChoiceLine, [rest, shortcut, rejoin].filter(Boolean).map(({ x, y }) => ({ x, y, z: 0 })));
+    } else {
+      setLine(safeChoiceLine, []);
+      setLine(shortcutChoiceLine, []);
+    }
     const summit = snapshot.route?.ledges?.find((ledge) => ledge.type === "summit");
     if (summit) summitCelebration.position.set(summit.x, summit.y, 12);
   }
@@ -430,26 +464,43 @@ export function createThreeRenderer({ canvas }) {
     const trauma = clamp01(snapshot.camera?.trauma ?? 0);
     const summit = snapshot.route?.ledges?.find((ledge) => ledge.type === "summit");
     const openingReveal = snapshot.sectorTransition?.phase === "opening";
-    const targetCameraY = openingReveal ? 242 : snapshot.completed && summit ? summit.y - 42 : snapshot.camera?.y ?? 0;
-    const targetCameraZ = openingReveal ? 500 : snapshot.completed ? Math.max(272, snapshot.camera?.z ?? 210) : snapshot.camera?.z ?? 210;
+    const choiceFraming = snapshot.routeChoice?.status === "open";
+    const choiceRest = snapshot.route?.ledges?.find((ledge) => ledge.id === snapshot.routeChoice?.restAnchorId);
+    const choiceRejoin = snapshot.route?.ledges?.find((ledge) => ledge.id === snapshot.routeChoice?.rejoinAnchorId);
+    const choiceCameraY = choiceRest && choiceRejoin ? (choiceRest.y + choiceRejoin.y) * 0.5 : snapshot.camera?.y ?? 0;
+    const targetCameraY = openingReveal ? 242 : choiceFraming ? choiceCameraY : snapshot.completed && summit ? summit.y - 42 : snapshot.camera?.y ?? 0;
+    const targetCameraZ = openingReveal ? 500 : choiceFraming ? 340 : snapshot.completed ? Math.max(272, snapshot.camera?.z ?? 210) : snapshot.camera?.z ?? 210;
     presentedCameraY = presentedCameraY == null ? targetCameraY : presentedCameraY + (targetCameraY - presentedCameraY) * (snapshot.completed ? 0.065 : 0.24);
     presentedCameraZ = presentedCameraZ == null ? targetCameraZ : presentedCameraZ + (targetCameraZ - presentedCameraZ) * 0.08;
     camera.position.set((snapshot.camera?.x ?? 0) + Math.sin(time * 53) * trauma * 8, presentedCameraY + Math.cos(time * 47) * trauma * 6, presentedCameraZ);
     camera.lookAt(0, presentedCameraY, 0);
     updateParallax(snapshot, time);
     updateCounterwindField(snapshot, time);
+    const choice = snapshot.routeChoice;
+    const currentIndex = (snapshot.route?.ledges ?? []).findIndex((ledge) => ledge.id === snapshot.currentAnchorId);
+    const choiceVisible = Boolean(choice && choice.status !== "rejoined" && currentIndex >= Math.max(0, num(snapshot.route?.openingPattern?.endIndex, 4) - 1));
+    safeChoiceLine.visible = choiceVisible;
+    shortcutChoiceLine.visible = choiceVisible;
+    if (choiceVisible) {
+      safeChoiceLine.material.opacity = choice.status === "committed" && choice.selectedRole !== "safe-recovery" ? 0.08 : 0.56;
+      shortcutChoiceLine.material.opacity = choice.status === "committed" && choice.selectedRole !== "pressure-shortcut" ? 0.08 : 0.58;
+    }
 
     const staminaPct = Math.max(0, Math.min(1, (snapshot.stamina ?? 0) / Math.max(1, snapshot.constants?.maxStamina ?? 100)));
     for (const [id, g] of ledgeMap) {
-      const hot = id === snapshot.hoveredId || snapshot.enabledTargetIds?.includes(id) || id === snapshot.aimAssistTargetId;
+      const unselected = ["committed", "rejoined"].includes(choice?.status) && id === choice.unselectedAnchorId;
+      const selected = id === choice?.selectedAnchorId;
+      g.visible = !unselected;
+      const hot = id === snapshot.hoveredId || snapshot.enabledTargetIds?.includes(id) || id === snapshot.aimAssistTargetId || selected;
       const pulse = 1 + Math.sin(time * 6 + (g.position.y || 0) * 0.01) * 0.045;
       g.scale.setScalar((id === snapshot.hoveredId || id === snapshot.aimAssistTargetId ? 1.3 : hot ? 1.12 : 1) * pulse);
-      g.userData.core.material = matFor(m, g.userData.type, id === snapshot.hoveredId || id === snapshot.aimAssistTargetId);
-      g.userData.halo.visible = hot || g.userData.type !== "normal";
+      g.userData.core.material = matFor(m, g.userData.type, id === snapshot.hoveredId || id === snapshot.aimAssistTargetId, g.userData.choiceRole);
+      g.userData.halo.visible = hot || g.userData.type !== "normal" || Boolean(g.userData.choiceRole && choice?.status === "open");
       g.userData.halo.material.opacity = g.userData.type === "normal" ? (hot ? 0.22 + staminaPct * 0.18 : 0.05) : 0.32 + Math.sin(time * 4) * 0.08;
       g.userData.halo.rotation.z += 0.012;
     }
     for (const beam of beacons.children) {
+      beam.visible = !(["committed", "rejoined"].includes(choice?.status) && beam.userData.id === choice.unselectedAnchorId);
       beam.material.opacity = beam.userData.type === "summit"
         ? (snapshot.completed ? 0.58 : 0.14) + Math.sin(time * (snapshot.completed ? 5.2 : 2.2)) * (snapshot.completed ? 0.16 : 0.04)
         : 0.18 + Math.sin(time * 4.5 + beam.userData.sourceY) * 0.1;
@@ -516,7 +567,9 @@ export function createThreeRenderer({ canvas }) {
         rope: rope.geometry.getAttribute("position")?.count ?? 0,
         trajectory: traj.geometry.getAttribute("position")?.count ?? 0,
         aim: aim.geometry.getAttribute("position")?.count ?? 0,
-        route: routeLine.geometry.getAttribute("position")?.count ?? 0
+        route: routeLine.geometry.getAttribute("position")?.count ?? 0,
+        safeChoice: safeChoiceLine.geometry.getAttribute("position")?.count ?? 0,
+        shortcutChoice: shortcutChoiceLine.geometry.getAttribute("position")?.count ?? 0
       }
     };
   }

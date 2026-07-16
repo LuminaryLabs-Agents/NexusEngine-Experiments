@@ -37,6 +37,54 @@ export function createNextLedgeClimbPreset(options = {}) {
       { index: 4, id: "counterwind-rest", role: "opening-rest", label: "Counterwind rest", type: "rest", x: 48 * windDirection, y: 486, radius: 9.5, gustIntensity: 0.08, pressureRecovery: 100, status: "Counterwind Rest secured. Gust pressure vented—signal line stabilized.", tags: ["counterwind-opening", "recovery-confirmation"] }
     ]
   };
+  const postRestChoice = sector <= 1 ? null : options.postRestChoice ?? {
+    id: `post-rest-signal-fork-${sector}`,
+    label: "Signal fork",
+    restAnchorId: "counterwind-rest",
+    status: "Signal fork open. Grapple onto the mint recovery line or the amber pressure line.",
+    prompt: "Choose mint Shelter Rise for recovery or amber Signal Cut for +46 pressure and a faster signal cache.",
+    safe: {
+      index: 5,
+      id: "shelter-rise",
+      role: "safe-recovery",
+      label: "Shelter rise",
+      type: "rest",
+      x: 82 * windDirection,
+      y: 592,
+      radius: 10.5,
+      staminaRestore: 88,
+      gustIntensity: 0.14,
+      status: "Shelter Rise secured. Stamina topped off—take the protected line to Fork Relay.",
+      tags: ["post-rest-choice", "safe-recovery-ascent", "mint-route"]
+    },
+    shortcut: {
+      index: 6,
+      id: "signal-cut",
+      role: "pressure-shortcut",
+      label: "Signal cut",
+      type: "normal",
+      x: -92 * windDirection,
+      y: 620,
+      radius: 8.6,
+      gustIntensity: 0.88,
+      pressureDelta: 46,
+      cargoBonus: 1.75,
+      status: "Signal Cut committed. Cache acquired—hold the amber line through 46% pressure to Fork Relay.",
+      tags: ["post-rest-choice", "signal-shortcut", "pressure-route", "amber-route"]
+    },
+    rejoin: {
+      index: 7,
+      id: "fork-relay",
+      role: "choice-rejoin",
+      label: "Fork relay",
+      type: "normal",
+      x: 12 * windDirection,
+      y: 738,
+      radius: 8.8,
+      status: "Fork Relay secured. Route choice banked—carry the signal upward.",
+      tags: ["post-rest-choice", "route-rejoin", "signal-relay"]
+    }
+  };
   return {
     id: "next-ledge-cinematic-ascent",
     sector,
@@ -84,6 +132,7 @@ export function createNextLedgeClimbPreset(options = {}) {
       summitRadius: 15,
       staminaRestore: n(options.restRestore, n(pacing.restRestore, 58)),
       openingPattern,
+      postRestChoice,
       masteryCrest
     },
     transition: {
