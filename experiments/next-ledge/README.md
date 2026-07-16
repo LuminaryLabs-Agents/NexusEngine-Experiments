@@ -14,6 +14,8 @@ That choice now persists beyond the rejoin. Shelter Rise grants one protected gr
 
 Stormlock now pays that choice off immediately. Shelter Rise converts its protection into a mint Slipstream Launch with `1.34x` cable speed, extra lift, and stronger aim assistance. Signal Cut spends `1.75` banked cargo through the existing resource facade to reveal the smaller Cacheline High anchor inside a stronger amber gust. Both targets extend the existing route-choice state, reuse one bounded consequence line, and disappear when inactive; the final cleanup also pins WebGL to the canvas layer so foreground geometry cannot cover HUD text.
 
+Both rewards now converge at the shared Windglass Relay before generic ascent resumes. The safe line banks a visible `134` preserved-speed score; the shortcut banks `175` cargo mastery. Windglass is authored in the climb preset, inserted without replacing the original generic anchor, and resolved by the existing route-choice state. The renderer reuses the bounded consequence line, while HUD, audio, and effects consume the same score events without adding a control, DOM entity, or second state owner.
+
 The playable route composes real reusable features from NexusEngine-ProtoKits:
 
 ```txt

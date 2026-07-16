@@ -39,6 +39,12 @@ function promptFor(snapshot) {
     text: choice.selectedRole === "pressure-shortcut" ? "AMBER HIGH LINE — Commit to Cacheline High" : "MINT OVERCHARGE — Fire for Slipstream Launch",
     tone: choice.selectedRole === "pressure-shortcut" ? "danger" : "success"
   };
+  if (choice?.status === "convergence-active") return {
+    text: choice.selectedRole === "pressure-shortcut"
+      ? `WINDGLASS RELAY — Bank ${Math.round(number(choice.scoreValue))} cargo mastery`
+      : `WINDGLASS RELAY — Preserve ${Math.round(number(choice.scoreValue))} speed`,
+    tone: "success"
+  };
   const speed = Math.hypot(number(snapshot.player?.vx), number(snapshot.player?.vy));
   return speed >= 1.7
     ? { text: "Space / click — Release now", tone: "ready" }
@@ -99,6 +105,10 @@ export function createHud(nodes = {}) {
           ? snapshot.routeChoice.selectedRole === "pressure-shortcut"
             ? "Your banked signal cargo unlocked Cacheline High. Commit to the smaller amber anchor above the crosswind."
             : "Stormlock converted shelter protection into a faster cable launch. Fire through the mint Slipstream Launch now."
+        : snapshot.routeChoice?.status === "convergence-active"
+          ? snapshot.routeChoice.selectedRole === "pressure-shortcut"
+            ? `Cacheline High banked ${Math.round(number(snapshot.routeChoice.scoreValue))} cargo mastery. Carry it into the shared Windglass Relay catch.`
+            : `Slipstream Launch preserved ${Math.round(number(snapshot.routeChoice.scoreValue))} speed. Carry it into the shared Windglass Relay catch.`
         : snapshot.completed
           ? "Signal delivered. The summit relay is broadcasting through the storm."
         : cargoAmount > 0

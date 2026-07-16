@@ -25,19 +25,19 @@
     {
       "id": "next-ledge-grapple",
       "lifecycleStatus": "active-legacy-baseline",
-      "score": 98,
-      "lastImprovedAt": "2026-07-16T16:38:45-04:00",
+      "score": 99,
+      "lastImprovedAt": "2026-07-16T17:29:17-04:00",
       "feelScores": {
         "responsiveness": 10,
-        "predictability": 9,
+        "predictability": 10,
         "readability": 10,
         "impact": 9,
         "recovery": 9,
-        "delight": 9,
+        "delight": 10,
         "replayDesire": 10,
-        "average": 9.4
+        "average": 9.7
       },
-      "nextFeelProblem": "Add one Windglass Relay convergence beat that scores preserved speed from Slipstream Launch versus elevated cargo mastery from Cacheline High before generic ascent resumes."
+      "nextFeelProblem": "Retune Cacheline High's approach framing and aim assistance so the 175-cargo shortcut clears in one readable launch while remaining visibly harder than Slipstream Launch."
     },
     {
       "id": "rogue-lite-hellscape-siege",

@@ -3,14 +3,15 @@ import { createGenericAnchorDescriptorKit } from "https://cdn.jsdelivr.net/gh/Lu
 import { createGenericModeProjectedRoute, createProjectedRoute } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-mode-projected-route/index.js";
 import { createGenericRouteProgressKit } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-route-progress-kit/index.js";
 import { createGenericTetherTraversalDomainKits, createGenericTetherTraversalPreset } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-tether-traversal-domain-kits/index.js";
-import { createNextLedgeClimbPreset } from "./climb-preset.js?v=post-stormlock-payoff-1";
-import { adaptProjectedRouteToClimbRoute } from "./climb-anchor-adapter.js?v=post-stormlock-payoff-1";
+import { createNextLedgeClimbPreset } from "./climb-preset.js?v=windglass-relay-1";
+import { adaptProjectedRouteToClimbRoute } from "./climb-anchor-adapter.js?v=windglass-relay-1";
 import { createClimbActionAdapter } from "./climb-action-adapter.js";
 
 const clamp = (v, a, b) => Math.max(a, Math.min(b, Number.isFinite(Number(v)) ? Number(v) : a));
 const n = (v, f = 0) => Number.isFinite(Number(v)) ? Number(v) : f;
 const d2 = (a, b) => Math.hypot(n(a.x) - n(b.x), n(a.y) - n(b.y));
 const copy = (v) => typeof structuredClone === "function" ? structuredClone(v) : JSON.parse(JSON.stringify(v));
+const scoreCopy = (template, score) => String(template ?? "Windglass Relay scored {score}.").replace("{score}", String(Math.max(0, Math.round(n(score)))));
 
 const PLAYER_UPGRADE_PRESET = Object.freeze({
   routePacing: { summitPerSectorY: 760, sampleSpacingY: 118, minAnchors: 16, jitterX: 158, jitterY: 34, restEvery: 4, maxEdgeDistance: 202 },
@@ -105,6 +106,10 @@ function createInitialRouteChoice(route) {
     payoffSafeAnchorId: choice.payoffSafeAnchorId,
     payoffShortcutAnchorId: choice.payoffShortcutAnchorId,
     payoffTargetId: null,
+    convergenceAnchorId: choice.convergenceAnchorId,
+    scoreMetric: null,
+    scoreValue: 0,
+    convergenceScore: null,
     pressureDelta: 0,
     cargoBonus: 0,
     protectedGrapplesRemaining: 0,
@@ -284,6 +289,9 @@ function openingWindStage(state) {
       resolved: choice.selectedRole !== "pressure-shortcut"
     };
   }
+  if (choice?.status === "convergence-active") {
+    return { phase: "windglass-convergence", intensity: 0.22, resolved: true };
+  }
   const ledges = state.route?.ledges ?? [];
   const currentIndex = ledges.findIndex((ledge) => ledge.id === state.currentAnchorId);
   if (currentIndex <= 0) {
@@ -330,7 +338,8 @@ function enabledTargets(state) {
     choice.rejoinAnchorId,
     choice.postRejoinAnchorId,
     choice.payoffSafeAnchorId,
-    choice.payoffShortcutAnchorId
+    choice.payoffShortcutAnchorId,
+    choice.convergenceAnchorId
   ].filter(Boolean)) : null;
   return (state.route?.ledges ?? [])
     .filter((ledge) => ledge.id !== state.lastLedgeId && d2(ledge, state.player) <= state.constants.maxCableLength + ledge.r)
@@ -342,6 +351,7 @@ function enabledTargets(state) {
       if (choice.status === "committed" && ledge.id === choice.unselectedAnchorId) return false;
       if (choice.status === "consequence-active") return ledge.id === choice.postRejoinAnchorId;
       if (choice.status === "payoff-active") return ledge.id === choice.payoffTargetId;
+      if (choice.status === "convergence-active") return ledge.id === choice.convergenceAnchorId;
       return true;
     })
     .map((ledge) => ledge.id);
@@ -389,7 +399,9 @@ function payoffLaunchWindow(state) {
     targetId: target.id,
     speedMultiplier: n(target.metadata?.routeChoiceLaunchSpeedMultiplier, 1),
     liftBonus: n(target.metadata?.routeChoiceLaunchLiftBonus, 0),
-    aimAssistBonus: n(target.metadata?.routeChoicePayoffAimAssistBonus, 0)
+    aimAssistBonus: n(target.metadata?.routeChoicePayoffAimAssistBonus, 0),
+    scoreMetric: target.metadata?.routeChoiceScoreMetric ?? "preserved-speed",
+    scoreMultiplier: n(target.metadata?.routeChoiceScoreMultiplier, 100)
   } : null;
 }
 
@@ -453,12 +465,17 @@ function launch(state) {
   state.stats.launches += 1;
   state.status = state.aimAssistTargetId ? "Grapple magnetized to viable anchor." : "Grapple fired. Cable sweep can latch nearby anchors.";
   addEvent(state, "grapple-fired", { x: state.probe.x, y: state.probe.y, targetId: state.aimAssistTargetId });
-  if (launchWindow) addEvent(state, "post-stormlock-launch-window-fired", {
-    targetId: launchWindow.targetId,
-    routeChoiceId: state.routeChoice.id,
-    speedMultiplier: launchWindow.speedMultiplier,
-    liftBonus: launchWindow.liftBonus
-  });
+  if (launchWindow) {
+    state.routeChoice.scoreMetric = launchWindow.scoreMetric;
+    state.routeChoice.scoreValue = Math.max(state.routeChoice.scoreValue, Math.round(launchWindow.speedMultiplier * launchWindow.scoreMultiplier));
+    addEvent(state, "post-stormlock-launch-window-fired", {
+      targetId: launchWindow.targetId,
+      routeChoiceId: state.routeChoice.id,
+      speedMultiplier: launchWindow.speedMultiplier,
+      liftBonus: launchWindow.liftBonus,
+      scoreValue: state.routeChoice.scoreValue
+    });
+  }
 }
 
 function grab(state, ledge) {
@@ -598,13 +615,55 @@ function lock(state, ledge) {
       gustIntensity: n(payoff?.metadata?.routeChoiceGustIntensity, 0)
     });
   } else if (state.routeChoice?.status === "payoff-active" && ledge.id === state.routeChoice.payoffTargetId) {
-    state.routeChoice.status = "resolved";
+    const convergence = ledgeMap(state)[state.routeChoice.convergenceAnchorId];
+    const shortcut = state.routeChoice.selectedRole === "pressure-shortcut";
+    if (shortcut) {
+      state.routeChoice.scoreMetric = ledge.metadata?.routeChoiceScoreMetric ?? "cargo-mastery";
+      state.routeChoice.scoreValue = Math.round(n(ledge.metadata?.routeChoiceCargoRequired, state.routeChoice.cargoBonus) * n(ledge.metadata?.routeChoiceScoreMultiplier, 100));
+    } else if (!state.routeChoice.scoreValue) {
+      state.routeChoice.scoreMetric = ledge.metadata?.routeChoiceScoreMetric ?? "preserved-speed";
+      state.routeChoice.scoreValue = Math.round(n(ledge.metadata?.routeChoiceLaunchSpeedMultiplier, 1) * n(ledge.metadata?.routeChoiceScoreMultiplier, 100));
+    }
+    state.routeChoice.status = "convergence-active";
     state.camera.trauma = Math.max(state.camera.trauma ?? 0, state.routeChoice.selectedRole === "pressure-shortcut" ? 0.3 : 0.2);
-    state.status = ledge.metadata?.routeChoiceResolvedStatus ?? "Stormlock payoff secured. Carry the line upward.";
+    state.status = shortcut
+      ? convergence?.metadata?.routeChoiceShortcutStatus ?? "Carry the amber mastery into Windglass Relay."
+      : convergence?.metadata?.routeChoiceSafeStatus ?? "Carry the mint velocity into Windglass Relay.";
     addEvent(state, "post-stormlock-payoff-secured", {
       targetId: ledge.id,
       routeChoiceId: state.routeChoice.id,
+      selectedRole: state.routeChoice.selectedRole,
+      scoreMetric: state.routeChoice.scoreMetric,
+      scoreValue: state.routeChoice.scoreValue,
+      convergenceAnchorId: state.routeChoice.convergenceAnchorId
+    });
+    addEvent(state, "windglass-relay-opened", {
+      targetId: state.routeChoice.convergenceAnchorId,
+      routeChoiceId: state.routeChoice.id,
+      selectedRole: state.routeChoice.selectedRole,
+      scoreMetric: state.routeChoice.scoreMetric,
+      scoreValue: state.routeChoice.scoreValue
+    });
+  } else if (state.routeChoice?.status === "convergence-active" && ledge.id === state.routeChoice.convergenceAnchorId) {
+    const shortcut = state.routeChoice.selectedRole === "pressure-shortcut";
+    const scoreValue = Math.max(0, Math.round(n(state.routeChoice.scoreValue)));
+    state.routeChoice.status = "resolved";
+    state.routeChoice.convergenceScore = {
+      metric: state.routeChoice.scoreMetric,
+      value: scoreValue,
       selectedRole: state.routeChoice.selectedRole
+    };
+    state.camera.trauma = Math.max(state.camera.trauma ?? 0, 0.38);
+    state.status = scoreCopy(
+      shortcut ? ledge.metadata?.routeChoiceResolvedShortcutStatus : ledge.metadata?.routeChoiceResolvedSafeStatus,
+      scoreValue
+    );
+    addEvent(state, "windglass-relay-scored", {
+      targetId: ledge.id,
+      routeChoiceId: state.routeChoice.id,
+      selectedRole: state.routeChoice.selectedRole,
+      scoreMetric: state.routeChoice.scoreMetric,
+      scoreValue
     });
   }
 }

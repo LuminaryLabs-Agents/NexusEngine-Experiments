@@ -19,6 +19,45 @@ function chunksFor(summitY, h = 600) {
   });
 }
 
+function choiceBeatLedge(source, beat, choiceId, defaultStaminaRestore = 45) {
+  const type = beat.type ?? source.type;
+  return {
+    ...source,
+    id: beat.id ?? source.id,
+    x: Number(beat.x ?? source.x),
+    y: Number(beat.y ?? source.y),
+    r: Number(beat.radius ?? source.r),
+    type,
+    label: beat.label ?? source.label,
+    staminaRestore: type === "rest" ? Number(beat.staminaRestore ?? source.staminaRestore ?? defaultStaminaRestore) : 0,
+    tags: [...new Set([...(source.tags ?? []), ...(beat.tags ?? []), type])],
+    metadata: {
+      ...(source.metadata ?? {}),
+      routeChoiceId: choiceId,
+      routeChoiceRole: beat.role,
+      routeChoicePressureDelta: Number(beat.pressureDelta ?? 0),
+      routeChoiceCargoBonus: Number(beat.cargoBonus ?? 0),
+      routeChoiceGustIntensity: Number(beat.gustIntensity ?? 0),
+      routeChoicePressureRecovery: Number(beat.pressureRecovery ?? 0),
+      routeChoiceProtectedFailFloorBonus: Number(beat.protectedFailFloorBonus ?? 0),
+      routeChoiceProtectedAimAssistBonus: Number(beat.protectedAimAssistBonus ?? 0),
+      routeChoiceLaunchSpeedMultiplier: Number(beat.launchSpeedMultiplier ?? 1),
+      routeChoiceLaunchLiftBonus: Number(beat.launchLiftBonus ?? 0),
+      routeChoicePayoffAimAssistBonus: Number(beat.aimAssistBonus ?? 0),
+      routeChoiceCargoRequired: Number(beat.cargoRequired ?? 0),
+      routeChoiceScoreMetric: beat.scoreMetric ?? null,
+      routeChoiceScoreMultiplier: Number(beat.scoreMultiplier ?? 100),
+      routeChoiceStatus: beat.status ?? null,
+      routeChoiceResolvedStatus: beat.resolvedStatus ?? null,
+      routeChoiceSafeStatus: beat.safeStatus ?? null,
+      routeChoiceShortcutStatus: beat.shortcutStatus ?? null,
+      routeChoiceResolvedSafeStatus: beat.resolvedSafeStatus ?? null,
+      routeChoiceResolvedShortcutStatus: beat.resolvedShortcutStatus ?? null,
+      authoredRouteBeat: true
+    }
+  };
+}
+
 export function adaptProjectedRouteToClimbRoute(projectedRoute, climb = {}) {
   const anchors = projectedRoute?.anchors ?? [];
   const summitY = Number(climb.summitY ?? anchors.at(-1)?.position?.y ?? 2200);
@@ -77,44 +116,20 @@ export function adaptProjectedRouteToClimbRoute(projectedRoute, climb = {}) {
   const choiceBranchBeats = [postRestChoice?.safe, postRestChoice?.shortcut, postRestChoice?.rejoin].filter(Boolean);
   const postRejoinBeat = postRestChoice?.postRejoin ?? null;
   const payoffBeats = [postRestChoice?.payoff?.safe, postRestChoice?.payoff?.shortcut].filter(Boolean);
+  const convergenceBeat = postRestChoice?.convergence ?? null;
   for (const beat of [...choiceBranchBeats, postRejoinBeat, ...payoffBeats].filter(Boolean)) {
     const index = Math.max(1, Math.min(ledges.length - 2, Math.floor(Number(beat.index ?? 1))));
     const source = ledges[index];
     if (!source) continue;
-    const type = beat.type ?? source.type;
-    ledges[index] = {
-      ...source,
-      id: beat.id ?? source.id,
-      x: Number(beat.x ?? source.x),
-      y: Number(beat.y ?? source.y),
-      r: Number(beat.radius ?? source.r),
-      type,
-      label: beat.label ?? source.label,
-      staminaRestore: type === "rest" ? Number(beat.staminaRestore ?? source.staminaRestore ?? climb.staminaRestore ?? 45) : 0,
-      tags: [...new Set([...(source.tags ?? []), ...(beat.tags ?? []), type])],
-      metadata: {
-        ...(source.metadata ?? {}),
-        routeChoiceId: postRestChoice.id ?? "post-rest-signal-fork",
-        routeChoiceRole: beat.role,
-        routeChoicePressureDelta: Number(beat.pressureDelta ?? 0),
-        routeChoiceCargoBonus: Number(beat.cargoBonus ?? 0),
-        routeChoiceGustIntensity: Number(beat.gustIntensity ?? 0),
-        routeChoicePressureRecovery: Number(beat.pressureRecovery ?? 0),
-        routeChoiceProtectedFailFloorBonus: Number(beat.protectedFailFloorBonus ?? 0),
-        routeChoiceProtectedAimAssistBonus: Number(beat.protectedAimAssistBonus ?? 0),
-        routeChoiceLaunchSpeedMultiplier: Number(beat.launchSpeedMultiplier ?? 1),
-        routeChoiceLaunchLiftBonus: Number(beat.launchLiftBonus ?? 0),
-        routeChoicePayoffAimAssistBonus: Number(beat.aimAssistBonus ?? 0),
-        routeChoiceCargoRequired: Number(beat.cargoRequired ?? 0),
-        routeChoiceStatus: beat.status ?? null,
-        routeChoiceResolvedStatus: beat.resolvedStatus ?? null,
-        routeChoiceSafeStatus: beat.safeStatus ?? null,
-        routeChoiceShortcutStatus: beat.shortcutStatus ?? null,
-        routeChoiceResolvedSafeStatus: beat.resolvedSafeStatus ?? null,
-        routeChoiceResolvedShortcutStatus: beat.resolvedShortcutStatus ?? null,
-        authoredRouteBeat: true
-      }
-    };
+    ledges[index] = choiceBeatLedge(source, beat, postRestChoice.id ?? "post-rest-signal-fork", climb.staminaRestore);
+  }
+  if (convergenceBeat) {
+    const index = Math.max(1, Math.min(ledges.length - 1, Math.floor(Number(convergenceBeat.index ?? 1))));
+    const source = ledges[index];
+    if (source) {
+      ledges.splice(index, 0, choiceBeatLedge(source, convergenceBeat, postRestChoice.id ?? "post-rest-signal-fork", climb.staminaRestore));
+      ledges.forEach((ledge, ledgeIndex) => { ledge.index = ledgeIndex; });
+    }
   }
   const crest = climb.masteryCrest;
   const crestBeats = Array.isArray(crest?.beats) ? crest.beats : [];
@@ -174,6 +189,7 @@ export function adaptProjectedRouteToClimbRoute(projectedRoute, climb = {}) {
       postRejoinAnchorId: postRejoinBeat?.id ?? null,
       payoffSafeAnchorId: postRestChoice?.payoff?.safe?.id ?? null,
       payoffShortcutAnchorId: postRestChoice?.payoff?.shortcut?.id ?? null,
+      convergenceAnchorId: convergenceBeat?.id ?? null,
       safe: { ...postRestChoice.safe },
       shortcut: { ...postRestChoice.shortcut },
       rejoin: { ...postRestChoice.rejoin },
@@ -181,7 +197,8 @@ export function adaptProjectedRouteToClimbRoute(projectedRoute, climb = {}) {
       payoff: payoffBeats.length === 2 ? {
         safe: { ...postRestChoice.payoff.safe },
         shortcut: { ...postRestChoice.payoff.shortcut }
-      } : null
+      } : null,
+      convergence: convergenceBeat ? { ...convergenceBeat } : null
     } : null,
     masteryCrest: crestBeats.length ? {
       id: crest.id ?? "summit-mastery-crest",

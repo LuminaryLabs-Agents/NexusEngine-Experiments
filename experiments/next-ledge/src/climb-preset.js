@@ -117,6 +117,8 @@ export function createNextLedgeClimbPreset(options = {}) {
         launchSpeedMultiplier: 1.34,
         launchLiftBonus: 0.16,
         aimAssistBonus: 18,
+        scoreMetric: "preserved-speed",
+        scoreMultiplier: 100,
         status: "Shelter protection converted. Fire through the mint Slipstream Launch while the cable is overcharged.",
         resolvedStatus: "Slipstream Launch secured. Shelter protection paid out as immediate speed.",
         tags: ["post-stormlock-payoff", "safe-launch-window", "mint-route"]
@@ -132,10 +134,28 @@ export function createNextLedgeClimbPreset(options = {}) {
         radius: 5.8,
         cargoRequired: 1.75,
         gustIntensity: 0.94,
+        scoreMetric: "cargo-mastery",
+        scoreMultiplier: 100,
         status: "Signal cache committed. The smaller amber Cacheline High is unlocked above the crosswind.",
         resolvedStatus: "Cacheline High secured. The shortcut cargo bought a harder, higher line.",
         tags: ["post-stormlock-payoff", "cargo-unlocked-high-line", "amber-route"]
       }
+    },
+    convergence: {
+      index: 11,
+      id: "windglass-relay",
+      role: "route-convergence",
+      label: "Windglass relay",
+      type: "normal",
+      x: 12 * windDirection,
+      y: 1156,
+      radius: 11.8,
+      gustIntensity: 0.22,
+      safeStatus: "Windglass Relay is reading the Slipstream overcharge. Preserve the mint velocity into the shared catch.",
+      shortcutStatus: "Windglass Relay is reading the Cacheline transfer. Carry the amber cargo mastery into the shared catch.",
+      resolvedSafeStatus: "Windglass Relay scored {score} SPEED. Slipstream velocity preserved—generic ascent restored.",
+      resolvedShortcutStatus: "Windglass Relay scored {score} CARGO. Cacheline mastery banked—generic ascent restored.",
+      tags: ["windglass-relay", "route-convergence", "branch-mastery-score"]
     }
   };
   return {

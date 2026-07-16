@@ -94,6 +94,13 @@ export function createCinematicSynth() {
     else if (type === "post-stormlock-payoff-secured") {
       [523.25, 783.99, 1174.66].forEach((frequency, index) => setTimeout(() => tone(frequency, 0.34, "sine", 0.06, frequency * 1.2), index * 70));
     }
+    else if (type === "windglass-relay-opened") {
+      tone(698.46, 0.46, "triangle", 0.06, 1396.91);
+      setTimeout(() => tone(event.selectedRole === "pressure-shortcut" ? 440 : 523.25, 0.38, "sine", 0.055, 1046.5), 90);
+    }
+    else if (type === "windglass-relay-scored") {
+      [659.25, 987.77, 1318.5, 1975.53].forEach((frequency, index) => setTimeout(() => tone(frequency, 0.46, index % 2 ? "triangle" : "sine", 0.065, frequency * 1.16), index * 68));
+    }
   }
 
   return {

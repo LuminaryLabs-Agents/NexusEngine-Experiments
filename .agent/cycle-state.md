@@ -1,5 +1,11 @@
 # Cycle State
 
+## 2026-07-16 Windglass Relay Convergence Upgrade
+
+`experiments/next-ledge/` now carries both sector-two branch rewards into one shared scored catch before generic ascent resumes. Slipstream Launch banks `134` preserved speed; Cacheline High banks `175` cargo mastery; Windglass Relay presents and resolves either value inside the existing route-choice state. Authored score and convergence descriptors remain in the preset, the adapter inserts the beat without replacing the original generic route anchor, and renderer/HUD/audio/effects consume one bounded line and semantic event stream. The safe branch completed through actual grapple input, the shortcut reached its scored convergence prompt, real failure/keyboard retry and Advanced closed/open/closed passed, all 28 Next Ledge tests passed, diagnostics stayed closed, and matched performance remained within budget without steady-state growth.
+
+Exact next playable unit: retune Cacheline High's approach framing and aim assistance so the `175`-cargo shortcut clears in one readable launch while remaining visibly harder than Slipstream Launch.
+
 ## 2026-07-16 Post-Stormlock Payoff Upgrade
 
 `experiments/next-ledge/` now converts the resolved sector-two choice into one immediate branch-specific reward. Shelter Rise opens mint Slipstream Launch with a `1.34x` cable-speed window, extra lift, and stronger assist; Signal Cut spends `1.75` existing cargo to reveal the smaller Cacheline High anchor inside a stronger amber gust. Authored targets and tuning remain in the preset, the single route-choice state selects and resolves one payoff, the existing cable/resource facades own deterministic mutations, and renderer/HUD/audio consume the same events. Human View moved the mint target out from behind the hero and exposed a WebGL/HUD compositor overlap; the final cleanup isolates the transformed canvas below an untransformed UI. Both branches, real failure/retry, disclosure, all 28 Next Ledge tests, bounded counts, performance, and a zero-error console passed.
