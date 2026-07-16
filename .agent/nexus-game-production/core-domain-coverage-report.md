@@ -1,7 +1,7 @@
 # Core Domain Coverage Report
 
-Status: bootstrap Phase B catalog in progress
-Accepted catalog definitions: 90 of 100 bootstrap definitions
+Status: bootstrap Phase B catalog complete; Phase C implementation ready
+Accepted catalog definitions: 100 of 100 bootstrap definitions
 Implemented production kits: 0
 Playable production experiments: 0
 
@@ -103,6 +103,16 @@ Core is authoritative. A new kit must name the Core domains it configures or com
 | `atmospheric-aerosol-lifecycle-domain-kit` | simulation + data + world/spatial/physics observations | aerosol populations, coagulation, aging, deposition, washout, resuspension, and clearance | pass |
 | `stable-isotope-fractionation-domain-kit` | simulation + data + diagnostics/world/policy observations | stable-isotope inventories, process fractionation, mixing, signatures, and provenance comparison | pass |
 | `semiconductor-carrier-domain-kit` | simulation + data + physics/spatial/diagnostics observations | carrier populations, junction depletion, injection, recombination, trapping, and conductivity bands | pass |
+| `polymer-network-evolution-domain-kit` | simulation + data + physics/diagnostics observations; Core Object Shape handoff | chain growth, crosslink networks, gelation, vitrification, residual reactivity, and network quality | pass |
+| `rheological-response-domain-kit` | simulation + data + physics/world/diagnostics observations | viscosity and yield bands, shear-rate response, thixotropic breakdown, recovery, and flow intents | pass |
+| `protein-conformation-domain-kit` | simulation + data + agent/world/diagnostics observations | conformation pathways, chaperone interactions, misfolding, aggregation, refolding, and quality | pass |
+| `gene-regulatory-network-domain-kit` | simulation + data + agent/policy/diagnostics observations | regulator topology, activation, repression, expression, feedback, oscillation, and memory | pass |
+| `cell-differentiation-lineage-domain-kit` | simulation + data + agent/world/object observations | cell lineage, potency, fate competence, commitment, maturation, and identity conversion | pass |
+| `endocrine-signal-regulation-domain-kit` | simulation + data + agent/world/policy observations | signal pools, receptor occupancy, feedback axes, pulses, desensitization, clearance, and recovery | pass |
+| `soil-profile-development-domain-kit` | simulation + data + world/spatial/diagnostics observations | horizon stacks, material translocation, boundary migration, disturbance, truncation, and maturity | pass |
+| `lithospheric-boundary-cycle-domain-kit` | simulation + data + world/spatial/physics observations | plate adjacency, boundary regimes, crust budgets, subduction, collision, rifting, and reorganization | pass |
+| `stellar-evolution-domain-kit` | simulation + data + world/spatial observations; graphics descriptor handoff | stellar fuel reservoirs, lifecycle stages, activity, instability, terminal transitions, and remnants | pass |
+| `error-correction-code-domain-kit` | simulation + data + network/diagnostics/policy observations | parity, syndromes, erasures, bounded correction, recovery confidence, and block integrity | pass |
 
 No definition claims Core state primitives, provider implementations, renderer ownership, raw input, browser lifecycle, or game-specific content.
 
@@ -162,6 +172,12 @@ No definition claims Core state primitives, provider implementations, renderer o
 - `dune-migration-domain-kit`: documented sediment flow, terrain erosion, and wind observations already own the proposed landform-specific state.
 - `electroplating-deposition-domain-kit`: accepted reaction, crystal-growth, corrosion, and power boundaries already own its reusable state.
 - `cloud-microphysics-domain-kit`: existing atmosphere/cloud families plus accepted phase, capillary, and aerosol owners already cover the blurred proposal.
+- `thermoelectric-transduction-domain-kit`: accepted thermal, semiconductor-carrier, and power-distribution owners already provide the complete composition.
+- `metamorphic-rock-transformation-domain-kit`: accepted phase, crystal-growth, plastic-deformation, and thermal owners already own the proposed state.
+- `neural-plasticity-domain-kit`: accepted behavioral conditioning plus Core Agent already own learning associations and decision-cycle observations.
+- `soil-erosion-profile-domain-kit`: implemented terrain erosion and documented sediment flow already own erosion and deposition; soil-profile development excludes them.
+- `planetary-climate-cycle-domain-kit`: blurred existing atmosphere/weather with accepted thermal, carbon, cryosphere, aerosol, salinity, oxygen, and phenology owners.
+- `digital-logic-circuit-domain-kit`: bundled accepted semiconductor-carrier and power state with Core deterministic resolution and authored puzzle logic.
 
 ## Baseline Risk Map
 
@@ -181,4 +197,4 @@ No definition claims Core state primitives, provider implementations, renderer o
 
 ## Exact Next Audit
 
-Audit bootstrap catalog definitions 091-100 against all 514 existing top-level folders, nested declarations, package exports, and the current Core map before acceptance.
+Implement bootstrap contracts 001-010 in `implementation-batch-001-010`, then audit their deterministic behavior, exports, natural-language contracts, harness proof, Core relationship, renderer/browser exclusions, and reuse boundaries before counting them as created.

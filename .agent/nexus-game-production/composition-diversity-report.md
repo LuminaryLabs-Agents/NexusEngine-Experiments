@@ -2,11 +2,11 @@
 
 Status: catalog-only; experiment gate remains blocked
 Accepted production experiment signatures: 0 of 50 bootstrap experiments
-Accepted bootstrap kit contracts: 90 of 100
+Accepted bootstrap kit contracts: 100 of 100
 
 ## Catalog Composition Pressure
 
-The first ninety definitions are not route shells. They support at least seventy-one mechanically distinct future seeded proof clusters:
+The first one hundred definitions are not route shells. They support at least eighty-one mechanically distinct future seeded proof clusters:
 
 - Quarantine Lantern: contagion + triage + rumor + navigation knowledge.
 - Rewilding Basin: ecosystem population + habitat suitability + territory influence.
@@ -79,6 +79,16 @@ The first ninety definitions are not route shells. They support at least seventy
 - Ashfall Observatory: atmospheric aerosol lifecycle + contamination + optical propagation + watershed runoff.
 - Isotope Cartographer: stable-isotope fractionation + radioactive decay + specimen integrity + calibration.
 - Junction Garden: semiconductor carriers + dielectric interaction + power distribution + photoluminescence.
+- Resin Moon: polymer network evolution + chemical reaction batches + adhesion + thermal energy.
+- Thixotropic Tunnels: rheological response + granular material state + pressure + calibration.
+- Foldvault: protein conformation + specimen integrity + thermal energy + acid-base balance.
+- Gene Circuit Greenhouse: gene regulation + photosynthetic assimilation + calibration + habitat suitability.
+- Fate Foundry: cell differentiation + gene regulation + protein conformation + habitat suitability.
+- Signal Orchard: endocrine regulation + circadian entrainment + behavioral conditioning + habitat atmosphere.
+- Buried Garden: soil-profile development + decomposition + soil nutrients + stratigraphy.
+- Driftforge: lithospheric boundary cycles + seismic sequences + volcanic sequences + navigation knowledge.
+- Last Light Observatory: stellar evolution + celestial visibility + orbital windows + thermal energy.
+- Ghost Signal: error correction + acoustic signals + stream channels + navigation knowledge.
 
 These are proof targets, not accepted experiment records. Seeds, candidate draw order, rejections, kit signatures, routes, and playable validation do not exist yet and therefore do not count.
 
@@ -97,5 +107,5 @@ Every accepted experiment must record epoch, lifecycle status, seed, full candid
 
 - Exact duplicate production signatures: 0 because no production signatures are accepted.
 - Near-duplicate production signatures: 0 because no production signatures are accepted.
-- Catalog boundary duplication: 0 accepted; fifty-four candidates were rejected before acceptance across the first nine batches.
+- Catalog boundary duplication: 0 accepted; sixty candidates were rejected before acceptance across all ten bootstrap catalog batches.
 - Diversity claim: contract pressure only; no playable diversity claim yet.

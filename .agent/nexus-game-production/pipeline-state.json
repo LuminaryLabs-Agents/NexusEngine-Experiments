@@ -6,9 +6,10 @@
   },
   "inventoryCapturedAt": "2026-07-15T12:02:05-04:00",
   "operatingMode": "bootstrap-plus-numbered-production-epochs",
-  "activePhase": "B-catalog",
+  "activePhase": "C-implementation",
   "completedPhases": [
-    "A-inventory"
+    "A-inventory",
+    "B-catalog"
   ],
   "status": "ready-for-next-bounded-unit",
   "repositories": {
@@ -58,7 +59,7 @@
       "refinementSlices": 0
     },
     "progress": {
-      "acceptedNewKits": 90,
+      "acceptedNewKits": 100,
       "implementedNewKits": 0,
       "playableNewExperiments": 0,
       "consolidatedNewGames": 0,
@@ -90,7 +91,7 @@
       "refinementSlices": 0
     },
     "progress": {
-      "acceptedNewKits": 90,
+      "acceptedNewKits": 100,
       "implementedNewKits": 0,
       "playableNewExperiments": 0,
       "consolidatedNewGames": 0,
@@ -98,10 +99,10 @@
     }
   },
   "catalogTotals": {
-    "acceptedDefinitionsLifetime": 90,
-    "acceptedDefinitionsBootstrap": 90,
-    "acceptedDefinitionsCurrentEpoch": 90,
-    "rejectedCandidatesLifetime": 54
+    "acceptedDefinitionsLifetime": 100,
+    "acceptedDefinitionsBootstrap": 100,
+    "acceptedDefinitionsCurrentEpoch": 100,
+    "rejectedCandidatesLifetime": 60
   },
   "assetTotals": {
     "kits": {
@@ -127,28 +128,28 @@
     }
   },
   "lastCatalogUnit": {
-    "packetId": "2026-07-16-bootstrap-catalog-081-090",
-    "scope": "catalog-batch-081-090",
+    "packetId": "2026-07-16-bootstrap-catalog-091-100",
+    "scope": "catalog-batch-091-100",
     "result": "Accepted 10 genuinely new natural-language kit contracts after six additional duplicate, catalog-overlap, or blurred-scope rejections; no implementation was created."
   },
   "lastCreationUnit": null,
   "lastRefinementUnit": null,
   "lastCompletedUnit": {
-    "packetId": "2026-07-16-bootstrap-catalog-081-090",
-    "scope": "Bootstrap catalog batch 081-090",
-    "result": "Accepted 10 renderer-agnostic contracts across chromatographic separation, fractional distillation, depth filtration, sintering densification, emulsion stability, bulk foam evolution, photosynthetic assimilation, atmospheric aerosol lifecycle, stable-isotope fractionation, and semiconductor carriers; rejected six adjacent duplicates or blurred scopes.",
-    "validation": "passed: refreshed Core authority, Phase A drift guard, production invariants, JSON parsing, folder/export/name collision checks, Playwright reader/reviewer interaction, screenshot comparison, zero console errors or warnings, and diff checks",
+    "packetId": "2026-07-16-bootstrap-catalog-091-100",
+    "scope": "Bootstrap catalog batch 091-100",
+    "result": "Accepted 10 renderer-agnostic contracts across polymer networks, rheology, protein conformation, gene regulation, cell differentiation, endocrine signaling, soil profiles, lithospheric boundaries, stellar evolution, and error correction; rejected six adjacent duplicates or blurred scopes and completed bootstrap Phase B.",
+    "validation": "passed: current Core authority and Phase A drift guard, production invariants, JSON parsing, folder/export/name collision checks, Playwright reader/reviewer interaction, screenshot comparison, zero console errors or warnings, and diff checks",
     "commits": {
       "protokitsStartAndFinal": "ffdcc962d3c984864a2d78e9276879adf04250eb",
-      "experimentsStart": "7662448850c31641b06fc0661a214c97fb08bc23",
-      "experimentsProductionUnit": "17355e2cc9e12e1978720fd9d7a8dab4e3b782e3"
+      "experimentsStart": "47e2a7afcf55b854bf064a4fb93fb19e69f16673",
+      "experimentsProductionUnit": "recorded-by-publication-receipt-after-push"
     },
-    "publication": "production commit published to origin/main; publication record commit intentionally not self-hashed"
+    "publication": "validated production unit prepared for normal push; final receipt is recorded after publication"
   },
   "exactNextUnit": {
-    "phase": "B-catalog",
+    "phase": "C-implementation",
     "epoch": 0,
-    "scope": "catalog-batch-091-100",
-    "goal": "Propose and audit bootstrap kit definitions 091-100 without implementing them."
+    "scope": "implementation-batch-001-010",
+    "goal": "Implement accepted bootstrap kit contracts 001-010 with deterministic behavior, compatible exports, accurate natural-language contracts, existing-harness proof, and post-code domain audits."
   }
 }

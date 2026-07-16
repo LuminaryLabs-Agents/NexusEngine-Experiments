@@ -4,15 +4,15 @@
   "bootstrapTarget": 100,
   "epochTarget": 10,
   "counts": {
-    "acceptedBootstrap": 90,
-    "acceptedCurrentEpoch": 90,
-    "acceptedLifetime": 90,
+    "acceptedBootstrap": 100,
+    "acceptedCurrentEpoch": 100,
+    "acceptedLifetime": 100,
     "implementedBootstrap": 0,
     "implementedCurrentEpoch": 0,
     "implementedLifetime": 0,
-    "rejectedLifetime": 54
+    "rejectedLifetime": 60
   },
-  "status": "bootstrap-catalog-in-progress",
+  "status": "bootstrap-catalog-complete",
   "requiredFields": [
     "id",
     "name",
@@ -2295,6 +2295,256 @@
       "idempotencyRule": "Observation, transfer, recovery, and junction IDs commit once, regions and junctions resolve in stable order, and carrier totals remain bounded by authored generation, injection, recombination, extraction, trapping, and loss facts.",
       "duplicateAndMergeRisk": "Dielectric interaction owns polarization, electrochemical storage owns cell charge, and power distribution owns grid service. Live inventory has no reusable owner for semiconductor carrier populations, junction depletion, injection, recombination, trapping, and conductivity bands.",
       "promotionPotential": "Experimental until multi-junction transfer, carrier balance, trap recovery, snapshot migration, field-observation parity, and sensing plus computation consumers pass."
+    },
+    {
+      "id": "bootstrap-kit-091",
+      "name": "polymer-network-evolution-domain-kit",
+      "purpose": "Advance authored polymer networks through supplied conversion observations into chain growth, crosslink density, gelation, vitrification, residual reactivity, cure-shrinkage intents, post-cure, reversion, and terminal network quality without solving chemistry or geometry.",
+      "coreMapping": {
+        "configures": ["core-simulation-kit", "core-data-kit"],
+        "composesWith": ["core-physics-kit", "core-object-shape-domain", "core-diagnostics-kit"],
+        "nonDuplicatedMeaning": "Core owns deterministic state and shape handoffs, reaction batches own reagent conversion, phase transition owns bulk phase fractions, and adhesion owns interface bonds; this domain owns bulk polymer-chain and crosslink-network evolution, gelation, vitrification, residual reactivity, and network-quality meaning."
+      },
+      "classification": "material-process-domain",
+      "ownership": ["authored polymer, chain, crosslink, and cure profiles", "chain-growth and network-connectivity state", "crosslink density, gel fraction, and vitrification bands", "residual-reactivity and post-cure ledger", "cure-shrinkage, reversion, degradation, and rework intents", "uncured, advancing, gelled, vitrified, undercured, overcured, reverted, reworked, and complete classifications"],
+      "exclusions": ["molecular chemistry and stoichiometric reaction solving", "generic reaction-batch yield", "interface adhesion and debonding", "bulk material phase ownership", "stress or geometry solving", "mesh deformation", "renderer materials", "real polymer-processing guidance"],
+      "actions": ["register polymer profile", "register network batch", "record conversion observation", "advance network", "apply crosslink fact", "post-cure batch", "revert or degrade network", "rework batch", "accept network", "reset network"],
+      "resourcesAndState": ["polymerNetworkEvolution.profiles", "polymerNetworkEvolution.batches", "polymerNetworkEvolution.networks", "polymerNetworkEvolution.conversionLedger", "polymerNetworkEvolution.qualityLedger", "polymerNetworkEvolution.tick"],
+      "events": ["polymerNetwork.conversionRecorded", "polymerNetwork.gelled", "polymerNetwork.vitrified", "polymerNetwork.shrinkageIntentChanged", "polymerNetwork.qualityChanged", "polymerNetwork.reverted", "polymerNetwork.reworked", "polymerNetwork.accepted", "polymerNetwork.commandRejected", "polymerNetwork.reset"],
+      "methods": ["registerProfile(definition)", "registerBatch(definition)", "recordConversion(fact)", "advance(ticks)", "applyCrosslink(command)", "postCure(command)", "degrade(command)", "rework(command)", "accept(command)", "getShapeDescriptors()", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned polymer-network-evolution snapshot", "polymer, batch, conversion, chain, and crosslink descriptors", "gelation, vitrification, residual-reactivity, and post-cure descriptors", "shrinkage-intent, reversion, rework, quality, and completion summaries"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable profile, batch, conversion, crosslink, post-cure, degradation, rework, and acceptance IDs", "authored fictional polymer-network rules", "explicit conversion, thermal, load, environment, and inspection observations"],
+      "expectedCompositions": ["chemical-reaction-batch-domain-kit", "interfacial-adhesion-domain-kit", "material-phase-transition-domain-kit", "instrument-calibration-domain-kit"],
+      "plausibleUses": ["stabilize a resin moon habitat before its bulk shell vitrifies around trapped defects", "rework a living polymer bridge whose crosslink network is reverting under alien weather"],
+      "experimentProof": "A seeded Resin Moon route must replay identical conversion, crosslink, post-cure, degradation, rework, acceptance, and fixed-tick facts into the same chain state, gelation, vitrification, residual reactivity, shrinkage intents, quality, rejections, and digest across habitat-resin and living-bridge profiles.",
+      "idempotencyRule": "Conversion, crosslink, post-cure, degradation, rework, and acceptance IDs commit once, batches resolve in stable order, and network conversion remains bounded by authored reactive-site and explicit-loss budgets.",
+      "duplicateAndMergeRisk": "Reaction batches own input conversion, adhesion owns interface bonds, and phase transition owns phase fractions. Live inventory has no reusable owner for bulk polymer chain growth, crosslink-network state, gelation, vitrification, residual reactivity, and post-cure quality.",
+      "promotionPotential": "Hold until branching-network fixtures, gelation and reversion replay, shrinkage bounds, snapshot migration, shape-descriptor handoff, and fabrication plus traversal consumers pass."
+    },
+    {
+      "id": "bootstrap-kit-092",
+      "name": "rheological-response-domain-kit",
+      "purpose": "Resolve authored bulk-material profiles from supplied shear, stress, temperature, and rest observations into viscosity bands, yield, shear-thinning or thickening, thixotropic breakdown, recovery, jamming risk, and provider-neutral flow intents without solving fluid motion.",
+      "coreMapping": {
+        "configures": ["core-simulation-kit", "core-data-kit"],
+        "composesWith": ["core-physics-kit", "core-world-domain", "core-diagnostics-kit"],
+        "nonDuplicatedMeaning": "Core Physics owns provider observations and granular, emulsion, and foam domains own discrete bulk structures; this domain owns constitutive rheological response history, viscosity and yield bands, time-dependent breakdown and recovery, and flow-intent meaning."
+      },
+      "classification": "material-behavior-domain",
+      "ownership": ["authored rheology and material-state profiles", "shear, stress, temperature, and rest observation history", "apparent-viscosity and yield bands", "shear-thinning, thickening, thixotropic breakdown, and recovery state", "plug, flow, slump, jam-risk, and relaxation intents", "rested, yielding, flowing, thinning, thickening, broken-down, recovering, jam-risk, and stable classifications"],
+      "exclusions": ["fluid dynamics and particle simulation", "contact or force resolution", "granular packing and discharge ownership", "emulsion droplets and foam bubbles", "chemical reaction", "terrain deformation", "renderer liquids", "real process-engineering guidance"],
+      "actions": ["register rheology profile", "register material lot", "record shear observation", "record stress observation", "record thermal observation", "advance response", "rest material", "condition material", "accept response", "reset rheology"],
+      "resourcesAndState": ["rheologicalResponse.profiles", "rheologicalResponse.materials", "rheologicalResponse.observations", "rheologicalResponse.responseBands", "rheologicalResponse.history", "rheologicalResponse.tick"],
+      "events": ["rheology.observationRecorded", "rheology.yielded", "rheology.flowRegimeChanged", "rheology.breakdownChanged", "rheology.recoveryChanged", "rheology.jamRiskRaised", "rheology.conditioned", "rheology.accepted", "rheology.commandRejected", "rheology.reset"],
+      "methods": ["registerProfile(definition)", "registerMaterial(definition)", "recordShear(fact)", "recordStress(fact)", "recordThermal(fact)", "advance(ticks)", "rest(command)", "condition(command)", "accept(command)", "getFlowDescriptors()", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned rheological-response snapshot", "profile, material, shear, stress, temperature, and rest descriptors", "viscosity, yield, thinning, thickening, breakdown, and recovery descriptors", "flow-intent, jam-risk, conditioning, acceptance, and stability summaries"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable profile, material, observation, conditioning, and acceptance IDs", "authored fictional constitutive-response rules", "explicit shear, stress, strain-rate, temperature, rest, and composition observations"],
+      "expectedCompositions": ["granular-material-state-domain-kit", "emulsion-stability-domain-kit", "bulk-foam-evolution-domain-kit", "instrument-calibration-domain-kit"],
+      "plausibleUses": ["pump a shear-thinning crystal slurry through a collapsing undercity before it rebuilds structure", "shape a thickening defensive gel whose flow window closes under repeated impacts"],
+      "experimentProof": "A seeded Thixotropic Tunnels route must replay identical shear, stress, thermal, rest, conditioning, acceptance, and fixed-tick facts into the same viscosity bands, yield state, breakdown, recovery, flow intents, jam risk, rejections, and digest across crystal-slurry and defensive-gel profiles.",
+      "idempotencyRule": "Observation, conditioning, rest, and acceptance IDs commit once, materials resolve in stable order, and response variables remain within authored profile bounds under repeated advance calls.",
+      "duplicateAndMergeRisk": "Granular, emulsion, and foam owners track structure populations while Core Physics owns provider integration. Live inventory has no reusable owner for constitutive viscosity bands, yield behavior, shear-rate response, thixotropic history, and recovery.",
+      "promotionPotential": "Experimental until multiple constitutive profiles, hysteresis and recovery replay, bounded response, snapshot migration, provider-observation parity, and industrial plus hazard consumers pass."
+    },
+    {
+      "id": "bootstrap-kit-093",
+      "name": "protein-conformation-domain-kit",
+      "purpose": "Advance authored protein-like subjects through conformational states, folding pathways, chaperone assistance, misfolding, aggregation, refolding, stabilization, and terminal quality from explicit environment observations without molecular dynamics or real biological claims.",
+      "coreMapping": {
+        "configures": ["core-simulation-kit", "core-data-kit"],
+        "composesWith": ["core-agent-kit", "core-world-domain", "core-diagnostics-kit"],
+        "nonDuplicatedMeaning": "Core owns deterministic state while chemical reactions own batch conversion and specimen integrity owns sample condition; this domain owns conformation-state lineage, folding pathways, chaperone interactions, misfolding, aggregation, refolding, and functional-quality meaning."
+      },
+      "classification": "biological-process-domain",
+      "ownership": ["authored conformation, pathway, environment, and chaperone profiles", "subject conformation and folding-progress state", "pathway branch and transition lineage", "misfolding, aggregation, and stabilization ledger", "chaperone binding, release, and refolding history", "unfolded, intermediate, folded, misfolded, aggregated, stabilized, rescued, and failed classifications"],
+      "exclusions": ["amino-acid sequence generation", "molecular dynamics and chemistry solving", "generic specimen custody", "organism health and metabolism", "gene expression", "renderer meshes", "medical guidance", "real protein predictions"],
+      "actions": ["register conformation profile", "register subject", "record environment observation", "advance folding", "apply chaperone fact", "challenge conformation", "refold subject", "stabilize subject", "accept quality", "reset conformation"],
+      "resourcesAndState": ["proteinConformation.profiles", "proteinConformation.subjects", "proteinConformation.pathways", "proteinConformation.chaperoneLedger", "proteinConformation.aggregationLedger", "proteinConformation.tick"],
+      "events": ["proteinConformation.environmentRecorded", "proteinConformation.transitioned", "proteinConformation.misfolded", "proteinConformation.aggregated", "proteinConformation.chaperoneBound", "proteinConformation.refolded", "proteinConformation.stabilized", "proteinConformation.qualityAccepted", "proteinConformation.commandRejected", "proteinConformation.reset"],
+      "methods": ["registerProfile(definition)", "registerSubject(definition)", "recordEnvironment(fact)", "advance(ticks)", "applyChaperone(command)", "challenge(command)", "refold(command)", "stabilize(command)", "accept(command)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned protein-conformation snapshot", "subject, pathway, environment, and chaperone descriptors", "conformation, transition, misfolding, aggregation, refolding, and stabilization descriptors", "quality, rescue, failure, and balance summaries"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable profile, subject, environment, chaperone, challenge, refold, stabilization, and acceptance IDs", "authored fictional folding-pathway rules", "explicit thermal, acidity-band, crowding, stress, and assistance observations"],
+      "expectedCompositions": ["specimen-integrity-domain-kit", "instrument-calibration-domain-kit", "thermal-energy-network-domain-kit", "aqueous-acid-base-balance-domain-kit"],
+      "plausibleUses": ["rescue an archive of living proteins from an aggregation cascade in a failing cryolab", "fold rune-proteins into stable keys while magical chaperones compete for each pathway"],
+      "experimentProof": "A seeded Foldvault route must replay identical environment, chaperone, challenge, refold, stabilization, acceptance, and fixed-tick facts into the same pathways, conformations, aggregates, rescues, quality, rejections, and digest across cryolab-protein and rune-protein profiles.",
+      "idempotencyRule": "Environment, assistance, challenge, refold, stabilization, and acceptance IDs commit once, subjects resolve in stable order, and each subject occupies exactly one authored conformation state plus bounded aggregate membership.",
+      "duplicateAndMergeRisk": "Specimen integrity owns physical sample condition and reaction batches own reagent conversion. Live inventory has no reusable owner for folding-pathway state, conformation transitions, chaperone interactions, misfolding, aggregation, and refolding.",
+      "promotionPotential": "Hold until branching pathways, assistance and rescue replay, aggregation bounds, snapshot migration, environment-adapter parity, and laboratory plus fantasy consumers pass."
+    },
+    {
+      "id": "bootstrap-kit-094",
+      "name": "gene-regulatory-network-domain-kit",
+      "purpose": "Resolve authored gene-like nodes and regulator links through explicit signal observations into activation, repression, expression bands, feedback, oscillation, regulatory memory, and phenotype-signal descriptors without sequence biology or agent decision-making.",
+      "coreMapping": {
+        "configures": ["core-simulation-kit", "core-data-kit"],
+        "composesWith": ["core-agent-kit", "core-policy-kit", "core-diagnostics-kit"],
+        "nonDuplicatedMeaning": "Core owns deterministic graphs and agent identity while behavioral conditioning owns learned cue associations; this domain owns gene-regulator topology, activation and repression, expression histories, feedback motifs, oscillation, and regulatory-memory meaning."
+      },
+      "classification": "biological-control-domain",
+      "ownership": ["authored gene-node, regulator, signal, and expression profiles", "activation, repression, and expression-band state", "regulator-link and feedback-motif topology", "signal exposure and response lineage", "oscillation, bistability, and regulatory-memory state", "silent, primed, active, repressed, oscillating, locked, dysregulated, and reset classifications"],
+      "exclusions": ["DNA or RNA sequence generation", "molecular transcription and translation", "protein folding", "cell fate ownership", "agent goals or decisions", "machine-learning inference", "medical claims", "renderer graphs"],
+      "actions": ["register regulatory profile", "register network", "record signal observation", "set regulator fact", "advance expression", "lock or release state", "perturb network", "clear memory", "accept profile", "reset network"],
+      "resourcesAndState": ["geneRegulatoryNetwork.profiles", "geneRegulatoryNetwork.networks", "geneRegulatoryNetwork.nodes", "geneRegulatoryNetwork.links", "geneRegulatoryNetwork.expressionLedger", "geneRegulatoryNetwork.tick"],
+      "events": ["geneRegulation.signalRecorded", "geneRegulation.expressionChanged", "geneRegulation.feedbackTriggered", "geneRegulation.oscillationChanged", "geneRegulation.memoryChanged", "geneRegulation.dysregulated", "geneRegulation.recovered", "geneRegulation.accepted", "geneRegulation.commandRejected", "geneRegulation.reset"],
+      "methods": ["registerProfile(definition)", "registerNetwork(definition)", "recordSignal(fact)", "setRegulator(fact)", "advance(ticks)", "lockState(command)", "perturb(command)", "clearMemory(command)", "accept(command)", "getExpressionDescriptors()", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned gene-regulatory-network snapshot", "network, node, regulator, signal, and link descriptors", "activation, repression, expression, feedback, oscillation, and memory descriptors", "dysregulation, recovery, acceptance, and phenotype-signal summaries"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable profile, network, signal, regulator, perturbation, lock, memory, and acceptance IDs", "authored fictional regulatory rules", "explicit signal, environment, regulator, and intervention observations"],
+      "expectedCompositions": ["protein-conformation-domain-kit", "cell-differentiation-lineage-domain-kit", "behavioral-conditioning-domain-kit", "instrument-calibration-domain-kit"],
+      "plausibleUses": ["retune a bioluminescent greenhouse by restoring oscillating expression circuits", "decode an ancient organism whose regulatory memory locks doors into living tissue"],
+      "experimentProof": "A seeded Gene Circuit Greenhouse route must replay identical signals, regulators, perturbations, locks, memory clears, acceptance, and fixed ticks into the same expression bands, feedback, oscillation, memory, dysregulation, rejections, and digest across greenhouse and living-archive profiles.",
+      "idempotencyRule": "Signal, regulator, perturbation, lock, memory, and acceptance IDs commit once, nodes and links resolve in stable order, and expression values remain within authored bands under repeated advance calls.",
+      "duplicateAndMergeRisk": "Core Agent owns goals and behavioral conditioning owns learned cue associations. Live inventory has no reusable owner for gene-regulator topology, activation and repression, expression bands, feedback motifs, oscillation, and regulatory memory.",
+      "promotionPotential": "Experimental until multi-network feedback, oscillation and bistability replay, bounded expression, snapshot migration, signal-adapter parity, and ecological plus biofabrication consumers pass."
+    },
+    {
+      "id": "bootstrap-kit-095",
+      "name": "cell-differentiation-lineage-domain-kit",
+      "purpose": "Advance authored cell-like cohorts through lineage, potency, fate competence, commitment, maturation, dedifferentiation, transdifferentiation, and terminal identity from explicit regulatory and environment observations without owning growth, health, or geometry.",
+      "coreMapping": {
+        "configures": ["core-simulation-kit", "core-data-kit"],
+        "composesWith": ["core-agent-kit", "core-world-domain", "core-object-domain"],
+        "nonDuplicatedMeaning": "Core owns identity and deterministic state, ecosystem populations own aggregate births and deaths, and regulatory networks own expression signals; this domain owns cell lineage, potency, fate competence, commitment, maturation, and identity-transition meaning."
+      },
+      "classification": "biological-development-domain",
+      "ownership": ["authored lineage, potency, fate, and maturation profiles", "cell-like subject and cohort lineage records", "potency and fate-competence state", "commitment and maturation history", "dedifferentiation and transdifferentiation ledger", "naive, multipotent, competent, committed, maturing, mature, reverted, converted, and terminal classifications"],
+      "exclusions": ["cell division and population growth", "damage, healing, and death", "gene expression ownership", "organism development and animation", "shape or mesh generation", "agent planning", "medical guidance", "real stem-cell claims"],
+      "actions": ["register lineage profile", "register subject", "record regulatory observation", "record environment observation", "advance competence", "commit fate", "advance maturation", "dedifferentiate subject", "transdifferentiate subject", "retire lineage", "reset differentiation"],
+      "resourcesAndState": ["cellDifferentiationLineage.profiles", "cellDifferentiationLineage.subjects", "cellDifferentiationLineage.lineages", "cellDifferentiationLineage.fateLedger", "cellDifferentiationLineage.maturationLedger", "cellDifferentiationLineage.tick"],
+      "events": ["cellDifferentiation.observationRecorded", "cellDifferentiation.competenceChanged", "cellDifferentiation.fateCommitted", "cellDifferentiation.matured", "cellDifferentiation.dedifferentiated", "cellDifferentiation.transdifferentiated", "cellDifferentiation.terminalReached", "cellDifferentiation.retired", "cellDifferentiation.commandRejected", "cellDifferentiation.reset"],
+      "methods": ["registerProfile(definition)", "registerSubject(definition)", "recordRegulatory(fact)", "recordEnvironment(fact)", "advance(ticks)", "commitFate(command)", "mature(command)", "dedifferentiate(command)", "transdifferentiate(command)", "retire(command)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned cell-differentiation-lineage snapshot", "subject, cohort, lineage, potency, fate, and environment descriptors", "competence, commitment, maturation, reversion, and conversion descriptors", "terminal-identity, retirement, lineage-balance, and outcome summaries"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable profile, subject, observation, commitment, maturation, reversion, conversion, and retirement IDs", "authored fictional differentiation rules", "explicit regulatory, signal, environment, support, and intervention observations"],
+      "expectedCompositions": ["gene-regulatory-network-domain-kit", "protein-conformation-domain-kit", "habitat-suitability-domain-kit", "specimen-integrity-domain-kit"],
+      "plausibleUses": ["guide a colony of repair cells into hull, conduit, and sensor fates before a station fails", "reverse cursed stone cells and redirect them into living bridge tissue"],
+      "experimentProof": "A seeded Fate Foundry route must replay identical regulatory, environment, commitment, maturation, reversion, conversion, retirement, and fixed-tick facts into the same lineages, potency, competence, identities, outcomes, rejections, and digest across repair-colony and cursed-tissue profiles.",
+      "idempotencyRule": "Observation, commitment, maturation, reversion, conversion, and retirement IDs commit once, subjects resolve in stable lineage order, and every active subject has one current fate identity and one parent-lineage reference.",
+      "duplicateAndMergeRisk": "Ecosystem populations own cohort counts, genetic diversity owns inherited markers, and regulatory networks own expression signals. Live inventory has no reusable owner for cell lineage, potency, fate competence, commitment, maturation, and identity conversion.",
+      "promotionPotential": "Hold until branching-lineage fixtures, reversible and irreversible fate replay, lineage conservation, snapshot migration, regulatory-adapter parity, and repair plus world-growth consumers pass."
+    },
+    {
+      "id": "bootstrap-kit-096",
+      "name": "endocrine-signal-regulation-domain-kit",
+      "purpose": "Track authored hormone-like signals through secretion, supplied transport observations, receptor occupancy, response windows, feedback-axis regulation, pulses, desensitization, clearance, and recovery without owning circulation, metabolism, emotion, or agent decisions.",
+      "coreMapping": {
+        "configures": ["core-simulation-kit", "core-data-kit"],
+        "composesWith": ["core-agent-kit", "core-world-domain", "core-policy-kit"],
+        "nonDuplicatedMeaning": "Core owns resources and agent identity while generic pressure owns scalar thresholds; this domain owns endocrine signal pools, receptor occupancy, feedback axes, pulse timing, sensitivity, desensitization, clearance, and coordinated response-window meaning."
+      },
+      "classification": "biological-signaling-domain",
+      "ownership": ["authored signal, gland-like source, receptor, target, and feedback profiles", "signal pools and supplied-transfer lineage", "receptor occupancy and response-window state", "feedback-axis setpoints and inhibition history", "pulse, desensitization, resensitization, clearance, and recovery ledger", "basal, pulsing, elevated, suppressed, occupied, desensitized, recovering, and balanced classifications"],
+      "exclusions": ["blood flow and transport physics", "metabolism and energy balance", "emotion, mood, or agent planning", "raw input and action selection", "molecular binding simulation", "health diagnosis", "renderer indicators", "real endocrine guidance"],
+      "actions": ["register signal profile", "register source and target", "record secretion fact", "record transport observation", "advance regulation", "apply feedback fact", "desensitize or resensitize target", "clear signal", "rebalance axis", "reset regulation"],
+      "resourcesAndState": ["endocrineSignalRegulation.profiles", "endocrineSignalRegulation.sources", "endocrineSignalRegulation.targets", "endocrineSignalRegulation.pools", "endocrineSignalRegulation.feedbackLedger", "endocrineSignalRegulation.tick"],
+      "events": ["endocrineSignal.secreted", "endocrineSignal.transferred", "endocrineSignal.occupancyChanged", "endocrineSignal.pulseChanged", "endocrineSignal.feedbackTriggered", "endocrineSignal.desensitized", "endocrineSignal.cleared", "endocrineSignal.rebalanced", "endocrineSignal.commandRejected", "endocrineSignal.reset"],
+      "methods": ["registerProfile(definition)", "registerSource(definition)", "registerTarget(definition)", "recordSecretion(fact)", "recordTransport(fact)", "advance(ticks)", "applyFeedback(fact)", "setSensitivity(command)", "clear(command)", "rebalance(command)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned endocrine-signal-regulation snapshot", "signal, source, target, receptor, transport, and feedback descriptors", "pool, occupancy, pulse, response-window, sensitivity, and clearance descriptors", "axis-balance, desensitization, recovery, and rejection summaries"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable profile, source, target, secretion, transport, feedback, sensitivity, clearance, and rebalance IDs", "authored fictional signaling rules", "explicit secretion, transfer, receptor, environment, and intervention observations"],
+      "expectedCompositions": ["gene-regulatory-network-domain-kit", "circadian-entrainment-domain-kit", "behavioral-conditioning-domain-kit", "habitat-atmosphere-balance-domain-kit"],
+      "plausibleUses": ["rebalance a migrating sky-whale colony's beacon hormones without controlling individual behavior", "restore pulsing growth signals across a sentient orchard before its receptors desensitize"],
+      "experimentProof": "A seeded Signal Orchard route must replay identical secretion, transport, feedback, sensitivity, clearance, rebalance, and fixed-tick facts into the same pools, occupancy, pulses, response windows, desensitization, recovery, rejections, and digest across sky-whale and sentient-orchard profiles.",
+      "idempotencyRule": "Secretion, transport, feedback, sensitivity, clearance, and rebalance IDs commit once, sources and targets resolve in stable order, and signal quantity is conserved across pools, transfers, binding, clearance, and explicit losses.",
+      "duplicateAndMergeRisk": "Generic pressure owns scalar meters and circadian entrainment owns biological phase. Live inventory has no reusable owner for hormone-like signal pools, receptor occupancy, feedback axes, pulse timing, desensitization, clearance, and recovery.",
+      "promotionPotential": "Experimental until multi-axis feedback, pulse and desensitization replay, signal conservation, snapshot migration, transport-observation parity, and organism plus ecosystem consumers pass."
+    },
+    {
+      "id": "bootstrap-kit-097",
+      "name": "soil-profile-development-domain-kit",
+      "purpose": "Advance authored soil profiles through parent-material inheritance, horizon formation, organic incorporation, eluviation, illuviation, supplied mixing observations, boundary migration, disturbance, truncation, and profile maturity without terrain geometry or soil-moisture ownership.",
+      "coreMapping": {
+        "configures": ["core-simulation-kit", "core-data-kit"],
+        "composesWith": ["core-world-domain", "core-spatial-kit", "core-diagnostics-kit"],
+        "nonDuplicatedMeaning": "Core World owns cells and landform-feature descriptors, agriculture owns farm operations, and nutrient cycling owns nutrient pools; this domain owns layered soil-horizon identity, material translocation, boundary migration, disturbance history, and profile-development meaning."
+      },
+      "classification": "world-state-domain",
+      "ownership": ["authored parent-material, horizon, transfer, disturbance, and maturity profiles", "soil-profile and horizon-stack identity", "horizon thickness-band and boundary-order state", "organic incorporation, eluviation, illuviation, and mixing ledger", "disturbance, burial, truncation, and recovery history", "initial, differentiating, mature, disturbed, truncated, buried, reworking, and stabilized classifications"],
+      "exclusions": ["terrain mesh and heightfield generation", "erosion and sediment transport", "soil moisture and groundwater", "nutrient-pool mass balance", "agriculture plots and crop growth", "granular particle simulation", "renderer strata", "real soil classification advice"],
+      "actions": ["register soil profile", "register land unit", "record parent-material fact", "record transfer observation", "advance profile", "record mixing fact", "disturb or bury profile", "truncate profile", "stabilize profile", "reset development"],
+      "resourcesAndState": ["soilProfileDevelopment.profiles", "soilProfileDevelopment.landUnits", "soilProfileDevelopment.horizons", "soilProfileDevelopment.transferLedger", "soilProfileDevelopment.disturbanceLedger", "soilProfileDevelopment.tick"],
+      "events": ["soilProfile.parentMaterialRecorded", "soilProfile.horizonFormed", "soilProfile.boundaryMoved", "soilProfile.materialTransferred", "soilProfile.mixed", "soilProfile.disturbed", "soilProfile.truncated", "soilProfile.stabilized", "soilProfile.commandRejected", "soilProfile.reset"],
+      "methods": ["registerProfile(definition)", "registerLandUnit(definition)", "recordParentMaterial(fact)", "recordTransfer(fact)", "advance(ticks)", "recordMixing(fact)", "disturb(command)", "truncate(command)", "stabilize(command)", "getHorizonDescriptors()", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned soil-profile-development snapshot", "land-unit, parent-material, horizon, transfer, and disturbance descriptors", "boundary, thickness-band, incorporation, eluviation, illuviation, and mixing descriptors", "maturity, truncation, burial, stabilization, and profile-balance summaries"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable profile, land-unit, parent-material, transfer, mixing, disturbance, truncation, and stabilization IDs", "authored fictional horizon-development rules", "explicit climate, organic-input, transfer, mixing, erosion, deposition, and disturbance observations"],
+      "expectedCompositions": ["soil-nutrient-cycle-domain-kit", "organic-decomposition-domain-kit", "watershed-runoff-domain-kit", "archaeological-stratigraphy-domain-kit"],
+      "plausibleUses": ["read buried soil horizons to restore a vanished orchard's growing ground", "stabilize alien land units whose living horizons invert after each dust storm"],
+      "experimentProof": "A seeded Buried Garden route must replay identical parent-material, transfer, mixing, disturbance, truncation, stabilization, and fixed-tick facts into the same horizon order, boundaries, material lineage, maturity, rejections, and digest across vanished-orchard and alien-soil profiles.",
+      "idempotencyRule": "Parent-material, transfer, mixing, disturbance, truncation, and stabilization IDs commit once, horizons resolve in stable depth order, and authored material quantities are conserved across horizon transfers and explicit losses.",
+      "duplicateAndMergeRisk": "Agriculture owns farm operations, nutrient cycling owns nutrient pools, and terrain erosion owns surface deltas. Live inventory has no reusable owner for soil-horizon stacks, eluviation and illuviation lineage, boundary migration, disturbance, truncation, and profile maturity.",
+      "promotionPotential": "Hold until multi-horizon transfer, disturbance and recovery replay, material conservation, snapshot migration, world-cell adapter parity, and ecological plus archaeological consumers pass."
+    },
+    {
+      "id": "bootstrap-kit-098",
+      "name": "lithospheric-boundary-cycle-domain-kit",
+      "purpose": "Advance authored plate-like regions and their boundaries through supplied relative-motion observations into convergence, divergence, transform, rifting, collision, subduction, crust creation and recycling budgets, regime transitions, and tectonic-activity descriptors without solving geophysics or terrain.",
+      "coreMapping": {
+        "configures": ["core-simulation-kit", "core-data-kit"],
+        "composesWith": ["core-world-domain", "core-spatial-kit", "core-physics-kit"],
+        "nonDuplicatedMeaning": "Core World owns regions and landform-feature handoffs, Core Physics owns provider observations, and seismic and volcanic domains own discrete events; this domain owns plate adjacency, boundary regimes, crust budgets, convergence and divergence history, subduction, collision, rifting, and long-cycle tectonic meaning."
+      },
+      "classification": "world-state-domain",
+      "ownership": ["authored plate, boundary, crust, motion, and regime profiles", "plate-region adjacency and boundary identity", "relative-motion observation history", "convergence, divergence, transform, rift, collision, and subduction state", "crust creation, accretion, consumption, and recycling ledger", "stable, convergent, divergent, transform, rifting, colliding, subducting, reorganizing, and dormant classifications"],
+      "exclusions": ["stress-field and mantle-flow solving", "seismic rupture and aftershocks", "volcanic eruptions", "terrain or landform geometry", "physics-provider integration", "weather and ocean state", "renderer maps", "real tectonic prediction"],
+      "actions": ["register boundary profile", "register plate region", "register boundary", "record relative-motion observation", "advance boundary cycle", "create or recycle crust", "transition regime", "reorganize boundary", "retire boundary", "reset cycle"],
+      "resourcesAndState": ["lithosphericBoundaryCycle.profiles", "lithosphericBoundaryCycle.plates", "lithosphericBoundaryCycle.boundaries", "lithosphericBoundaryCycle.motionLedger", "lithosphericBoundaryCycle.crustLedger", "lithosphericBoundaryCycle.tick"],
+      "events": ["lithosphere.motionRecorded", "lithosphere.regimeChanged", "lithosphere.riftOpened", "lithosphere.collisionStarted", "lithosphere.subductionChanged", "lithosphere.crustCreated", "lithosphere.crustRecycled", "lithosphere.boundaryReorganized", "lithosphere.commandRejected", "lithosphere.reset"],
+      "methods": ["registerProfile(definition)", "registerPlate(definition)", "registerBoundary(definition)", "recordMotion(fact)", "advance(ticks)", "updateCrust(command)", "transitionRegime(command)", "reorganize(command)", "retire(command)", "getWorldFeatureDescriptors()", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned lithospheric-boundary-cycle snapshot", "plate, boundary, crust, motion, and regime descriptors", "convergence, divergence, transform, rift, collision, and subduction descriptors", "crust-budget, activity, reorganization, retirement, and world-feature-intent summaries"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable profile, plate, boundary, motion, crust, transition, reorganization, and retirement IDs", "authored fictional tectonic-cycle rules", "explicit relative-motion, thickness, buoyancy-band, pressure, temperature, and event observations"],
+      "expectedCompositions": ["seismic-event-sequence-domain-kit", "volcanic-eruption-sequence-domain-kit", "material-phase-transition-domain-kit", "navigation-knowledge-domain-kit"],
+      "plausibleUses": ["keep a drifting archipelago connected while its boundary changes from rift to transform motion", "harvest newly created crust on a ringworld before an authored subduction cycle consumes it"],
+      "experimentProof": "A seeded Driftforge route must replay identical motion, crust, regime-transition, reorganization, retirement, and fixed-tick facts into the same plate adjacency, boundary states, crust budgets, activity descriptors, rejections, and digest across archipelago and ringworld profiles.",
+      "idempotencyRule": "Motion, crust, transition, reorganization, and retirement IDs commit once, plates and boundaries resolve in stable ID order, and crust quantities are conserved across creation, accretion, consumption, recycling, and explicit losses.",
+      "duplicateAndMergeRisk": "Seismic sequences own rupture events, volcanic sequences own eruption state, and Core World owns landform features. Live inventory has no reusable owner for plate adjacency, boundary-regime transitions, relative-motion history, crust creation and recycling budgets, subduction, collision, and rifting.",
+      "promotionPotential": "Experimental until multi-boundary junctions, regime and crust-budget replay, conservation, snapshot migration, world-feature handoff, and exploration plus infrastructure consumers pass."
+    },
+    {
+      "id": "bootstrap-kit-099",
+      "name": "stellar-evolution-domain-kit",
+      "purpose": "Advance authored star-like subjects through fuel-reservoir use, core and envelope stages, activity bands, expansion or contraction intents, mass-transfer observations, instability, terminal transitions, and remnant classifications without orbital, nuclear, radiation, or rendering ownership.",
+      "coreMapping": {
+        "configures": ["core-simulation-kit", "core-data-kit"],
+        "composesWith": ["core-world-domain", "core-spatial-kit", "core-graphics-kit"],
+        "nonDuplicatedMeaning": "Core owns world identity and renderer-neutral descriptors while orbital domains own maneuver windows and visibility owns observation opportunities; this domain owns authored stellar fuel reservoirs, lifecycle stages, core-envelope activity, instability, terminal transitions, and remnant meaning."
+      },
+      "classification": "celestial-process-domain",
+      "ownership": ["authored stellar, fuel, stage, activity, transfer, and remnant profiles", "star-like subject identity and lifecycle stage", "fuel-reservoir and core-envelope state", "activity, expansion, contraction, and instability history", "supplied mass-transfer and terminal-transition ledger", "forming, stable, evolving, expanded, contracted, unstable, shedding, terminal, remnant, and failed classifications"],
+      "exclusions": ["nuclear reaction and real stellar physics", "orbital integration and gravity", "radiation fields and dose", "celestial visibility opportunities", "weather and planetary climate", "renderer suns and skyboxes", "real astronomical forecasting", "wall-clock time"],
+      "actions": ["register stellar profile", "register star", "record fuel fact", "record mass-transfer observation", "advance evolution", "trigger activity fact", "stabilize or destabilize star", "resolve terminal transition", "classify remnant", "reset evolution"],
+      "resourcesAndState": ["stellarEvolution.profiles", "stellarEvolution.stars", "stellarEvolution.fuelReservoirs", "stellarEvolution.stageLedger", "stellarEvolution.transferLedger", "stellarEvolution.tick"],
+      "events": ["stellarEvolution.fuelRecorded", "stellarEvolution.stageChanged", "stellarEvolution.activityChanged", "stellarEvolution.massTransferred", "stellarEvolution.instabilityChanged", "stellarEvolution.materialShed", "stellarEvolution.terminalResolved", "stellarEvolution.remnantClassified", "stellarEvolution.commandRejected", "stellarEvolution.reset"],
+      "methods": ["registerProfile(definition)", "registerStar(definition)", "recordFuel(fact)", "recordMassTransfer(fact)", "advance(ticks)", "applyActivity(fact)", "setStability(command)", "resolveTerminal(command)", "classifyRemnant(command)", "getRenderDescriptors()", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned stellar-evolution snapshot", "star, fuel, core, envelope, stage, activity, and transfer descriptors", "expansion, contraction, instability, shedding, terminal, and remnant descriptors", "fuel-balance, lifecycle, visibility-handoff, and render-intent summaries"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable profile, star, fuel, transfer, activity, stability, terminal, and remnant IDs", "authored fictional stellar-evolution rules", "explicit fuel, mass, activity, environment, transfer, and intervention observations"],
+      "expectedCompositions": ["celestial-event-visibility-domain-kit", "orbital-transfer-window-domain-kit", "thermal-energy-network-domain-kit", "stable-isotope-fractionation-domain-kit"],
+      "plausibleUses": ["salvage observatories around a dying lantern star before its last stable stage closes", "tend a pocket constellation by redistributing fictional fuel between linked star gardens"],
+      "experimentProof": "A seeded Last Light Observatory route must replay identical fuel, transfer, activity, stability, terminal, remnant, and fixed-tick facts into the same stages, reservoirs, instability, shedding, outcomes, rejections, and digest across lantern-star and star-garden profiles.",
+      "idempotencyRule": "Fuel, transfer, activity, stability, terminal, and remnant IDs commit once, stars resolve in stable order, and authored fuel and transferred mass remain conserved across reservoirs, shedding, remnants, and explicit losses.",
+      "duplicateAndMergeRisk": "Orbital transfer owns maneuver opportunities and celestial visibility owns observation windows. Live inventory has no reusable owner for authored star lifecycle stages, fuel reservoirs, core-envelope activity, instability, terminal transitions, and remnant classification.",
+      "promotionPotential": "Hold until multi-star transfer, lifecycle and terminal replay, fuel conservation, snapshot migration, visibility and render handoffs, and observatory plus world-simulation consumers pass."
+    },
+    {
+      "id": "bootstrap-kit-100",
+      "name": "error-correction-code-domain-kit",
+      "purpose": "Resolve authored encoded blocks from explicit received-symbol and corruption observations into parity checks, erasures, syndromes, correction attempts, bounded recovery, decoded payload references, confidence, and terminal integrity without owning transport, cryptography, compression, or model output decoding.",
+      "coreMapping": {
+        "configures": ["core-simulation-kit", "core-data-kit"],
+        "composesWith": ["core-network-kit", "core-diagnostics-kit", "core-policy-kit"],
+        "nonDuplicatedMeaning": "Core Data owns schemas, digests, packages, and migrations while Core Network owns transport; this domain owns authored error-correction code profiles, parity and syndrome state, erasure and corruption observations, deterministic correction attempts, recovery confidence, and block-integrity meaning."
+      },
+      "classification": "information-integrity-domain",
+      "ownership": ["authored code, block, symbol, parity, and recovery profiles", "encoded-block and received-symbol state", "erasure, corruption, parity-check, and syndrome ledger", "correction-attempt and bounded-recovery state", "decoded payload references and confidence bands", "pending, checking, clean, degraded, correctable, corrected, ambiguous, exhausted, and failed classifications"],
+      "exclusions": ["byte transport and network sessions", "encryption, signatures, and trust", "compression and asset decoding", "schema validation and canonical digests", "model-output parsing", "payload rendering", "real communications guarantees", "unbounded brute-force search"],
+      "actions": ["register code profile", "register encoded block", "record received symbol", "record corruption observation", "evaluate parity", "mark erasure", "attempt correction", "accept decoded reference", "exhaust block", "reset correction"],
+      "resourcesAndState": ["errorCorrectionCode.profiles", "errorCorrectionCode.blocks", "errorCorrectionCode.symbols", "errorCorrectionCode.syndromeLedger", "errorCorrectionCode.recoveryLedger", "errorCorrectionCode.tick"],
+      "events": ["errorCorrection.symbolRecorded", "errorCorrection.corruptionRecorded", "errorCorrection.parityEvaluated", "errorCorrection.erasureMarked", "errorCorrection.syndromeChanged", "errorCorrection.correctionAttempted", "errorCorrection.blockCorrected", "errorCorrection.blockFailed", "errorCorrection.commandRejected", "errorCorrection.reset"],
+      "methods": ["registerProfile(definition)", "registerBlock(definition)", "recordSymbol(fact)", "recordCorruption(fact)", "evaluateParity(command)", "markErasure(command)", "attemptCorrection(command)", "acceptDecoded(command)", "exhaust(command)", "getIntegrityDescriptors()", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned error-correction-code snapshot", "profile, block, symbol, parity, corruption, and erasure descriptors", "syndrome, correction-attempt, recovery-budget, confidence, and decoded-reference descriptors", "integrity, ambiguity, exhaustion, failure, and recovery summaries"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable profile, block, symbol, corruption, parity, erasure, correction, acceptance, and exhaustion IDs", "authored fictional finite-code rules", "explicit received-symbol, loss, corruption, ordering, and recovery-budget observations"],
+      "expectedCompositions": ["acoustic-signal-domain-kit", "stream-channel-kit", "instrument-calibration-domain-kit", "navigation-knowledge-domain-kit"],
+      "plausibleUses": ["recover a ghost relay's navigation blocks from erasures before its correction budget is exhausted", "reconstruct a shattered archive map whose parity runes reveal ambiguous symbol swaps"],
+      "experimentProof": "A seeded Ghost Signal route must replay identical received symbols, corruptions, erasures, parity checks, correction attempts, acceptance, exhaustion, and fixed ticks into the same syndromes, corrected blocks, confidence, failures, rejections, and digest across relay-code and rune-code profiles.",
+      "idempotencyRule": "Symbol, corruption, parity, erasure, correction, acceptance, and exhaustion IDs commit once, blocks and symbols resolve in stable index order, and correction attempts never exceed the authored recovery budget.",
+      "duplicateAndMergeRisk": "Core Data owns digests and schemas, Core Network owns transport, and model-output decoders parse inference responses. Live inventory has no reusable owner for parity checks, syndrome state, erasures, bounded correction attempts, decoded payload references, and recovery confidence.",
+      "promotionPotential": "Experimental until multiple finite-code profiles, erasure and corruption replay, recovery-budget bounds, snapshot migration, transport-observation parity, and communications plus archival consumers pass."
     }
   ],
   "rejectedCandidates": [
@@ -2567,6 +2817,36 @@
       "name": "cloud-microphysics-domain-kit",
       "rejectionClass": "duplicate-existing-kit",
       "reason": "Existing atmosphere and cloud families already own cloud, humidity, precipitation, and visibility descriptors, while accepted bulk phase, capillary, and aerosol boundaries own adjacent condensation and suspended-particle state. The proposal blurred weather generation with those owners."
+    },
+    {
+      "name": "thermoelectric-transduction-domain-kit",
+      "rejectionClass": "duplicate-catalog-candidate",
+      "reason": "Accepted thermal-energy-network, semiconductor-carrier, and power-distribution contracts already own heat transfer, carrier populations, and electrical service. A thermoelectric wrapper did not isolate durable state beyond their explicit adapter-backed composition."
+    },
+    {
+      "name": "metamorphic-rock-transformation-domain-kit",
+      "rejectionClass": "duplicate-catalog-candidate",
+      "reason": "Accepted material-phase-transition, crystal-nucleation-growth, plastic-deformation, and thermal-energy contracts already own phase, crystal, strain, and heat state. The proposed rock boundary was an authored geology composition rather than a separate reusable owner."
+    },
+    {
+      "name": "neural-plasticity-domain-kit",
+      "rejectionClass": "duplicate-catalog-candidate",
+      "reason": "Accepted behavioral-conditioning-domain-kit already owns cue-action-outcome acquisition, reinforcement, extinction, generalization, and discrimination, while Core Agent owns observations and decision cycles. Neural naming did not establish a distinct reusable state surface."
+    },
+    {
+      "name": "soil-erosion-profile-domain-kit",
+      "rejectionClass": "duplicate-existing-kit",
+      "reason": "The implemented terrain-erosion-solver-domain-kit already emits erosion, weathering, roughness, sediment, and deposition deltas, while the documented sediment-flow boundary owns movement. Soil profile development was accepted only after excluding erosion and sediment ownership."
+    },
+    {
+      "name": "planetary-climate-cycle-domain-kit",
+      "rejectionClass": "vague-or-blurred-scope",
+      "reason": "The proposal blurred existing atmosphere and weather descriptors with accepted thermal, carbon, cryosphere, aerosol, salinity, ocean-oxygen, and phenology owners. It remains an experiment composition until a narrower state owner emerges."
+    },
+    {
+      "name": "digital-logic-circuit-domain-kit",
+      "rejectionClass": "duplicate-catalog-candidate",
+      "reason": "Accepted semiconductor-carrier and power-distribution contracts already own carrier and service state, while Core Simulation owns deterministic resolution. The proposed circuit graph bundled device composition, authored puzzle logic, and electrical solving without a distinct durable owner."
     }
   ]
 }

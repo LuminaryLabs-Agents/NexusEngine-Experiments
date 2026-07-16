@@ -19,4 +19,4 @@ Build a durable staged production pipeline that bootstraps 100 reusable ProtoKit
 
 ## Current Gate
 
-Perpetual-state migration is complete and bootstrap Phase B accepted `catalog-batch-001-090`. The next bounded unit is contract-only `catalog-batch-091-100`; implementation remains blocked until all 100 bootstrap definitions pass the natural-language and duplication gates.
+Perpetual-state migration is complete and bootstrap Phase B accepted all 100 catalog contracts. Bootstrap Phase C is active; the next bounded unit is `implementation-batch-001-010` in NexusEngine-ProtoKits, with deterministic behavior, compatible exports, natural-language contracts, existing-harness proof, and post-code domain audits required before any kit counts as created.
