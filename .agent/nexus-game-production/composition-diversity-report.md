@@ -2,11 +2,11 @@
 
 Status: catalog-only; experiment gate remains blocked
 Accepted production experiment signatures: 0 of 50 bootstrap experiments
-Accepted bootstrap kit contracts: 20 of 100
+Accepted bootstrap kit contracts: 30 of 100
 
 ## Catalog Composition Pressure
 
-The first twenty definitions are not route shells. They support at least ten mechanically distinct future seeded proof clusters:
+The first thirty definitions are not route shells. They support at least sixteen mechanically distinct future seeded proof clusters:
 
 - Quarantine Lantern: contagion + triage + rumor + navigation knowledge.
 - Rewilding Basin: ecosystem population + habitat suitability + territory influence.
@@ -18,6 +18,12 @@ The first twenty definitions are not route shells. They support at least ten mec
 - Pollinator Passage: habitat corridor + pollination network + habitat suitability + ecosystem population.
 - Crown Ledger: lineage succession + governance resolution + negotiation commitments + rumor propagation.
 - Broken Tongues: language comprehension + negotiation commitments + rumor propagation + navigation knowledge.
+- Delta Under Siege: flood inundation + structural support + rescue triage + navigation knowledge.
+- Seed Ark: nutrient cycling + genetic diversity + seed dispersal + habitat suitability.
+- Deepwell Accord: aquifer balance + potable-water service + contamination + governance.
+- Frostline Habitat: thermal energy + habitat atmosphere + power distribution + collective resolve.
+- Faultline Relay: seismic event sequence + structural support + rescue triage + navigation knowledge.
+- Skyhook Rescue: orbital transfer windows + power distribution + supply-chain fulfillment + thermal energy.
 
 These are proof targets, not accepted experiment records. Seeds, candidate draw order, rejections, kit signatures, routes, and playable validation do not exist yet and therefore do not count.
 
@@ -36,5 +42,5 @@ Every accepted experiment must record epoch, lifecycle status, seed, full candid
 
 - Exact duplicate production signatures: 0 because no production signatures are accepted.
 - Near-duplicate production signatures: 0 because no production signatures are accepted.
-- Catalog boundary duplication: 0 accepted; twelve candidates were rejected before acceptance across the first two batches.
+- Catalog boundary duplication: 0 accepted; eighteen candidates were rejected before acceptance across the first three batches.
 - Diversity claim: contract pressure only; no playable diversity claim yet.

@@ -1,7 +1,7 @@
 # Core Domain Coverage Report
 
 Status: bootstrap Phase B catalog in progress
-Accepted catalog definitions: 20 of 100 bootstrap definitions
+Accepted catalog definitions: 30 of 100 bootstrap definitions
 Implemented production kits: 0
 Playable production experiments: 0
 
@@ -33,6 +33,16 @@ Core is authoritative. A new kit must name the Core domains it configures or com
 | `lineage-succession-domain-kit` | data + policy + agent | descent, inherited eligibility, precedence, and succession | pass |
 | `governance-resolution-domain-kit` | data + policy + simulation + agent | proposals, quorum, ballots, ratification, and enactment | pass |
 | `language-comprehension-domain-kit` | data + agent + policy + optional ML observations | proficiency, mutual intelligibility, semantic comprehension, and learning | pass |
+| `flood-inundation-domain-kit` | simulation + data + world + spatial + physics observations | water balance, inundation, overtopping, drainage, and recession | pass |
+| `soil-nutrient-cycle-domain-kit` | simulation + data + world | nutrient pools, transformations, transfers, uptake, return, and recovery | pass |
+| `genetic-diversity-domain-kit` | data + simulation + agent identities | marker frequencies, contributions, diversity, relatedness, and cohort inheritance | pass |
+| `seed-dispersal-domain-kit` | data + simulation + agent + world + spatial | biological seed transport lineage, viability, dormancy, and readiness | pass |
+| `aquifer-balance-domain-kit` | simulation + data + world + spatial | groundwater storage, recharge, extraction, drawdown, and availability | pass |
+| `potable-water-service-domain-kit` | simulation + data + policy + world + scene | treatment, safety clearance, storage, allocation, outages, and delivery acceptance | pass |
+| `thermal-energy-network-domain-kit` | simulation + data + physics/world observations | multi-zone energy balance, transfer links, equilibrium, overheat, and freeze | pass |
+| `habitat-atmosphere-balance-domain-kit` | simulation + data + world + scene + agent facts | sealed-compartment gas balance, exchange, processing, and breathability | pass |
+| `seismic-event-sequence-domain-kit` | simulation + data + world + spatial + physics observations | fault stress, rupture order, regional intensity, aftershocks, and quiet recovery | pass |
+| `orbital-transfer-window-domain-kit` | data + simulation + motion/physics/spatial observations | maneuver opportunities, reservations, tolerance, and arrival-window outcomes | pass |
 
 No definition claims Core state primitives, provider implementations, renderer ownership, raw input, browser lifecycle, or game-specific content.
 
@@ -50,6 +60,12 @@ No definition claims Core state primitives, provider implementations, renderer o
 - `utility-network-domain-kit`: blurred electricity, water, fuel, data, repair, and service semantics; split to power distribution.
 - `incident-priority-domain-kit`: Core RequestQueue priority plus rescue-triage severity ownership.
 - `signal-relay-domain-kit`: existing acoustic signal owner plus universal signal/relay declarations.
+- `soil-fertility-domain-kit`: existing agriculture soil, fertility, watering, growth, and harvest ownership; refined to nutrient-pool mass balance.
+- `atmosphere-weather-domain-kit`: existing atmosphere fog, sky, clouds, wind, precipitation, and visibility ownership; refined to sealed gas balance.
+- `flood-water-body-domain-kit`: existing water-body/profile declaration; refined to flood propagation and recession semantics.
+- `heat-pressure-domain-kit`: promoted resource/pressure scalar ownership; refined to a multi-zone thermal transfer network.
+- `orbital-trajectory-domain-kit`: Core Motion and Physics trajectory/provider ownership; refined to transfer-window coordination over observations.
+- `water-utility-domain-kit`: blurred aquifer, treatment, distribution, contamination, repair, and fluid physics; split to two explicit service boundaries.
 
 ## Baseline Risk Map
 
@@ -68,4 +84,4 @@ No definition claims Core state primitives, provider implementations, renderer o
 
 ## Exact Next Audit
 
-Audit bootstrap catalog definitions 021-030 against all 514 existing top-level folders, nested declarations, package exports, and the current Core map before acceptance.
+Audit bootstrap catalog definitions 031-040 against all 514 existing top-level folders, nested declarations, package exports, and the current Core map before acceptance.

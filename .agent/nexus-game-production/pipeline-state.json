@@ -58,7 +58,7 @@
       "refinementSlices": 0
     },
     "progress": {
-      "acceptedNewKits": 20,
+      "acceptedNewKits": 30,
       "implementedNewKits": 0,
       "playableNewExperiments": 0,
       "consolidatedNewGames": 0,
@@ -90,7 +90,7 @@
       "refinementSlices": 0
     },
     "progress": {
-      "acceptedNewKits": 20,
+      "acceptedNewKits": 30,
       "implementedNewKits": 0,
       "playableNewExperiments": 0,
       "consolidatedNewGames": 0,
@@ -98,10 +98,10 @@
     }
   },
   "catalogTotals": {
-    "acceptedDefinitionsLifetime": 20,
-    "acceptedDefinitionsBootstrap": 20,
-    "acceptedDefinitionsCurrentEpoch": 20,
-    "rejectedCandidatesLifetime": 12
+    "acceptedDefinitionsLifetime": 30,
+    "acceptedDefinitionsBootstrap": 30,
+    "acceptedDefinitionsCurrentEpoch": 30,
+    "rejectedCandidatesLifetime": 18
   },
   "assetTotals": {
     "kits": {
@@ -127,28 +127,28 @@
     }
   },
   "lastCatalogUnit": {
-    "packetId": "2026-07-15-bootstrap-catalog-011-020",
-    "scope": "catalog-batch-011-020",
+    "packetId": "2026-07-15-bootstrap-catalog-021-030",
+    "scope": "catalog-batch-021-030",
     "result": "Accepted 10 genuinely new natural-language kit contracts after six additional duplicate, Core-overlap, or blurred-scope rejections; no implementation was created."
   },
   "lastCreationUnit": null,
   "lastRefinementUnit": null,
   "lastCompletedUnit": {
-    "packetId": "2026-07-15-bootstrap-catalog-011-020",
-    "scope": "Bootstrap catalog batch 011-020",
-    "result": "Accepted 10 renderer-agnostic contracts across hazards, utilities, logistics, ecology, lineage, governance, and communication; rejected six adjacent overlaps or blurred scopes.",
-    "validation": "passed: Phase A drift guard, production invariants, JSON parsing, folder and nested-catalog collision checks, Playwright reader/reviewer interaction, screenshot comparison, zero console errors, and diff checks",
+    "packetId": "2026-07-15-bootstrap-catalog-021-030",
+    "scope": "Bootstrap catalog batch 021-030",
+    "result": "Accepted 10 renderer-agnostic contracts across hydrology, nutrient and genetic ecology, thermal and atmosphere operations, seismic hazards, and orbital coordination; rejected six adjacent overlaps or blurred scopes.",
+    "validation": "passed: Phase A drift guard, production invariants, JSON parsing, folder and package-export collision checks, Playwright reader/reviewer interaction, screenshot comparison, zero console errors, and diff checks",
     "commits": {
       "protokitsStartAndFinal": "ffdcc962d3c984864a2d78e9276879adf04250eb",
-      "experimentsStart": "abf797a5c2d6cb949fc8441a7edca9c7a080a40c",
-      "experimentsProductionUnit": "e024ef0027b4e272efa6a66a05edf04538443e6a"
+      "experimentsStart": "f39ecda720cd27664395d925307466e44cf6155c",
+      "experimentsProductionUnit": "pending"
     },
-    "publication": "production commit published to origin/main; publication record commit intentionally not self-hashed"
+    "publication": "pending"
   },
   "exactNextUnit": {
     "phase": "B-catalog",
     "epoch": 0,
-    "scope": "catalog-batch-021-030",
-    "goal": "Propose and audit bootstrap kit definitions 021-030 without implementing them."
+    "scope": "catalog-batch-031-040",
+    "goal": "Propose and audit bootstrap kit definitions 031-040 without implementing them."
   }
 }

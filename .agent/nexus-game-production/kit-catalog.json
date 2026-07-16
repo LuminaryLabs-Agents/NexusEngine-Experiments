@@ -4,13 +4,13 @@
   "bootstrapTarget": 100,
   "epochTarget": 10,
   "counts": {
-    "acceptedBootstrap": 20,
-    "acceptedCurrentEpoch": 20,
-    "acceptedLifetime": 20,
+    "acceptedBootstrap": 30,
+    "acceptedCurrentEpoch": 30,
+    "acceptedLifetime": 30,
     "implementedBootstrap": 0,
     "implementedCurrentEpoch": 0,
     "implementedLifetime": 0,
-    "rejectedLifetime": 12
+    "rejectedLifetime": 18
   },
   "status": "bootstrap-catalog-in-progress",
   "requiredFields": [
@@ -545,6 +545,256 @@
       "idempotencyRule": "Language, intelligibility, and proficiency facts upsert by stable revision; assessment and clarification command IDs apply once; mastery events emit only on threshold crossings.",
       "duplicateAndMergeRisk": "Dialogue kits own authored line flow, rumor propagation owns claim exposure, and MLNN owns inference requests. No implemented kit owns language/dialect proficiency, mutual intelligibility, semantic facet comprehension, and learning evidence.",
       "promotionPotential": "Hold until fictional dialect and code-language configurations, clarification, snapshot migration, deterministic replay, and inference-free operation pass."
+    },
+    {
+      "id": "bootstrap-kit-021",
+      "name": "flood-inundation-domain-kit",
+      "purpose": "Resolve deterministic water-volume arrival, cell inundation depth, barrier overtopping, drainage, recession, and dry-state transitions across an authored portable cell graph.",
+      "coreMapping": {
+        "configures": ["core-simulation-kit", "core-data-kit"],
+        "composesWith": ["core-world-domain", "core-spatial-kit", "core-physics-kit"],
+        "nonDuplicatedMeaning": "Core owns cells, volumes, observations, and deterministic resolution; this domain owns flood-specific water balance, inundation, overtopping, drainage, and recession meaning."
+      },
+      "classification": "feature-domain",
+      "ownership": ["authored flood-cell and link definitions", "portable water-volume ledger", "inundation depth and band per cell", "barrier and overtopping state", "drainage and recession state", "ordered flood transition history"],
+      "exclusions": ["wave or water-surface rendering", "fluid or hydrodynamic backend", "terrain erosion", "rainfall generation", "physics contacts", "damage outcomes", "evacuation fiction", "browser timing"],
+      "actions": ["register flood graph", "record inflow or outflow", "set barrier state", "apply drainage observation", "advance fixed tick", "inspect inundation", "load snapshot", "reset flood"],
+      "resourcesAndState": ["floodInundation.graphs", "floodInundation.cells", "floodInundation.flows", "floodInundation.barriers", "floodInundation.tick"],
+      "events": ["flood.inflowRecorded", "flood.cellInundated", "flood.barrierOvertopped", "flood.depthBandChanged", "flood.cellDrained", "flood.commandRejected", "flood.reset"],
+      "methods": ["registerGraph(definition)", "recordFlow(fact)", "setBarrier(command)", "applyDrainage(fact)", "advance(ticks)", "getCell(cellId)", "getSnapshot()", "loadSnapshot(snapshot)", "reset()"],
+      "snapshotsAndDescriptors": ["versioned flood snapshot", "cell inundation descriptors", "barrier and overtopping descriptors", "flow and recession summary descriptors"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "portable world cell IDs", "explicit inflow, barrier, and drainage facts", "optional normalized terrain-height observations"],
+      "expectedCompositions": ["structural-support-network-domain-kit", "rescue-triage-domain-kit", "environmental-contamination-domain-kit", "navigation-knowledge-domain-kit"],
+      "plausibleUses": ["manage levees and evacuation corridors through a rising river delta", "drain a breached underground habitat without simulating rendered fluid"],
+      "experimentProof": "A seeded Delta Under Siege route must replay identical inflows, barrier edits, and drainage facts into the same inundation depths, overtopping order, recession history, and rejected commands.",
+      "idempotencyRule": "Flow and barrier command IDs apply once, graph registration is stable by ID, and each fixed tick emits a depth-band or dry transition only when resolved state changes.",
+      "duplicateAndMergeRisk": "water-data-kit declares water bodies and water-physics-kit owns buoyancy/surface sampling, while terrain erosion owns material response. None owns portable flood-volume propagation, overtopping, inundation lifecycle, and recession.",
+      "promotionPotential": "Experimental until mass balance, branching overflow, restore/replay, large-cell budgets, and two non-rendered flood configurations pass."
+    },
+    {
+      "id": "bootstrap-kit-022",
+      "name": "soil-nutrient-cycle-domain-kit",
+      "purpose": "Track authored nutrient pools, transformations, transfers, uptake, return, depletion, and recovery across portable land units without owning crop growth or farm operations.",
+      "coreMapping": {
+        "configures": ["core-simulation-kit", "core-data-kit"],
+        "composesWith": ["core-world-domain"],
+        "nonDuplicatedMeaning": "Core owns resources and deterministic ticks; this domain owns nutrient-pool mass balance and cycling semantics above portable land observations."
+      },
+      "classification": "feature-domain",
+      "ownership": ["land-unit nutrient pool definitions", "available, bound, and organic nutrient quantities", "authored transformation and transfer rules", "uptake and return facts", "depletion and recovery state", "nutrient balance history"],
+      "exclusions": ["crop definitions or growth", "farm plots and harvest", "watering", "weather generation", "terrain mesh changes", "contaminant hazards", "inventory balances", "renderer effects"],
+      "actions": ["register land unit", "set nutrient pool", "record uptake", "record return", "apply transfer observation", "advance cycle", "inspect limiting nutrient", "reset cycle"],
+      "resourcesAndState": ["soilNutrientCycle.landUnits", "soilNutrientCycle.pools", "soilNutrientCycle.transforms", "soilNutrientCycle.ledger", "soilNutrientCycle.tick"],
+      "events": ["soilNutrient.poolChanged", "soilNutrient.depleted", "soilNutrient.recovered", "soilNutrient.transferRecorded", "soilNutrient.limitChanged", "soilNutrient.commandRejected", "soilNutrient.reset"],
+      "methods": ["registerLandUnit(definition)", "setPool(fact)", "recordUptake(fact)", "recordReturn(fact)", "applyTransfer(fact)", "advanceCycle(ticks)", "getBalance(unitId)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned nutrient-cycle snapshot", "land-unit pool descriptors", "limiting-nutrient descriptors", "transfer and balance summary descriptors"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "portable land-unit IDs", "authored nutrient and transformation profiles", "explicit uptake, return, and transfer facts"],
+      "expectedCompositions": ["agriculture-domain-kit", "habitat-suitability-domain-kit", "ecosystem-population-cycle-domain-kit", "environmental-contamination-domain-kit"],
+      "plausibleUses": ["restore exhausted terraces through compost and crop rotation inputs", "rebalance alien soil before a colony seed bank can germinate"],
+      "experimentProof": "A seeded Seed Ark route must replay nutrient inputs, uptake, return, and transformations into identical pool balances, limiting factors, depletion, and recovery events across farm and wild-land configurations.",
+      "idempotencyRule": "Facts merge by stable command ID and revision, each cycle consumes a fact once, and reset plus the same authored profile and input order reproduces the same mass-balance digest.",
+      "duplicateAndMergeRisk": "agriculture-domain-kit owns plot fertility, watering, crop growth, and harvest; this boundary owns explicit nutrient pools and transfers across farm or wild land and must expose observations agriculture may consume rather than replace its soil API.",
+      "promotionPotential": "Hold until nutrient mass balance, agricultural and restoration consumers, snapshot migration, deterministic replay, and bounded-history scale proof pass."
+    },
+    {
+      "id": "bootstrap-kit-023",
+      "name": "genetic-diversity-domain-kit",
+      "purpose": "Maintain authored population trait-marker frequencies, parent contribution records, diversity measures, inbreeding risk, and deterministic cohort inheritance outcomes.",
+      "coreMapping": {
+        "configures": ["core-data-kit", "core-simulation-kit"],
+        "composesWith": ["core-agent-kit"],
+        "nonDuplicatedMeaning": "Core owns identities, ledgers, and deterministic random streams; this domain owns population-genetic diversity, contribution, and inheritance meaning."
+      },
+      "classification": "feature-domain",
+      "ownership": ["authored trait-marker definitions", "population marker frequencies", "parent or source contribution records", "diversity and relatedness measures", "inbreeding-risk policy", "seeded cohort inheritance summaries"],
+      "exclusions": ["real-world genetic inference", "individual appearance generation", "agent behavior", "lineage entitlements or succession", "reproduction animation", "population births and deaths", "medical claims", "UI"],
+      "actions": ["register marker profile", "register population", "record contribution", "resolve cohort inheritance", "merge or split population", "inspect diversity", "load snapshot", "reset genetics"],
+      "resourcesAndState": ["geneticDiversity.markers", "geneticDiversity.populations", "geneticDiversity.contributions", "geneticDiversity.outcomes", "geneticDiversity.revision"],
+      "events": ["genetics.contributionRecorded", "genetics.cohortResolved", "genetics.diversityChanged", "genetics.riskRaised", "genetics.populationMerged", "genetics.commandRejected", "genetics.reset"],
+      "methods": ["registerMarker(definition)", "registerPopulation(definition)", "recordContribution(fact)", "resolveCohort(command)", "mergePopulations(command)", "splitPopulation(command)", "getDiversity(populationId)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned genetic-diversity snapshot", "population marker-frequency descriptors", "diversity and relatedness descriptors", "cohort inheritance summary descriptors"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "core-data named deterministic stream", "stable population and contribution IDs", "authored fictional marker profiles"],
+      "expectedCompositions": ["ecosystem-population-cycle-domain-kit", "lineage-succession-domain-kit", "habitat-suitability-domain-kit", "contagion-transmission-domain-kit"],
+      "plausibleUses": ["preserve diversity while rebuilding an endangered herd", "manage fictional bloodline traits in a creature-breeding strategy game without owning succession rights"],
+      "experimentProof": "A seeded Seed Ark route must resolve the same source contributions into identical marker frequencies, diversity scores, risk transitions, and cohort summaries for wildlife and fantasy-creature datasets.",
+      "idempotencyRule": "Contribution and cohort command IDs commit once, population merges consume explicit source revisions, and the same seed and ordered facts reproduce identical frequencies and descriptors.",
+      "duplicateAndMergeRisk": "lineage-succession-domain-kit owns descent and inherited eligibility, while ecosystem population owns cohort counts and trophic cycles. Neither owns marker frequencies, relatedness, diversity measures, or cohort inheritance summaries.",
+      "promotionPotential": "Experimental until fictional-only policy, two unrelated datasets, deterministic cohort replay, snapshot migration, and numerical-stability budgets pass."
+    },
+    {
+      "id": "bootstrap-kit-024",
+      "name": "seed-dispersal-domain-kit",
+      "purpose": "Track authored biological seed release, carrier pickup, transport lineage, deposition, viability, dormancy, and germination-readiness facts across portable regions.",
+      "coreMapping": {
+        "configures": ["core-data-kit", "core-simulation-kit"],
+        "composesWith": ["core-agent-kit", "core-world-domain", "core-spatial-kit"],
+        "nonDuplicatedMeaning": "Core owns deterministic streams, agents, regions, and observations; this domain owns biological seed dispersal lineage and readiness meaning."
+      },
+      "classification": "feature-domain",
+      "ownership": ["authored biological seed profiles", "source release batches", "carrier pickup and release facts", "transport and deposition lineage", "viability and dormancy state", "germination-readiness observations"],
+      "exclusions": ["random-stream ownership", "plant growth", "pollination or fertilization", "crop inventory", "agent movement", "wind or water simulation", "terrain placement", "rendered vegetation"],
+      "actions": ["register seed profile", "release batch", "record pickup", "record deposition", "apply exposure fact", "advance dormancy", "evaluate readiness", "reset dispersal"],
+      "resourcesAndState": ["seedDispersal.profiles", "seedDispersal.batches", "seedDispersal.carriers", "seedDispersal.deposits", "seedDispersal.tick"],
+      "events": ["seedDispersal.batchReleased", "seedDispersal.pickedUp", "seedDispersal.deposited", "seedDispersal.viabilityChanged", "seedDispersal.ready", "seedDispersal.commandRejected", "seedDispersal.reset"],
+      "methods": ["registerProfile(definition)", "releaseBatch(command)", "recordPickup(fact)", "recordDeposition(fact)", "applyExposure(fact)", "advance(ticks)", "evaluateReadiness(depositId)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned dispersal snapshot", "batch and carrier lineage descriptors", "deposition descriptors", "viability, dormancy, and readiness descriptors"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable biological seed, carrier, and region IDs", "explicit transport and exposure observations", "optional core-data deterministic stream for authored viability variation"],
+      "expectedCompositions": ["pollination-network-domain-kit", "habitat-corridor-domain-kit", "soil-nutrient-cycle-domain-kit", "habitat-suitability-domain-kit"],
+      "plausibleUses": ["guide animal-carried seeds through a fragmented rewilding corridor", "recover a wind-scattered alien seed vault before dormancy expires"],
+      "experimentProof": "A seeded Seed Ark route must replay release, pickup, deposition, and exposure facts into identical lineage, viability, dormancy, and readiness outcomes for animal-carried and wind-observation configurations.",
+      "idempotencyRule": "Batch, pickup, and deposition command IDs commit once, exposure facts upsert by revision, and readiness emits only on a false-to-true transition.",
+      "duplicateAndMergeRisk": "generic-seed-kit owns random-stream state, pollination owns pollen transfer and fertilization, and agriculture owns planted crops and growth. None owns biological seed transport lineage, viability, dormancy, and deposition readiness.",
+      "promotionPotential": "Hold until two carrier modes, lineage replay, snapshot restore, bounded batch history, and downstream habitat or agriculture consumption pass."
+    },
+    {
+      "id": "bootstrap-kit-025",
+      "name": "aquifer-balance-domain-kit",
+      "purpose": "Resolve authored groundwater stores through recharge, extraction, transfer, drawdown, recovery, well availability, and intrusion-risk state without simulating subsurface fluid physics.",
+      "coreMapping": {
+        "configures": ["core-simulation-kit", "core-data-kit"],
+        "composesWith": ["core-world-domain", "core-spatial-kit"],
+        "nonDuplicatedMeaning": "Core owns resources, cells, and deterministic resolution; this domain owns groundwater storage, recharge, extraction, and availability semantics."
+      },
+      "classification": "feature-domain",
+      "ownership": ["authored aquifer and well definitions", "groundwater storage and head bands", "recharge and extraction ledger", "inter-aquifer transfer facts", "drawdown and recovery state", "well availability and intrusion-risk descriptors"],
+      "exclusions": ["subsurface fluid solver", "terrain generation", "surface-water rendering", "water chemistry or contamination", "pipe distribution", "weather generation", "pumping hardware simulation", "game-specific drought fiction"],
+      "actions": ["register aquifer", "register well", "record recharge", "request extraction", "record transfer", "advance balance", "inspect availability", "reset aquifer"],
+      "resourcesAndState": ["aquiferBalance.aquifers", "aquiferBalance.wells", "aquiferBalance.flows", "aquiferBalance.withdrawals", "aquiferBalance.tick"],
+      "events": ["aquifer.recharged", "aquifer.extracted", "aquifer.drawdownChanged", "aquifer.wellUnavailable", "aquifer.recovered", "aquifer.riskChanged", "aquifer.commandRejected", "aquifer.reset"],
+      "methods": ["registerAquifer(definition)", "registerWell(definition)", "recordRecharge(fact)", "extract(command)", "recordTransfer(fact)", "advance(ticks)", "getAvailability(id)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned aquifer snapshot", "storage and head-band descriptors", "well availability descriptors", "drawdown, recovery, and intrusion-risk summaries"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "portable aquifer, well, and region IDs", "explicit recharge and extraction facts", "authored storage and recovery profiles"],
+      "expectedCompositions": ["potable-water-service-domain-kit", "environmental-contamination-domain-kit", "governance-resolution-domain-kit", "soil-nutrient-cycle-domain-kit"],
+      "plausibleUses": ["ration a desert settlement's wells while seasonal recharge arrives", "balance lunar ice-lens extraction against habitat reserves"],
+      "experimentProof": "A seeded Deepwell Accord route must replay recharge, withdrawals, transfers, and governance-approved limits into identical drawdown, well availability, recovery, and risk transitions.",
+      "idempotencyRule": "Recharge, extraction, and transfer command IDs commit once, availability bands transition once per resolved change, and reset plus the same ordered facts reproduces exact storage balances.",
+      "duplicateAndMergeRisk": "water-data-kit declares surface water bodies and generic resource loops own scalar meters. Neither owns aquifer/well topology, recharge and withdrawal lineage, drawdown recovery, or well availability.",
+      "promotionPotential": "Experimental until balance conservation, multiple connected aquifers, restore/replay, scale proof, and two climate-independent configurations pass."
+    },
+    {
+      "id": "bootstrap-kit-026",
+      "name": "potable-water-service-domain-kit",
+      "purpose": "Coordinate authored raw-water intake, treatment milestones, safe storage, demand allocation, service loss, leak loss, and potable-delivery acceptance across a portable service graph.",
+      "coreMapping": {
+        "configures": ["core-simulation-kit", "core-data-kit", "core-policy-kit"],
+        "composesWith": ["core-world-domain", "core-scene-kit"],
+        "nonDuplicatedMeaning": "Core owns resources, policy checks, and scene identities; this domain owns potable-water treatment, safety clearance, allocation, and service lifecycle meaning."
+      },
+      "classification": "feature-domain",
+      "ownership": ["authored intake, treatment, storage, and demand nodes", "portable service links", "treatment batch milestones", "safe and unsafe storage state", "demand allocation and outage state", "leak loss and delivery acceptance ledger"],
+      "exclusions": ["fluid-pressure or pipe solver", "water chemistry analysis", "contaminant propagation", "aquifer storage", "pump electricity simulation", "repair work planning", "renderer plumbing", "consumer UI"],
+      "actions": ["register service graph", "record intake", "advance treatment milestone", "apply clearance fact", "allocate demand", "record leak", "accept delivery", "reset service"],
+      "resourcesAndState": ["potableWaterService.graphs", "potableWaterService.batches", "potableWaterService.storage", "potableWaterService.allocations", "potableWaterService.tick"],
+      "events": ["waterService.intakeRecorded", "waterService.batchTreated", "waterService.clearanceChanged", "waterService.demandAllocated", "waterService.outageChanged", "waterService.deliveryAccepted", "waterService.commandRejected", "waterService.reset"],
+      "methods": ["registerGraph(definition)", "recordIntake(fact)", "advanceTreatment(command)", "applyClearance(fact)", "allocate(command)", "recordLeak(fact)", "acceptDelivery(command)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned potable-service snapshot", "treatment batch descriptors", "storage safety descriptors", "demand allocation, leak, outage, and delivery descriptors"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable service-node and batch IDs", "explicit safety-clearance facts from contamination or host policy", "optional power-service observations"],
+      "expectedCompositions": ["aquifer-balance-domain-kit", "environmental-contamination-domain-kit", "power-distribution-domain-kit", "supply-chain-fulfillment-domain-kit"],
+      "plausibleUses": ["restore safe water service across blackout islands", "operate a sealed colony's treatment loop after a contaminated intake"],
+      "experimentProof": "A seeded Deepwell Accord route must replay intake, treatment, clearance, allocation, leak, and delivery commands into identical safe storage, outages, accepted deliveries, and rejections.",
+      "idempotencyRule": "Treatment and delivery commands advance each batch milestone once, allocation command IDs commit once, and repeated clearance facts at the same revision emit no duplicate service transition.",
+      "duplicateAndMergeRisk": "power-distribution owns electrical service and supply-chain fulfillment owns orders and shipments. Water data/physics kits own water descriptions and physical interaction. None owns potable treatment, clearance, storage, allocation, outage, and delivery acceptance.",
+      "promotionPotential": "Hold until contamination-fed and provider-free fixtures, allocation fairness, snapshot migration, replay, and two service-graph configurations pass."
+    },
+    {
+      "id": "bootstrap-kit-027",
+      "name": "thermal-energy-network-domain-kit",
+      "purpose": "Resolve authored thermal zones through heat capacity, source and sink energy, conductive links, losses, equilibrium bands, and deterministic overheat or freeze transitions.",
+      "coreMapping": {
+        "configures": ["core-simulation-kit", "core-data-kit"],
+        "composesWith": ["core-physics-kit", "core-world-domain"],
+        "nonDuplicatedMeaning": "Core owns scalar resources, observations, and deterministic ticks; this domain owns thermal energy balance and transfer-network meaning."
+      },
+      "classification": "feature-domain",
+      "ownership": ["authored thermal-zone definitions", "heat capacity and energy state", "source, sink, and conductive-link facts", "ambient loss policy", "equilibrium and temperature bands", "overheat, freeze, and recovery history"],
+      "exclusions": ["molecular or fluid simulation", "weather generation", "wildfire spread", "generic heat-pressure meters", "physics backend", "damage outcomes", "material shaders", "real-world engineering certification"],
+      "actions": ["register thermal network", "set source or sink", "record thermal observation", "set link state", "advance fixed tick", "inspect balance", "load snapshot", "reset thermal state"],
+      "resourcesAndState": ["thermalEnergy.networks", "thermalEnergy.zones", "thermalEnergy.sources", "thermalEnergy.links", "thermalEnergy.tick"],
+      "events": ["thermal.energyChanged", "thermal.bandChanged", "thermal.overheated", "thermal.frozen", "thermal.equilibriumReached", "thermal.recovered", "thermal.commandRejected", "thermal.reset"],
+      "methods": ["registerNetwork(definition)", "setSource(command)", "setSink(command)", "recordObservation(fact)", "setLink(command)", "advance(ticks)", "getBalance(zoneId)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned thermal-network snapshot", "zone temperature and energy descriptors", "source, sink, and link descriptors", "threshold and equilibrium summary descriptors"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "portable zone IDs", "authored capacities and transfer coefficients", "optional normalized ambient and contact observations"],
+      "expectedCompositions": ["power-distribution-domain-kit", "habitat-atmosphere-balance-domain-kit", "structural-support-network-domain-kit", "perishability-storage-domain-kit"],
+      "plausibleUses": ["balance reactor heat through a failing orbital station", "keep a frostline greenhouse above freezing during rolling power loss"],
+      "experimentProof": "A seeded Frostline Habitat route must replay source, link, ambient, and power-service facts into identical energy balances, threshold transitions, equilibrium events, and rejected commands.",
+      "idempotencyRule": "Source, sink, link, and observation command IDs apply once per revision, fixed ticks resolve in stable zone/link order, and threshold events emit only on band transitions.",
+      "duplicateAndMergeRisk": "generic-pressure-loop-kit can represent a heat scalar and Core Physics owns provider contracts, but neither owns multi-zone heat capacity, energy conservation, transfer links, equilibrium, or thermal recovery meaning.",
+      "promotionPotential": "Experimental until conservation tolerance, cyclic networks, snapshot/replay, large-zone budgets, and habitat plus industrial configurations pass."
+    },
+    {
+      "id": "bootstrap-kit-028",
+      "name": "habitat-atmosphere-balance-domain-kit",
+      "purpose": "Track authored sealed compartments through gas inventories, occupant demand, leaks, exchange links, scrubber and generator effects, and breathable-state transitions.",
+      "coreMapping": {
+        "configures": ["core-simulation-kit", "core-data-kit"],
+        "composesWith": ["core-world-domain", "core-scene-kit", "core-agent-kit"],
+        "nonDuplicatedMeaning": "Core owns resources, scene objects, agents, and deterministic resolution; this domain owns sealed-habitat gas balance and breathability meaning."
+      },
+      "classification": "feature-domain",
+      "ownership": ["authored compartment and gas-species definitions", "gas quantity and fraction state", "occupant demand facts", "leak and exchange-link state", "scrubber and generator effects", "breathable, warning, and unsafe classifications"],
+      "exclusions": ["sky, fog, cloud, wind, or precipitation descriptors", "fluid dynamics", "generic oxygen pressure meter", "agent health or damage", "power generation", "renderer particles", "audio alarms", "real-world life-support certification"],
+      "actions": ["register habitat", "set occupants", "record leak", "set exchange link", "apply processor effect", "advance fixed tick", "inspect breathability", "reset atmosphere"],
+      "resourcesAndState": ["habitatAtmosphere.habitats", "habitatAtmosphere.compartments", "habitatAtmosphere.gases", "habitatAtmosphere.links", "habitatAtmosphere.tick"],
+      "events": ["habitatAtmosphere.gasChanged", "habitatAtmosphere.leakChanged", "habitatAtmosphere.breathabilityChanged", "habitatAtmosphere.warning", "habitatAtmosphere.unsafe", "habitatAtmosphere.recovered", "habitatAtmosphere.commandRejected", "habitatAtmosphere.reset"],
+      "methods": ["registerHabitat(definition)", "setOccupants(fact)", "recordLeak(fact)", "setExchange(command)", "applyProcessorEffect(fact)", "advance(ticks)", "getBreathability(compartmentId)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned habitat-atmosphere snapshot", "compartment gas-composition descriptors", "leak, exchange, and processor descriptors", "breathability and reserve summaries"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable compartment, gas, and occupant-group IDs", "authored gas and breathability profiles", "explicit processor and leak facts"],
+      "expectedCompositions": ["thermal-energy-network-domain-kit", "power-distribution-domain-kit", "collective-resolve-domain-kit", "rescue-triage-domain-kit"],
+      "plausibleUses": ["seal and rebalance compartments after a station hull breach", "manage a deep-mine refuge's air scrubbers during an evacuation"],
+      "experimentProof": "A seeded Frostline Habitat route must replay occupants, leaks, exchange links, scrubber effects, and power observations into identical gas fractions, reserve estimates, safety transitions, and recovery.",
+      "idempotencyRule": "Leak, exchange, occupant, and processor facts upsert by stable revision, fixed ticks resolve compartments in stable order, and breathability events emit only when classification changes.",
+      "duplicateAndMergeRisk": "atmosphere-domain-service-kit owns fog, sky, clouds, wind, precipitation, and visibility descriptors; generic pressure owns scalar oxygen debt. Neither owns sealed-compartment gas inventories, exchange, processing, and breathability classification.",
+      "promotionPotential": "Hold until mass balance, multi-compartment exchange, snapshot migration, replay, and station plus terrestrial-refuge configurations pass."
+    },
+    {
+      "id": "bootstrap-kit-029",
+      "name": "seismic-event-sequence-domain-kit",
+      "purpose": "Advance authored fault segments through stress observations, rupture eligibility, deterministic event sequencing, intensity fields, aftershock scheduling, and quiet-state recovery.",
+      "coreMapping": {
+        "configures": ["core-simulation-kit", "core-data-kit"],
+        "composesWith": ["core-world-domain", "core-spatial-kit", "core-physics-kit"],
+        "nonDuplicatedMeaning": "Core owns timers, spatial facts, and physics observations; this domain owns seismic stress, rupture, intensity, aftershock, and recovery semantics."
+      },
+      "classification": "feature-domain",
+      "ownership": ["authored fault-segment graph", "stress and release state", "rupture eligibility and event sequence", "portable intensity observations by region", "aftershock schedule and decay", "quiet-state and event history"],
+      "exclusions": ["geophysical accuracy claims", "rigid-body shaking", "terrain deformation", "structure damage outcomes", "camera shake", "audio or particles", "evacuation logic", "wall-clock scheduling"],
+      "actions": ["register fault graph", "record stress observation", "trigger authored rupture", "advance sequence", "record release", "inspect intensity", "load snapshot", "reset seismic state"],
+      "resourcesAndState": ["seismicSequence.faults", "seismicSequence.stress", "seismicSequence.events", "seismicSequence.aftershocks", "seismicSequence.tick"],
+      "events": ["seismic.stressChanged", "seismic.ruptureStarted", "seismic.intensityChanged", "seismic.aftershockScheduled", "seismic.eventEnded", "seismic.quietRestored", "seismic.commandRejected", "seismic.reset"],
+      "methods": ["registerFaultGraph(definition)", "recordStress(fact)", "triggerRupture(command)", "advance(ticks)", "recordRelease(fact)", "getIntensity(regionId)", "getSnapshot()", "loadSnapshot(snapshot)", "reset()"],
+      "snapshotsAndDescriptors": ["versioned seismic-sequence snapshot", "fault stress and rupture descriptors", "regional intensity descriptors", "aftershock and quiet-state summary descriptors"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "core-data named deterministic stream for configured aftershock variation", "portable fault and region IDs", "optional normalized physics or terrain observations"],
+      "expectedCompositions": ["structural-support-network-domain-kit", "rescue-triage-domain-kit", "navigation-knowledge-domain-kit", "collective-resolve-domain-kit"],
+      "plausibleUses": ["stabilize a mountain relay through a main shock and aftershock window", "manage a subterranean city as connected fault segments rupture"],
+      "experimentProof": "A seeded Faultline Relay route must replay stress and rupture commands into identical fault order, regional intensity bands, aftershock schedule, quiet-state recovery, and rejections without physics or renderer ownership.",
+      "idempotencyRule": "Stress and rupture command IDs commit once, aftershocks derive from a named stream and stable event ID, and each event or quiet transition emits once at its resolved tick.",
+      "duplicateAndMergeRisk": "Core Physics owns normalized contacts and camera-shake-kit owns presentation feedback, while structural support owns failure outcomes. No existing kit owns a fault stress ledger, rupture sequence, regional intensity, and aftershock lifecycle.",
+      "promotionPotential": "Experimental until deterministic mainshock/aftershock replay, snapshot restore, multi-fault scale proof, and two authored geology configurations pass."
+    },
+    {
+      "id": "bootstrap-kit-030",
+      "name": "orbital-transfer-window-domain-kit",
+      "purpose": "Evaluate authored celestial-body and vehicle-state observations into deterministic maneuver opportunities, transfer cost and duration estimates, intercept tolerance, reservation, and arrival-window outcomes.",
+      "coreMapping": {
+        "configures": ["core-data-kit", "core-simulation-kit"],
+        "composesWith": ["core-motion-kit", "core-physics-kit", "core-spatial-kit"],
+        "nonDuplicatedMeaning": "Core owns trajectories, physics providers, spatial facts, and timers; this domain owns gameplay-level orbital transfer opportunity, reservation, and arrival-window meaning without moving bodies."
+      },
+      "classification": "coordination-domain",
+      "ownership": ["authored body and transfer-profile references", "ephemeris observation revisions", "candidate maneuver opportunities", "cost, duration, and intercept-tolerance estimates", "reserved transfer windows", "arrival-window success, miss, and expiry history"],
+      "exclusions": ["n-body or rigid-body propagation", "authoritative transforms or velocity", "vehicle control", "fuel inventory mutation", "collision resolution", "renderer or sky objects", "mission fiction", "real-world flight certification"],
+      "actions": ["register transfer profile", "record ephemeris observation", "evaluate opportunities", "reserve window", "release window", "record burn outcome", "resolve arrival", "reset transfers"],
+      "resourcesAndState": ["orbitalTransfer.profiles", "orbitalTransfer.observations", "orbitalTransfer.opportunities", "orbitalTransfer.reservations", "orbitalTransfer.tick"],
+      "events": ["orbitalTransfer.opportunityOpened", "orbitalTransfer.windowReserved", "orbitalTransfer.windowReleased", "orbitalTransfer.burnRecorded", "orbitalTransfer.arrived", "orbitalTransfer.missed", "orbitalTransfer.expired", "orbitalTransfer.commandRejected", "orbitalTransfer.reset"],
+      "methods": ["registerProfile(definition)", "recordObservation(fact)", "evaluate(command)", "reserve(command)", "release(command)", "recordBurn(fact)", "resolveArrival(command)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned orbital-transfer snapshot", "maneuver opportunity descriptors", "cost, duration, and tolerance descriptors", "reservation and arrival-outcome descriptors"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable body, vehicle, profile, and observation IDs", "explicit ephemeris observations from a host or physics provider", "optional resource availability facts"],
+      "expectedCompositions": ["power-distribution-domain-kit", "supply-chain-fulfillment-domain-kit", "thermal-energy-network-domain-kit", "collective-resolve-domain-kit"],
+      "plausibleUses": ["schedule a rescue tug between failing orbital habitats", "route a fantasy skyship between moving moon-islands using authored orbital observations"],
+      "experimentProof": "A seeded Skyhook Rescue route must replay ephemeris revisions, opportunity evaluation, reservations, burn facts, and arrival resolution into identical windows, estimates, misses, expiries, and accepted arrivals.",
+      "idempotencyRule": "Observation revisions replace by stable source version, evaluation and reservation command IDs commit once, and arrival outcomes become terminal until an explicit reset or new reservation.",
+      "duplicateAndMergeRisk": "Core Motion owns trajectories and Core Physics owns provider frames; route and cargo kits own checkpoints and transfers. None owns orbital opportunity evaluation, transfer-window reservation, intercept tolerance, and arrival outcome semantics.",
+      "promotionPotential": "Hold until provider-supplied and analytic-fixture observations agree, replay and snapshot migration pass, and two fictional orbital configurations prove reuse."
     }
   ],
   "rejectedCandidates": [
@@ -607,6 +857,36 @@
       "name": "signal-relay-domain-kit",
       "rejectionClass": "duplicate-existing-kit",
       "reason": "acoustic-signal-domain-kit is implemented and universal-game-domain-kits already declares signal strength, sync, relay, scramble, and beacon-link surfaces; a new relay wrapper would deepen an existing overlap cluster."
+    },
+    {
+      "name": "soil-fertility-domain-kit",
+      "rejectionClass": "duplicate-existing-kit",
+      "reason": "agriculture-domain-kit already owns farm plot soil preparation, moisture, fertility, watering, growth, and harvest. The accepted replacement is limited to explicit nutrient-pool mass balance across farm or wild land and excludes agriculture operations."
+    },
+    {
+      "name": "atmosphere-weather-domain-kit",
+      "rejectionClass": "duplicate-existing-kit",
+      "reason": "atmosphere-domain-service-kit already owns renderer-agnostic fog, sky, clouds, wind, precipitation, and visibility descriptors. The accepted habitat-atmosphere boundary instead owns sealed-compartment gas inventories and breathability."
+    },
+    {
+      "name": "flood-water-body-domain-kit",
+      "rejectionClass": "duplicate-existing-kit",
+      "reason": "water-data-kit already declares water bodies and profiles for ponds, rivers, oceans, floods, and pools. The accepted inundation boundary owns water-volume propagation, barrier overtopping, drainage, and recession rather than another water-body record."
+    },
+    {
+      "name": "heat-pressure-domain-kit",
+      "rejectionClass": "core-rename-or-core-duplication",
+      "reason": "Core Simulation and generic-pressure-loop-kit already own heat-shaped scalar resources, rates, thresholds, and transitions. The accepted thermal-energy network adds multi-zone capacity, transfer links, conservation, and equilibrium semantics."
+    },
+    {
+      "name": "orbital-trajectory-domain-kit",
+      "rejectionClass": "core-rename-or-core-duplication",
+      "reason": "Core Motion owns trajectories and root-motion frames while Core Physics owns provider frames. The accepted orbital-transfer-window boundary consumes observations and owns only maneuver opportunity, reservation, and arrival-window semantics."
+    },
+    {
+      "name": "water-utility-domain-kit",
+      "rejectionClass": "vague-or-blurred-scope",
+      "reason": "A generic water utility blurred aquifer storage, potable treatment, distribution, fluid physics, contamination, and repair. It was split into aquifer-balance and potable-water-service boundaries with explicit cross-domain facts."
     }
   ]
 }

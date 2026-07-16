@@ -34,6 +34,7 @@ These remain active legacy baseline inventory. No production game or gameplay-ti
 | `2026-07-15-phase-a-goal-gate-alignment` | 0 | Phase A goal gate refinement | `ffdcc962d3c984864a2d78e9276879adf04250eb` | `6c6f473a39f89eddbd6361b8dc4d0f642fa2e368` | `d9255466e6883d8bb68e2a472e98ba1c2dba30ee` | inventory + JSON + Playwright/Human View passed | Experiments published; ProtoKits unchanged |
 | `2026-07-15-bootstrap-catalog-001-010` | 0 | Perpetual migration + catalog 001-010 | `ffdcc962d3c984864a2d78e9276879adf04250eb` | `f05ad5ab3cfce0f2be9479b0aa5f26df5c001a5c` | `63c73df322d228a430cedf3d76a25c2c6c091885` | inventory + JSON + Playwright/Human View passed | Experiments production commit published; ProtoKits unchanged |
 | `2026-07-15-bootstrap-catalog-011-020` | 0 | Catalog 011-020 | `ffdcc962d3c984864a2d78e9276879adf04250eb` | `abf797a5c2d6cb949fc8441a7edca9c7a080a40c` | `e024ef0027b4e272efa6a66a05edf04538443e6a` | inventory + JSON + collision invariants + Playwright/Human View passed | Experiments production commit published; ProtoKits unchanged |
+| `2026-07-15-bootstrap-catalog-021-030` | 0 | Catalog 021-030 | `ffdcc962d3c984864a2d78e9276879adf04250eb` | `f39ecda720cd27664395d925307466e44cf6155c` | pending | inventory + JSON + collision invariants + Playwright/Human View passed | pending publication; ProtoKits unchanged |
 
 ## Source Migration Gate
 
