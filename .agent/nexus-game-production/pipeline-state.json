@@ -141,9 +141,9 @@
     "commits": {
       "protokitsStartAndFinal": "ffdcc962d3c984864a2d78e9276879adf04250eb",
       "experimentsStart": "f39ecda720cd27664395d925307466e44cf6155c",
-      "experimentsProductionUnit": "pending"
+      "experimentsProductionUnit": "6f6b0b3bf5137c6d882bde0264682e6e0d12c5de"
     },
-    "publication": "pending"
+    "publication": "production commit published to origin/main; publication record commit intentionally not self-hashed"
   },
   "exactNextUnit": {
     "phase": "B-catalog",

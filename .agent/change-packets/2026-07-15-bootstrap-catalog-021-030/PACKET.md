@@ -2,7 +2,7 @@
 
 Packet ID: `2026-07-15-bootstrap-catalog-021-030`
 Automation: Nexus Engine Game Production Builder
-Status: validated; publication pending
+Status: complete and published
 
 ## Result
 
@@ -127,15 +127,18 @@ Answer: yes. This unit is not playable, so rendered artifact inspection plus Pla
 - Visual comparison: 20 / 100 with next 021-030 -> 30 / 100 with next 031-040; goal disclosure remains readable within the first viewport.
 - Gameplay launch: not applicable; no playable or runtime file changed, and no gameplay claim is made.
 - `git diff --check`: passed.
-- Explicit diff review and clean-worktree verification remain required immediately before commit.
+- `git diff --check` and staged diff checks passed; explicit review found only the 11 files owned by this run.
+- ProtoKits remained clean and unchanged; Experiments was clean after the production commit and push.
 
 ## Commits And Push
 
 - ProtoKits start/final: `ffdcc962d3c984864a2d78e9276879adf04250eb`; no changes planned.
 - Experiments start: `f39ecda720cd27664395d925307466e44cf6155c`.
-- Production commit: pending.
-- Pre-push fetch: pending.
-- Push: pending.
+- Production commit: `6f6b0b3bf5137c6d882bde0264682e6e0d12c5de` (`Catalog bootstrap kits 021-030`).
+- Pre-push fetch: ProtoKits and Experiments remotes were unchanged; no rebase was required.
+- Push: `f39ecda..6f6b0b3 main -> main` succeeded.
+- Remote verification: `origin/main` and `git ls-remote` both matched `6f6b0b3bf5137c6d882bde0264682e6e0d12c5de` after the production push.
+- The later publication-record commit contains this receipt and is intentionally not self-hashed inside its own contents.
 
 ## Exact Next Unit
 
