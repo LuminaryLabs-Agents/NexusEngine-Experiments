@@ -1,5 +1,11 @@
 # Cycle State
 
+## 2026-07-16 Cacheline One-Launch Feel Refinement
+
+`experiments/next-ledge/` now turns the `175`-cargo shortcut into one deliberate, readable rightward launch. Authored Cacheline position, catch radius, aim lead, assist, and camera zoom remain declarative; the existing route-choice and cable-launch owners consume them without a second launch state. Camera framing now centers the live player and target, pointer projection uses that same presented camera, and the UI owns the foreground compositor layer. Final cleanup also restricts unassisted cable sweep to enabled targets, so inactive branch anchors cannot steal the post-Windglass continuation. Playwright completed the shortcut through Cacheline in one launch, scored `175` cargo at Windglass, caught the original `anchor-11`, proved real failure/keyboard retry, kept Advanced closed by default, held settled entity counts, passed all 28 existing Next Ledge tests, and reported zero console messages.
+
+Exact next playable unit: add a short branch-neutral rejoin cue and recovery window from Windglass Relay to the original `anchor-11` so the scored beat flows into generic ascent without a blind long shot.
+
 ## 2026-07-16 Windglass Relay Convergence Upgrade
 
 `experiments/next-ledge/` now carries both sector-two branch rewards into one shared scored catch before generic ascent resumes. Slipstream Launch banks `134` preserved speed; Cacheline High banks `175` cargo mastery; Windglass Relay presents and resolves either value inside the existing route-choice state. Authored score and convergence descriptors remain in the preset, the adapter inserts the beat without replacing the original generic route anchor, and renderer/HUD/audio/effects consume one bounded line and semantic event stream. The safe branch completed through actual grapple input, the shortcut reached its scored convergence prompt, real failure/keyboard retry and Advanced closed/open/closed passed, all 28 Next Ledge tests passed, diagnostics stayed closed, and matched performance remained within budget without steady-state growth.

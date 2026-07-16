@@ -105,6 +105,7 @@ These are proof targets, not accepted experiment records. Seeds, candidate draw 
 - The post-rejoin consequence upgrade carries that fork into one protected grapple or one retained-pressure vent at Stormlock Restore. It preserves the same fantasy, verb, interaction structure, and eight-feature signature, so creation and diversity counts remain unchanged.
 - The post-Stormlock payoff upgrade turns the same branch state into mint launch tempo or an amber cargo-funded high line. It preserves the same fantasy, hero verb, pressure loop, interaction structure, and eight-feature signature, so creation and diversity counts remain unchanged.
 - The Windglass Relay convergence upgrade scores either branch at one shared catch, then restores the generic ascent. It preserves the same fantasy, verb, pressure loop, interaction structure, and eight-feature signature, so creation and diversity counts remain unchanged.
+- The Cacheline one-launch refinement retunes authored framing and assist, moves compositor ownership to the UI, and filters inactive collision candidates. It preserves the same fantasy, verb, pressure loop, interaction structure, and eight-feature signature, so creation and diversity counts remain unchanged.
 
 ## Diversity Gate
 
@@ -123,4 +124,5 @@ Every accepted experiment must record epoch, lifecycle status, seed, full candid
 - The Next Ledge Stormlock consequence remains an in-place legacy refinement; it adds no kit, experiment, route family, production signature, or production count.
 - The Next Ledge post-Stormlock payoff remains an in-place legacy refinement; it composes existing launch, assist, cargo, route, cue, and feedback features without adding a kit or duplicate production signature.
 - The Next Ledge Windglass convergence remains an in-place legacy refinement; it composes existing route-choice, launch, cargo, cue, feedback, and renderer features without adding a kit or duplicate production signature.
+- The Next Ledge Cacheline one-launch pass remains an in-place legacy refinement; it composes the same route-choice, cable, camera, cargo, cue, feedback, and renderer features without adding a kit, experiment, route family, or duplicate production signature.
 - Diversity claim: contract pressure only; no playable diversity claim yet.

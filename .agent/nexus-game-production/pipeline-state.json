@@ -30,7 +30,7 @@
     "coreRemoteDefault": "80146b8947e0877e26b851563bd17f5cdfcbf38a",
     "coreLocalReadOnly": "8b57b03904889cdbc71021d3bdb1d4070af5c8d3",
     "protokits": "04d34f049f58ae359cf71d43466c429dac2a6d08",
-    "experiments": "f7a1515461803354d63921462b83183ee8f23a4b",
+    "experiments": "2ca326d85220e78c527057e2a3f9e63a4f07135c",
     "experimentsBaseline": "615a7e1e2170164acef0edebdbe0b88b8c01fd1b"
   },
   "baseline": {
@@ -147,28 +147,28 @@
     "result": "Upgraded Next Ledge so Slipstream Launch and Cacheline High converge at Windglass Relay, banking 134 preserved speed or 175 cargo mastery before generic ascent resumes; production creation counts remain unchanged."
   },
   "lastRefinementUnit": {
-    "packetId": "2026-07-16-next-ledge-post-rest-route-choice",
-    "scope": "Next Ledge post-rest safe-versus-pressure route choice",
-    "result": "Counterwind Rest now opens one readable mint recovery line and one amber signal shortcut at +46 pressure; both paths use the existing route/cargo/pressure owners and converge at Fork Relay."
+    "packetId": "2026-07-16-next-ledge-cacheline-one-launch-refinement",
+    "scope": "Next Ledge Cacheline High readable one-launch shortcut",
+    "result": "The 175-cargo Cacheline shortcut now frames the live player and target together, applies authored target lead, and clears in one deliberate rightward launch while remaining smaller than Slipstream Launch."
   },
   "lastCompletedUnit": {
-    "packetId": "2026-07-16-next-ledge-windglass-relay-convergence",
-    "scope": "Next Ledge shared Windglass Relay branch-score convergence",
-    "result": "Slipstream Launch now banks 134 preserved speed and Cacheline High banks 175 cargo mastery at one shared Windglass Relay catch before the original generic ascent resumes.",
-    "validation": "All 28 Next Ledge test entrypoints, changed JavaScript syntax, and diff checks passed. Playwright completed the safe branch through Windglass and the original next anchor via public session input, carried the shortcut through Cacheline to its 175 cargo-mastery convergence state, reached a real dead state and keyboard retry, checked closed/open/closed Advanced disclosure, stable settled DOM/entity/descriptor counts, and a zero-error console. Human View passed the first screen plus safe and shortcut score views with diagnostics closed. Final matched FPS was 30.08 versus 30.87 before, a 2.6 percent change within budget, with zero long tasks in both samples and no steady-state entity growth.",
+    "packetId": "2026-07-16-next-ledge-cacheline-one-launch-refinement",
+    "scope": "Next Ledge Cacheline High readable one-launch feel refinement",
+    "result": "Cacheline High now clears in one 36-frame rightward launch, scores 175 cargo at Windglass Relay, and returns to the preserved original anchor-11 without inactive branch anchors stealing cable sweep.",
+    "validation": "All 28 existing Next Ledge test entrypoints, changed JavaScript syntax, JSON, and diff checks passed. Playwright completed the sector-two shortcut through one Cacheline launch, scored 175 cargo at Windglass, caught the original anchor-11 with anchor-12 enabled next, proved a real dead state and keyboard retry, checked closed/open/closed Advanced disclosure, stable settled DOM/entity counts, and a zero-message console. Human View passed the first screen, Cacheline target framing, and scored Windglass state with diagnostics closed and no WebGL overlap. A contemporaneous start-commit checkout measured 21.71 FPS versus 25.40 after, a 17.0 percent improvement; p95 remained 66.8 versus 66.7 ms, long tasks fell from 18 to 6, and no steady-state entity or DOM growth appeared.",
     "commits": {
       "coreReadOnly": "8b57b03904889cdbc71021d3bdb1d4070af5c8d3",
       "protokitsStart": "04d34f049f58ae359cf71d43466c429dac2a6d08",
       "protokitsProductionUnit": "04d34f049f58ae359cf71d43466c429dac2a6d08",
-      "experimentsStart": "f7a1515461803354d63921462b83183ee8f23a4b",
-      "experimentsProductionUnit": "8d439d38e45c71ae3c110a681364c4c762fa5607"
+      "experimentsStart": "2ca326d85220e78c527057e2a3f9e63a4f07135c",
+      "experimentsProductionUnit": "56d02fa388a4c3c4cd2474e03ccb96fe6ed48dcd"
     },
-    "publication": "Experiments production commit 8d439d38e45c71ae3c110a681364c4c762fa5607 is published on origin/main after fetch-before-push verification; ProtoKits is unchanged and synchronized at 04d34f049f58ae359cf71d43466c429dac2a6d08."
+    "publication": "Experiments production commit 56d02fa388a4c3c4cd2474e03ccb96fe6ed48dcd is published on origin/main after fetch-before-push verification; ProtoKits is unchanged and synchronized at 04d34f049f58ae359cf71d43466c429dac2a6d08."
   },
   "exactNextUnit": {
     "phase": "playable-experiment-upgrade",
     "epoch": 0,
-    "scope": "next-ledge-cacheline-readable-one-launch",
-    "goal": "Retune Cacheline High's approach framing and aim assistance so the 175-cargo shortcut clears in one readable launch while remaining visibly harder than Slipstream Launch."
+    "scope": "next-ledge-windglass-generic-rejoin-cue",
+    "goal": "Add a short branch-neutral rejoin cue and recovery window from Windglass Relay to the original anchor-11 so the scored beat flows into generic ascent without a blind long shot."
   }
 }

@@ -31,5 +31,6 @@ NexusEngine-Experiments owns playable browser proof, product-specific content an
 - Use seeded randomness and explicit fixed-time inputs; do not use `Math.random()` or wall-clock time in reusable simulation.
 - Do not count placeholders, route shells, duplicate signatures, documentation-only games, or unlaunched gameplay.
 - Validate the first screen around hero controls; keep optional or advanced controls under foldouts or dropdowns.
+- When the renderer presents a camera that differs from the simulation snapshot, pointer projection must use the presented camera. Keep the WebGL canvas unpromoted and promote the UI layer above it so scene geometry cannot compositor-overlap hero copy.
 - Every successful builder run must leave a visibly playable new experiment or a material player-visible upgrade; catalog, schema, documentation, or kit-only work does not satisfy the builder outcome.
 - Do not depend on ChatGPT Online audit agents for this local production pipeline.
