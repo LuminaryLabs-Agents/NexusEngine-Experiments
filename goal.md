@@ -19,4 +19,4 @@ Build a durable staged production pipeline that bootstraps 100 reusable ProtoKit
 
 ## Current Gate
 
-Perpetual-state migration is complete and bootstrap Phase B accepted `catalog-batch-001-030`. The next bounded unit is contract-only `catalog-batch-031-040`; implementation remains blocked until all 100 bootstrap definitions pass the natural-language and duplication gates.
+Perpetual-state migration is complete and bootstrap Phase B accepted `catalog-batch-001-040`. The next bounded unit is contract-only `catalog-batch-041-050`; implementation remains blocked until all 100 bootstrap definitions pass the natural-language and duplication gates.

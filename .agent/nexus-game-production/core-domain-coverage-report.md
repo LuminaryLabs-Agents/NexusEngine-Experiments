@@ -1,7 +1,7 @@
 # Core Domain Coverage Report
 
 Status: bootstrap Phase B catalog in progress
-Accepted catalog definitions: 30 of 100 bootstrap definitions
+Accepted catalog definitions: 40 of 100 bootstrap definitions
 Implemented production kits: 0
 Playable production experiments: 0
 
@@ -43,6 +43,16 @@ Core is authoritative. A new kit must name the Core domains it configures or com
 | `habitat-atmosphere-balance-domain-kit` | simulation + data + world + scene + agent facts | sealed-compartment gas balance, exchange, processing, and breathability | pass |
 | `seismic-event-sequence-domain-kit` | simulation + data + world + spatial + physics observations | fault stress, rupture order, regional intensity, aftershocks, and quiet recovery | pass |
 | `orbital-transfer-window-domain-kit` | data + simulation + motion/physics/spatial observations | maneuver opportunities, reservations, tolerance, and arrival-window outcomes | pass |
+| `seasonal-phenology-domain-kit` | simulation + data + world/agent observations | biological phenophase triggers, readiness, transitions, and missed windows | pass |
+| `ecological-symbiosis-domain-kit` | data + simulation + agent/world facts | partner exchange, compatibility, asymmetric cost, dependency, and recovery | pass |
+| `organic-decomposition-domain-kit` | simulation + data + world/agent observations | organic batch breakdown stages, decomposer contributions, returned mass, and stabilization | pass |
+| `habitat-succession-domain-kit` | simulation + data + world + spatial | ecological stage graphs, transition eligibility, regression, and alternate stable states | pass |
+| `bioaccumulation-domain-kit` | data + simulation + agent/world facts | body burden, elimination, trophic contaminant transfer, and biomagnification | pass |
+| `volcanic-eruption-sequence-domain-kit` | simulation + data + world/spatial/physics observations | volcanic unrest, reservoir-to-vent allocation, eruption phases, discharge, and quiet recovery | pass |
+| `material-recovery-stream-domain-kit` | data + simulation + policy + scene/world facts | heterogeneous discard classification, contamination grades, recovery yields, residuals, and dispositions | pass |
+| `instrument-calibration-domain-kit` | data + diagnostics + policy + scene facts | reference comparison, drift, bias, uncertainty, adjustment, validity, and measurement fitness | pass |
+| `chemical-reaction-batch-domain-kit` | simulation + data + policy observations | stoichiometric limits, reaction stages, yield, byproducts, quench, and terminal outcomes | pass |
+| `specimen-integrity-domain-kit` | data + simulation + policy + scene/world facts | collection condition, seals, aliquot lineage, preservation exposure, contamination, and analysis readiness | pass |
 
 No definition claims Core state primitives, provider implementations, renderer ownership, raw input, browser lifecycle, or game-specific content.
 
@@ -66,6 +76,12 @@ No definition claims Core state primitives, provider implementations, renderer o
 - `heat-pressure-domain-kit`: promoted resource/pressure scalar ownership; refined to a multi-zone thermal transfer network.
 - `orbital-trajectory-domain-kit`: Core Motion and Physics trajectory/provider ownership; refined to transfer-window coordination over observations.
 - `water-utility-domain-kit`: blurred aquifer, treatment, distribution, contamination, repair, and fluid physics; split to two explicit service boundaries.
+- `radiation-dose-shielding-domain-kit`: existing radiation pressure, hazard, field, shielding, and exposure declarations already own the proposed surface.
+- `avalanche-risk-domain-kit`: the current documented idea inventory already defines snowpack stress, trigger zones, and runout under that boundary.
+- `ecosystem-food-web-domain-kit`: accepted ecosystem population cycle already owns aggregate feeding, predation, cohorts, carrying capacity, and trophic flow.
+- `manufacturing-workflow-domain-kit`: existing semantic manufacturing/processing and crafting owners cover known-input production; refined to heterogeneous material recovery.
+- `chain-of-custody-domain-kit`: existing custody/provenance declarations and investigation evidence ownership overlap; specimen integrity excludes evidentiary custody.
+- `ecosystem-restoration-domain-kit`: blurred work plans, habitat fit, populations, interventions, and outcomes; refined to ecological succession stages only.
 
 ## Baseline Risk Map
 
@@ -84,4 +100,4 @@ No definition claims Core state primitives, provider implementations, renderer o
 
 ## Exact Next Audit
 
-Audit bootstrap catalog definitions 031-040 against all 514 existing top-level folders, nested declarations, package exports, and the current Core map before acceptance.
+Audit bootstrap catalog definitions 041-050 against all 514 existing top-level folders, nested declarations, package exports, and the current Core map before acceptance.

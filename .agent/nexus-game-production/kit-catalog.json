@@ -4,13 +4,13 @@
   "bootstrapTarget": 100,
   "epochTarget": 10,
   "counts": {
-    "acceptedBootstrap": 30,
-    "acceptedCurrentEpoch": 30,
-    "acceptedLifetime": 30,
+    "acceptedBootstrap": 40,
+    "acceptedCurrentEpoch": 40,
+    "acceptedLifetime": 40,
     "implementedBootstrap": 0,
     "implementedCurrentEpoch": 0,
     "implementedLifetime": 0,
-    "rejectedLifetime": 18
+    "rejectedLifetime": 24
   },
   "status": "bootstrap-catalog-in-progress",
   "requiredFields": [
@@ -795,6 +795,256 @@
       "idempotencyRule": "Observation revisions replace by stable source version, evaluation and reservation command IDs commit once, and arrival outcomes become terminal until an explicit reset or new reservation.",
       "duplicateAndMergeRisk": "Core Motion owns trajectories and Core Physics owns provider frames; route and cargo kits own checkpoints and transfers. None owns orbital opportunity evaluation, transfer-window reservation, intercept tolerance, and arrival outcome semantics.",
       "promotionPotential": "Hold until provider-supplied and analytic-fixture observations agree, replay and snapshot migration pass, and two fictional orbital configurations prove reuse."
+    },
+    {
+      "id": "bootstrap-kit-031",
+      "name": "seasonal-phenology-domain-kit",
+      "purpose": "Advance authored organisms and populations through observable seasonal life stages from explicit climate, calendar, and biological trigger facts without owning weather or growth simulation.",
+      "coreMapping": {
+        "configures": ["core-simulation-kit", "core-data-kit"],
+        "composesWith": ["core-world-domain", "core-agent-kit"],
+        "nonDuplicatedMeaning": "Core owns timers, observations, and deterministic resolution; this domain owns biological phenophase readiness, transition, and synchronization meaning."
+      },
+      "classification": "feature-domain",
+      "ownership": ["authored phenology profiles", "accumulated trigger observations", "current and pending phenophases", "readiness and transition state", "missed and delayed seasonal windows", "phenology transition history"],
+      "exclusions": ["weather generation", "plant or creature growth", "agent schedules", "reproduction outcomes", "crop operations", "calendar UI", "rendered season changes", "wall-clock time"],
+      "actions": ["register phenology profile", "attach subject", "record seasonal observation", "evaluate readiness", "advance phase", "record interruption", "inspect schedule", "reset phenology"],
+      "resourcesAndState": ["seasonalPhenology.profiles", "seasonalPhenology.subjects", "seasonalPhenology.observations", "seasonalPhenology.transitions", "seasonalPhenology.tick"],
+      "events": ["phenology.observationRecorded", "phenology.ready", "phenology.phaseStarted", "phenology.phaseCompleted", "phenology.windowMissed", "phenology.delayed", "phenology.commandRejected", "phenology.reset"],
+      "methods": ["registerProfile(definition)", "attachSubject(command)", "recordObservation(fact)", "evaluate(subjectId)", "advancePhase(command)", "recordInterruption(fact)", "getSchedule(subjectId)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned phenology snapshot", "subject phenophase descriptors", "trigger accumulation descriptors", "seasonal readiness and missed-window summaries"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable subject and profile IDs", "explicit calendar or climate observations", "authored phase and trigger rules"],
+      "expectedCompositions": ["pollination-network-domain-kit", "seed-dispersal-domain-kit", "ecosystem-population-cycle-domain-kit", "habitat-suitability-domain-kit"],
+      "plausibleUses": ["synchronize flowering and pollinator emergence in a restored valley", "plan a fantasy herd migration around molt, rut, and dormancy windows"],
+      "experimentProof": "A seeded Seasonal Covenant route must replay identical temperature, daylight, interruption, and calendar facts into the same readiness, phase, delay, and missed-window sequence for plant and animal profiles.",
+      "idempotencyRule": "Observation IDs upsert by source revision, phase commands commit once, fixed ticks evaluate subjects in stable ID order, and each readiness or phase transition emits once.",
+      "duplicateAndMergeRisk": "Core timers and existing weather services own time and environmental observations, while agriculture and ecosystem kits own growth and cohort counts. Live inventory has no owner for biological phenophase triggers, synchronization, or missed seasonal windows.",
+      "promotionPotential": "Experimental until plant and animal profiles, multi-year replay, snapshot migration, skipped-window policy, and large-cohort budgets pass."
+    },
+    {
+      "id": "bootstrap-kit-032",
+      "name": "ecological-symbiosis-domain-kit",
+      "purpose": "Resolve authored recurring relationships between organism groups through provided and received benefits, costs, dependency, compatibility, disruption, and recovery facts.",
+      "coreMapping": {
+        "configures": ["core-data-kit", "core-simulation-kit"],
+        "composesWith": ["core-agent-kit", "core-world-domain"],
+        "nonDuplicatedMeaning": "Core owns identities, ledgers, and deterministic updates; this domain owns mutualistic, commensal, and parasitic relationship balance and dependency meaning."
+      },
+      "classification": "feature-domain",
+      "ownership": ["authored symbiosis profiles", "partner-pair compatibility", "provided and received exchange facts", "benefit, cost, and dependency state", "relationship disruption and recovery", "symbiosis outcome history"],
+      "exclusions": ["generic social relationships", "agent decisions", "predation and population counts", "disease transmission", "resource inventory mutation", "movement", "appearance", "game-specific species lore"],
+      "actions": ["register symbiosis profile", "bind partners", "record exchange", "record disruption", "evaluate relationship", "release partners", "inspect dependency", "reset symbiosis"],
+      "resourcesAndState": ["ecologicalSymbiosis.profiles", "ecologicalSymbiosis.relationships", "ecologicalSymbiosis.exchanges", "ecologicalSymbiosis.outcomes", "ecologicalSymbiosis.tick"],
+      "events": ["symbiosis.partnersBound", "symbiosis.exchangeRecorded", "symbiosis.balanceChanged", "symbiosis.dependencyChanged", "symbiosis.disrupted", "symbiosis.recovered", "symbiosis.commandRejected", "symbiosis.reset"],
+      "methods": ["registerProfile(definition)", "bindPartners(command)", "recordExchange(fact)", "recordDisruption(fact)", "evaluate(relationshipId)", "releasePartners(command)", "getRelationship(id)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned symbiosis snapshot", "partner and compatibility descriptors", "benefit, cost, and dependency descriptors", "disruption and recovery summaries"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable organism-group and relationship IDs", "authored exchange and dependency rules", "explicit provider observations from ecology domains"],
+      "expectedCompositions": ["ecosystem-population-cycle-domain-kit", "habitat-suitability-domain-kit", "pollination-network-domain-kit", "seasonal-phenology-domain-kit"],
+      "plausibleUses": ["restore a reef by rebuilding coral and microbial partnerships", "keep a giant forest host and luminous parasite in a playable negotiated balance"],
+      "experimentProof": "A seeded Seasonal Covenant route must replay partner bindings, exchanges, disruptions, and habitat observations into identical benefit, dependency, break, and recovery states for mutualistic and parasitic profiles.",
+      "idempotencyRule": "Partner bindings and exchange facts commit by stable ID and revision, evaluation uses stable relationship order, and balance, disruption, or recovery events emit only on state transitions.",
+      "duplicateAndMergeRisk": "RPG social facts own interpersonal trust and ecosystem population owns trophic counts. Neither owns biological partner exchange, compatibility, asymmetric cost, dependency, and symbiosis recovery; live source search found no adjacent owner.",
+      "promotionPotential": "Hold until asymmetric and mutual fixtures, downstream population effects, replay, snapshot restore, and bounded relationship-history proof pass."
+    },
+    {
+      "id": "bootstrap-kit-033",
+      "name": "organic-decomposition-domain-kit",
+      "purpose": "Advance authored organic matter batches through fragmentation, decomposer access, staged breakdown, mass return, stabilization, and completion from explicit environmental observations.",
+      "coreMapping": {
+        "configures": ["core-simulation-kit", "core-data-kit"],
+        "composesWith": ["core-world-domain", "core-agent-kit"],
+        "nonDuplicatedMeaning": "Core owns resources and fixed ticks; this domain owns organic-matter breakdown stages, decomposer contribution, returned mass, and stabilization meaning."
+      },
+      "classification": "feature-domain",
+      "ownership": ["authored decomposition profiles", "organic matter batch mass and composition", "decomposer access and contribution facts", "breakdown-stage progress", "returned and stabilized material ledger", "decomposition completion history"],
+      "exclusions": ["corpse or item rendering", "soil nutrient uptake", "generic spoilage", "agent feeding", "chemical reaction simulation", "inventory disposal", "contaminant toxicity", "weather generation"],
+      "actions": ["register decomposition profile", "add organic batch", "record decomposer contribution", "apply environmental observation", "advance breakdown", "record material return", "inspect mass balance", "reset decomposition"],
+      "resourcesAndState": ["organicDecomposition.profiles", "organicDecomposition.batches", "organicDecomposition.contributions", "organicDecomposition.returns", "organicDecomposition.tick"],
+      "events": ["decomposition.batchAdded", "decomposition.stageChanged", "decomposition.contributionRecorded", "decomposition.materialReturned", "decomposition.stabilized", "decomposition.completed", "decomposition.commandRejected", "decomposition.reset"],
+      "methods": ["registerProfile(definition)", "addBatch(command)", "recordContribution(fact)", "applyObservation(fact)", "advance(ticks)", "recordReturn(fact)", "getBalance(batchId)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned decomposition snapshot", "organic batch and stage descriptors", "decomposer contribution descriptors", "mass-return and stabilization summaries"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable batch and decomposer-group IDs", "authored breakdown profiles", "explicit temperature, moisture, and access observations"],
+      "expectedCompositions": ["soil-nutrient-cycle-domain-kit", "ecosystem-population-cycle-domain-kit", "perishability-storage-domain-kit", "environmental-contamination-domain-kit"],
+      "plausibleUses": ["rebuild a forest nutrient cycle by restoring decomposer access", "operate an orbital compost loop without owning greenhouse crop growth"],
+      "experimentProof": "A seeded Seasonal Covenant route must replay organic inputs, access, moisture, temperature, and return facts into identical stage timing, mass balance, stabilization, completion, and rejections across forest and habitat-compost profiles.",
+      "idempotencyRule": "Batch and contribution IDs commit once, observation revisions replace deterministically, fixed ticks conserve configured mass, and stage or completion events emit once.",
+      "duplicateAndMergeRisk": "Perishability storage owns freshness and spoilage readiness, while soil nutrient cycling owns nutrient pools and uptake. Neither owns organic batch fragmentation, decomposer contributions, staged mass return, and stabilization; live inventory search found no decomposition owner.",
+      "promotionPotential": "Experimental until mass conservation, two decomposer modes, snapshot/replay, long-duration stability, and nutrient-cycle consumption proof pass."
+    },
+    {
+      "id": "bootstrap-kit-034",
+      "name": "habitat-succession-domain-kit",
+      "purpose": "Resolve authored habitat patches through disturbance, establishment, competition observations, stage transitions, regression, and recovery toward multiple possible ecological states.",
+      "coreMapping": {
+        "configures": ["core-simulation-kit", "core-data-kit"],
+        "composesWith": ["core-world-domain", "core-spatial-kit"],
+        "nonDuplicatedMeaning": "Core owns regions, objectives, and deterministic transitions; this domain owns ecological succession stage, transition eligibility, regression, and alternate-state meaning."
+      },
+      "classification": "feature-domain",
+      "ownership": ["authored habitat succession graphs", "patch succession stage", "disturbance and establishment facts", "transition eligibility and limiting factors", "regression and alternate stable states", "succession history"],
+      "exclusions": ["restoration work plans", "species population simulation", "terrain or vegetation generation", "weather and wildfire simulation", "habitat suitability scoring", "rendered biome changes", "quest progression", "game-specific conservation policy"],
+      "actions": ["register succession graph", "attach habitat patch", "record disturbance", "record establishment", "evaluate transition", "commit transition", "inspect trajectory", "reset succession"],
+      "resourcesAndState": ["habitatSuccession.graphs", "habitatSuccession.patches", "habitatSuccession.facts", "habitatSuccession.transitions", "habitatSuccession.tick"],
+      "events": ["habitatSuccession.disturbed", "habitatSuccession.established", "habitatSuccession.transitionReady", "habitatSuccession.stageChanged", "habitatSuccession.regressed", "habitatSuccession.stableStateReached", "habitatSuccession.commandRejected", "habitatSuccession.reset"],
+      "methods": ["registerGraph(definition)", "attachPatch(command)", "recordDisturbance(fact)", "recordEstablishment(fact)", "evaluate(patchId)", "commitTransition(command)", "getTrajectory(patchId)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned habitat-succession snapshot", "patch stage descriptors", "transition-readiness descriptors", "disturbance, regression, and trajectory summaries"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "portable habitat patch IDs", "authored stage graphs and transition rules", "explicit disturbance and establishment observations"],
+      "expectedCompositions": ["habitat-suitability-domain-kit", "ecosystem-population-cycle-domain-kit", "wildfire-propagation-domain-kit", "seasonal-phenology-domain-kit"],
+      "plausibleUses": ["guide burned grassland through several viable recovery paths", "stabilize an alien biodome that can mature into competing habitat states"],
+      "experimentProof": "A seeded Seasonal Covenant route must replay disturbances, establishment facts, and limiting observations into identical stage changes, alternate outcomes, regression, and stable-state events for terrestrial and sealed-habitat graphs.",
+      "idempotencyRule": "Disturbance and establishment facts upsert by revision, transition commands commit once from an expected source stage, and stage events emit only on an actual change.",
+      "duplicateAndMergeRisk": "The existing restoration domain owns asset diagnosis, work plans, contributions, and commissioning; habitat suitability owns ecological fit. Neither owns ecological stage graphs, alternate stable states, or succession regression, and no live inventory term matches this boundary.",
+      "promotionPotential": "Hold until branching graph validation, disturbance replay, snapshot migration, downstream habitat consumers, and large-patch budgets pass."
+    },
+    {
+      "id": "bootstrap-kit-035",
+      "name": "bioaccumulation-domain-kit",
+      "purpose": "Track authored contaminant uptake, elimination, body burden, trophic transfer, and biomagnification across organism groups from explicit exposure and feeding facts.",
+      "coreMapping": {
+        "configures": ["core-data-kit", "core-simulation-kit"],
+        "composesWith": ["core-agent-kit", "core-world-domain"],
+        "nonDuplicatedMeaning": "Core owns resources and observations; this domain owns contaminant body-burden accumulation, elimination, trophic transfer, and magnification meaning."
+      },
+      "classification": "feature-domain",
+      "ownership": ["authored contaminant uptake profiles", "organism-group body burden", "exposure and elimination ledger", "trophic transfer facts", "magnification and clearance state", "burden transition history"],
+      "exclusions": ["environmental concentration propagation", "generic radiation or poison pressure meters", "disease transmission", "agent health or damage", "feeding AI", "population counts", "water chemistry", "medical or ecological safety claims"],
+      "actions": ["register uptake profile", "register organism group", "record exposure", "record feeding transfer", "apply elimination", "advance burden", "inspect magnification", "reset burden"],
+      "resourcesAndState": ["bioaccumulation.profiles", "bioaccumulation.groups", "bioaccumulation.exposures", "bioaccumulation.transfers", "bioaccumulation.tick"],
+      "events": ["bioaccumulation.exposureRecorded", "bioaccumulation.transferRecorded", "bioaccumulation.burdenChanged", "bioaccumulation.thresholdCrossed", "bioaccumulation.magnified", "bioaccumulation.cleared", "bioaccumulation.commandRejected", "bioaccumulation.reset"],
+      "methods": ["registerProfile(definition)", "registerGroup(definition)", "recordExposure(fact)", "recordTransfer(fact)", "applyElimination(fact)", "advance(ticks)", "getBurden(groupId)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned bioaccumulation snapshot", "organism burden descriptors", "exposure and elimination descriptors", "trophic transfer and magnification summaries"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable organism-group and contaminant IDs", "explicit exposure and trophic-transfer facts", "authored uptake and elimination coefficients"],
+      "expectedCompositions": ["environmental-contamination-domain-kit", "ecosystem-population-cycle-domain-kit", "rescue-triage-domain-kit", "habitat-suitability-domain-kit"],
+      "plausibleUses": ["trace a pollutant from marsh sediment into a recovering raptor population", "manage an alien food chain where a useful mineral becomes toxic at higher trophic levels"],
+      "experimentProof": "A seeded Toxic Bloom route must replay contamination exposures, feeding transfers, and elimination facts into identical burdens, threshold changes, magnification ratios, clearance, and rejections across aquatic and terrestrial food chains.",
+      "idempotencyRule": "Exposure, transfer, and elimination facts commit once by stable ID, updates resolve groups in stable order, and threshold or clearance events emit only on band transitions.",
+      "duplicateAndMergeRisk": "Environmental contamination owns regional concentration and generic pressure kits own scalar hazard channels; ecosystem population owns trophic counts. None owns organism body burden, elimination, trophic contaminant transfer, or biomagnification, and live search found no adjacent owner.",
+      "promotionPotential": "Experimental until mass-transfer bounds, multi-trophic replay, snapshot restore, contaminant-independent profiles, and downstream ecology proof pass."
+    },
+    {
+      "id": "bootstrap-kit-036",
+      "name": "volcanic-eruption-sequence-domain-kit",
+      "purpose": "Advance authored magma reservoirs and vent networks through pressure and volatile observations, unrest, eruption phases, discharge allocation, deposition facts, and quiet-state recovery.",
+      "coreMapping": {
+        "configures": ["core-simulation-kit", "core-data-kit"],
+        "composesWith": ["core-world-domain", "core-spatial-kit", "core-physics-kit"],
+        "nonDuplicatedMeaning": "Core owns timers, regions, and provider observations; this domain owns volcanic unrest, reservoir-to-vent allocation, eruption phase, discharge, and recovery meaning."
+      },
+      "classification": "feature-domain",
+      "ownership": ["authored reservoir and vent graph", "pressure and volatile observation state", "unrest and eruption eligibility", "ordered eruption phases", "discharge and deposition fact ledger", "quiet-state and eruption history"],
+      "exclusions": ["magma or fluid solver", "terrain deformation", "lava rendering", "ash atmosphere rendering", "rigid-body damage", "seismic event ownership", "evacuation logic", "real-world eruption forecasting"],
+      "actions": ["register volcanic system", "record reservoir observation", "set vent state", "trigger authored eruption", "advance phase", "record discharge", "record deposition", "reset volcanic state"],
+      "resourcesAndState": ["volcanicSequence.systems", "volcanicSequence.reservoirs", "volcanicSequence.vents", "volcanicSequence.eruptions", "volcanicSequence.tick"],
+      "events": ["volcanic.unrestChanged", "volcanic.ventChanged", "volcanic.eruptionStarted", "volcanic.phaseChanged", "volcanic.dischargeRecorded", "volcanic.depositionRecorded", "volcanic.quietRestored", "volcanic.commandRejected", "volcanic.reset"],
+      "methods": ["registerSystem(definition)", "recordObservation(fact)", "setVent(command)", "triggerEruption(command)", "advance(ticks)", "recordDischarge(fact)", "recordDeposition(fact)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned volcanic-sequence snapshot", "reservoir unrest descriptors", "vent and eruption-phase descriptors", "discharge, deposition, and quiet-state summaries"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable reservoir, vent, and region IDs", "authored eruption profiles", "optional normalized seismic, pressure, or terrain observations"],
+      "expectedCompositions": ["seismic-event-sequence-domain-kit", "environmental-contamination-domain-kit", "wildfire-propagation-domain-kit", "navigation-knowledge-domain-kit"],
+      "plausibleUses": ["keep an island observatory operating through escalating vent phases", "manage a subterranean forge city around a fictional magma network"],
+      "experimentProof": "A seeded Caldera Watch route must replay reservoir observations, vent commands, eruption triggers, discharge, and deposition facts into identical unrest, phase order, allocation, quiet recovery, and rejections without moving terrain or particles.",
+      "idempotencyRule": "Observation revisions replace deterministically, vent and eruption commands commit once, phases resolve in stable system order, and phase or quiet events emit once.",
+      "duplicateAndMergeRisk": "Existing volcanic landform and ashfall atmosphere declarations own static content or presentation, seismic owns fault rupture, and lava hazards own generic danger. None owns magma reservoir state, reservoir-to-vent allocation, eruption phases, discharge lineage, and quiet recovery.",
+      "promotionPotential": "Experimental until multi-vent replay, snapshot restore, phase interruption, scale budgets, and island plus subterranean configurations pass."
+    },
+    {
+      "id": "bootstrap-kit-037",
+      "name": "material-recovery-stream-domain-kit",
+      "purpose": "Coordinate heterogeneous discarded-material lots through inspection, classification, sorting, contamination grading, recovery processing, yield, residuals, and disposition acceptance.",
+      "coreMapping": {
+        "configures": ["core-data-kit", "core-simulation-kit", "core-policy-kit"],
+        "composesWith": ["core-scene-kit", "core-world-domain"],
+        "nonDuplicatedMeaning": "Core owns item facts, queues, and policy checks; this domain owns recovery-stream classification, contamination grade, process yield, residual, and disposition meaning."
+      },
+      "classification": "coordination-domain",
+      "ownership": ["authored material and recovery profiles", "intake lot composition", "inspection and sorting decisions", "contamination and recoverability grade", "processing yield and residual ledger", "accepted reuse, treatment, and disposal dispositions"],
+      "exclusions": ["manufacturing recipes", "crafting outcomes", "facility hardware", "inventory UI", "vehicle logistics", "environmental contaminant propagation", "renderer objects", "real-world waste compliance"],
+      "actions": ["register recovery profile", "record intake lot", "inspect lot", "classify fraction", "reserve process", "record process outcome", "accept disposition", "reset recovery stream"],
+      "resourcesAndState": ["materialRecovery.profiles", "materialRecovery.lots", "materialRecovery.classifications", "materialRecovery.processes", "materialRecovery.dispositions"],
+      "events": ["materialRecovery.intakeRecorded", "materialRecovery.classified", "materialRecovery.contaminationChanged", "materialRecovery.processReserved", "materialRecovery.yieldRecorded", "materialRecovery.residualCreated", "materialRecovery.dispositionAccepted", "materialRecovery.commandRejected", "materialRecovery.reset"],
+      "methods": ["registerProfile(definition)", "recordIntake(command)", "inspect(fact)", "classify(command)", "reserveProcess(command)", "recordOutcome(fact)", "acceptDisposition(command)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned material-recovery snapshot", "intake composition descriptors", "classification and contamination descriptors", "yield, residual, and disposition summaries"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable lot, material, process, and disposition IDs", "authored recovery and grading profiles", "explicit inspection and process outcome facts"],
+      "expectedCompositions": ["supply-chain-fulfillment-domain-kit", "environmental-contamination-domain-kit", "power-distribution-domain-kit", "chemical-reaction-batch-domain-kit"],
+      "plausibleUses": ["keep a storm-isolated city supplied by recovering mixed debris", "sort and reclaim derelict spacecraft material without owning salvage traversal"],
+      "experimentProof": "A seeded Circular Foundry route must replay mixed intake, inspection, classification, process, and acceptance facts into identical grades, yields, residual lots, dispositions, and rejected commands for municipal and orbital profiles.",
+      "idempotencyRule": "Intake, classification, process, and disposition command IDs commit once against expected lot revisions, and each yield or residual fact can be applied only once.",
+      "duplicateAndMergeRisk": "Semantic manufacturing and crafting owners transform known inputs through authored recipes, while supply-chain fulfillment owns orders and shipments. Live inventory has no owner for heterogeneous discard classification, contamination grading, recovery yield, residuals, and disposition acceptance.",
+      "promotionPotential": "Hold until conservation checks, split and merge lots, snapshot migration, deterministic replay, and two unrelated recovery systems pass."
+    },
+    {
+      "id": "bootstrap-kit-038",
+      "name": "instrument-calibration-domain-kit",
+      "purpose": "Manage authored instruments and reference standards through drift observations, calibration runs, adjustment, uncertainty bands, validation, expiry, and fitness-for-measurement decisions.",
+      "coreMapping": {
+        "configures": ["core-data-kit", "core-diagnostics-kit", "core-policy-kit"],
+        "composesWith": ["core-scene-kit"],
+        "nonDuplicatedMeaning": "Core owns telemetry, evidence, ledgers, and guards; this domain owns instrument metrology, reference comparison, adjustment, uncertainty, validity, and expiry meaning."
+      },
+      "classification": "verification-domain",
+      "ownership": ["authored instrument and reference-standard profiles", "instrument drift and bias state", "calibration run inputs and results", "adjustment and uncertainty history", "validity and expiry state", "fitness-for-measurement decisions"],
+      "exclusions": ["spatial coordinate calibration", "sensor hardware access", "measurement generation", "generic diagnostics health", "repair work", "UI charts", "clock ownership", "real-world certification claims"],
+      "actions": ["register instrument", "register reference standard", "record drift observation", "start calibration run", "record comparison", "apply adjustment", "validate instrument", "reset calibration"],
+      "resourcesAndState": ["instrumentCalibration.instruments", "instrumentCalibration.standards", "instrumentCalibration.runs", "instrumentCalibration.adjustments", "instrumentCalibration.validity"],
+      "events": ["calibration.driftRecorded", "calibration.runStarted", "calibration.comparisonRecorded", "calibration.adjusted", "calibration.validated", "calibration.invalidated", "calibration.expired", "calibration.commandRejected", "calibration.reset"],
+      "methods": ["registerInstrument(definition)", "registerStandard(definition)", "recordDrift(fact)", "startRun(command)", "recordComparison(fact)", "applyAdjustment(command)", "validate(command)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned calibration snapshot", "instrument drift and bias descriptors", "calibration run and uncertainty descriptors", "validity, expiry, and fitness summaries"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable instrument, standard, and run IDs", "explicit comparison and drift facts", "authored tolerance and expiry profiles"],
+      "expectedCompositions": ["specimen-integrity-domain-kit", "seismic-event-sequence-domain-kit", "volcanic-eruption-sequence-domain-kit", "orbital-transfer-window-domain-kit"],
+      "plausibleUses": ["keep a volcano observatory's instruments trustworthy during repeated shocks", "calibrate fictional spectroscopy tools before analyzing an alien sample"],
+      "experimentProof": "A seeded Quarantine Lab route must replay drift, standard comparisons, adjustments, and validation commands into identical bias, uncertainty, validity, expiry, fitness decisions, and rejections for field and laboratory instruments.",
+      "idempotencyRule": "Run, comparison, adjustment, and validation IDs commit once against expected revisions, expiry advances only from explicit ticks, and validity events emit only on state changes.",
+      "duplicateAndMergeRisk": "The documented spatial-calibration seed concerns coordinate constraints, and Core Diagnostics owns generic health and evidence. Neither owns metrology standards, drift and bias, comparison runs, uncertainty, adjustment, and measurement fitness; live inventory has no instrument-calibration owner.",
+      "promotionPotential": "Experimental until multiple standard hierarchies, uncertainty replay, snapshot migration, expiry policy, and two instrument classes pass."
+    },
+    {
+      "id": "bootstrap-kit-039",
+      "name": "chemical-reaction-batch-domain-kit",
+      "purpose": "Resolve authored reagent batches through reserved quantities, stoichiometric limits, staged reaction progress, yield, byproducts, quench, and terminal batch outcomes.",
+      "coreMapping": {
+        "configures": ["core-simulation-kit", "core-data-kit"],
+        "composesWith": ["core-policy-kit"],
+        "nonDuplicatedMeaning": "Core owns resources and deterministic resolution; this domain owns reaction-batch stoichiometry, limiting reagent, progress, yield, byproduct, quench, and terminal outcome meaning."
+      },
+      "classification": "feature-domain",
+      "ownership": ["authored reaction profiles", "reagent and catalyst batch references", "reserved and consumed quantities", "limiting-reagent resolution", "reaction progress, yield, and byproducts", "quench, completion, and failure history"],
+      "exclusions": ["real molecular simulation", "chemical safety claims", "crafting inventory ownership", "manufacturing work orders", "thermal network simulation", "fluid physics", "particles or shaders", "laboratory UI"],
+      "actions": ["register reaction profile", "create reaction batch", "reserve reagent", "record condition observation", "advance reaction", "record catalyst effect", "quench batch", "reset reactions"],
+      "resourcesAndState": ["chemicalReaction.profiles", "chemicalReaction.batches", "chemicalReaction.reservations", "chemicalReaction.products", "chemicalReaction.tick"],
+      "events": ["chemicalReaction.batchCreated", "chemicalReaction.reagentReserved", "chemicalReaction.limitChanged", "chemicalReaction.stageChanged", "chemicalReaction.yieldRecorded", "chemicalReaction.byproductCreated", "chemicalReaction.quenched", "chemicalReaction.completed", "chemicalReaction.commandRejected", "chemicalReaction.reset"],
+      "methods": ["registerProfile(definition)", "createBatch(command)", "reserveReagent(command)", "recordObservation(fact)", "advance(ticks)", "recordCatalystEffect(fact)", "quench(command)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned reaction-batch snapshot", "reagent reservation descriptors", "limiting-reagent and progress descriptors", "yield, byproduct, quench, and terminal summaries"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable reaction, batch, reagent, and product IDs", "authored stoichiometric and stage profiles", "explicit temperature, pressure, or catalyst observations"],
+      "expectedCompositions": ["thermal-energy-network-domain-kit", "material-recovery-stream-domain-kit", "environmental-contamination-domain-kit", "power-distribution-domain-kit"],
+      "plausibleUses": ["operate a fictional propellant refinery through unstable reaction stages", "neutralize contaminated salvage into reusable feedstock without owning facility hardware"],
+      "experimentProof": "A seeded Circular Foundry route must replay reagent reservations, condition observations, catalyst effects, fixed ticks, and quench commands into identical limiting reagents, progress, yields, byproducts, terminal outcomes, and rejections across refinery and recovery profiles.",
+      "idempotencyRule": "Batch, reservation, observation, catalyst, and quench command IDs commit once, quantities resolve in stable reagent order, and terminal batches reject further progress until reset.",
+      "duplicateAndMergeRisk": "Crafting and semantic manufacturing owners transform inventory through recipes or work steps, while thermal energy owns heat transfer. Live inventory has no owner for stoichiometric batch limits, reaction stages, yields, byproducts, quench, and terminal reaction state.",
+      "promotionPotential": "Hold until conservation tolerance, catalysts and quench replay, snapshot restore, numerical stability, and two fictionally distinct reaction profiles pass."
+    },
+    {
+      "id": "bootstrap-kit-040",
+      "name": "specimen-integrity-domain-kit",
+      "purpose": "Track authored physical specimens through collection condition, sealing, aliquot lineage, preservation exposure, contamination observations, degradation, and analysis readiness.",
+      "coreMapping": {
+        "configures": ["core-data-kit", "core-simulation-kit", "core-policy-kit"],
+        "composesWith": ["core-scene-kit", "core-world-domain"],
+        "nonDuplicatedMeaning": "Core owns item identity, ledgers, and guards; this domain owns physical specimen condition, aliquot lineage, preservation exposure, contamination, degradation, and analysis-readiness meaning."
+      },
+      "classification": "feature-domain",
+      "ownership": ["authored specimen and container profiles", "collection-condition record", "seal and container state", "parent-to-aliquot lineage", "preservation exposure and degradation", "contamination and analysis-readiness state"],
+      "exclusions": ["evidence hypotheses or legal custody", "generic item ownership", "laboratory analysis results", "contaminant propagation", "cold-chain hardware", "inventory UI", "asset rendering", "real-world medical handling guidance"],
+      "actions": ["register specimen profile", "collect specimen", "seal container", "split aliquot", "record transfer exposure", "apply contamination observation", "evaluate readiness", "reset specimens"],
+      "resourcesAndState": ["specimenIntegrity.profiles", "specimenIntegrity.specimens", "specimenIntegrity.containers", "specimenIntegrity.lineage", "specimenIntegrity.exposures"],
+      "events": ["specimen.collected", "specimen.sealed", "specimen.aliquotCreated", "specimen.exposureRecorded", "specimen.contaminationChanged", "specimen.degraded", "specimen.readinessChanged", "specimen.commandRejected", "specimen.reset"],
+      "methods": ["registerProfile(definition)", "collect(command)", "seal(command)", "splitAliquot(command)", "recordExposure(fact)", "applyContamination(fact)", "evaluateReadiness(specimenId)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned specimen-integrity snapshot", "specimen and container descriptors", "aliquot-lineage descriptors", "exposure, contamination, degradation, and readiness summaries"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable specimen, container, and transfer IDs", "authored preservation and readiness profiles", "explicit environment and contamination observations"],
+      "expectedCompositions": ["instrument-calibration-domain-kit", "environmental-contamination-domain-kit", "perishability-storage-domain-kit", "contagion-transmission-domain-kit"],
+      "plausibleUses": ["recover viable field samples during a spreading fictional outbreak", "transport alien ice cores through unstable habitat compartments for analysis"],
+      "experimentProof": "A seeded Quarantine Lab route must replay collection, sealing, aliquot, transfer exposure, and contamination facts into identical lineage, degradation, readiness, invalidation, and rejected commands across biological and geological specimen profiles.",
+      "idempotencyRule": "Collection, seal, aliquot, exposure, and contamination IDs commit once against expected specimen revisions, lineage is append-only, and readiness events emit only on classification changes.",
+      "duplicateAndMergeRisk": "Investigation owns cases, evidence, hypotheses, and conclusions, while perishability storage owns general batch freshness. Neither owns physical specimen collection condition, seals, aliquot lineage, preservation exposure, contamination, and analysis readiness; live inventory found no specimen owner.",
+      "promotionPotential": "Experimental until branched aliquot lineage, seal failures, snapshot migration, deterministic replay, and biological plus geological profiles pass."
     }
   ],
   "rejectedCandidates": [
@@ -887,6 +1137,36 @@
       "name": "water-utility-domain-kit",
       "rejectionClass": "vague-or-blurred-scope",
       "reason": "A generic water utility blurred aquifer storage, potable treatment, distribution, fluid physics, contamination, and repair. It was split into aquifer-balance and potable-water-service boundaries with explicit cross-domain facts."
+    },
+    {
+      "name": "radiation-dose-shielding-domain-kit",
+      "rejectionClass": "duplicate-existing-kit",
+      "reason": "generic-pressure-loop-kit explicitly owns radiation-shaped pressure channels and universal-game-domain-kits already declares radiation-hazard-kit, while the documented radiation-field candidate already names intensity, shielding, and exposure. A new dose wrapper would duplicate those surfaces."
+    },
+    {
+      "name": "avalanche-risk-domain-kit",
+      "rejectionClass": "duplicate-existing-kit",
+      "reason": "The current ProtoKit idea inventory already defines avalanche-risk-kit with snowpack stress, trigger zones, and runout. Re-accepting the same scope under a domain suffix would not be genuinely new."
+    },
+    {
+      "name": "ecosystem-food-web-domain-kit",
+      "rejectionClass": "duplicate-catalog-candidate",
+      "reason": "Accepted ecosystem-population-cycle-domain-kit already owns aggregate feeding, predation, cohort counts, carrying capacity, and trophic-flow descriptors. A food-web wrapper added no separate state owner."
+    },
+    {
+      "name": "manufacturing-workflow-domain-kit",
+      "rejectionClass": "duplicate-existing-kit",
+      "reason": "semantic-bounded-domain-kits already declares manufacturing and processing under its production boundary, while crafting owners already cover recipes, inputs, outputs, stations, and failure rules. The accepted material-recovery stream is limited to heterogeneous discard classification and recovery dispositions."
+    },
+    {
+      "name": "chain-of-custody-domain-kit",
+      "rejectionClass": "duplicate-existing-kit",
+      "reason": "The existing idea inventory already declares chain-of-custody-kit and provenance-ledger-kit, and engine.n.investigation owns evidence and case meaning. The accepted specimen-integrity boundary excludes evidentiary custody and owns only physical condition, seals, aliquots, preservation exposure, and analysis readiness."
+    },
+    {
+      "name": "ecosystem-restoration-domain-kit",
+      "rejectionClass": "vague-or-blurred-scope",
+      "reason": "A broad restoration boundary blurred interventions, work plans, habitat fit, population outcomes, succession, and content. Existing engine.n.restoration owns diagnosis and work commissioning; the accepted habitat-succession boundary owns only ecological stage transitions and alternate stable states."
     }
   ]
 }
