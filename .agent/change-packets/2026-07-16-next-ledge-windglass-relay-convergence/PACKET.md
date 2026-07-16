@@ -2,7 +2,7 @@
 
 Packet: `2026-07-16-next-ledge-windglass-relay-convergence`
 
-Status: validated; publication receipt pending
+Status: validated and published
 
 Experiment: `experiments/next-ledge/`
 
@@ -124,9 +124,9 @@ Matched sample: `950 ms` stable warm-up followed by a `3.4 s` active `D` input w
 
 ## Publication
 
-- Production commit: `PENDING_THIS_COMMIT`.
+- Production commit: `8d439d38e45c71ae3c110a681364c4c762fa5607`.
 - ProtoKits push: not required; `main`, `HEAD`, and `origin/main` remain synchronized at `04d34f049f58ae359cf71d43466c429dac2a6d08`.
-- Experiments push: pending fetch-before-push verification.
+- Experiments push: production commit published to `origin/main` after a second fetch proved the remote still matched the starting commit.
 
 ## Exact Next Playable Improvement
 
