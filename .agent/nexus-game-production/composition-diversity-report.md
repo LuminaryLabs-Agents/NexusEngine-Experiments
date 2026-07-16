@@ -98,6 +98,7 @@ These are proof targets, not accepted experiment records. Seeds, candidate draw 
 - Those routes predate this production pipeline and are excluded from the new bootstrap 50 and lifetime counts.
 - Shared route shells and a common kit stack do not prove distinct seeded-random composition.
 - The other 33 top-level experiment folders remain baseline inventory until they pass the new gate.
+- The active legacy `next-ledge` upgrade now has a specific stormline signal-delivery fantasy, swing/release/re-grapple verb, stamina/cargo/fall-pressure loop, authored five-beat summit crest, and eight-feature ProtoKit signature. This materially deepens one proven composition; it does not create or claim a second production signature.
 
 ## Diversity Gate
 
@@ -110,4 +111,5 @@ Every accepted experiment must record epoch, lifecycle status, seed, full candid
 - Catalog boundary duplication: 0 accepted; sixty candidates were rejected before acceptance across all ten bootstrap catalog batches.
 - Implemented boundary duplication: 0 across contracts 001-010 after source, export, API, resource, event, ownership, and exclusion comparison.
 - Real composition pressure now exists for Quarantine Lantern, Rewilding Basin, Bridge Under Siege, Border Accord, and Lost Migration, but no seeded experiment draw or playable signature is claimed before the implementation gate closes.
+- The Next Ledge mastery crest is an in-place legacy upgrade, so duplicate and near-duplicate production-signature totals remain zero and production creation counts remain unchanged.
 - Diversity claim: contract pressure only; no playable diversity claim yet.

@@ -6,6 +6,16 @@ export function createNextLedgeClimbPreset(options = {}) {
   const summitY = Number(options.summitY ?? n(pacing.summitBaseY, 2200) + sector * n(pacing.summitPerSectorY, 760));
   const routeId = `next-ledge-sector-${sector}`;
   const sampleSpacingY = Math.max(80, n(pacing.sampleSpacingY, 125));
+  const masteryCrest = options.masteryCrest ?? {
+    id: "summit-signal-mastery-crest",
+    beats: [
+      { fromSummit: 4, id: "stormbreak-rest", role: "crest-rest", label: "Stormbreak rest", type: "rest", x: 72, yOffset: -485, radius: 10, tags: ["mastery-crest", "recovery-setup"] },
+      { fromSummit: 3, id: "commit-perch", role: "crest-commit", label: "Commit perch", type: "normal", x: 78, yOffset: -350, radius: 6.5, tags: ["mastery-crest", "high-commitment-release"] },
+      { fromSummit: 2, id: "crosswind-catch", role: "crest-catch", label: "Crosswind catch", type: "normal", x: -74, yOffset: -220, radius: 5.8, tags: ["mastery-crest", "crosswind-catch"] },
+      { fromSummit: 1, id: "relay-crown", role: "crest-handoff", label: "Relay crown", type: "normal", x: 58, yOffset: -105, radius: 6.4, tags: ["mastery-crest", "signal-handoff"] },
+      { fromSummit: 0, id: "summit", role: "crest-summit", label: "Summit relay", type: "summit", x: 0, yOffset: 0, radius: 20, tags: ["mastery-crest", "signal-delivery"] }
+    ]
+  };
   return {
     id: "next-ledge-cinematic-ascent",
     sector,
@@ -51,7 +61,8 @@ export function createNextLedgeClimbPreset(options = {}) {
       startRadius: 9,
       restRadius: 7,
       summitRadius: 15,
-      staminaRestore: n(options.restRestore, n(pacing.restRestore, 58))
+      staminaRestore: n(options.restRestore, n(pacing.restRestore, 58)),
+      masteryCrest
     },
     objective: {
       id: "next-ledge-objective-flow",

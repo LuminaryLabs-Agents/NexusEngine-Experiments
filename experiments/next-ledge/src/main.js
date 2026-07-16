@@ -8,12 +8,12 @@ function showFatal(error) {
 
 async function boot() {
   const [sessionModule, rendererModule, inputModule, hudModule, loopModule, synthModule] = await Promise.all([
-    import("./session-cargo-extraction-upgrade.js"),
-    import("./renderer-three-fidelity.js"),
+    import("./session-cargo-extraction-upgrade.js?v=mastery-crest-1"),
+    import("./renderer-three-fidelity.js?v=mastery-crest-1"),
     import("./input.js"),
-    import("./hud.js"),
-    import("./runtime-loop.js"),
-    import("./synth.js")
+    import("./hud.js?v=mastery-crest-1"),
+    import("./runtime-loop.js?v=mastery-crest-1"),
+    import("./synth.js?v=mastery-crest-1")
   ]);
 
   const canvas = document.querySelector("#game");
@@ -39,7 +39,8 @@ async function boot() {
     cargoValue: document.querySelector("#cargoValue"),
     cargoMeter: document.querySelector("#cargoMeter"),
     pressureValue: document.querySelector("#pressureValue"),
-    pressureMeter: document.querySelector("#pressureMeter")
+    pressureMeter: document.querySelector("#pressureMeter"),
+    completionPanel: document.querySelector("#completionPanel")
   });
   const synth = synthModule.createCinematicSynth();
 

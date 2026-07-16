@@ -47,6 +47,7 @@ export function startLoop({ session, input, renderer, hud, synth }) {
     getTraversalReadability: () => session.snapshot().domain?.traversalReadability,
     getAnchorTimingReadability: () => session.snapshot().domain?.anchorTimingReadability,
     getRendererHandoff: rendererHandoff,
+    getPerformanceSnapshot: () => renderer.getMetrics?.() ?? null,
     tick: (dt = 1 / 60, command = {}) => tick(dt, command),
     restart: () => session.restart(),
     advanceSector: () => session.advanceSector(),

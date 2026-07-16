@@ -19,4 +19,4 @@ Build and deepen visibly playable Nexus Engine experiments first, extracting the
 
 ## Current Gate
 
-`next-ledge` is the active playable experiment. Its grapple-flow upgrade now consumes current Nexus Engine and NexusEngine-ProtoKits, exposes the hero verb and resources on the first screen, and proves release, re-grapple, failure, and retry. The exact next playable unit is summit-delivery pacing: add a short authored mastery sequence and clear completion celebration without weakening deterministic kit ownership.
+`next-ledge` is the active playable experiment. Its grapple-flow upgrade now consumes current Nexus Engine and NexusEngine-ProtoKits, exposes the hero verb and resources on the first screen, completes a five-beat mastery crest and 25-checkpoint route, supports midair miss recovery, and closes with an unmistakable summit relay broadcast. The exact next playable unit is the post-delivery transition: make `N` visibly carry the relay into a reversed-wind sector opening without weakening deterministic kit ownership or the first-screen control hierarchy.

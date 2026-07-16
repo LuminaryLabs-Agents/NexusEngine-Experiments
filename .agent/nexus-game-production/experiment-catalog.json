@@ -68,10 +68,10 @@
         "generic-traversal-feedback-kit",
         "generic-route-cargo-extraction-kit"
       ],
-      "feelAverageBefore": 3.7,
-      "feelAverageAfter": 8.3,
-      "validation": "Playwright release/re-grapple/progress/fail/retry plus Human View before/after and zero-error console",
-      "packetId": "2026-07-16-next-ledge-grapple-flow-upgrade"
+      "feelAverageBefore": 8.3,
+      "feelAverageAfter": 8.9,
+      "validation": "Playwright completed 25/25 checkpoints and both objectives after cleanup, proved miss/recover mastery play, stable performance, closed diagnostics, Human View before/crest/final, and a zero-error console",
+      "packetId": "2026-07-16-next-ledge-summit-mastery-crest"
     }
   ],
   "experiments": []

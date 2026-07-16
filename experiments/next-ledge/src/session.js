@@ -3,8 +3,8 @@ import { createGenericAnchorDescriptorKit } from "https://cdn.jsdelivr.net/gh/Lu
 import { createGenericModeProjectedRoute, createProjectedRoute } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-mode-projected-route/index.js";
 import { createGenericRouteProgressKit } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-route-progress-kit/index.js";
 import { createGenericTetherTraversalDomainKits, createGenericTetherTraversalPreset } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-tether-traversal-domain-kits/index.js";
-import { createNextLedgeClimbPreset } from "./climb-preset.js";
-import { adaptProjectedRouteToClimbRoute } from "./climb-anchor-adapter.js";
+import { createNextLedgeClimbPreset } from "./climb-preset.js?v=mastery-crest-1";
+import { adaptProjectedRouteToClimbRoute } from "./climb-anchor-adapter.js?v=mastery-crest-1";
 import { createClimbActionAdapter } from "./climb-action-adapter.js";
 
 const clamp = (v, a, b) => Math.max(a, Math.min(b, Number.isFinite(Number(v)) ? Number(v) : a));
@@ -14,7 +14,7 @@ const copy = (v) => typeof structuredClone === "function" ? structuredClone(v) :
 
 const PLAYER_UPGRADE_PRESET = Object.freeze({
   routePacing: { summitPerSectorY: 760, sampleSpacingY: 118, minAnchors: 16, jitterX: 158, jitterY: 34, restEvery: 4, maxEdgeDistance: 202 },
-  tetherMotion: { ropeLength: 56, maxCableLength: 184, swingInputTorque: 0.0064, angularDamping: 0.993, inputDrainPerFrame: 0.034, idleDrainPerFrame: 0.006, reelPull: 0.82, reelShortenRate: 2.7, airControl: 0.16 },
+  tetherMotion: { ropeLength: 56, maxCableLength: 184, swingInputTorque: 0.0064, angularDamping: 0.993, maxAngularSpeed: 0.15, inputDrainPerFrame: 0.034, idleDrainPerFrame: 0.006, reelPull: 0.82, reelShortenRate: 2.7, airControl: 0.16, lockMaxAngle: 1.2, lockMaxAngularSpeed: 0.12 },
   cableLaunch: { projectileSpeed: 11.8, liftBoost: 0.58, latchRadius: 15, sweepRadius: 11, aimAssistRadius: 36, aimAssistDistance: 205, aimAssistStrength: 0.82, maxProbeTicks: 92, launchStaminaCost: 2 },
   traversalVitals: { maxStamina: 120, restRestore: 66, criticalStamina: 22, lowStaminaCue: 0.22 },
   traversalRecovery: { scaffoldBoundary: 184, failFloorDistance: 320 },
@@ -42,7 +42,7 @@ function ropeNodes(start, end, count, wind = 0, slack = 0) {
 }
 
 function addEvent(state, type, payload = {}) {
-  state.recentEvents.push({ type, at: state.frame, ...payload });
+  state.recentEvents.push({ ...payload, type, at: state.frame });
   if (state.recentEvents.length > 16) state.recentEvents.shift();
 }
 
@@ -104,7 +104,7 @@ function createRouteProgressRoute(state) {
       radius: n(ledge.r, 8),
       tags: ["next-ledge", "climb-anchor", ledge.type].filter(Boolean),
       descriptor: { kind: "climb-anchor", anchorType: ledge.type ?? "anchor" },
-      metadata: { sector: state.sector, source: "next-ledge" }
+      metadata: { sector: state.sector, source: "next-ledge", masteryRole: ledge.metadata?.masteryRole ?? null }
     }))
   };
 }
@@ -127,11 +127,11 @@ function syncRouteProgressRoute(engine, state, reason = "next-ledge-route-sync")
   return facade.getState?.() ?? null;
 }
 
-function syncRouteProgressEvents(engine, state, beforeCount) {
+function syncRouteProgressEvents(engine, state, beforeEvents) {
   const facade = routeProgressFacade(engine);
   if (!facade) return;
   const synced = new Set();
-  for (const evt of state.recentEvents.slice(beforeCount)) {
+  for (const evt of state.recentEvents.filter((event) => !beforeEvents.has(event))) {
     const checkpointId = evt.targetId;
     if (!checkpointId || synced.has(checkpointId)) continue;
     if (!["anchor-locked", "restored", "summit-reached"].includes(evt.type)) continue;
@@ -277,32 +277,47 @@ function grab(state, ledge) {
   state.stats.latches += 1;
   state.camera.trauma = Math.max(state.camera.trauma ?? 0, n(state.tuning.cameraImpulseLatch, 0.16));
   state.status = `Latched ${ledge.label}. Winch pulling to swing radius.`;
-  addEvent(state, "grapple-latched", { targetId: ledge.id, type: ledge.type });
+  addEvent(state, "grapple-latched", { targetId: ledge.id, ledgeType: ledge.type });
 }
 
 function lock(state, ledge) {
   state.currentAnchorId = ledge.id;
   state.lastLedgeId = ledge.id;
   state.anchorLedge = ledge;
-  state.player.angle = Math.atan2(state.player.x - ledge.x, ledge.y - state.player.y || 0.001);
-  state.player.aVel = (state.player.vx >= 0 ? 1 : -1) * (Math.hypot(state.player.vx, state.player.vy) / state.constants.ropeLength) * 0.72;
+  state.player.angle = clamp(
+    Math.atan2(state.player.x - ledge.x, ledge.y - state.player.y || 0.001),
+    -n(state.tuning.lockMaxAngle, 1.2),
+    n(state.tuning.lockMaxAngle, 1.2)
+  );
+  state.player.aVel = clamp(
+    (state.player.vx >= 0 ? 1 : -1) * (Math.hypot(state.player.vx, state.player.vy) / state.constants.ropeLength) * 0.72,
+    -n(state.tuning.lockMaxAngularSpeed, 0.12),
+    n(state.tuning.lockMaxAngularSpeed, 0.12)
+  );
   state.player.vx = 0;
   state.player.vy = 0;
-  addEvent(state, "anchor-locked", { targetId: ledge.id, type: ledge.type });
+  addEvent(state, "anchor-locked", { targetId: ledge.id, ledgeType: ledge.type, masteryRole: ledge.metadata?.masteryRole });
   if (ledge.type === "summit") {
     state.mode = "won";
     state.completed = true;
-    state.status = "Summit reclaimed. Sector clearance criteria reached.";
+    state.status = "Signal delivered. Summit relay online.";
     addEvent(state, "summit-reached", { sector: state.sector, targetId: ledge.id });
   } else {
     state.mode = "swinging";
     if (ledge.type === "rest") {
       state.stamina = clamp(state.stamina + n(ledge.staminaRestore, n(state.tuning.restRestore, 58)), 0, state.constants.maxStamina);
       state.stats.rests += 1;
-      state.status = state.tuning.restHint ?? "Restore unit synchronized. Stamina replenished.";
+      state.status = ledge.metadata?.masteryRole === "crest-rest"
+        ? "Stormbreak rest secured. Build a clean arc for the commit perch."
+        : state.tuning.restHint ?? "Restore unit synchronized. Stamina replenished.";
       addEvent(state, "restored", { targetId: ledge.id });
     } else {
-      state.status = state.tuning.swingHint ?? `Swinging from ${ledge.label}. Release when your arc feels right.`;
+      const masteryCopy = {
+        "crest-commit": "Commit perch locked. Swing left and release into the crosswind catch.",
+        "crest-catch": "Crosswind caught. Reverse the arc toward the relay crown.",
+        "crest-handoff": "Relay crown secured. One final line carries the signal home."
+      };
+      state.status = masteryCopy[ledge.metadata?.masteryRole] ?? state.tuning.swingHint ?? `Swinging from ${ledge.label}. Release when your arc feels right.`;
     }
   }
 }
@@ -332,8 +347,9 @@ function stepSwing(state, dt) {
   const ropeLength = state.constants.ropeLength;
   let acc = -(state.constants.gravity / ropeLength) * Math.sin(state.player.angle) + axis * n(state.tuning.swingInputTorque, 0.0049);
   acc += state.wind.strength * Math.sin(state.wind.offset) * Math.cos(state.player.angle) / ropeLength;
-  state.player.aVel = (state.player.aVel + acc) * n(state.tuning.angularDamping, 0.9915);
-  state.player.angle += state.player.aVel;
+  const maxAngularSpeed = n(state.tuning.maxAngularSpeed, 0.15);
+  state.player.aVel = clamp((state.player.aVel + acc) * n(state.tuning.angularDamping, 0.9915), -maxAngularSpeed, maxAngularSpeed);
+  state.player.angle = Math.atan2(Math.sin(state.player.angle + state.player.aVel), Math.cos(state.player.angle + state.player.aVel));
   state.player.x = ledge.x + Math.sin(state.player.angle) * ropeLength;
   state.player.y = ledge.y - Math.cos(state.player.angle) * ropeLength;
   state.player.vx = state.player.aVel * ropeLength * Math.cos(state.player.angle);
@@ -368,8 +384,10 @@ function stepLaunched(state, dt) {
     state.probe.y = state.player.y + (state.probe.y - state.player.y) * r;
   }
   setRope(state, state.player, state.probe, n(state.tuning.launchSlack, 12));
-  for (const ledge of state.route.ledges) {
-    if (ledge.id === state.lastLedgeId && state.probe.ticks < n(state.tuning.sameAnchorIgnoreTicks, 8)) continue;
+  const assistedTarget = state.aimAssistTargetId ? ledgeMap(state)[state.aimAssistTargetId] : null;
+  const latchCandidates = assistedTarget ? [assistedTarget] : state.route.ledges;
+  for (const ledge of latchCandidates) {
+    if (ledge.id === state.lastLedgeId) continue;
     if (d2(ledge, state.probe) <= ledge.r + n(state.tuning.latchRadius, 12) || segmentDistance(ledge.x, ledge.y, state.player.x, state.player.y, state.probe.x, state.probe.y) <= ledge.r + n(state.tuning.sweepRadius, 8)) return grab(state, ledge);
   }
   if (state.probe.ticks > n(state.tuning.maxProbeTicks, 86)) state.mode = "retracting";
@@ -452,7 +470,23 @@ function stepState(state, dt) {
   updateDerived(state);
 }
 
-function domainSnapshot(engine) {
+function masteryCrestSnapshot(state) {
+  const beats = (state.route?.ledges ?? []).filter((ledge) => ledge.metadata?.masteryCrestId);
+  const currentIndex = beats.findIndex((ledge) => ledge.id === state.currentAnchorId);
+  const approaching = currentIndex < 0 && beats.length > 0;
+  return {
+    id: state.route?.masteryCrest?.id ?? "summit-signal-mastery-crest",
+    status: state.completed ? "signal-delivered" : approaching ? "approaching" : "active",
+    active: !state.completed && currentIndex >= 0,
+    currentBeat: currentIndex >= 0 ? copy(beats[currentIndex]) : null,
+    nextBeat: copy(beats[Math.max(0, currentIndex + 1)] ?? null),
+    progress: state.completed ? 1 : currentIndex < 0 ? 0 : clamp((currentIndex + 1) / Math.max(1, beats.length), 0, 1),
+    beatIds: beats.map((ledge) => ledge.id),
+    remainingBeatIds: state.completed ? [] : beats.slice(Math.max(0, currentIndex + 1)).map((ledge) => ledge.id)
+  };
+}
+
+function domainSnapshot(engine, state) {
   return {
     projectedRoute: engine.projectedRoute?.getState?.(),
     anchors: engine.anchorDescriptors?.getState?.(),
@@ -465,7 +499,8 @@ function domainSnapshot(engine) {
     recovery: engine.traversalRecovery?.getState?.(),
     camera: engine.traversalCamera?.getState?.(),
     cues: engine.traversalCue?.getState?.(),
-    feedback: engine.traversalFeedback?.getState?.()
+    feedback: engine.traversalFeedback?.getState?.(),
+    masteryCrest: masteryCrestSnapshot(state)
   };
 }
 
@@ -527,8 +562,8 @@ export function createNextLedgeSession(options = {}) {
     if (input.action) command(state);
   }
 
-  function syncObjective(beforeCount) {
-    const events = state.recentEvents.slice(beforeCount);
+  function syncObjective(beforeEvents) {
+    const events = state.recentEvents.filter((event) => !beforeEvents.has(event));
     for (const evt of events) {
       if (evt.type === "restored") engine.objectiveFlow?.action?.("rest", { targetId: evt.targetId });
       if (evt.type === "summit-reached") engine.objectiveFlow?.action?.("summit", { sector: evt.sector });
@@ -536,17 +571,17 @@ export function createNextLedgeSession(options = {}) {
   }
 
   function update(dt, input = {}) {
-    const beforeCount = state.recentEvents.length;
+    const beforeEvents = new Set(state.recentEvents);
     refreshTuning();
     applyInput(input);
     stepState(state, clamp(n(dt, 1 / 60), 0, 1 / 30));
     engine.tick(dt);
-    syncObjective(beforeCount);
-    syncRouteProgressEvents(engine, state, beforeCount);
+    syncObjective(beforeEvents);
+    syncRouteProgressEvents(engine, state, beforeEvents);
     return snapshot();
   }
 
-  function snapshot() { return { ...copy(state), domain: domainSnapshot(engine) }; }
+  function snapshot() { return { ...copy(state), domain: domainSnapshot(engine, state) }; }
 
   engine.nextLedge = {
     getState: () => snapshot(),

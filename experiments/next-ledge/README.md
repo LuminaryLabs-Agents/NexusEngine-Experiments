@@ -2,6 +2,8 @@
 
 A Nexus Engine stormline-recovery grapple climb. Build a swing, release, aim into the cyan route, and re-grapple while carrying recovered signal cargo to the summit.
 
+The final route now resolves into an authored mastery crest: recover at Stormbreak Rest, build the high-commitment release from Commit Perch, catch the crosswind, reverse toward Relay Crown, and deliver the signal into a gold summit transmission.
+
 The playable route composes real reusable features from NexusEngine-ProtoKits:
 
 ```txt
@@ -68,6 +70,7 @@ Renderer owns:
   Three.js scene setup
   mesh/material synchronization
   screen-to-world projection
+  bounded line-buffer reuse, completion camera framing, and summit transmission presentation
 
 Input owns:
   keyboard/pointer/mobile pad collection

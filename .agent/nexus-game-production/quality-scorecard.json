@@ -25,19 +25,19 @@
     {
       "id": "next-ledge-grapple",
       "lifecycleStatus": "active-legacy-baseline",
-      "score": 83,
-      "lastImprovedAt": "2026-07-16T10:44:54-04:00",
+      "score": 89,
+      "lastImprovedAt": "2026-07-16T11:54:07-04:00",
       "feelScores": {
         "responsiveness": 9,
-        "predictability": 8,
+        "predictability": 9,
         "readability": 9,
-        "impact": 8,
-        "recovery": 8,
-        "delight": 8,
+        "impact": 9,
+        "recovery": 9,
+        "delight": 9,
         "replayDesire": 8,
-        "average": 8.3
+        "average": 8.9
       },
-      "nextFeelProblem": "Late-route anchor cadence and summit delivery need a stronger mastery crest and completion celebration."
+      "nextFeelProblem": "The post-delivery next-sector action needs a visible transition and a distinct reversed-wind opening instead of an immediate generated reset."
     },
     {
       "id": "rogue-lite-hellscape-siege",

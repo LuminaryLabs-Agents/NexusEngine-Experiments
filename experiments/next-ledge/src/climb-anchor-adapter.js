@@ -42,6 +42,33 @@ export function adaptProjectedRouteToClimbRoute(projectedRoute, climb = {}) {
       metadata: anchor.metadata ?? {}
     };
   });
+  const crest = climb.masteryCrest;
+  const crestBeats = Array.isArray(crest?.beats) ? crest.beats : [];
+  const lastIndex = ledges.length - 1;
+  for (const [order, beat] of crestBeats.entries()) {
+    const index = Math.max(0, lastIndex - Math.max(0, Math.floor(Number(beat.fromSummit ?? 0))));
+    const source = ledges[index];
+    if (!source) continue;
+    const type = beat.type ?? source.type;
+    ledges[index] = {
+      ...source,
+      id: beat.id ?? source.id,
+      x: Number(beat.x ?? source.x),
+      y: summitY + Number(beat.yOffset ?? source.y - summitY),
+      r: Number(beat.radius ?? source.r),
+      type,
+      label: beat.label ?? source.label,
+      staminaRestore: type === "rest" ? Number(beat.staminaRestore ?? source.staminaRestore ?? climb.staminaRestore ?? 45) : 0,
+      tags: [...new Set([...(source.tags ?? []), ...(beat.tags ?? []), type])],
+      metadata: {
+        ...(source.metadata ?? {}),
+        masteryCrestId: crest.id ?? "summit-mastery-crest",
+        masteryRole: beat.role ?? `crest-beat-${order}`,
+        masteryOrder: order,
+        authoredRouteBeat: true
+      }
+    };
+  }
   return {
     id: climb.routeId ?? projectedRoute?.id ?? "next-ledge-route",
     seed: projectedRoute?.seed,
@@ -50,6 +77,12 @@ export function adaptProjectedRouteToClimbRoute(projectedRoute, climb = {}) {
     ledges,
     chunks: chunksFor(summitY),
     route: ledges.map((ledge) => ledge.id),
+    masteryCrest: crestBeats.length ? {
+      id: crest.id ?? "summit-mastery-crest",
+      beatIds: crestBeats.map((beat) => beat.id).filter(Boolean),
+      startIndex: Math.max(0, ledges.length - crestBeats.length),
+      summitId: ledges.at(-1)?.id ?? "summit"
+    } : null,
     sourceRoute: projectedRoute
   };
 }

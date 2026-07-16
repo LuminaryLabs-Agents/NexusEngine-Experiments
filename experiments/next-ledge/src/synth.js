@@ -33,7 +33,11 @@ export function createCinematicSynth() {
     else if (type === "released" || type === "wall-bounce") tone(110, 0.15, "triangle", 0.16, 45);
     else if (type === "restored") tone(440, 0.5, "sine", 0.08, 880);
     else if (type === "failed") tone(150, 1.0, "sawtooth", 0.22, 30);
-    else if (type === "summit-reached") [261.63, 329.63, 392, 523.25, 659.25, 783.99].forEach((f, i) => setTimeout(() => tone(f, 0.38, "sine", 0.09), i * 80));
+    else if (type === "summit-reached") {
+      tone(72, 1.35, "triangle", 0.18, 144);
+      [261.63, 329.63, 392, 523.25, 659.25, 783.99].forEach((f, i) => setTimeout(() => tone(f, 0.48, "sine", 0.1, f * 1.5), i * 90));
+      setTimeout(() => tone(1567.98, 0.9, "sine", 0.055, 2093), 580);
+    }
   }
 
   return {

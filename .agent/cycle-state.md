@@ -1,5 +1,11 @@
 # Cycle State
 
+## 2026-07-16 Summit Mastery Crest Upgrade
+
+`experiments/next-ledge/` now ends in an authored five-beat summit mastery crest: Stormbreak Rest, Commit Perch, Crosswind Catch, Relay Crown, and Summit Relay. The run also bounded swing/reel energy, made magnetized grapple shots own their selected anchor, repaired late-route objective and route-progress forwarding through the bounded event buffer, and added a persistent gold signal-delivery celebration. The complete 25-anchor route, miss/recover pressure loop, both objectives, Advanced disclosure, steady-state entity counts, and final zero-error player view passed Playwright and Human View.
+
+Exact next playable unit: turn `N` after delivery into a visible broadcast-to-new-route transition with a reversed-wind opening pattern, without adding first-screen controls or moving browser/render ownership into ProtoKits.
+
 ## 2026-07-16 Experience-First Playable Upgrade
 
 The builder now treats historical catalog/bootstrap work as nonblocking reference inventory. The active playable result is `experiments/next-ledge/`: a materially upgraded stormline-recovery grapple climb using current Nexus Engine Core and eight meaningful ProtoKit features. The route now boots, presents purpose and hero controls on the first screen, advances signal cargo through release/re-grapple, raises and recovers fall pressure, reaches a real dead state below the last safe anchor, and resets climb/cargo/pressure through keyboard or advanced retry. Human View before/after and Playwright launch, loop, failure, recovery, disclosure, and zero-console-error proof are recorded in `.agent/change-packets/2026-07-16-next-ledge-grapple-flow-upgrade/`.

@@ -5,8 +5,13 @@ const matFor = (m, type, hover) => hover ? m.hover : type === "rest" ? m.rest : 
 const num = (v, f = 0) => Number.isFinite(Number(v)) ? Number(v) : f;
 const clamp01 = (v) => Math.max(0, Math.min(1, v));
 
-function dispose(root) {
-  root.traverse?.((child) => child.geometry?.dispose?.());
+function dispose(root, { materials = false } = {}) {
+  root.traverse?.((child) => {
+    child.geometry?.dispose?.();
+    if (!materials && !child.userData?.ownsMaterial) return;
+    const owned = Array.isArray(child.material) ? child.material : [child.material];
+    owned.filter(Boolean).forEach((entry) => entry.dispose?.());
+  });
 }
 
 function cliffGeometry(h, id) {
@@ -146,15 +151,40 @@ export function createThreeRenderer({ canvas }) {
   const aimParticleGeometry = new THREE.BufferGeometry();
   aimParticleGeometry.setAttribute("position", new THREE.BufferAttribute(aimParticlePositions, 3));
   const aimParticles = new THREE.Points(aimParticleGeometry, m.aimParticle);
-  scene.add(routeLine, player, staminaHalo, dangerHalo, probe, rope, traj, aim, reach, aimHead, aimEnd, aimCore, aimParticles);
+  const summitCelebration = new THREE.Group();
+  const celebrationRings = [
+    new THREE.Mesh(new THREE.TorusGeometry(32, 1.4, 10, 72), material(0xffd65a, 0.76, true)),
+    new THREE.Mesh(new THREE.TorusGeometry(51, 0.8, 8, 72), material(0xfff3bd, 0.48, true)),
+    new THREE.Mesh(new THREE.TorusGeometry(72, 0.45, 8, 72), material(0x3dffa3, 0.34, true))
+  ];
+  celebrationRings.forEach((ring, index) => { ring.position.z = 8 + index * 2; summitCelebration.add(ring); });
+  const summitLight = new THREE.PointLight(0xffd65a, 0, 720);
+  summitLight.position.z = 38;
+  summitCelebration.add(summitLight);
+  summitCelebration.visible = false;
+  scene.add(routeLine, player, staminaHalo, dangerHalo, probe, rope, traj, aim, reach, aimHead, aimEnd, aimCore, aimParticles, summitCelebration);
 
   const diegeticEffects = createDiegeticEffects({ scene });
   let routeKey = "";
   let parallaxKey = "";
+  let viewportWidth = 0;
+  let viewportHeight = 0;
+  let viewportPixelRatio = 0;
+  let presentedCameraY = null;
+  let presentedCameraZ = null;
+  let lastEffectTime = performance.now() / 1000;
   const ledgeMap = new Map();
   const parallaxGroups = new Map();
 
   function resize() {
+    const nextWidth = innerWidth;
+    const nextHeight = innerHeight;
+    const nextPixelRatio = Math.min(devicePixelRatio || 1, 2);
+    if (viewportWidth === nextWidth && viewportHeight === nextHeight && viewportPixelRatio === nextPixelRatio) return;
+    viewportWidth = nextWidth;
+    viewportHeight = nextHeight;
+    viewportPixelRatio = nextPixelRatio;
+    renderer.setPixelRatio(nextPixelRatio);
     camera.aspect = innerWidth / innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(innerWidth, innerHeight, false);
@@ -164,11 +194,17 @@ export function createThreeRenderer({ canvas }) {
 
   function setLine(line, points = []) {
     line.visible = points.length > 0;
-    const flat = new Float32Array(Math.max(1, points.length) * 3);
-    points.forEach((p, i) => { flat[i * 3] = p.x; flat[i * 3 + 1] = p.y; flat[i * 3 + 2] = p.z ?? 1; });
-    line.geometry.dispose?.();
-    line.geometry = new THREE.BufferGeometry();
-    line.geometry.setAttribute("position", new THREE.BufferAttribute(flat, 3));
+    const required = Math.max(1, points.length);
+    const attribute = line.geometry.getAttribute("position");
+    if (!attribute || attribute.count < required) {
+      line.geometry.dispose?.();
+      line.geometry = new THREE.BufferGeometry();
+      line.geometry.setAttribute("position", new THREE.BufferAttribute(new Float32Array(required * 3), 3));
+    }
+    const positions = line.geometry.getAttribute("position");
+    points.forEach((p, i) => { positions.setXYZ(i, p.x, p.y, p.z ?? 1); });
+    positions.needsUpdate = true;
+    line.geometry.setDrawRange(0, points.length);
   }
 
   function addCloud(group, layer, i) {
@@ -201,6 +237,8 @@ export function createThreeRenderer({ canvas }) {
   }
 
   function rebuildParallax(snapshot) {
+    dispose(parallaxBack, { materials: true });
+    dispose(parallaxFront, { materials: true });
     parallaxBack.clear();
     parallaxFront.clear();
     parallaxGroups.clear();
@@ -312,6 +350,7 @@ export function createThreeRenderer({ canvas }) {
       haloMaterial.blending = THREE.AdditiveBlending;
       haloMaterial.depthWrite = false;
       const halo = new THREE.Mesh(new THREE.TorusGeometry(l.r * 2.25, 0.35, 8, 48), haloMaterial);
+      halo.userData.ownsMaterial = true;
       g.add(plate, core, halo);
       g.userData = { id: l.id, type: l.type, core, halo };
       ledges.add(g);
@@ -326,17 +365,24 @@ export function createThreeRenderer({ canvas }) {
       }
     }
     setLine(routeLine, routePoints);
+    const summit = snapshot.route?.ledges?.find((ledge) => ledge.type === "summit");
+    if (summit) summitCelebration.position.set(summit.x, summit.y, 12);
   }
 
   function draw(snapshot) {
     if (!snapshot) return;
     resize();
-    const time = (snapshot.frame ?? 0) / 60;
+    const time = performance.now() / 1000;
     const key = `${snapshot.levelId}:${snapshot.sector}:${snapshot.route?.ledges?.length ?? 0}`;
     if (key !== routeKey) rebuild(snapshot);
     const trauma = clamp01(snapshot.camera?.trauma ?? 0);
-    camera.position.set((snapshot.camera?.x ?? 0) + Math.sin(time * 53) * trauma * 8, (snapshot.camera?.y ?? 0) + Math.cos(time * 47) * trauma * 6, snapshot.camera?.z ?? 210);
-    camera.lookAt(0, snapshot.camera?.y ?? 0, 0);
+    const summit = snapshot.route?.ledges?.find((ledge) => ledge.type === "summit");
+    const targetCameraY = snapshot.completed && summit ? summit.y - 42 : snapshot.camera?.y ?? 0;
+    const targetCameraZ = snapshot.completed ? Math.max(272, snapshot.camera?.z ?? 210) : snapshot.camera?.z ?? 210;
+    presentedCameraY = presentedCameraY == null ? targetCameraY : presentedCameraY + (targetCameraY - presentedCameraY) * (snapshot.completed ? 0.065 : 0.24);
+    presentedCameraZ = presentedCameraZ == null ? targetCameraZ : presentedCameraZ + (targetCameraZ - presentedCameraZ) * 0.08;
+    camera.position.set((snapshot.camera?.x ?? 0) + Math.sin(time * 53) * trauma * 8, presentedCameraY + Math.cos(time * 47) * trauma * 6, presentedCameraZ);
+    camera.lookAt(0, presentedCameraY, 0);
     updateParallax(snapshot, time);
 
     const staminaPct = Math.max(0, Math.min(1, (snapshot.stamina ?? 0) / Math.max(1, snapshot.constants?.maxStamina ?? 100)));
@@ -350,8 +396,23 @@ export function createThreeRenderer({ canvas }) {
       g.userData.halo.rotation.z += 0.012;
     }
     for (const beam of beacons.children) {
-      beam.material.opacity = beam.userData.type === "summit" ? 0.14 + Math.sin(time * 2.2) * 0.04 : 0.18 + Math.sin(time * 4.5 + beam.userData.sourceY) * 0.1;
+      beam.material.opacity = beam.userData.type === "summit"
+        ? (snapshot.completed ? 0.58 : 0.14) + Math.sin(time * (snapshot.completed ? 5.2 : 2.2)) * (snapshot.completed ? 0.16 : 0.04)
+        : 0.18 + Math.sin(time * 4.5 + beam.userData.sourceY) * 0.1;
       beam.rotation.y += beam.userData.type === "summit" ? 0.003 : 0.009;
+    }
+    summitCelebration.visible = Boolean(snapshot.completed && summit);
+    if (summitCelebration.visible) {
+      const pulse = 0.5 + 0.5 * Math.sin(time * 5.5);
+      celebrationRings.forEach((ring, index) => {
+        const phase = time * (index % 2 ? -0.52 : 0.68) + index * 0.7;
+        ring.rotation.set(Math.sin(phase) * 0.32, Math.cos(phase * 0.8) * 0.26, phase);
+        ring.scale.setScalar(0.88 + index * 0.12 + pulse * (0.16 + index * 0.035));
+        ring.material.opacity = 0.28 + pulse * (0.42 - index * 0.08);
+      });
+      summitLight.intensity = 5.5 + pulse * 4.5;
+    } else {
+      summitLight.intensity = 0;
     }
 
     player.position.set(snapshot.player.x, snapshot.player.y, snapshot.player.z ?? 1);
@@ -370,7 +431,9 @@ export function createThreeRenderer({ canvas }) {
     reach.material.opacity = reach.visible ? 0.05 + Math.sin(time * 3) * 0.02 : 0;
     spot.position.set(snapshot.player.x, snapshot.player.y + 115, 100);
     spot.target.position.set(snapshot.player.x, snapshot.player.y, -10);
-    diegeticEffects.update(snapshot, 1 / 60);
+    const effectDt = Math.max(0, Math.min(0.1, time - lastEffectTime));
+    lastEffectTime = time;
+    diegeticEffects.update(snapshot, effectDt);
     renderer.render(scene, camera);
   }
 
@@ -383,5 +446,26 @@ export function createThreeRenderer({ canvas }) {
     return Number.isFinite(hit.x) && Number.isFinite(hit.y) ? { x: hit.x, y: hit.y } : null;
   }
 
-  return { draw, screenToWorld };
+  function getMetrics() {
+    let sceneNodes = 0;
+    scene.traverse(() => { sceneNodes += 1; });
+    return {
+      sceneNodes,
+      ledgeEntities: ledgeMap.size,
+      drawCalls: renderer.info.render.calls,
+      triangles: renderer.info.render.triangles,
+      points: renderer.info.render.points,
+      lines: renderer.info.render.lines,
+      geometries: renderer.info.memory.geometries,
+      textures: renderer.info.memory.textures,
+      dynamicLineCapacities: {
+        rope: rope.geometry.getAttribute("position")?.count ?? 0,
+        trajectory: traj.geometry.getAttribute("position")?.count ?? 0,
+        aim: aim.geometry.getAttribute("position")?.count ?? 0,
+        route: routeLine.geometry.getAttribute("position")?.count ?? 0
+      }
+    };
+  }
+
+  return { draw, screenToWorld, getMetrics };
 }

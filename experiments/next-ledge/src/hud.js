@@ -14,7 +14,7 @@ function pressureState(snapshot) {
 function promptFor(snapshot) {
   if (snapshot.paused) return { text: "P — Resume climb", tone: "ready" };
   if (snapshot.mode === "dead") return { text: "R — Retry from the anchor line", tone: "danger" };
-  if (snapshot.mode === "won") return { text: "N — Ascend to the next sector", tone: "success" };
+  if (snapshot.mode === "won") return { text: "N — Carry the relay into the next sector", tone: "success" };
   if (snapshot.mode === "falling") return { text: "Aim + space / click — Fire grapple", tone: "danger" };
   if (snapshot.mode === "launched") return { text: "Guide the line · Click to retract", tone: "ready" };
   if (snapshot.mode === "retracting") return { text: "Steer while the line resets", tone: "danger" };
@@ -36,7 +36,7 @@ function playerStatus(snapshot) {
 }
 
 export function createHud(nodes = {}) {
-  const { status, readout, statusCopy, objective, sectorLabel, actionPrompt, staminaValue, staminaMeter, cargoValue, cargoMeter, pressureValue, pressureMeter } = nodes;
+  const { status, readout, statusCopy, objective, sectorLabel, actionPrompt, staminaValue, staminaMeter, cargoValue, cargoMeter, pressureValue, pressureMeter, completionPanel } = nodes;
   let lastStatus = "";
   let lastReadout = "";
   return {
@@ -61,7 +61,7 @@ export function createHud(nodes = {}) {
       }
       if (statusCopy) statusCopy.textContent = playerStatus(snapshot);
       if (objective) objective.textContent = snapshot.completed
-        ? "Summit signal delivered. Continue upward when ready."
+        ? "Signal delivered. The summit relay is broadcasting through the storm."
         : cargoAmount > 0
           ? `Carry ${cargoAmount} recovered signal unit${cargoAmount === 1 ? "" : "s"} to the summit. Rest anchors restore stamina and reduce pressure.`
           : "Carry the recovered anchor signal to the summit. Rest anchors restore stamina and bleed off fall pressure.";
@@ -71,12 +71,14 @@ export function createHud(nodes = {}) {
         actionPrompt.dataset.tone = prompt.tone;
       }
       if (staminaValue) staminaValue.textContent = `${Math.max(0, staminaPercent)}%`;
-      if (cargoValue) cargoValue.textContent = `${cargoAmount} / ${cargoMax}`;
+      if (cargoValue) cargoValue.textContent = snapshot.completed ? "DELIVERED" : `${cargoAmount} / ${cargoMax}`;
       if (pressureValue) pressureValue.textContent = `${Math.max(0, pressurePercent)}%`;
       setMeter(staminaMeter, staminaPercent);
       setMeter(cargoMeter, cargoAmount / cargoMax * 100);
       setMeter(pressureMeter, pressurePercent);
+      if (completionPanel) completionPanel.hidden = !snapshot.completed;
       document.documentElement.dataset.mode = String(snapshot.mode ?? "unknown");
+      document.documentElement.dataset.signal = snapshot.completed ? "delivered" : "carrying";
     }
   };
 }

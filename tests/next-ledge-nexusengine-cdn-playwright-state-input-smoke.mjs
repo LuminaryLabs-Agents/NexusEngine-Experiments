@@ -7,6 +7,9 @@ const session = readFileSync("experiments/next-ledge/src/session.js", "utf8");
 const index = readFileSync("experiments/next-ledge/index.html", "utf8");
 const hud = readFileSync("experiments/next-ledge/src/hud.js", "utf8");
 const diagnostics = readFileSync("experiments/next-ledge/src/advanced-diagnostics.js", "utf8");
+const climbPreset = readFileSync("experiments/next-ledge/src/climb-preset.js", "utf8");
+const climbAdapter = readFileSync("experiments/next-ledge/src/climb-anchor-adapter.js", "utf8");
+const renderer = readFileSync("experiments/next-ledge/src/renderer-three-fidelity.js", "utf8");
 
 assert.ok(sessionVisual.includes("https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js"));
 assert.ok(!sessionVisual.includes("LuminaryLabs-Dev/NexusRealtime@0.0.2"));
@@ -50,6 +53,22 @@ assert.match(session, /safeAnchorY - n\(state\.tuning\.failFloorDistance/, "fail
 for (const visibleSurface of ["Next Ledge", "A / D", "SPACE / CLICK", "R</b> retry", "Signal cargo", "Fall pressure", "Advanced controls + diagnostic layers"]) {
   assert.ok(index.includes(visibleSurface), `first screen should include ${visibleSurface}`);
 }
+for (const masterySurface of ["Stormbreak rest", "Commit perch", "Crosswind catch", "Relay crown", "Summit relay"]) {
+  assert.ok(climbPreset.includes(masterySurface), `authored mastery crest should include ${masterySurface}`);
+}
+assert.match(climbAdapter, /masteryCrestId/, "route adapter should preserve mastery crest metadata");
+assert.match(climbAdapter, /authoredRouteBeat/, "route adapter should mark authored late-route beats");
+assert.match(index, /id="completionPanel"/, "route shell should provide an unmistakable summit completion surface");
+assert.match(index, /Summit Relay Online/, "completion surface should name the delivered outcome");
+assert.match(renderer, /summitCelebration/, "Three.js presentation should include a persistent summit celebration");
+assert.match(renderer, /getMetrics/, "renderer should expose bounded performance evidence to GameHost");
+assert.match(renderer, /getDrawRange|setDrawRange/, "dynamic line geometry should reuse bounded buffers");
+assert.match(renderer, /time - lastEffectTime/, "one-shot effects should age by real render time");
+assert.doesNotMatch(index, /backdrop-filter/, "HUD readability should not depend on a WebGL-overlapping blur compositor");
+assert.match(hud, /snapshot\.completed \? "DELIVERED"/, "completed cargo should read as delivered instead of an ambiguous zero");
+assert.match(session, /new Set\(state\.recentEvents\)/, "bounded recent events should still forward late-route objective progress");
+assert.match(session, /latchCandidates = assistedTarget \? \[assistedTarget\]/, "magnetized shots should not collide with unrelated old anchors");
+assert.match(session, /maxAngularSpeed/, "swing energy should remain bounded through long holds and reel handoffs");
 assert.doesNotMatch(index, /<script type="module" src="\.\/src\/.*readiness-entry\.js/, "readiness overlays must not cover the default playable view");
 assert.match(hud, /actionPrompt/, "HUD should drive the contextual hero prompt");
 assert.match(hud, /staminaMeter/, "HUD should expose player-readable stamina");
