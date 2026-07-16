@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "capturedAt": "2026-07-15T12:02:05-04:00",
   "sourceCommits": {
-    "coreRemoteDefault": "49fa98f5f0644294b97572c3bb87b14ce359856b",
+    "coreRemoteDefault": "c692ea30f860fdff3735ecde90f8b1f67c8806e3",
     "protoKits": "ffdcc962d3c984864a2d78e9276879adf04250eb",
     "experiments": "615a7e1e2170164acef0edebdbe0b88b8c01fd1b"
   },
@@ -20,9 +20,9 @@
     "flatAaaRoutes": 100,
     "otherExperimentFolders": 33,
     "existingGames": 4,
-    "naturalLanguageCoreDomainDocuments": 26,
-    "exportedCoreDomainCompositions": 12,
-    "exportedCoreCapabilityKits": 39
+    "naturalLanguageCoreDomainDocuments": 28,
+    "exportedCoreDomainCompositions": 14,
+    "exportedCoreCapabilityKits": 40
   },
   "core": {
     "coreKitDomainDocs": [
@@ -52,11 +52,13 @@
     "standaloneCoreDomainDocs": [
       "src/core-domains/core-capture-domain/core-domain.md",
       "src/core-domains/core-compute-domain/core-domain.md",
+      "src/core-domains/core-object-domain/core-domain.md",
       "src/core-domains/core-object-fidelity-domain/core-domain.md",
+      "src/core-domains/core-object-shape-domain/core-domain.md",
       "src/core-domains/core-world-domain/README.md"
     ],
-    "coreDomainExportCount": 12,
-    "coreCapabilityKitExportCount": 39
+    "coreDomainExportCount": 14,
+    "coreCapabilityKitExportCount": 40
   },
   "protoKits": [
     {

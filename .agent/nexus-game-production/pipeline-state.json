@@ -26,16 +26,16 @@
     }
   },
   "synchronizedStartingCommits": {
-    "coreRemoteDefault": "49fa98f5f0644294b97572c3bb87b14ce359856b",
+      "coreRemoteDefault": "c692ea30f860fdff3735ecde90f8b1f67c8806e3",
     "protokits": "ffdcc962d3c984864a2d78e9276879adf04250eb",
     "experiments": "615a7e1e2170164acef0edebdbe0b88b8c01fd1b",
     "experimentsBaseline": "615a7e1e2170164acef0edebdbe0b88b8c01fd1b"
   },
   "baseline": {
-    "naturalLanguageCoreDomainDocuments": 26,
-    "exportedCoreDomainCompositions": 12,
-    "exportedCoreCapabilityKits": 39,
-    "exportedCoreCapabilityKitsWithoutDedicatedCoreDomainDocs": 17,
+    "naturalLanguageCoreDomainDocuments": 28,
+    "exportedCoreDomainCompositions": 14,
+    "exportedCoreCapabilityKits": 40,
+    "exportedCoreCapabilityKitsWithoutDedicatedCoreDomainDocs": 18,
     "existingTopLevelProtoKitFolders": 514,
     "existingProtoKitFoldersWithEntrypoints": 510,
     "existingProtoKitFoldersWithNaturalLanguageReadmes": 188,
@@ -58,7 +58,7 @@
       "refinementSlices": 0
     },
     "progress": {
-      "acceptedNewKits": 60,
+      "acceptedNewKits": 70,
       "implementedNewKits": 0,
       "playableNewExperiments": 0,
       "consolidatedNewGames": 0,
@@ -90,7 +90,7 @@
       "refinementSlices": 0
     },
     "progress": {
-      "acceptedNewKits": 60,
+      "acceptedNewKits": 70,
       "implementedNewKits": 0,
       "playableNewExperiments": 0,
       "consolidatedNewGames": 0,
@@ -98,10 +98,10 @@
     }
   },
   "catalogTotals": {
-    "acceptedDefinitionsLifetime": 60,
-    "acceptedDefinitionsBootstrap": 60,
-    "acceptedDefinitionsCurrentEpoch": 60,
-    "rejectedCandidatesLifetime": 36
+    "acceptedDefinitionsLifetime": 70,
+    "acceptedDefinitionsBootstrap": 70,
+    "acceptedDefinitionsCurrentEpoch": 70,
+    "rejectedCandidatesLifetime": 42
   },
   "assetTotals": {
     "kits": {
@@ -127,28 +127,28 @@
     }
   },
   "lastCatalogUnit": {
-    "packetId": "2026-07-16-bootstrap-catalog-051-060",
-    "scope": "catalog-batch-051-060",
+    "packetId": "2026-07-16-bootstrap-catalog-061-070",
+    "scope": "catalog-batch-061-070",
     "result": "Accepted 10 genuinely new natural-language kit contracts after six additional duplicate, catalog-overlap, or blurred-scope rejections; no implementation was created."
   },
   "lastCreationUnit": null,
   "lastRefinementUnit": null,
   "lastCompletedUnit": {
-    "packetId": "2026-07-16-bootstrap-catalog-051-060",
-    "scope": "Bootstrap catalog batch 051-060",
-    "result": "Accepted 10 renderer-agnostic contracts across material fatigue, mechanical wear, phase transition, watershed runoff, salinity, aquatic oxygen, carbon cycling, conditioning, cultural norms, and magnetic interaction; rejected six adjacent duplicates.",
-    "validation": "passed: refreshed Core authority, Phase A drift guard, production invariants, JSON parsing, folder/export/name collision checks, Playwright reader/reviewer interaction, clean screenshot comparison, zero console errors or warnings, and diff checks",
+    "packetId": "2026-07-16-bootstrap-catalog-061-070",
+    "scope": "Bootstrap catalog batch 061-070",
+    "result": "Accepted 10 renderer-agnostic contracts across material creep, granular state, electrochemical storage, aqueous acid-base balance, radioactive decay chains, optical propagation, capillary wetting, selective membrane transport, mechanical resonance, and dielectric interaction; rejected six adjacent duplicates or blurred scopes.",
+    "validation": "passed: refreshed Core authority, Phase A drift guard, production invariants, JSON parsing, folder/export/name collision checks, Playwright reader/reviewer interaction, clean screenshot comparison, zero clean-rerun console errors or warnings, and diff checks",
     "commits": {
       "protokitsStartAndFinal": "ffdcc962d3c984864a2d78e9276879adf04250eb",
-      "experimentsStart": "40ed1bff0bacb3b5fafdb83845451e505bc1bb51",
-      "experimentsProductionUnit": "4771dc0dfb503fd57f8669d260e4b8a4fde690a7"
+      "experimentsStart": "1b6e6aab6705b08447bd4929a1e053ea259d594f",
+      "experimentsProductionUnit": "pending"
     },
-    "publication": "production commit published to origin/main; publication record commit intentionally not self-hashed"
+    "publication": "pending validation, commit, fetch-check, and push"
   },
   "exactNextUnit": {
     "phase": "B-catalog",
     "epoch": 0,
-    "scope": "catalog-batch-061-070",
-    "goal": "Propose and audit bootstrap kit definitions 061-070 without implementing them."
+    "scope": "catalog-batch-071-080",
+    "goal": "Propose and audit bootstrap kit definitions 071-080 without implementing them."
   }
 }

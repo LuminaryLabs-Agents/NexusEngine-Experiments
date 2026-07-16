@@ -1,7 +1,7 @@
 # Core Domain Coverage Report
 
 Status: bootstrap Phase B catalog in progress
-Accepted catalog definitions: 60 of 100 bootstrap definitions
+Accepted catalog definitions: 70 of 100 bootstrap definitions
 Implemented production kits: 0
 Playable production experiments: 0
 
@@ -73,6 +73,16 @@ Core is authoritative. A new kit must name the Core domains it configures or com
 | `behavioral-conditioning-domain-kit` | data + simulation + agent/input/interaction observations | cue-action-outcome associations, habituation, extinction, generalization, and discrimination | pass |
 | `cultural-norm-adoption-domain-kit` | data + policy + simulation + agent/interaction observations | norm adoption lineage, compliance, sanctions, exemptions, contest, and replacement | pass |
 | `magnetic-interaction-domain-kit` | simulation + data + physics/spatial/scene observations | polarity, magnetization, remanence, saturation, coupling, and force-intent descriptors | pass |
+| `material-creep-domain-kit` | simulation + data + physics/diagnostics/scene observations | sustained-load creep stages, relaxation, deformation, rupture margin, and service state | pass |
+| `granular-material-state-domain-kit` | simulation + data + physics/world/scene observations | bulk packing, segregation, flowability, bridging, jamming, discharge, and recovery | pass |
+| `electrochemical-energy-storage-domain-kit` | simulation + data + physics/diagnostics/world observations | cell and pack charge, health, imbalance, cycle degradation, cutoff, and stranded energy | pass |
+| `aqueous-acid-base-balance-domain-kit` | simulation + data + world/physics/diagnostics observations | acid-base equivalents, alkalinity, buffer reserve, dosing, pH bands, overshoot, and recovery | pass |
+| `radioactive-decay-chain-domain-kit` | simulation + data + world/policy/diagnostics observations | nuclide inventories, deterministic branching, daughter lineage, activity bands, and stable products | pass |
+| `optical-propagation-domain-kit` | simulation + data + physics/spatial observations; graphics presentation boundary | gameplay optical paths, medium transitions, polarization, attenuation, and receiver arrivals | pass |
+| `capillary-wetting-domain-kit` | simulation + data + physics/spatial/world observations | wetting-front lineage, capillary uptake, hysteresis, saturation, breakthrough, drainage, and drying | pass |
+| `selective-membrane-transport-domain-kit` | simulation + data + physics/world/diagnostics observations | selective species flux, retention, fouling, integrity, breakthrough, and regeneration | pass |
+| `mechanical-resonance-domain-kit` | simulation + data + physics/diagnostics/scene observations | mechanical modes, forcing history, modal response, resonance capture, detuning, overload, and mitigation | pass |
+| `dielectric-interaction-domain-kit` | simulation + data + physics/spatial/scene observations | dielectric polarization, stored charge, loss, hysteresis, coupling, discharge, and breakdown risk | pass |
 
 No definition claims Core state primitives, provider implementations, renderer ownership, raw input, browser lifecycle, or game-specific content.
 
@@ -114,6 +124,12 @@ No definition claims Core state primitives, provider implementations, renderer o
 - `debt-obligation-domain-kit`: existing debt, invoice, social-debt, promise, and contract declarations plus negotiation commitments already own the lifecycle.
 - `soil-moisture-balance-domain-kit`: the idea inventory explicitly declares soil moisture and agriculture already owns plot watering observations.
 - `collective-consensus-domain-kit`: governance resolution owns proposals, quorum, ballots, ratification, enactment, challenge, and appeal; collective resolve owns group rally and break state.
+- `sediment-transport-domain-kit`: the idea inventory already declares sediment flow while terrain erosion emits sediment and deposition deltas.
+- `market-price-discovery-domain-kit`: economy plus market-pressure, price-band, procurement, forecast, mutation, and trade owners already cover the cluster.
+- `geothermal-reservoir-domain-kit`: blurred aquifer, thermal, volcanic, power, pressure, extraction, and authored geology responsibilities.
+- `organism-metabolism-domain-kit`: blurred survival resources, chemical conversion, respiration, growth, waste, population, and creature physiology.
+- `dialect-evolution-domain-kit`: blurred language comprehension, rumor lineage, cultural norms, group identity, lexicons, and dialogue content.
+- `osmosis-balance-domain-kit`: accepted selective membrane transport already owns gradients, permeability, selectivity, flux, retention, fouling, integrity, breakthrough, and regeneration.
 
 ## Baseline Risk Map
 
@@ -129,7 +145,8 @@ No definition claims Core state primitives, provider implementations, renderer o
 | Physics wrappers | `core-physics-kit` | Provider adapters or gameplay meaning only |
 | World/terrain/content families | `core-world-domain` plus providers | Heavy terrain/content stays provider-owned; portable snapshots remain light |
 | Capture, compute, object fidelity | dedicated Core domains | Compose requests/builders/providers; no parallel orchestration |
+| Object shape derivation | `core-object-shape-domain` | Add object-specific semantics or providers only; do not duplicate source/derived shape descriptors, preservation targets, content-addressed jobs, or quality evidence |
 
 ## Exact Next Audit
 
-Audit bootstrap catalog definitions 061-070 against all 514 existing top-level folders, nested declarations, package exports, and the current Core map before acceptance.
+Audit bootstrap catalog definitions 071-080 against all 514 existing top-level folders, nested declarations, package exports, and the current Core map before acceptance.

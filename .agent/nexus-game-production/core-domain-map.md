@@ -1,9 +1,9 @@
 # Core Domain Map
 
 Status: Phase A baseline complete
-Authority: read-only `NexusEngine` `origin/main` at `49fa98f5f0644294b97572c3bb87b14ce359856b`
+Authority: read-only `NexusEngine` `origin/main` at `c692ea30f860fdff3735ecde90f8b1f67c8806e3`
 
-The local Core worktree was 284 commits behind after fetch, so this map uses files read directly from `origin/main` without changing the Core worktree. The authority change since the prior catalog batch touched Core Graphics procedural-material descriptor implementation only; it did not change natural-language domain ownership or export counts.
+The local Core worktree was 312 commits behind after fetch, so this map uses files read directly from `origin/main` without changing the Core worktree. The authority change since the prior catalog batch added Core Object and Core Object Shape composition exports plus two natural-language contracts. Object Shape now owns source and derived shape descriptors, preservation profiles and targets, content-addressed derivation jobs, provider coordination, metrics, quality evidence, validation, snapshots, and reset; Phase B must reject geometry-derivation duplicates.
 
 ## Boundary Rule
 
@@ -38,13 +38,15 @@ Core is the stable primitive and capability owner. New ProtoKits may configure, 
 | `core-world-domain` | World identity, partitions, cells, surfaces, provider lifecycle, portable coordination snapshots | Terrain algorithms, heavy provider state, render/GPU objects, physics, game biomes, async jobs, replication | Compose world features/providers; never store heavy host state in Core snapshots |
 | `core-capture-domain` | Renderer-neutral capture subjects, view sets, jobs, provider coordination, asset-reference results | Motivation, fidelity policy, renderer/GPU/Canvas, encoding/download | Request observations and supply providers through adapters |
 | `core-compute-domain` | Buffer/kernel/graph descriptors, dispatch, provider lifecycle, serializable execution summaries | Visual meaning, GPU/Worker lifecycle, gameplay authority, physics | Use for optional parallel execution, never as simulation ownership |
+| `core-object-domain` | Optional composition of universal object identity, object shape, and object fidelity without adding state | Child-domain state or object-specific semantics | Compose the child domains; never add a parallel object umbrella |
+| `core-object-shape-domain` | Source and derived shape descriptors, preservation targets, content-addressed derivation jobs, provider coordination, metrics, quality evidence, validation, snapshots, reset | Object identity, fidelity adaptation, capture rendering, materials, lighting, renderer/GPU/worker ownership, asset compression, object-specific semantics | Add object-specific shape meaning or providers outside Core; never recreate derivation orchestration |
 | `core-object-fidelity-domain` | Fidelity profiles/forms/builds/readiness, capture dependencies, contextual adaptation, atomic replacement | Object identity, object-specific generation, renderer/GPU, capture rendering, transport | Add object-specific form builders outside Core |
 
 ## Exported Core Shape
 
-- `src/core-domains/index.js` exports 12 parent/composition domains: startup, world, creature, character, player, presentation, graphics, motion, physics, compute, capture, and object fidelity.
-- `src/core-kits/index.js` exports 39 capability-kit modules plus the Core capability contract, realtime substrate, and sequence substrate.
-- Seventeen capability exports do not have a dedicated `src/core-kits/<kit>/core-domain.md`: object, object fidelity, capture, startup, creature, character, player, compute, skybox, presentation, presentation output, UI scale, camera framing, debug, headless editor, transaction ledger, and utility. Their source/README or parent-domain contract remains authoritative; absence of a dedicated file is not permission to duplicate them.
+- `src/core-domains/index.js` exports 14 parent/composition domains: startup, world, creature, character, player, object, object shape, presentation, graphics, motion, physics, compute, capture, and object fidelity.
+- `src/core-kits/index.js` exports 40 capability-kit modules plus the Core capability contract, realtime substrate, and sequence substrate.
+- Eighteen capability exports do not have a dedicated `src/core-kits/<kit>/core-domain.md`: object, object shape, object fidelity, capture, startup, creature, character, player, compute, skybox, presentation, presentation output, UI scale, camera framing, debug, headless editor, transaction ledger, and utility. Their source/README or parent-domain contract remains authoritative; absence of a dedicated file is not permission to duplicate them.
 
 ## Promotion-Sensitive Overlaps Already Present in ProtoKits
 
@@ -52,5 +54,6 @@ Core is the stable primitive and capability owner. New ProtoKits may configure, 
 - Named seed streams, completion ledgers, and canonical state digests now belong to `core-data-kit`.
 - Resource meters, pressure channels, and action windows now belong to `core-simulation-kit`.
 - Generic interaction, transform/spatial graph, render descriptor, and physics wrappers overlap promoted Core capability surfaces.
+- Source/derived geometric shape descriptors and derivation-job orchestration now belong to `core-object-shape-domain`.
 
 Phase B must reject Core renames and accept only higher-level semantic behavior, explicit adapters, or compositions that prove reuse beyond these owners.

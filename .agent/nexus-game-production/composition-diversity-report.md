@@ -2,11 +2,11 @@
 
 Status: catalog-only; experiment gate remains blocked
 Accepted production experiment signatures: 0 of 50 bootstrap experiments
-Accepted bootstrap kit contracts: 60 of 100
+Accepted bootstrap kit contracts: 70 of 100
 
 ## Catalog Composition Pressure
 
-The first sixty definitions are not route shells. They support at least forty-one mechanically distinct future seeded proof clusters:
+The first seventy definitions are not route shells. They support at least fifty-one mechanically distinct future seeded proof clusters:
 
 - Quarantine Lantern: contagion + triage + rumor + navigation knowledge.
 - Rewilding Basin: ecosystem population + habitat suitability + territory influence.
@@ -49,6 +49,16 @@ The first sixty definitions are not route shells. They support at least forty-on
 - Signal School: behavioral conditioning + collective resolve + language comprehension + environmental traces.
 - Lantern Commons: cultural norm adoption + rumor propagation + governance resolution + language comprehension.
 - Polarity Vault: magnetic interaction + power distribution + structural support + instrument calibration.
+- Creepwatch Causeway: material creep + thermal energy + structural support + instrument calibration.
+- Silo Jam Rescue: granular material state + supply-chain fulfillment + mechanical wear + material recovery.
+- Redline Battery Vault: electrochemical storage + power distribution + thermal energy + material fatigue.
+- Buffer Reef: aqueous acid-base balance + water salinity + aquatic oxygen + carbon cycling.
+- Isotope Garden: radioactive decay chains + contamination + specimen integrity + instrument calibration.
+- Prism Relay: optical propagation + dielectric interaction + celestial visibility + instrument calibration.
+- Wickline Foundry: capillary wetting + material phase transition + corrosion + contamination.
+- Membrane Ark: selective membrane transport + salinity + potable-water service + wastewater treatment.
+- Resonance Span: mechanical resonance + material fatigue + structural support + magnetic interaction.
+- Static Orchard: dielectric interaction + electrochemical storage + power distribution + thermal energy.
 
 These are proof targets, not accepted experiment records. Seeds, candidate draw order, rejections, kit signatures, routes, and playable validation do not exist yet and therefore do not count.
 
@@ -67,5 +77,5 @@ Every accepted experiment must record epoch, lifecycle status, seed, full candid
 
 - Exact duplicate production signatures: 0 because no production signatures are accepted.
 - Near-duplicate production signatures: 0 because no production signatures are accepted.
-- Catalog boundary duplication: 0 accepted; thirty-six candidates were rejected before acceptance across the first six batches.
+- Catalog boundary duplication: 0 accepted; forty-two candidates were rejected before acceptance across the first seven batches.
 - Diversity claim: contract pressure only; no playable diversity claim yet.
