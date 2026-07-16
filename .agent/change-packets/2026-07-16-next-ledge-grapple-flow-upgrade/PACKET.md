@@ -2,7 +2,7 @@
 
 Packet ID: `2026-07-16-next-ledge-grapple-flow-upgrade`
 Automation: Nexus Engine Game Production Builder
-Status: validated; publication receipt pending
+Status: complete and published
 
 ## Intent
 
@@ -129,7 +129,7 @@ No source, route, asset, or readiness implementation was deleted. Eight historic
 - Packet: `2026-07-16-next-ledge-grapple-flow-upgrade` (exactly one owned packet).
 - Starting commits: ProtoKits `16e444d8f8fc43def17986fce2556dfb76d17be9`; Experiments `e5b630591525ec47677bd52702ea7e49fbe992bb`.
 - ProtoKits production/final commit: `04d34f049f58ae359cf71d43466c429dac2a6d08`, published to `origin/main`.
-- Experiments production/final commit: `pending-current-unit`.
+- Experiments production commit: `faed2a6be6f0a1027f975bd4c04e1a78b71bbe57`, published to `origin/main`.
 
 ## Exact Next Playable Improvement
 
