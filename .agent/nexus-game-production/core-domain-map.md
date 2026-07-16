@@ -1,9 +1,9 @@
 # Core Domain Map
 
 Status: Phase A baseline complete
-Authority: read-only `NexusEngine` `origin/main` at `c692ea30f860fdff3735ecde90f8b1f67c8806e3`
+Authority: read-only `NexusEngine` `origin/main` at `6ca0c36b731014808e02cd1f53fb5d88ab9dfe70`
 
-The local Core worktree was 312 commits behind after fetch, so this map uses files read directly from `origin/main` without changing the Core worktree. The authority change since the prior catalog batch added Core Object and Core Object Shape composition exports plus two natural-language contracts. Object Shape now owns source and derived shape descriptors, preservation profiles and targets, content-addressed derivation jobs, provider coordination, metrics, quality evidence, validation, snapshots, and reset; Phase B must reject geometry-derivation duplicates.
+The local Core worktree was 323 commits behind after fetch, so this map uses files read directly from `origin/main` without changing the Core worktree. The authority advanced since the prior catalog batch, but the natural-language domain documents and Core kit/domain export shape are unchanged. Object Shape continues to own source and derived shape descriptors, preservation profiles and targets, content-addressed derivation jobs, provider coordination, metrics, quality evidence, validation, snapshots, and reset; Phase B must reject geometry-derivation duplicates.
 
 ## Boundary Rule
 

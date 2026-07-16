@@ -39,6 +39,7 @@ These remain active legacy baseline inventory. No production game or gameplay-ti
 | `2026-07-15-bootstrap-catalog-041-050` | 0 | Catalog 041-050 | `ffdcc962d3c984864a2d78e9276879adf04250eb` | `740ee0c63a24a8614e28d53abafc01c0913abd59` | `31d5c48e7b31855044b2eeadc9d6f07a14f98bf9` | inventory + JSON + collision invariants + Playwright/Human View passed | Experiments production commit published; ProtoKits unchanged |
 | `2026-07-16-bootstrap-catalog-051-060` | 0 | Catalog 051-060 | `ffdcc962d3c984864a2d78e9276879adf04250eb` | `40ed1bff0bacb3b5fafdb83845451e505bc1bb51` | `4771dc0dfb503fd57f8669d260e4b8a4fde690a7` | Core refresh + inventory + JSON + collision invariants + Playwright/Human View passed | Experiments production commit published; ProtoKits unchanged |
 | `2026-07-16-bootstrap-catalog-061-070` | 0 | Catalog 061-070 | `ffdcc962d3c984864a2d78e9276879adf04250eb` | `1b6e6aab6705b08447bd4929a1e053ea259d594f` | `ebe847ce07eec14bdc497a27560214c3d85596f4` | Core refresh + inventory + JSON + collision invariants + Playwright/Human View passed | Experiments production commit published; ProtoKits unchanged |
+| `2026-07-16-bootstrap-catalog-071-080` | 0 | Catalog 071-080 | `ffdcc962d3c984864a2d78e9276879adf04250eb` | `fffca63b6ef162b86701b14fe3189922950152b7` | pending | Core refresh + inventory + JSON + collision invariants + Playwright/Human View passed | publication pending; ProtoKits unchanged |
 
 ## Source Migration Gate
 

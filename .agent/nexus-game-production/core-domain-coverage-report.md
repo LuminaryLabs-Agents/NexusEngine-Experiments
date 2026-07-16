@@ -1,7 +1,7 @@
 # Core Domain Coverage Report
 
 Status: bootstrap Phase B catalog in progress
-Accepted catalog definitions: 70 of 100 bootstrap definitions
+Accepted catalog definitions: 80 of 100 bootstrap definitions
 Implemented production kits: 0
 Playable production experiments: 0
 
@@ -83,6 +83,16 @@ Core is authoritative. A new kit must name the Core domains it configures or com
 | `selective-membrane-transport-domain-kit` | simulation + data + physics/world/diagnostics observations | selective species flux, retention, fouling, integrity, breakthrough, and regeneration | pass |
 | `mechanical-resonance-domain-kit` | simulation + data + physics/diagnostics/scene observations | mechanical modes, forcing history, modal response, resonance capture, detuning, overload, and mitigation | pass |
 | `dielectric-interaction-domain-kit` | simulation + data + physics/spatial/scene observations | dielectric polarization, stored charge, loss, hysteresis, coupling, discharge, and breakdown risk | pass |
+| `interfacial-adhesion-domain-kit` | simulation + data + physics/scene/spatial observations | interface preparation, cure, bond capacity, debonding, repair, and residual adhesion | pass |
+| `plastic-deformation-domain-kit` | simulation + data + physics/diagnostics/scene observations | yield history, elastic-plastic partition, hardening, residual deformation, necking, and collapse risk | pass |
+| `fluid-cavitation-domain-kit` | simulation + data + physics/world/diagnostics observations | cavitation inception, cavity populations, collapse exposure, erosion intents, suppression, and recovery | pass |
+| `surface-sorption-domain-kit` | simulation + data + world/physics/diagnostics observations | finite surface sites, competitive occupancy, adsorption, desorption, poisoning, and regeneration | pass |
+| `photoluminescence-domain-kit` | simulation + data + graphics/physics/scene descriptor boundary | excitation populations, emission timing, afterglow, quenching, bleaching, and recovery | pass |
+| `microbial-biofilm-domain-kit` | simulation + data + world/scene/agent observations | attached colonies, matrix stages, detachment, cleaning tolerance, dispersal, and recurrence | pass |
+| `taphonomic-preservation-domain-kit` | simulation + data + world/scene/object-fidelity observations | burial, mineral replacement, compression, distortion, preservation quality, and recoverability | pass |
+| `plant-transpiration-domain-kit` | simulation + data + world/agent/spatial observations | plant water stores, stomatal regulation, transpiration, turgor, wilting, and recovery | pass |
+| `piezoelectric-transduction-domain-kit` | simulation + data + physics/spatial/diagnostics observations | bidirectional strain-charge transduction, orientation, coupling, saturation, and depolarization | pass |
+| `crystal-nucleation-growth-domain-kit` | simulation + data + physics/world observations; Core Object Shape handoff | nucleus lineage, growth-front competition, habit, inclusions, defects, annealing, and quality | pass |
 
 No definition claims Core state primitives, provider implementations, renderer ownership, raw input, browser lifecycle, or game-specific content.
 
@@ -130,6 +140,12 @@ No definition claims Core state primitives, provider implementations, renderer o
 - `organism-metabolism-domain-kit`: blurred survival resources, chemical conversion, respiration, growth, waste, population, and creature physiology.
 - `dialect-evolution-domain-kit`: blurred language comprehension, rumor lineage, cultural norms, group identity, lexicons, and dialogue content.
 - `osmosis-balance-domain-kit`: accepted selective membrane transport already owns gradients, permeability, selectivity, flux, retention, fouling, integrity, breakthrough, and regeneration.
+- `catalyst-activity-domain-kit`: accepted chemical reaction batches already own catalyst references and effects, progress, yield, byproducts, quench, and outcomes.
+- `brittle-fracture-propagation-domain-kit`: accepted fatigue already owns crack growth while structural support owns ordered support failure.
+- `triboelectric-charging-domain-kit`: accepted wear owns contact history while dielectric interaction owns stored charge, coupling, discharge, and breakdown risk.
+- `permafrost-thaw-domain-kit`: accepted cryosphere, phase-transition, thermal, and carbon boundaries already own its proposed state.
+- `ocean-carbonate-balance-domain-kit`: accepted acid-base, carbon, salinity, and oxygen boundaries already own its proposed state.
+- `biological-tissue-repair-domain-kit`: existing damage-health and status owners already own wounds, healing, restoration, and staged subject conditions.
 
 ## Baseline Risk Map
 
@@ -149,4 +165,4 @@ No definition claims Core state primitives, provider implementations, renderer o
 
 ## Exact Next Audit
 
-Audit bootstrap catalog definitions 071-080 against all 514 existing top-level folders, nested declarations, package exports, and the current Core map before acceptance.
+Audit bootstrap catalog definitions 081-090 against all 514 existing top-level folders, nested declarations, package exports, and the current Core map before acceptance.

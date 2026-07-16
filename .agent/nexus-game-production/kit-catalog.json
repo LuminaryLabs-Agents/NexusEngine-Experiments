@@ -4,13 +4,13 @@
   "bootstrapTarget": 100,
   "epochTarget": 10,
   "counts": {
-    "acceptedBootstrap": 70,
-    "acceptedCurrentEpoch": 70,
-    "acceptedLifetime": 70,
+    "acceptedBootstrap": 80,
+    "acceptedCurrentEpoch": 80,
+    "acceptedLifetime": 80,
     "implementedBootstrap": 0,
     "implementedCurrentEpoch": 0,
     "implementedLifetime": 0,
-    "rejectedLifetime": 42
+    "rejectedLifetime": 48
   },
   "status": "bootstrap-catalog-in-progress",
   "requiredFields": [
@@ -1795,6 +1795,256 @@
       "idempotencyRule": "Field, charge, coupling, discharge, and damage IDs commit once, source-object pairs resolve in stable order, and authored stored-charge balances account for explicit input, loss, coupling, and discharge.",
       "duplicateAndMergeRisk": "Power distribution owns source-to-load service and magnetic interaction owns magnetization and magnetic coupling. Live inventory has no reusable owner for dielectric polarization, capacitive storage, loss, hysteresis, discharge, and breakdown-risk state.",
       "promotionPotential": "Experimental until charge balance, hysteresis and relaxation, snapshot migration, provider-free replay, and environmental plus puzzle consumers pass."
+    },
+    {
+      "id": "bootstrap-kit-071",
+      "name": "interfacial-adhesion-domain-kit",
+      "purpose": "Track authored material interfaces through preparation, joining, cure, bond loading, damage, debonding, repair, and residual adhesion from supplied contact and load observations without solving contact mechanics or geometry.",
+      "coreMapping": {
+        "configures": ["core-simulation-kit", "core-data-kit"],
+        "composesWith": ["core-physics-kit", "core-scene-kit", "core-spatial-kit"],
+        "nonDuplicatedMeaning": "Core Physics owns contacts and normalized load observations; this domain owns interface preparation, cure, bond-strength history, damage, debonding, rebonding, and residual adhesion meaning."
+      },
+      "classification": "feature-domain",
+      "ownership": ["authored material-pair and interface profiles", "surface preparation and contamination state", "bond creation and cure history", "normal, shear, and peel capacity bands", "bond damage, debonding, and repair lineage", "unjoined, curing, bonded, degraded, debonding, failed, and repaired classifications"],
+      "exclusions": ["contact or constraint solving", "mesh welding or geometry mutation", "bulk material fracture", "capillary wetting", "corrosion and mechanical wear", "renderer decals or glue effects", "asset-specific repair fiction", "real adhesive guidance"],
+      "actions": ["register adhesion profile", "register interface", "record preparation", "join interface", "advance cure", "record load observation", "resolve bond state", "repair or rebond", "separate interface", "reset adhesion"],
+      "resourcesAndState": ["interfacialAdhesion.profiles", "interfacialAdhesion.interfaces", "interfacialAdhesion.bonds", "interfacialAdhesion.loadLedger", "interfacialAdhesion.tick"],
+      "events": ["adhesion.interfacePrepared", "adhesion.joined", "adhesion.cured", "adhesion.degraded", "adhesion.debondStarted", "adhesion.failed", "adhesion.repaired", "adhesion.commandRejected", "adhesion.reset"],
+      "methods": ["registerProfile(definition)", "registerInterface(definition)", "recordPreparation(fact)", "join(command)", "advance(ticks)", "recordLoad(fact)", "repair(command)", "separate(command)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned interfacial-adhesion snapshot", "material-pair and preparation descriptors", "cure, capacity, and bond-state descriptors", "damage, debonding, residual-adhesion, and repair summaries"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable profile, interface, preparation, join, load, repair, and separation IDs", "authored fictional adhesion and cure rules", "explicit contact, load, temperature, and contamination observations"],
+      "expectedCompositions": ["material-corrosion-domain-kit", "mechanical-wear-domain-kit", "capillary-wetting-domain-kit", "structural-support-network-domain-kit"],
+      "plausibleUses": ["bond emergency hull patches while salt and vibration degrade each repair line", "rebuild a suspended archive by curing layered joints before the next load cycle"],
+      "experimentProof": "A seeded Bondline Bastion route must replay identical preparation, join, cure, load, contamination, repair, and separation facts into the same bond capacities, damage, debonding, residual adhesion, rejections, and digest across hull-patch and laminated-archive profiles.",
+      "idempotencyRule": "Preparation, join, load, repair, and separation IDs commit once, interfaces resolve in stable order, and each bond transition emits once per authored threshold crossing.",
+      "duplicateAndMergeRisk": "Core Physics owns contacts, fatigue owns cyclic bulk damage, and wear owns contact-pair surface loss. Live inventory has no reusable owner for interface preparation, cure, bond capacity, debonding, rebonding, and residual adhesion.",
+      "promotionPotential": "Hold until mixed-mode loading, cure and repair replay, snapshot migration, physics-adapter parity, and industrial plus traversal consumers pass."
+    },
+    {
+      "id": "bootstrap-kit-072",
+      "name": "plastic-deformation-domain-kit",
+      "purpose": "Accumulate authored load excursions into elastic and permanent deformation state, yield transitions, hardening or softening, residual-shape intents, and collapse risk without solving stress fields or mutating geometry.",
+      "coreMapping": {
+        "configures": ["core-simulation-kit", "core-data-kit"],
+        "composesWith": ["core-physics-kit", "core-diagnostics-kit", "core-scene-kit"],
+        "nonDuplicatedMeaning": "Core Physics owns bodies and load observations; this domain owns yield history, elastic-plastic partition, permanent strain, hardening or softening, residual-shape intent, and plastic collapse meaning."
+      },
+      "classification": "feature-domain",
+      "ownership": ["authored material and deformation profiles", "load-excursion history", "elastic and plastic strain partitions", "yield-surface and hardening state", "residual deformation and necking intents", "elastic, yielded, hardening, softened, necking, collapsed, and stabilized classifications"],
+      "exclusions": ["stress or finite-element solving", "rigid-body integration", "mesh deformation", "creep and stress relaxation", "fatigue crack growth", "fracture propagation", "renderer damage", "real structural certification"],
+      "actions": ["register deformation profile", "register component", "record load excursion", "resolve yield", "advance deformation", "unload component", "anneal or stabilize", "retire component", "reset deformation"],
+      "resourcesAndState": ["plasticDeformation.profiles", "plasticDeformation.components", "plasticDeformation.excursions", "plasticDeformation.yieldLedger", "plasticDeformation.tick"],
+      "events": ["plasticity.loadRecorded", "plasticity.yieldStarted", "plasticity.permanentSetChanged", "plasticity.hardened", "plasticity.softened", "plasticity.neckingRaised", "plasticity.collapsed", "plasticity.commandRejected", "plasticity.reset"],
+      "methods": ["registerProfile(definition)", "registerComponent(definition)", "recordLoad(fact)", "resolveYield(command)", "advance(ticks)", "unload(command)", "stabilize(command)", "retire(command)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned plastic-deformation snapshot", "load-excursion and yield descriptors", "elastic-plastic partition and hardening descriptors", "residual-shape, necking, collapse-risk, and service summaries"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable profile, component, excursion, yield, unload, stabilization, and retirement IDs", "authored fictional yield and hardening rules", "explicit load, temperature, geometry, and support observations"],
+      "expectedCompositions": ["material-creep-domain-kit", "material-fatigue-domain-kit", "structural-support-network-domain-kit", "instrument-calibration-domain-kit"],
+      "plausibleUses": ["cold-form salvage plates to match a damaged pressure door without crossing collapse bands", "reshape a clockwork bridge's sacrificial links and preserve their residual set between crossings"],
+      "experimentProof": "A seeded Forgememory Vault route must replay identical load, unload, thermal, stabilization, and retirement facts into the same yield transitions, permanent set, hardening, necking, collapse risk, rejections, and digest across salvage-plate and bridge-link profiles.",
+      "idempotencyRule": "Excursion, yield, unload, stabilization, and retirement IDs commit once, components resolve in stable order, and permanent deformation never reverses without an explicit authored recovery rule.",
+      "duplicateAndMergeRisk": "Creep owns sustained-load time response, fatigue owns cyclic crack damage, and structural support owns load paths. None owns monotonic yield, elastic-plastic partition, hardening, residual deformation, necking, and plastic collapse.",
+      "promotionPotential": "Experimental until multiaxial authored profiles, unload-reload loops, conservation bounds, snapshot migration, and fabrication plus structural consumers pass."
+    },
+    {
+      "id": "bootstrap-kit-073",
+      "name": "fluid-cavitation-domain-kit",
+      "purpose": "Resolve supplied pressure, temperature, and flow observations into cavitation inception, vapor-cavity populations, growth, transport lineage, collapse exposure, erosion intents, and recovery without solving fluid motion or rendering bubbles.",
+      "coreMapping": {
+        "configures": ["core-simulation-kit", "core-data-kit"],
+        "composesWith": ["core-physics-kit", "core-world-domain", "core-diagnostics-kit"],
+        "nonDuplicatedMeaning": "Core Physics and World own provider observations; this domain owns cavitation nuclei, inception, cavity population history, collapse exposure, erosion intent, and recovered-service meaning."
+      },
+      "classification": "feature-domain",
+      "ownership": ["authored fluid, device, and cavitation profiles", "nuclei and vapor-cavity populations", "inception and growth history", "cavity transport lineage from supplied observations", "collapse exposure and damage-intent ledger", "clear, incipient, cavitating, collapsing, erosive, suppressed, and recovered classifications"],
+      "exclusions": ["fluid dynamics or pressure solving", "boiling and bulk phase-transition ownership", "water surfaces and buoyancy", "actual material damage application", "acoustic signal propagation", "bubble rendering or particles", "pump geometry", "real engineering guidance"],
+      "actions": ["register cavitation profile", "register flow site", "record pressure observation", "seed cavity fact", "advance cavity state", "record transport observation", "collapse cavity", "suppress cavitation", "clear site", "reset cavitation"],
+      "resourcesAndState": ["fluidCavitation.profiles", "fluidCavitation.sites", "fluidCavitation.cavities", "fluidCavitation.collapseLedger", "fluidCavitation.tick"],
+      "events": ["cavitation.observationRecorded", "cavitation.inceptionStarted", "cavitation.cavityGrew", "cavitation.transported", "cavitation.collapsed", "cavitation.erosionIntentRaised", "cavitation.suppressed", "cavitation.commandRejected", "cavitation.reset"],
+      "methods": ["registerProfile(definition)", "registerSite(definition)", "recordObservation(fact)", "seedCavity(fact)", "advance(ticks)", "recordTransport(fact)", "collapse(command)", "suppress(command)", "clear(command)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned fluid-cavitation snapshot", "site, observation, and nuclei descriptors", "cavity population, growth, transport, and collapse descriptors", "exposure, erosion-intent, suppression, and service summaries"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable profile, site, observation, cavity, transport, collapse, suppression, and clearing IDs", "authored fictional cavitation rules", "explicit pressure, temperature, flow, material, and service observations"],
+      "expectedCompositions": ["mechanical-wear-domain-kit", "material-corrosion-domain-kit", "instrument-calibration-domain-kit", "potable-water-service-domain-kit"],
+      "plausibleUses": ["keep a submerged city's intake pumps above service flow without destructive cavity collapse", "steer a fantasy torpedo through pressure pockets that can either boost or erode its drive"],
+      "experimentProof": "A seeded Silent Pumpworks route must replay identical pressure, seed, transport, collapse, suppression, and clearing facts into the same cavity populations, collapse exposures, erosion intents, service states, rejections, and digest across intake-pump and propulsion profiles.",
+      "idempotencyRule": "Observation, cavity, transport, collapse, suppression, and clearing IDs commit once, sites and cavities resolve in stable order, and each collapse consumes its cavity exactly once.",
+      "duplicateAndMergeRisk": "Water and physics kits own surfaces, buoyancy, and provider observations while phase transition owns bulk phase fractions. None owns cavitation-specific inception, cavity populations, collapse exposure, erosion intent, suppression, and recovery.",
+      "promotionPotential": "Hold until cavity population bounds, collapse replay, snapshot migration, fluid-provider parity, and infrastructure plus vehicle consumers pass."
+    },
+    {
+      "id": "bootstrap-kit-074",
+      "name": "surface-sorption-domain-kit",
+      "purpose": "Track authored species occupancy on finite surface sites through adsorption, desorption, competition, saturation, release, poisoning, and regeneration from supplied concentration and condition observations without solving molecular transport.",
+      "coreMapping": {
+        "configures": ["core-simulation-kit", "core-data-kit"],
+        "composesWith": ["core-world-domain", "core-physics-kit", "core-diagnostics-kit"],
+        "nonDuplicatedMeaning": "Core owns resources and observations; this domain owns finite sorption-site inventories, competitive occupancy, adsorption-desorption lineage, saturation, release risk, poisoning, and regeneration meaning."
+      },
+      "classification": "feature-domain",
+      "ownership": ["authored sorbent, surface-site, and species profiles", "finite site inventory and occupancy", "species affinity and competitive displacement state", "adsorption and desorption ledger", "surface poisoning and regeneration history", "fresh, loading, saturated, releasing, poisoned, regenerating, and recovered classifications"],
+      "exclusions": ["membrane-crossing transport", "bulk contamination routing", "chemical reaction batches", "capillary wetting", "fluid-flow solving", "surface shaders", "asset-specific filters", "real treatment claims"],
+      "actions": ["register sorption profile", "register surface medium", "record concentration observation", "adsorb species", "desorb species", "resolve competition", "poison surface", "regenerate medium", "replace medium", "reset sorption"],
+      "resourcesAndState": ["surfaceSorption.profiles", "surfaceSorption.media", "surfaceSorption.sitePools", "surfaceSorption.transferLedger", "surfaceSorption.tick"],
+      "events": ["sorption.observationRecorded", "sorption.adsorbed", "sorption.desorbed", "sorption.displaced", "sorption.saturated", "sorption.releaseRiskRaised", "sorption.poisoned", "sorption.regenerated", "sorption.commandRejected", "sorption.reset"],
+      "methods": ["registerProfile(definition)", "registerMedium(definition)", "recordObservation(fact)", "adsorb(command)", "desorb(command)", "resolveCompetition(ticks)", "poison(command)", "regenerate(command)", "replace(command)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned surface-sorption snapshot", "surface-site and species-affinity descriptors", "occupancy, adsorption, desorption, and competition descriptors", "saturation, release-risk, poisoning, regeneration, and capacity summaries"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable profile, medium, site-pool, species, observation, transfer, poisoning, regeneration, and replacement IDs", "authored fictional sorption rules", "explicit concentration, temperature, pressure, and flow observations"],
+      "expectedCompositions": ["environmental-contamination-domain-kit", "wastewater-treatment-train-domain-kit", "selective-membrane-transport-domain-kit", "instrument-calibration-domain-kit"],
+      "plausibleUses": ["cycle charcoal moons through capture and regeneration before a refuge atmosphere releases its stored toxins", "separate enchanted dyes on a finite-site archive plate without changing the carrier fluid"],
+      "experimentProof": "A seeded Charcoal Moon route must replay identical observations, adsorption, desorption, competition, poisoning, regeneration, and replacement into the same site occupancy, saturation, release risk, capacity, rejections, and digest across air-scrubber and dye-separation profiles.",
+      "idempotencyRule": "Observation, transfer, poisoning, regeneration, and replacement IDs commit once, media and species resolve in stable order, and occupied plus free sites remain equal to authored capacity within tolerance.",
+      "duplicateAndMergeRisk": "Membrane transport owns cross-boundary selective flux and contamination owns region concentrations. Neither owns finite surface sites, competitive occupancy, adsorption-desorption lineage, surface poisoning, and regeneration.",
+      "promotionPotential": "Experimental until multi-species competition, site conservation, release replay, snapshot migration, and environmental plus laboratory consumers pass."
+    },
+    {
+      "id": "bootstrap-kit-075",
+      "name": "photoluminescence-domain-kit",
+      "purpose": "Advance authored luminescent sites through excitation, energy-state populations, prompt emission, afterglow, quenching, bleaching, recovery, and emission-intent descriptors without tracing light or owning renderer effects.",
+      "coreMapping": {
+        "configures": ["core-simulation-kit", "core-data-kit"],
+        "composesWith": ["core-graphics-kit", "core-physics-kit", "core-scene-kit"],
+        "nonDuplicatedMeaning": "Core Graphics owns renderer-neutral presentation descriptors and optical propagation owns path transport; this domain owns material excitation history, luminescent-state populations, emission timing, quenching, bleaching, and recovery meaning."
+      },
+      "classification": "feature-domain",
+      "ownership": ["authored luminescent material and site profiles", "excitation packet history", "excited-state and trap populations", "prompt-emission and afterglow state", "quenching and bleaching history", "dark, excited, emitting, afterglow, quenched, bleached, and recovered classifications"],
+      "exclusions": ["ray or optical-path propagation", "light-source rendering", "shader materials", "electrical power allocation", "thermal network ownership", "asset-specific glow puzzles", "real spectroscopy claims", "wall-clock decay"],
+      "actions": ["register luminescence profile", "register site", "record excitation", "advance emission state", "record quenching observation", "bleach site", "recover site", "clear excitation", "reset luminescence"],
+      "resourcesAndState": ["photoluminescence.profiles", "photoluminescence.sites", "photoluminescence.excitations", "photoluminescence.emissionLedger", "photoluminescence.tick"],
+      "events": ["luminescence.excited", "luminescence.emissionStarted", "luminescence.afterglowStarted", "luminescence.quenched", "luminescence.bleached", "luminescence.recovered", "luminescence.emissionEnded", "luminescence.commandRejected", "luminescence.reset"],
+      "methods": ["registerProfile(definition)", "registerSite(definition)", "recordExcitation(fact)", "advance(ticks)", "recordQuench(fact)", "bleach(command)", "recover(command)", "clear(command)", "getEmissionDescriptors()", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned photoluminescence snapshot", "site and excitation descriptors", "state-population, emission-band, intensity-intent, and afterglow descriptors", "quenching, bleaching, recovery, and readiness summaries"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable profile, site, excitation, quench, bleaching, recovery, and clearing IDs", "authored fictional luminescence rules", "explicit excitation, temperature, contamination, and observation facts"],
+      "expectedCompositions": ["optical-propagation-domain-kit", "instrument-calibration-domain-kit", "material-phase-transition-domain-kit", "cultural-artifact-conservation-domain-kit"],
+      "plausibleUses": ["read an afterglow star map before trapped light decays below navigation thresholds", "restore fluorescent archive inks while avoiding irreversible bleaching and thermal quench"],
+      "experimentProof": "A seeded Afterglow Archive route must replay identical excitation, fixed ticks, quenching, bleaching, recovery, and clearing into the same state populations, emission intents, afterglow windows, readiness, rejections, and digest across navigation-crystal and conservation-ink profiles.",
+      "idempotencyRule": "Excitation, quench, bleaching, recovery, and clearing IDs commit once, sites resolve in stable order, and emitted plus trapped plus dissipated authored energy remains bounded by accepted excitation.",
+      "duplicateAndMergeRisk": "Optical propagation owns path branching and Core Graphics owns render descriptors. Live inventory has no reusable owner for excitation populations, emission timing, afterglow, quenching, bleaching, and recovery.",
+      "promotionPotential": "Hold until multiple lifetime profiles, energy bounds, long afterglow replay, snapshot migration, and navigation plus conservation consumers pass."
+    },
+    {
+      "id": "bootstrap-kit-076",
+      "name": "microbial-biofilm-domain-kit",
+      "purpose": "Track authored microbial populations attached to surfaces through adhesion, matrix production, maturation, detachment, dispersal, tolerance, cleaning, and recurrence from explicit environmental observations without owning free-culture growth or renderer slime.",
+      "coreMapping": {
+        "configures": ["core-simulation-kit", "core-data-kit"],
+        "composesWith": ["core-world-domain", "core-scene-kit", "core-agent-kit"],
+        "nonDuplicatedMeaning": "Core owns state and scene identities while fermentation owns free culture batches; this domain owns attached microbial colonies, matrix coverage, surface succession, detachment, cleaning tolerance, and recurrence meaning."
+      },
+      "classification": "feature-domain",
+      "ownership": ["authored microbe, surface, and biofilm profiles", "attached population and coverage state", "matrix production and maturity stages", "detachment and dispersal lineage", "tolerance and cleaning history", "clean, conditioning, attached, maturing, established, dispersing, suppressed, and recurrent classifications"],
+      "exclusions": ["planktonic fermentation culture", "pathogen infection lifecycle", "membrane-selective flux", "material corrosion damage", "regional contamination clearance", "fluid dynamics", "renderer slime or decals", "real hygiene guidance"],
+      "actions": ["register biofilm profile", "register surface", "record inoculation", "record environmental observation", "advance attachment and matrix", "detach biomass", "apply cleaning fact", "record recolonization", "retire surface", "reset biofilm"],
+      "resourcesAndState": ["microbialBiofilm.profiles", "microbialBiofilm.surfaces", "microbialBiofilm.colonies", "microbialBiofilm.dispersalLedger", "microbialBiofilm.tick"],
+      "events": ["biofilm.inoculated", "biofilm.attached", "biofilm.matrixRaised", "biofilm.matured", "biofilm.detached", "biofilm.dispersed", "biofilm.cleaningResolved", "biofilm.recurred", "biofilm.commandRejected", "biofilm.reset"],
+      "methods": ["registerProfile(definition)", "registerSurface(definition)", "recordInoculation(fact)", "recordObservation(fact)", "advance(ticks)", "detach(command)", "applyCleaning(fact)", "recordRecolonization(fact)", "retire(command)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned microbial-biofilm snapshot", "surface, colony, and environmental descriptors", "attachment, coverage, matrix, maturity, and tolerance descriptors", "detachment, dispersal, cleaning, recurrence, and service summaries"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable profile, surface, colony, inoculation, observation, detachment, cleaning, recolonization, and retirement IDs", "authored fictional biofilm rules", "explicit nutrient, flow, temperature, contamination, and cleaning observations"],
+      "expectedCompositions": ["fermentation-culture-domain-kit", "environmental-contamination-domain-kit", "material-corrosion-domain-kit", "selective-membrane-transport-domain-kit"],
+      "plausibleUses": ["keep a living station's water walls productive without letting attached colonies choke service surfaces", "use a controlled luminous biofilm as a trail while suppressing its spread into archive machinery"],
+      "experimentProof": "A seeded Living Hull route must replay identical inoculation, environment, growth, detachment, cleaning, and recolonization facts into the same coverage, matrix stage, tolerance, dispersal, recurrence, rejections, and digest across water-wall and navigation-trail profiles.",
+      "idempotencyRule": "Inoculation, observation, detachment, cleaning, recolonization, and retirement IDs commit once, surfaces and colonies resolve in stable order, and attached plus detached biomass remains bounded by authored growth and loss facts.",
+      "duplicateAndMergeRisk": "Fermentation owns free culture batches, membrane transport owns selective flux, and contamination owns regional concentration and cleanup. None owns attached colony coverage, extracellular matrix stages, detachment, cleaning tolerance, and recurrence.",
+      "promotionPotential": "Experimental until multi-species attachment, biomass bounds, cleaning and recurrence replay, snapshot migration, and infrastructure plus ecological consumers pass."
+    },
+    {
+      "id": "bootstrap-kit-077",
+      "name": "taphonomic-preservation-domain-kit",
+      "purpose": "Advance authored biological remains through exposure, decay loss, burial, compression, mineral replacement, disturbance, recovery, and preservation-quality transitions without owning stratigraphic chronology or specimen custody.",
+      "coreMapping": {
+        "configures": ["core-simulation-kit", "core-data-kit"],
+        "composesWith": ["core-world-domain", "core-scene-kit", "core-object-fidelity-domain"],
+        "nonDuplicatedMeaning": "Core owns object and world facts while decomposition owns organic mass return; this domain owns remains-specific postmortem transformation, burial and exposure history, mineral replacement, distortion, preservation quality, and recoverability meaning."
+      },
+      "classification": "feature-domain",
+      "ownership": ["authored remains, matrix, and preservation profiles", "postmortem exposure and burial state", "decay-loss and disarticulation history", "compression, mineral replacement, and distortion state", "disturbance and recovery lineage", "fresh, exposed, buried, transforming, mineralized, distorted, fragmentary, and recoverable classifications"],
+      "exclusions": ["ecological decomposition mass cycling", "relative stratigraphic chronology", "specimen seals or custody", "cultural-artifact treatment", "terrain excavation", "fossil mesh generation", "renderer aging", "real paleontological claims"],
+      "actions": ["register preservation profile", "register remains", "record exposure", "bury remains", "advance transformation", "record disturbance", "apply mineralization fact", "recover remains", "stabilize record", "reset preservation"],
+      "resourcesAndState": ["taphonomicPreservation.profiles", "taphonomicPreservation.remains", "taphonomicPreservation.contexts", "taphonomicPreservation.transformationLedger", "taphonomicPreservation.tick"],
+      "events": ["taphonomy.exposureRecorded", "taphonomy.buried", "taphonomy.decayed", "taphonomy.compressed", "taphonomy.mineralized", "taphonomy.disturbed", "taphonomy.recovered", "taphonomy.commandRejected", "taphonomy.reset"],
+      "methods": ["registerProfile(definition)", "registerRemains(definition)", "recordExposure(fact)", "bury(command)", "advance(ticks)", "recordDisturbance(fact)", "applyMineralization(fact)", "recover(command)", "stabilize(command)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned taphonomic-preservation snapshot", "remains, context, exposure, and burial descriptors", "decay-loss, compression, mineralization, and distortion descriptors", "disturbance, preservation-quality, recovery, and interpretability summaries"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable profile, remains, context, exposure, burial, disturbance, mineralization, recovery, and stabilization IDs", "authored fictional preservation rules", "explicit environment, sediment, pressure, chemistry, and handling observations"],
+      "expectedCompositions": ["organic-decomposition-domain-kit", "archaeological-stratigraphy-domain-kit", "specimen-integrity-domain-kit", "material-phase-transition-domain-kit"],
+      "plausibleUses": ["trace a vanished leviathan through differently preserved remains across shifting seabeds", "recover a crystal forest's buried seed-creatures before decompression destroys their mineralized record"],
+      "experimentProof": "A seeded Boneglass Basin route must replay identical exposure, burial, transformation, disturbance, mineralization, recovery, and stabilization into the same preservation quality, distortion, recoverability, rejections, and digest across marine-remains and crystal-forest profiles.",
+      "idempotencyRule": "Exposure, burial, disturbance, mineralization, recovery, and stabilization IDs commit once, remains resolve in stable order, and irreversible authored transformation never reverses without an explicit restoration rule.",
+      "duplicateAndMergeRisk": "Organic decomposition owns ecosystem mass return, stratigraphy owns relative chronology, and specimen integrity owns collected sample condition. None owns remains-specific burial, mineral replacement, compression, distortion, preservation quality, and recoverability.",
+      "promotionPotential": "Hold until branching preservation paths, irreversible replay, snapshot migration, object-fidelity adapters, and natural-history plus fantasy consumers pass."
+    },
+    {
+      "id": "bootstrap-kit-078",
+      "name": "plant-transpiration-domain-kit",
+      "purpose": "Track authored plants through root-water acceptance, internal water stores, stomatal regulation, transpiration loss, turgor, wilting, conservation, and recovery from explicit environmental observations without owning weather, soil moisture, or crop growth.",
+      "coreMapping": {
+        "configures": ["core-simulation-kit", "core-data-kit"],
+        "composesWith": ["core-world-domain", "core-agent-kit", "core-spatial-kit"],
+        "nonDuplicatedMeaning": "Core owns resources and environmental observations; this domain owns plant water stores, stomatal response, transpiration demand, turgor, wilting, conservation, and recovery meaning."
+      },
+      "classification": "feature-domain",
+      "ownership": ["authored plant and transpiration profiles", "plant internal water stores", "root-uptake acceptance ledger", "stomatal openness and conductance bands", "transpiration loss and water-use history", "hydrated, regulating, conserving, stressed, wilted, recovering, and failed classifications"],
+      "exclusions": ["soil-moisture balance", "capillary transport", "weather and humidity generation", "photosynthesis or carbon fixation", "crop growth and harvest", "individual leaf geometry", "vegetation rendering", "real horticultural guidance"],
+      "actions": ["register plant profile", "register plant", "record root-water fact", "record environment observation", "set stomatal policy", "advance transpiration", "apply irrigation fact", "record tissue damage", "retire plant", "reset transpiration"],
+      "resourcesAndState": ["plantTranspiration.profiles", "plantTranspiration.plants", "plantTranspiration.observations", "plantTranspiration.waterLedger", "plantTranspiration.tick"],
+      "events": ["transpiration.waterAccepted", "transpiration.stomataChanged", "transpiration.lossCommitted", "transpiration.conservationStarted", "transpiration.wilted", "transpiration.recoveryStarted", "transpiration.failed", "transpiration.commandRejected", "transpiration.reset"],
+      "methods": ["registerProfile(definition)", "registerPlant(definition)", "recordRootWater(fact)", "recordEnvironment(fact)", "setPolicy(command)", "advance(ticks)", "applyIrrigation(fact)", "recordDamage(fact)", "retire(command)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned plant-transpiration snapshot", "plant, root-water, and environment descriptors", "water-store, stomatal, transpiration, and turgor descriptors", "conservation, stress, wilt, recovery, and water-use summaries"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable profile, plant, root-water, environment, policy, irrigation, damage, and retirement IDs", "authored fictional transpiration rules", "explicit water-availability, light, temperature, humidity, wind, and damage observations"],
+      "expectedCompositions": ["soil-nutrient-cycle-domain-kit", "capillary-wetting-domain-kit", "seasonal-phenology-domain-kit", "biogeochemical-carbon-cycle-domain-kit"],
+      "plausibleUses": ["balance a sky-canopy's shared water stores while opening stomata for timed cooling bursts", "keep alien orchard sentinels turgid through alternating salt winds and limited irrigation"],
+      "experimentProof": "A seeded Canopy Lifeline route must replay identical root-water, environment, stomatal policy, irrigation, damage, and fixed ticks into the same stores, transpiration loss, turgor, wilt, recovery, water use, rejections, and digest across sky-canopy and alien-orchard profiles.",
+      "idempotencyRule": "Root-water, environment, policy, irrigation, damage, and retirement IDs commit once, plants resolve in stable order, and accepted water equals retained plus transpired plus explicitly lost water within tolerance.",
+      "duplicateAndMergeRisk": "Agriculture owns plot growth and harvest, capillary wetting owns porous transport, and soil nutrient cycling owns land-unit pools. None owns plant-internal water stores, stomatal regulation, transpiration, turgor, wilting, and recovery.",
+      "promotionPotential": "Experimental until multi-plant profiles, water conservation, long stress replay, snapshot migration, and ecological plus management consumers pass."
+    },
+    {
+      "id": "bootstrap-kit-079",
+      "name": "piezoelectric-transduction-domain-kit",
+      "purpose": "Resolve authored piezoelectric elements through supplied mechanical and electric observations into bidirectional strain-charge conversion, orientation, coupling efficiency, saturation, depolarization, and recovery intents without solving fields or bodies.",
+      "coreMapping": {
+        "configures": ["core-simulation-kit", "core-data-kit"],
+        "composesWith": ["core-physics-kit", "core-spatial-kit", "core-diagnostics-kit"],
+        "nonDuplicatedMeaning": "Core Physics owns loads and motion while dielectric interaction owns static polarization and stored charge; this domain owns bidirectional mechanical-electric transduction, orientation, coupling efficiency, saturation, depolarization, and recovery meaning."
+      },
+      "classification": "feature-domain",
+      "ownership": ["authored piezoelectric material and element profiles", "element orientation and poling state", "mechanical-to-electric conversion ledger", "electric-to-strain intent ledger", "coupling efficiency and hysteresis state", "idle, sensing, actuating, saturated, depolarized, damaged, and recovered classifications"],
+      "exclusions": ["electromagnetic field solving", "rigid-body or stress integration", "power-grid allocation", "static dielectric charge storage", "mechanical resonance ownership", "audio playback", "renderer effects", "real device guidance"],
+      "actions": ["register transduction profile", "register element", "record mechanical observation", "record electric observation", "resolve transduction", "reorient or repole element", "record saturation", "recover element", "retire element", "reset transduction"],
+      "resourcesAndState": ["piezoelectricTransduction.profiles", "piezoelectricTransduction.elements", "piezoelectricTransduction.observations", "piezoelectricTransduction.conversionLedger", "piezoelectricTransduction.tick"],
+      "events": ["piezoelectric.observationRecorded", "piezoelectric.chargeIntentRaised", "piezoelectric.strainIntentRaised", "piezoelectric.saturated", "piezoelectric.depolarized", "piezoelectric.reoriented", "piezoelectric.recovered", "piezoelectric.commandRejected", "piezoelectric.reset"],
+      "methods": ["registerProfile(definition)", "registerElement(definition)", "recordMechanical(fact)", "recordElectric(fact)", "resolve(ticks)", "reorient(command)", "recordSaturation(fact)", "recover(command)", "retire(command)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned piezoelectric-transduction snapshot", "element, orientation, and observation descriptors", "charge-intent, strain-intent, coupling, and hysteresis descriptors", "saturation, depolarization, recovery, and service summaries"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable profile, element, mechanical, electric, resolution, orientation, saturation, recovery, and retirement IDs", "authored fictional transduction rules", "explicit load, displacement, field, charge, temperature, and damage observations"],
+      "expectedCompositions": ["dielectric-interaction-domain-kit", "mechanical-resonance-domain-kit", "electrochemical-energy-storage-domain-kit", "instrument-calibration-domain-kit"],
+      "plausibleUses": ["harvest footfall strain from a suspended city to power its warning lattice", "repole crystal actuators to steer a silent observatory while avoiding saturation"],
+      "experimentProof": "A seeded Thunderstone Relay route must replay identical mechanical, electric, orientation, saturation, recovery, and fixed-tick facts into the same charge and strain intents, efficiency, hysteresis, depolarization, service state, rejections, and digest across energy-harvester and actuator profiles.",
+      "idempotencyRule": "Observation, resolution, orientation, saturation, recovery, and retirement IDs commit once, elements resolve in stable order, and accepted conversion intents remain bounded by authored coupling and input facts.",
+      "duplicateAndMergeRisk": "Dielectric interaction owns polarization and capacitive storage, resonance owns modal response, and power distribution owns grid service. None owns bidirectional strain-charge transduction, orientation, coupling efficiency, depolarization, and recovery.",
+      "promotionPotential": "Hold until bidirectional conversion bounds, hysteresis replay, snapshot migration, physics and power adapter parity, and sensing plus actuation consumers pass."
+    },
+    {
+      "id": "bootstrap-kit-080",
+      "name": "crystal-nucleation-growth-domain-kit",
+      "purpose": "Advance authored crystallizing media through nucleation, seed selection, growth-front competition, habit and facet state, inclusions, defects, dissolution, annealing, and terminal crystal quality from explicit supersaturation or cooling observations.",
+      "coreMapping": {
+        "configures": ["core-simulation-kit", "core-data-kit"],
+        "composesWith": ["core-physics-kit", "core-world-domain", "core-object-shape-domain"],
+        "nonDuplicatedMeaning": "Core Object Shape owns provider-coordinated geometry derivation and material phase transition owns bulk phase fractions; this domain owns crystallization nuclei, growth-front lineage, habit competition, inclusions, defects, dissolution, annealing, and crystal-quality meaning."
+      },
+      "classification": "feature-domain",
+      "ownership": ["authored crystallizing-medium and growth profiles", "nucleus and seed lineage", "growth-front and grain competition state", "habit, facet, and orientation descriptors", "inclusion, defect, dissolution, and annealing history", "clear, supersaturated, nucleating, growing, impinged, defective, dissolving, annealed, and complete classifications"],
+      "exclusions": ["bulk phase-fraction ownership", "chemical reaction and stoichiometry", "heat-transfer solving", "mesh or texture generation", "Core shape-derivation jobs", "renderer crystal materials", "asset-specific crafting", "real crystallography claims"],
+      "actions": ["register growth profile", "register medium", "record condition observation", "seed nucleus", "advance growth fronts", "record inclusion", "dissolve crystal", "anneal crystal", "harvest crystal", "reset crystal growth"],
+      "resourcesAndState": ["crystalGrowth.profiles", "crystalGrowth.media", "crystalGrowth.nuclei", "crystalGrowth.fronts", "crystalGrowth.qualityLedger", "crystalGrowth.tick"],
+      "events": ["crystalGrowth.conditionRecorded", "crystalGrowth.nucleated", "crystalGrowth.frontAdvanced", "crystalGrowth.impinged", "crystalGrowth.inclusionCaptured", "crystalGrowth.defectRaised", "crystalGrowth.dissolved", "crystalGrowth.annealed", "crystalGrowth.completed", "crystalGrowth.commandRejected", "crystalGrowth.reset"],
+      "methods": ["registerProfile(definition)", "registerMedium(definition)", "recordCondition(fact)", "seedNucleus(command)", "advance(ticks)", "recordInclusion(fact)", "dissolve(command)", "anneal(command)", "harvest(command)", "getShapeDescriptors()", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned crystal-nucleation-growth snapshot", "medium, nucleus, seed-lineage, and condition descriptors", "growth-front, habit, facet, orientation, and impingement descriptors", "inclusion, defect, dissolution, annealing, quality, and completion summaries"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable profile, medium, condition, nucleus, front, inclusion, dissolution, annealing, and harvest IDs", "authored fictional nucleation and growth rules", "explicit concentration, cooling, pressure, agitation, impurity, and support observations"],
+      "expectedCompositions": ["material-phase-transition-domain-kit", "chemical-reaction-batch-domain-kit", "thermal-energy-network-domain-kit", "instrument-calibration-domain-kit"],
+      "plausibleUses": ["grow load-bearing memory crystals while steering defects away from their signal facets", "seed a salt cavern's branching crystal locks and dissolve only the impure fronts"],
+      "experimentProof": "A seeded Crystal Nursery route must replay identical conditions, seeds, fixed ticks, inclusions, dissolution, annealing, and harvest commands into the same nuclei, growth fronts, habits, defects, quality, completion, rejections, and digest across memory-crystal and salt-lock profiles.",
+      "idempotencyRule": "Condition, nucleus, inclusion, dissolution, annealing, and harvest IDs commit once, nuclei and fronts resolve in stable order, and accepted material is conserved across dissolved, growing, and completed stores.",
+      "duplicateAndMergeRisk": "Material phase transition owns bulk phase fractions and Core Object Shape owns geometry derivation. Live inventory has no reusable owner for nucleus lineage, growth-front competition, crystal habit, inclusions, defects, dissolution, annealing, and quality.",
+      "promotionPotential": "Experimental until multi-nucleus competition, material conservation, defect replay, snapshot migration, shape-descriptor handoff, and fabrication plus environmental consumers pass."
     }
   ],
   "rejectedCandidates": [
@@ -2007,6 +2257,36 @@
       "name": "osmosis-balance-domain-kit",
       "rejectionClass": "duplicate-catalog-candidate",
       "reason": "Accepted selective-membrane-transport-domain-kit already owns supplied gradients, permeability, selectivity, species flux, retention, fouling, integrity, breakthrough, and regeneration. A separate osmosis wrapper would split the same membrane transport state."
+    },
+    {
+      "name": "catalyst-activity-domain-kit",
+      "rejectionClass": "duplicate-catalog-candidate",
+      "reason": "Accepted chemical-reaction-batch-domain-kit already owns catalyst batch references, catalyst-effect observations, reaction progress, yield, byproducts, quench, and terminal outcomes. A second catalyst lifecycle would split that accepted reaction owner."
+    },
+    {
+      "name": "brittle-fracture-propagation-domain-kit",
+      "rejectionClass": "duplicate-catalog-candidate",
+      "reason": "Accepted material-fatigue-domain-kit already owns crack initiation and growth while structural-support-network-domain-kit owns ordered support failure propagation. The proposed fracture wrapper did not isolate a third durable state owner beyond those boundaries."
+    },
+    {
+      "name": "triboelectric-charging-domain-kit",
+      "rejectionClass": "duplicate-catalog-candidate",
+      "reason": "Accepted mechanical-wear-domain-kit owns contact-pair and debris history while dielectric-interaction-domain-kit owns polarization, stored charge, coupling, discharge, and breakdown risk. Triboelectric behavior is a composition fact between those owners, not another charge ledger."
+    },
+    {
+      "name": "permafrost-thaw-domain-kit",
+      "rejectionClass": "duplicate-catalog-candidate",
+      "reason": "Accepted cryosphere-mass-balance, material-phase-transition, thermal-energy-network, and carbon-cycle contracts already own frozen mass, phase fractions, heat transfer, and carbon release. The proposed permafrost scope was a site-specific composition of those owners."
+    },
+    {
+      "name": "ocean-carbonate-balance-domain-kit",
+      "rejectionClass": "duplicate-catalog-candidate",
+      "reason": "Accepted aqueous-acid-base, biogeochemical-carbon, water-salinity, and aquatic-oxygen contracts already own alkalinity, carbon pools, salt inventories, and oxygen demand. A carbonate wrapper would blur their explicit cross-domain composition."
+    },
+    {
+      "name": "biological-tissue-repair-domain-kit",
+      "rejectionClass": "duplicate-existing-kit",
+      "reason": "Existing damage-health kits already own health, wounds, healing, restoration, defeat, and invulnerability, while status-effect and contagion owners cover staged subject conditions. The proposed repair lifecycle did not clear that existing healing boundary."
     }
   ]
 }

@@ -26,7 +26,7 @@
     }
   },
   "synchronizedStartingCommits": {
-      "coreRemoteDefault": "c692ea30f860fdff3735ecde90f8b1f67c8806e3",
+      "coreRemoteDefault": "6ca0c36b731014808e02cd1f53fb5d88ab9dfe70",
     "protokits": "ffdcc962d3c984864a2d78e9276879adf04250eb",
     "experiments": "615a7e1e2170164acef0edebdbe0b88b8c01fd1b",
     "experimentsBaseline": "615a7e1e2170164acef0edebdbe0b88b8c01fd1b"
@@ -58,7 +58,7 @@
       "refinementSlices": 0
     },
     "progress": {
-      "acceptedNewKits": 70,
+      "acceptedNewKits": 80,
       "implementedNewKits": 0,
       "playableNewExperiments": 0,
       "consolidatedNewGames": 0,
@@ -90,7 +90,7 @@
       "refinementSlices": 0
     },
     "progress": {
-      "acceptedNewKits": 70,
+      "acceptedNewKits": 80,
       "implementedNewKits": 0,
       "playableNewExperiments": 0,
       "consolidatedNewGames": 0,
@@ -98,10 +98,10 @@
     }
   },
   "catalogTotals": {
-    "acceptedDefinitionsLifetime": 70,
-    "acceptedDefinitionsBootstrap": 70,
-    "acceptedDefinitionsCurrentEpoch": 70,
-    "rejectedCandidatesLifetime": 42
+    "acceptedDefinitionsLifetime": 80,
+    "acceptedDefinitionsBootstrap": 80,
+    "acceptedDefinitionsCurrentEpoch": 80,
+    "rejectedCandidatesLifetime": 48
   },
   "assetTotals": {
     "kits": {
@@ -127,28 +127,28 @@
     }
   },
   "lastCatalogUnit": {
-    "packetId": "2026-07-16-bootstrap-catalog-061-070",
-    "scope": "catalog-batch-061-070",
+    "packetId": "2026-07-16-bootstrap-catalog-071-080",
+    "scope": "catalog-batch-071-080",
     "result": "Accepted 10 genuinely new natural-language kit contracts after six additional duplicate, catalog-overlap, or blurred-scope rejections; no implementation was created."
   },
   "lastCreationUnit": null,
   "lastRefinementUnit": null,
   "lastCompletedUnit": {
-    "packetId": "2026-07-16-bootstrap-catalog-061-070",
-    "scope": "Bootstrap catalog batch 061-070",
-    "result": "Accepted 10 renderer-agnostic contracts across material creep, granular state, electrochemical storage, aqueous acid-base balance, radioactive decay chains, optical propagation, capillary wetting, selective membrane transport, mechanical resonance, and dielectric interaction; rejected six adjacent duplicates or blurred scopes.",
-    "validation": "passed: refreshed Core authority, Phase A drift guard, production invariants, JSON parsing, folder/export/name collision checks, Playwright reader/reviewer interaction, clean screenshot comparison, zero clean-rerun console errors or warnings, and diff checks",
+    "packetId": "2026-07-16-bootstrap-catalog-071-080",
+    "scope": "Bootstrap catalog batch 071-080",
+    "result": "Accepted 10 renderer-agnostic contracts across interfacial adhesion, plastic deformation, fluid cavitation, surface sorption, photoluminescence, microbial biofilm, taphonomic preservation, plant transpiration, piezoelectric transduction, and crystal nucleation and growth; rejected six adjacent duplicates or blurred scopes.",
+    "validation": "passed: refreshed Core authority, Phase A drift guard, production invariants, JSON parsing, folder/export/name collision checks, Playwright reader/reviewer interaction, screenshot comparison, zero console errors or warnings, and diff checks",
     "commits": {
       "protokitsStartAndFinal": "ffdcc962d3c984864a2d78e9276879adf04250eb",
-      "experimentsStart": "1b6e6aab6705b08447bd4929a1e053ea259d594f",
-      "experimentsProductionUnit": "ebe847ce07eec14bdc497a27560214c3d85596f4"
+      "experimentsStart": "fffca63b6ef162b86701b14fe3189922950152b7",
+      "experimentsProductionUnit": "pending"
     },
-    "publication": "production commit published to origin/main; publication record commit intentionally not self-hashed"
+    "publication": "pending validation, commit, and push"
   },
   "exactNextUnit": {
     "phase": "B-catalog",
     "epoch": 0,
-    "scope": "catalog-batch-071-080",
-    "goal": "Propose and audit bootstrap kit definitions 071-080 without implementing them."
+    "scope": "catalog-batch-081-090",
+    "goal": "Propose and audit bootstrap kit definitions 081-090 without implementing them."
   }
 }
