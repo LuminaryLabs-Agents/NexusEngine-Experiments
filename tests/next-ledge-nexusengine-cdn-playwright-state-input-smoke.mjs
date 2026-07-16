@@ -68,6 +68,8 @@ assert.match(session, /protectedRecoveryWindow/, "the safe consequence should ex
 assert.match(session, /post-rejoin-protected-grapple-consumed/, "the safe consequence should resolve after one protected grapple");
 assert.match(session, /post-rejoin-pressure-vented/, "the shortcut consequence should publish one semantic pressure vent event");
 assert.match(session, /payoffLaunchWindow/, "the safe payoff should modulate the existing cable launch settings without adding a second launch owner");
+assert.match(session, /payoffTargetTuning/, "both payoff branches should consume authored target-specific aim tuning without a second launch owner");
+assert.match(session, /routeChoicePayoffAimAssistLeadY/, "Cacheline aim compensation should remain authored descriptor data");
 assert.match(session, /post-stormlock-payoff-opened/, "Stormlock should open one branch-specific payoff through the existing route-choice state");
 assert.match(session, /post-stormlock-payoff-secured/, "the selected payoff anchor should advance the existing route-choice state");
 assert.match(session, /convergence-active/, "the existing route-choice state should own the shared convergence beat");
@@ -95,12 +97,14 @@ assert.match(index, /id="completionPanel"/, "route shell should provide an unmis
 assert.match(index, /Summit Relay Online/, "completion surface should name the delivered outcome");
 assert.match(renderer, /summitCelebration/, "Three.js presentation should include a persistent summit celebration");
 assert.match(renderer, /getMetrics/, "renderer should expose bounded performance evidence to GameHost");
+assert.match(renderer, /presentedCameraY \?\? snapshot\.camera\.y/, "pointer projection should use the camera presentation that the player actually sees");
 assert.match(renderer, /getDrawRange|setDrawRange/, "dynamic line geometry should reuse bounded buffers");
 assert.match(renderer, /time - lastEffectTime/, "one-shot effects should age by real render time");
 assert.doesNotMatch(index, /backdrop-filter/, "HUD readability should not depend on a WebGL-overlapping blur compositor");
 assert.match(hud, /snapshot\.completed \? "DELIVERED"/, "completed cargo should read as delivered instead of an ambiguous zero");
 assert.match(session, /new Set\(state\.recentEvents\)/, "bounded recent events should still forward late-route objective progress");
-assert.match(session, /latchCandidates = assistedTarget \? \[assistedTarget\]/, "magnetized shots should not collide with unrelated old anchors");
+assert.match(session, /const latchCandidates = assistedTarget/, "magnetized shots should stay restricted to the assisted anchor");
+assert.match(session, /enabledTargets\(state\)\.map/, "unassisted cable sweep should ignore inactive branch anchors");
 assert.match(session, /maxAngularSpeed/, "swing energy should remain bounded through long holds and reel handoffs");
 assert.doesNotMatch(index, /<script type="module" src="\.\/src\/.*readiness-entry\.js/, "readiness overlays must not cover the default playable view");
 assert.match(hud, /actionPrompt/, "HUD should drive the contextual hero prompt");

@@ -481,15 +481,16 @@ export function createThreeRenderer({ canvas }) {
     const postRejoin = snapshot.route?.ledges?.find((ledge) => ledge.id === snapshot.routeChoice?.postRejoinAnchorId);
     const payoffTarget = snapshot.route?.ledges?.find((ledge) => ledge.id === snapshot.routeChoice?.payoffTargetId);
     const convergenceTarget = snapshot.route?.ledges?.find((ledge) => ledge.id === snapshot.routeChoice?.convergenceAnchorId);
+    const payoffCameraZoomBonus = num(payoffTarget?.metadata?.routeChoicePayoffCameraZoomBonus, 0);
     const choiceCameraY = snapshot.routeChoice?.status === "convergence-active" && payoffTarget && convergenceTarget
       ? (payoffTarget.y + convergenceTarget.y) * 0.5
-      : snapshot.routeChoice?.status === "payoff-active" && postRejoin && payoffTarget
-      ? (postRejoin.y + payoffTarget.y) * 0.5
+      : snapshot.routeChoice?.status === "payoff-active" && payoffTarget
+      ? (num(snapshot.player?.y, postRejoin?.y) + payoffTarget.y) * 0.5
       : snapshot.routeChoice?.status === "consequence-active" && choiceRejoin && postRejoin
       ? (choiceRejoin.y + postRejoin.y) * 0.5
       : choiceRest && choiceRejoin ? (choiceRest.y + choiceRejoin.y) * 0.5 : snapshot.camera?.y ?? 0;
     const targetCameraY = openingReveal ? 242 : choiceFraming ? choiceCameraY : snapshot.completed && summit ? summit.y - 42 : snapshot.camera?.y ?? 0;
-    const targetCameraZ = openingReveal ? 500 : choiceFraming ? 340 : snapshot.completed ? Math.max(272, snapshot.camera?.z ?? 210) : snapshot.camera?.z ?? 210;
+    const targetCameraZ = openingReveal ? 500 : choiceFraming ? 340 + (snapshot.routeChoice?.status === "payoff-active" ? payoffCameraZoomBonus : 0) : snapshot.completed ? Math.max(272, snapshot.camera?.z ?? 210) : snapshot.camera?.z ?? 210;
     presentedCameraY = presentedCameraY == null ? targetCameraY : presentedCameraY + (targetCameraY - presentedCameraY) * (snapshot.completed ? 0.065 : 0.24);
     presentedCameraZ = presentedCameraZ == null ? targetCameraZ : presentedCameraZ + (targetCameraZ - presentedCameraZ) * 0.08;
     camera.position.set((snapshot.camera?.x ?? 0) + Math.sin(time * 53) * trauma * 8, presentedCameraY + Math.cos(time * 47) * trauma * 6, presentedCameraZ);
@@ -595,7 +596,13 @@ export function createThreeRenderer({ canvas }) {
   }
 
   function screenToWorld(clientX, clientY, snapshot) {
-    if (snapshot?.camera) { camera.position.set(snapshot.camera.x ?? 0, snapshot.camera.y ?? 0, snapshot.camera.z ?? 210); camera.lookAt(0, snapshot.camera.y ?? 0, 0); camera.updateMatrixWorld(); }
+    if (snapshot?.camera) {
+      const cameraY = presentedCameraY ?? snapshot.camera.y ?? 0;
+      const cameraZ = presentedCameraZ ?? snapshot.camera.z ?? 210;
+      camera.position.set(snapshot.camera.x ?? 0, cameraY, cameraZ);
+      camera.lookAt(0, cameraY, 0);
+      camera.updateMatrixWorld();
+    }
     const ndc = new THREE.Vector2(clientX / innerWidth * 2 - 1, -(clientY / innerHeight) * 2 + 1);
     const vec = new THREE.Vector3(ndc.x, ndc.y, 0.5).unproject(camera);
     const dir = vec.sub(camera.position).normalize();

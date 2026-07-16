@@ -3,8 +3,8 @@ import { createGenericAnchorDescriptorKit } from "https://cdn.jsdelivr.net/gh/Lu
 import { createGenericModeProjectedRoute, createProjectedRoute } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-mode-projected-route/index.js";
 import { createGenericRouteProgressKit } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-route-progress-kit/index.js";
 import { createGenericTetherTraversalDomainKits, createGenericTetherTraversalPreset } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-tether-traversal-domain-kits/index.js";
-import { createNextLedgeClimbPreset } from "./climb-preset.js?v=windglass-relay-1";
-import { adaptProjectedRouteToClimbRoute } from "./climb-anchor-adapter.js?v=windglass-relay-1";
+import { createNextLedgeClimbPreset } from "./climb-preset.js?v=cacheline-one-launch-3";
+import { adaptProjectedRouteToClimbRoute } from "./climb-anchor-adapter.js?v=cacheline-one-launch-3";
 import { createClimbActionAdapter } from "./climb-action-adapter.js";
 
 const clamp = (v, a, b) => Math.max(a, Math.min(b, Number.isFinite(Number(v)) ? Number(v) : a));
@@ -391,18 +391,26 @@ function protectedRecoveryWindow(state) {
   } : null;
 }
 
-function payoffLaunchWindow(state) {
+function payoffTargetTuning(state) {
   const choice = state.routeChoice;
-  if (choice?.status !== "payoff-active" || choice.selectedRole !== "safe-recovery") return null;
+  if (choice?.status !== "payoff-active") return null;
   const target = ledgeMap(state)[choice.payoffTargetId];
   return target ? {
     targetId: target.id,
+    selectedRole: choice.selectedRole,
     speedMultiplier: n(target.metadata?.routeChoiceLaunchSpeedMultiplier, 1),
     liftBonus: n(target.metadata?.routeChoiceLaunchLiftBonus, 0),
     aimAssistBonus: n(target.metadata?.routeChoicePayoffAimAssistBonus, 0),
+    aimAssistLeadX: n(target.metadata?.routeChoicePayoffAimAssistLeadX, 0),
+    aimAssistLeadY: n(target.metadata?.routeChoicePayoffAimAssistLeadY, 0),
     scoreMetric: target.metadata?.routeChoiceScoreMetric ?? "preserved-speed",
     scoreMultiplier: n(target.metadata?.routeChoiceScoreMultiplier, 100)
   } : null;
+}
+
+function payoffLaunchWindow(state) {
+  const tuning = payoffTargetTuning(state);
+  return tuning?.selectedRole === "safe-recovery" ? tuning : null;
 }
 
 function setRope(state, a, b, slack = 8) {
@@ -413,9 +421,9 @@ function assistedAim(state) {
   const cfg = state.tuning ?? {};
   const maxDistance = n(cfg.aimAssistDistance, 185);
   const recoveryWindow = protectedRecoveryWindow(state);
-  const launchWindow = payoffLaunchWindow(state);
-  const assistRadius = n(cfg.aimAssistRadius, 28) + n(recoveryWindow?.aimAssistBonus, 0) + n(launchWindow?.aimAssistBonus, 0);
-  const strength = clamp(n(cfg.aimAssistStrength, 0.72) + (recoveryWindow ? 0.14 : 0) + (launchWindow ? 0.1 : 0), 0, 1);
+  const payoffTuning = payoffTargetTuning(state);
+  const assistRadius = n(cfg.aimAssistRadius, 28) + n(recoveryWindow?.aimAssistBonus, 0) + n(payoffTuning?.aimAssistBonus, 0);
+  const strength = clamp(n(cfg.aimAssistStrength, 0.72) + (recoveryWindow ? 0.14 : 0) + (payoffTuning ? 0.1 : 0), 0, 1);
   let best = null;
   for (const id of enabledTargets(state)) {
     const ledge = ledgeMap(state)[id];
@@ -432,13 +440,15 @@ function assistedAim(state) {
   }
   state.aimAssistTargetId = best?.ledge?.id ?? null;
   if (!best) return state.aim;
-  const dx = best.ledge.x - state.player.x;
-  const dy = best.ledge.y - state.player.y;
+  const targetLeadX = best.ledge.id === payoffTuning?.targetId ? n(payoffTuning.aimAssistLeadX, 0) : 0;
+  const targetLeadY = best.ledge.id === payoffTuning?.targetId ? n(payoffTuning.aimAssistLeadY, 0) : 0;
+  const dx = best.ledge.x + targetLeadX - state.player.x;
+  const dy = best.ledge.y + targetLeadY - state.player.y;
   const len = Math.hypot(dx, dy) || 1;
   const blended = { x: state.aim.x * (1 - strength) + dx / len * strength, y: state.aim.y * (1 - strength) + dy / len * strength };
   const bLen = Math.hypot(blended.x, blended.y) || 1;
   state.stats.assistedShots += 1;
-  addEvent(state, "aim-assisted", { targetId: best.ledge.id });
+  addEvent(state, "aim-assisted", { targetId: best.ledge.id, leadX: targetLeadX, leadY: targetLeadY });
   return { x: blended.x / bLen, y: blended.y / bLen, worldX: best.ledge.x, worldY: best.ledge.y };
 }
 
@@ -731,7 +741,9 @@ function stepLaunched(state, dt) {
   }
   setRope(state, state.player, state.probe, n(state.tuning.launchSlack, 12));
   const assistedTarget = state.aimAssistTargetId ? ledgeMap(state)[state.aimAssistTargetId] : null;
-  const latchCandidates = assistedTarget ? [assistedTarget] : state.route.ledges;
+  const latchCandidates = assistedTarget
+    ? [assistedTarget]
+    : enabledTargets(state).map((id) => ledgeMap(state)[id]).filter(Boolean);
   for (const ledge of latchCandidates) {
     if (ledge.id === state.lastLedgeId) continue;
     if (d2(ledge, state.probe) <= ledge.r + n(state.tuning.latchRadius, 12) || segmentDistance(ledge.x, ledge.y, state.player.x, state.player.y, state.probe.x, state.probe.y) <= ledge.r + n(state.tuning.sweepRadius, 8)) return grab(state, ledge);

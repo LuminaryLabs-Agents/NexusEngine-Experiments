@@ -8,12 +8,12 @@ function showFatal(error) {
 
 async function boot() {
   const [sessionModule, rendererModule, inputModule, hudModule, loopModule, synthModule] = await Promise.all([
-    import("./session-cargo-extraction-upgrade.js?v=windglass-relay-1"),
-    import("./renderer-three-fidelity.js?v=windglass-relay-1"),
+    import("./session-cargo-extraction-upgrade.js?v=cacheline-one-launch-3"),
+    import("./renderer-three-fidelity.js?v=cacheline-one-launch-3"),
     import("./input.js"),
-    import("./hud.js?v=windglass-relay-1"),
+    import("./hud.js?v=cacheline-one-launch-3"),
     import("./runtime-loop.js?v=counterwind-crescendo-1"),
-    import("./synth.js?v=windglass-relay-1")
+    import("./synth.js?v=cacheline-one-launch-3")
   ]);
 
   const canvas = document.querySelector("#game");

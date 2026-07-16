@@ -103,7 +103,7 @@ export function createHud(nodes = {}) {
             : "Shelter Rise earned one protected grapple window. Use it now to secure Stormlock Restore."
         : snapshot.routeChoice?.status === "payoff-active"
           ? snapshot.routeChoice.selectedRole === "pressure-shortcut"
-            ? "Your banked signal cargo unlocked Cacheline High. Commit to the smaller amber anchor above the crosswind."
+            ? "Your banked signal cargo unlocked Cacheline High. Build one rightward arc and fire through the smaller amber catch."
             : "Stormlock converted shelter protection into a faster cable launch. Fire through the mint Slipstream Launch now."
         : snapshot.routeChoice?.status === "convergence-active"
           ? snapshot.routeChoice.selectedRole === "pressure-shortcut"
