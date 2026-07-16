@@ -161,9 +161,9 @@
       "protokitsStart": "04d34f049f58ae359cf71d43466c429dac2a6d08",
       "protokitsProductionUnit": "04d34f049f58ae359cf71d43466c429dac2a6d08",
       "experimentsStart": "71ddcfcfc5677cd86ff42756863f48b21077e9e2",
-      "experimentsProductionUnit": "PENDING_PRODUCTION_COMMIT"
+      "experimentsProductionUnit": "7895295021aabd058ba15c73fcd5b55a350003f6"
     },
-    "publication": "Experiments publication pending final fetch-before-push verification; ProtoKits is unchanged and synchronized at 04d34f049f58ae359cf71d43466c429dac2a6d08."
+    "publication": "Experiments production commit 7895295021aabd058ba15c73fcd5b55a350003f6 and its receipt commit are published on origin/main after fetch-before-push verification; ProtoKits is unchanged and synchronized at 04d34f049f58ae359cf71d43466c429dac2a6d08."
   },
   "exactNextUnit": {
     "phase": "playable-experiment-upgrade",

@@ -2,7 +2,7 @@
 
 Packet: `2026-07-16-next-ledge-windglass-rejoin-cue-refinement`
 
-Status: validated; publication receipt pending
+Status: validated and published
 
 Experiment: `experiments/next-ledge/`
 
@@ -115,9 +115,9 @@ Matched fresh headed Chromium samples used `950 ms` warm-up, `3.4 s` active `D` 
 
 ## Publication
 
-- Production commit: `PENDING_PRODUCTION_COMMIT`.
+- Production commit: `7895295021aabd058ba15c73fcd5b55a350003f6`.
 - ProtoKits push: not required; `main`, `HEAD`, and `origin/main` remain synchronized at `04d34f049f58ae359cf71d43466c429dac2a6d08`.
-- Experiments push: pending final fetch-before-push verification.
+- Experiments push: production and receipt commits published to `origin/main` after fetch-before-push verification.
 
 ## Exact Next Playable Improvement
 
