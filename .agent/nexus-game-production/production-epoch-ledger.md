@@ -37,4 +37,4 @@ Accepted catalog definitions are tracked separately and do not count as created 
 | `2026-07-15-bootstrap-catalog-011-020` | 0 | Catalog 011-020 | 10 definitions accepted; 6 candidates rejected; zero implementation | production commit `e024ef0027b4e272efa6a66a05edf04538443e6a` published |
 | `2026-07-15-bootstrap-catalog-021-030` | 0 | Catalog 021-030 | 10 definitions accepted; 6 candidates rejected; zero implementation | production commit `6f6b0b3bf5137c6d882bde0264682e6e0d12c5de` published |
 | `2026-07-15-bootstrap-catalog-031-040` | 0 | Catalog 031-040 | 10 definitions accepted; 6 candidates rejected; zero implementation | production commit `d7640696fa98f77372e7605e506584adcfe58094` published |
-| `2026-07-15-bootstrap-catalog-041-050` | 0 | Catalog 041-050 | 10 definitions accepted; 6 candidates rejected; zero implementation | pending validation and publication |
+| `2026-07-15-bootstrap-catalog-041-050` | 0 | Catalog 041-050 | 10 definitions accepted; 6 candidates rejected; zero implementation | production commit `31d5c48e7b31855044b2eeadc9d6f07a14f98bf9` published |

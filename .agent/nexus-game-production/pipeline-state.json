@@ -137,13 +137,13 @@
     "packetId": "2026-07-15-bootstrap-catalog-041-050",
     "scope": "Bootstrap catalog batch 041-050",
     "result": "Accepted 10 renderer-agnostic contracts across cryosphere balance, wastewater treatment, corrosion, orbital conjunctions, celestial visibility, fermentation cultures, stratigraphy, artifact conservation, circadian entrainment, and persistent environmental traces; rejected six adjacent duplicates.",
-    "validation": "pending current bounded-unit validation",
+    "validation": "passed: Phase A drift guard, production invariants, JSON parsing, folder/export/name collision checks, Playwright reader/reviewer interaction, screenshot comparison, zero clean-rerun console errors or warnings, and diff checks",
     "commits": {
       "protokitsStartAndFinal": "ffdcc962d3c984864a2d78e9276879adf04250eb",
       "experimentsStart": "740ee0c63a24a8614e28d53abafc01c0913abd59",
-      "experimentsProductionUnit": "pending"
+      "experimentsProductionUnit": "31d5c48e7b31855044b2eeadc9d6f07a14f98bf9"
     },
-    "publication": "pending"
+    "publication": "production commit published to origin/main; publication record commit intentionally not self-hashed"
   },
   "exactNextUnit": {
     "phase": "B-catalog",
