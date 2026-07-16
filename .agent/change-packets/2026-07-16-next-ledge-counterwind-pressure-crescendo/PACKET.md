@@ -4,7 +4,7 @@ Packet ID: `2026-07-16-next-ledge-counterwind-pressure-crescendo`
 
 Automation: Nexus Engine Game Production Refiner
 
-Status: validated; publication receipt pending
+Status: validated and published
 
 ## Result
 
@@ -85,8 +85,8 @@ The published opening had a reversed-wind label but a nearly flat `0.004` wind v
 
 - ProtoKits start/final: `04d34f049f58ae359cf71d43466c429dac2a6d08` (unchanged).
 - Experiments start: `82445835725df21c03adee99ec97ab3548c85ed1`.
-- Experiments production commit: pending.
-- Experiments publication receipt: pending.
+- Experiments production commit: `3204c78577ed41e0f30141b02c6b915b48769cee`, published on `origin/main` after fetch-before-push verification.
+- Publication receipt: this packet and the production ledgers record that published production commit; the receipt commit contains documentation only.
 
 ## Exact Next Playable Improvement
 
