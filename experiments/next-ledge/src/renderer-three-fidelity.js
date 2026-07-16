@@ -333,15 +333,23 @@ export function createThreeRenderer({ canvas }) {
     counterwindField.visible = visible;
     if (!visible) return;
     const direction = num(snapshot.wind?.direction, opening.windDirection ?? -1) < 0 ? -1 : 1;
+    const intensity = clamp01(num(snapshot.wind?.intensity, 0.38));
+    const recentEvents = snapshot.recentEvents ?? [];
+    let recoveryEvent = null;
+    for (let index = recentEvents.length - 1; index >= 0; index -= 1) {
+      if (recentEvents[index].type === "counterwind-recovered") { recoveryEvent = recentEvents[index]; break; }
+    }
+    const recoveryPulse = recoveryEvent ? clamp01(1 - Math.max(0, num(snapshot.frame) - num(recoveryEvent.at)) / 90) : 0;
     const centerY = num(snapshot.camera?.y, snapshot.player?.y);
-    const span = 132;
+    const span = 118 + intensity * 92;
+    const speed = 72 + intensity * 118;
     for (let i = 0; i < windSegmentCount; i += 1) {
-      const band = ((i * 47 + time * 86) % 620) - 310;
-      const phase = time * 2.8 + i * 1.73;
-      const startX = -direction * (206 + Math.sin(phase) * 26);
-      const startY = centerY + band + Math.sin(phase * 1.4) * 12;
+      const band = ((i * 47 + time * speed) % 620) - 310;
+      const phase = time * (2.4 + intensity * 2.8) + i * 1.73;
+      const startX = -direction * (206 + Math.sin(phase) * (20 + intensity * 18));
+      const startY = centerY + band + Math.sin(phase * 1.4) * (10 + intensity * 16);
       const endX = startX + direction * (span + (i % 4) * 14);
-      const endY = startY + Math.cos(phase) * 18;
+      const endY = startY + Math.cos(phase) * (12 + intensity * 24);
       const offset = i * 6;
       windPositions[offset] = startX;
       windPositions[offset + 1] = startY;
@@ -351,7 +359,8 @@ export function createThreeRenderer({ canvas }) {
       windPositions[offset + 5] = 18 + (i % 3) * 5;
     }
     windGeometry.attributes.position.needsUpdate = true;
-    windMaterial.opacity = 0.25 + (0.5 + 0.5 * Math.sin(time * 5.2)) * 0.22;
+    windMaterial.color.setHex(recoveryPulse > 0 ? 0x3dffa3 : 0x77e8ff);
+    windMaterial.opacity = 0.18 + intensity * 0.42 + (0.5 + 0.5 * Math.sin(time * (4.4 + intensity * 3.6))) * 0.14 + recoveryPulse * 0.24;
   }
 
   function rebuild(snapshot) {

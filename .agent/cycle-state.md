@@ -1,5 +1,11 @@
 # Cycle State
 
+## 2026-07-16 Counterwind Pressure Crescendo Refinement
+
+`experiments/next-ledge/` now forecasts sector-two counterwind before commitment, intensifies deterministic gust presentation and generic fall pressure through Counterwind Gate, Leeward Cradle, and Reverse Catch, then vents the pressure through a distinct mint recovery state at Counterwind Rest. Authored tuning flows through preset descriptors, the existing route-cargo pressure facade remains the only pressure owner, stale aim assist clears on latch, diagnostics stay closed, and the bounded opening passed input-driven Playwright, Human View, console, cleanup, and same-load performance proof.
+
+Exact next playable unit: continue beyond Counterwind Rest with a short visible choice between a safe recovery ascent and a higher-pressure signal shortcut, without adding first-screen controls or a second pressure/state owner.
+
 ## 2026-07-16 Counterwind Sector Handoff Upgrade
 
 `experiments/next-ledge/` now carries a completed summit relay through a visible broadcast, route handshake, and sector-two reveal instead of resetting immediately. Sector two reverses deterministic wind direction and opens with four authored beats: Counterwind Gate, Leeward Cradle, Reverse Catch, and Counterwind Rest. Delivered cargo persists through the handoff, the new route owns its reset, diagnostics stay closed, the complete route plus failure/recovery passed Playwright, and the measured active-play FPS improved without steady-state entity growth.

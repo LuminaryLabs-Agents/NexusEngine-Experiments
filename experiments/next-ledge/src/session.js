@@ -3,8 +3,8 @@ import { createGenericAnchorDescriptorKit } from "https://cdn.jsdelivr.net/gh/Lu
 import { createGenericModeProjectedRoute, createProjectedRoute } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-mode-projected-route/index.js";
 import { createGenericRouteProgressKit } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-route-progress-kit/index.js";
 import { createGenericTetherTraversalDomainKits, createGenericTetherTraversalPreset } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-tether-traversal-domain-kits/index.js";
-import { createNextLedgeClimbPreset } from "./climb-preset.js?v=counterwind-handoff-1";
-import { adaptProjectedRouteToClimbRoute } from "./climb-anchor-adapter.js?v=counterwind-handoff-1";
+import { createNextLedgeClimbPreset } from "./climb-preset.js?v=counterwind-crescendo-1";
+import { adaptProjectedRouteToClimbRoute } from "./climb-anchor-adapter.js?v=counterwind-crescendo-1";
 import { createClimbActionAdapter } from "./climb-action-adapter.js";
 
 const clamp = (v, a, b) => Math.max(a, Math.min(b, Number.isFinite(Number(v)) ? Number(v) : a));
@@ -66,6 +66,24 @@ function settingsFromEngine(engine, fallback = {}) {
     ...(engine.traversalCamera?.getSettings?.() ?? {}),
     ...(engine.traversalCue?.getSettings?.() ?? {}),
     ...(engine.traversalFeedback?.getSettings?.() ?? {})
+  };
+}
+
+function createInitialWind(route, sector, tuning) {
+  const fallback = (sector - 1) * n(tuning.windPerSector, 0.004);
+  const opening = route.openingPattern;
+  const intensity = opening ? n(opening.approach?.gustIntensity, 0.38) : 0;
+  const base = opening ? n(opening.baseStrength, 0.007) : fallback;
+  const peak = opening ? Math.max(base, n(opening.peakStrength, 0.024)) : base;
+  const strength = base + (peak - base) * intensity;
+  return {
+    strength,
+    targetStrength: strength,
+    intensity,
+    phase: opening ? "approach" : "steady",
+    resolved: false,
+    direction: n(opening?.windDirection, sector % 2 === 0 ? -1 : 1),
+    offset: 0
   };
 }
 
@@ -179,11 +197,7 @@ function createInitialState(options = {}, status = "SYS_STATUS: ACTIVE") {
     constants: { gravity: n(options.gravityBase, tuning.gravityBase ?? 0.049) + sector * n(options.gravityPerSector, tuning.gravityPerSector ?? 0.0022), ropeLength, maxCableLength: maxCable, maxStamina, scaffoldBoundary: n(options.scaffoldBoundary, tuning.scaffoldBoundary ?? 176), ropeNodeCount: nodeCount },
     stamina: maxStamina,
     maxHeight: 0,
-    wind: {
-      strength: (sector - 1) * n(tuning.windPerSector, 0.004),
-      direction: n(route.openingPattern?.windDirection, sector % 2 === 0 ? -1 : 1),
-      offset: 0
-    },
+    wind: createInitialWind(route, sector, tuning),
     sectorTransition: {
       active: false,
       phase: "idle",
@@ -214,6 +228,45 @@ function createInitialState(options = {}, status = "SYS_STATUS: ACTIVE") {
 
 function ledgeMap(state) {
   return Object.fromEntries((state.route?.ledges ?? []).map((ledge) => [ledge.id, ledge]));
+}
+
+function openingWindStage(state) {
+  const opening = state.route?.openingPattern;
+  if (!opening) return null;
+  const ledges = state.route?.ledges ?? [];
+  const currentIndex = ledges.findIndex((ledge) => ledge.id === state.currentAnchorId);
+  if (currentIndex <= 0) {
+    return {
+      phase: "approach",
+      intensity: n(opening.approach?.gustIntensity, 0.38),
+      resolved: false
+    };
+  }
+  const current = ledges[currentIndex];
+  if (current?.metadata?.openingPatternId === opening.id) {
+    return {
+      phase: current.metadata.openingRole ?? "opening",
+      intensity: n(current.metadata.openingGustIntensity, 0.5),
+      resolved: current.metadata.openingRole === "opening-rest"
+    };
+  }
+  return { phase: "post-opening", intensity: 0, resolved: false };
+}
+
+function updateOpeningWind(state, dt) {
+  const stage = openingWindStage(state);
+  const opening = state.route?.openingPattern;
+  const fallback = (state.sector - 1) * n(state.tuning?.windPerSector, 0.004);
+  const base = opening ? n(opening.baseStrength, Math.max(0.007, fallback)) : fallback;
+  const peak = opening ? Math.max(base, n(opening.peakStrength, 0.024)) : base;
+  const intensity = clamp(n(stage?.intensity, 0), 0, 1);
+  const target = opening ? base + (peak - base) * intensity : fallback;
+  const response = opening ? n(opening.response, 0.18) : 1;
+  state.wind.targetStrength = target;
+  state.wind.strength += (target - state.wind.strength) * clamp(response * dt * 60, 0, 1);
+  state.wind.intensity = intensity;
+  state.wind.phase = stage?.phase ?? "steady";
+  state.wind.resolved = Boolean(stage?.resolved);
 }
 
 function enabledTargets(state) {
@@ -310,7 +363,8 @@ function lock(state, ledge) {
   );
   state.player.vx = 0;
   state.player.vy = 0;
-  addEvent(state, "anchor-locked", { targetId: ledge.id, ledgeType: ledge.type, masteryRole: ledge.metadata?.masteryRole });
+  state.aimAssistTargetId = null;
+  addEvent(state, "anchor-locked", { targetId: ledge.id, ledgeType: ledge.type, masteryRole: ledge.metadata?.masteryRole, openingRole: ledge.metadata?.openingRole });
   if (ledge.type === "summit") {
     state.mode = "won";
     state.completed = true;
@@ -321,17 +375,35 @@ function lock(state, ledge) {
     if (ledge.type === "rest") {
       state.stamina = clamp(state.stamina + n(ledge.staminaRestore, n(state.tuning.restRestore, 58)), 0, state.constants.maxStamina);
       state.stats.rests += 1;
-      state.status = ledge.metadata?.masteryRole === "crest-rest"
+      state.status = ledge.metadata?.openingRole === "opening-rest"
+        ? ledge.metadata.openingStatus
+        : ledge.metadata?.masteryRole === "crest-rest"
         ? "Stormbreak rest secured. Build a clean arc for the commit perch."
         : state.tuning.restHint ?? "Restore unit synchronized. Stamina replenished.";
       addEvent(state, "restored", { targetId: ledge.id });
+      if (ledge.metadata?.openingRole === "opening-rest") {
+        state.camera.trauma = Math.max(state.camera.trauma ?? 0, 0.14);
+        addEvent(state, "counterwind-recovered", {
+          targetId: ledge.id,
+          pressureRecovery: n(ledge.metadata.openingPressureRecovery, 100),
+          gustIntensity: n(ledge.metadata.openingGustIntensity, 0.08)
+        });
+      }
     } else {
       const masteryCopy = {
         "crest-commit": "Commit perch locked. Swing left and release into the crosswind catch.",
         "crest-catch": "Crosswind caught. Reverse the arc toward the relay crown.",
         "crest-handoff": "Relay crown secured. One final line carries the signal home."
       };
-      state.status = masteryCopy[ledge.metadata?.masteryRole] ?? state.tuning.swingHint ?? `Swinging from ${ledge.label}. Release when your arc feels right.`;
+      state.status = ledge.metadata?.openingStatus ?? masteryCopy[ledge.metadata?.masteryRole] ?? state.tuning.swingHint ?? `Swinging from ${ledge.label}. Release when your arc feels right.`;
+      if (ledge.metadata?.openingRole) {
+        addEvent(state, "counterwind-pressure-surged", {
+          targetId: ledge.id,
+          openingRole: ledge.metadata.openingRole,
+          pressureDelta: n(ledge.metadata.openingPressureDelta, 0),
+          gustIntensity: n(ledge.metadata.openingGustIntensity, 0)
+        });
+      }
     }
   }
 }
@@ -464,13 +536,14 @@ function updateDerived(state) {
 function stepState(state, dt) {
   if (!state.paused && !["dead", "won"].includes(state.mode)) {
     state.frame += 1;
-    state.wind.offset += 0.045 * dt * 60;
+    state.wind.offset += (0.045 + n(state.wind.intensity, 0) * 0.035) * dt * 60;
     if (!["swinging", "falling", "retracting"].includes(state.mode)) state.input.axis = 0;
     if (state.mode === "swinging") stepSwing(state, dt);
     else if (state.mode === "falling") fallPlayer(state, dt);
     else if (state.mode === "launched") stepLaunched(state, dt);
     else if (state.mode === "retracting") stepRetracting(state, dt);
     else if (state.mode === "reeling") stepReeling(state, dt);
+    updateOpeningWind(state, dt);
     if (state.player.x < -state.constants.scaffoldBoundary || state.player.x > state.constants.scaffoldBoundary) {
       state.player.x = clamp(state.player.x, -state.constants.scaffoldBoundary, state.constants.scaffoldBoundary);
       state.player.vx = -state.player.vx * n(state.tuning.wallBounce, 0.62);
@@ -558,6 +631,7 @@ export function createNextLedgeSession(options = {}) {
   }
 
   function openingStatus(next = state) {
+    if (next.route?.openingPattern?.approach?.status) return next.route.openingPattern.approach.status;
     const direction = n(next.wind?.direction, 1);
     return direction < 0
       ? "Counterwind online. Load right, then release left through the reversed opening."

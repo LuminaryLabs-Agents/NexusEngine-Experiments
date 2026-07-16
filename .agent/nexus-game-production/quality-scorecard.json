@@ -25,19 +25,19 @@
     {
       "id": "next-ledge-grapple",
       "lifecycleStatus": "active-legacy-baseline",
-      "score": 93,
-      "lastImprovedAt": "2026-07-16T12:39:30-04:00",
+      "score": 97,
+      "lastImprovedAt": "2026-07-16T13:16:31-04:00",
       "feelScores": {
         "responsiveness": 9,
         "predictability": 9,
-        "readability": 9,
+        "readability": 10,
         "impact": 10,
-        "recovery": 9,
+        "recovery": 10,
         "delight": 10,
-        "replayDesire": 9,
-        "average": 9.3
+        "replayDesire": 10,
+        "average": 9.7
       },
-      "nextFeelProblem": "The four-anchor counterwind opening needs earlier gust anticipation and a stronger pressure-to-recovery crescendo at Counterwind Rest."
+      "nextFeelProblem": "Counterwind Rest needs a short visible follow-through choice between safe recovery and a higher-pressure signal shortcut."
     },
     {
       "id": "rogue-lite-hellscape-siege",

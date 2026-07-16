@@ -30,7 +30,7 @@
     "coreRemoteDefault": "80146b8947e0877e26b851563bd17f5cdfcbf38a",
     "coreLocalReadOnly": "8b57b03904889cdbc71021d3bdb1d4070af5c8d3",
     "protokits": "04d34f049f58ae359cf71d43466c429dac2a6d08",
-    "experiments": "67cb1fc02fda06c75f12f8a46ee60347317ff27b",
+    "experiments": "82445835725df21c03adee99ec97ab3548c85ed1",
     "experimentsBaseline": "615a7e1e2170164acef0edebdbe0b88b8c01fd1b"
   },
   "baseline": {
@@ -146,25 +146,29 @@
     "scope": "legacy-active-experiment-player-visible-upgrade",
     "result": "Upgraded Next Ledge with a completion-gated summit broadcast, route handshake, reversed-wind sector opening, four authored counterwind anchors, and measured Playwright plus Human View proof; production creation counts remain unchanged."
   },
-  "lastRefinementUnit": null,
+  "lastRefinementUnit": {
+    "packetId": "2026-07-16-next-ledge-counterwind-pressure-crescendo",
+    "scope": "Next Ledge sector-two pressure-and-recovery refinement",
+    "result": "Authored counterwind anticipation now rises through three readable gust/pressure beats and resolves through a distinct zero-pressure recovery at Counterwind Rest without adding a second state or presentation owner."
+  },
   "lastCompletedUnit": {
-    "packetId": "2026-07-16-next-ledge-counterwind-handoff",
-    "scope": "Next Ledge broadcast-to-counterwind playable upgrade",
-    "result": "A completed summit relay now broadcasts through a visible handshake before sector two replaces the route, reverses the wind, and reveals Counterwind Gate, Leeward Cradle, Reverse Catch, and Counterwind Rest.",
-    "validation": "All 28 Next Ledge test entrypoints and changed-file syntax passed. Playwright completed the 25-anchor route, keyboard transition, fall/dead/retry loop, closed/open/closed Advanced disclosure, measured 13.88 FPS versus 10.60 FPS before, proved stable counterwind scene counts, and recorded zero console messages. Human View before, broadcast, opening, and final screenshots passed.",
+    "packetId": "2026-07-16-next-ledge-counterwind-pressure-crescendo",
+    "scope": "Next Ledge sector-two pressure-and-recovery refinement",
+    "result": "The four-anchor counterwind opening now forecasts the gust, raises pressure 14 to 35 to 64, and vents it to zero with distinct visual, audio, status, and camera recovery at Counterwind Rest.",
+    "validation": "All 28 Next Ledge test entrypoints and changed-file syntax passed. Playwright proved failure/recovery, the complete four-beat changed loop through actual input/ticks after runtime sector entry, closed/open/closed Advanced disclosure, same-load FPS improvement, stable settled scene counts, and zero console messages. Human View before, peak-gust, rest, and final screenshots passed.",
     "commits": {
       "coreReadOnly": "8b57b03904889cdbc71021d3bdb1d4070af5c8d3",
       "protokitsStart": "04d34f049f58ae359cf71d43466c429dac2a6d08",
       "protokitsProductionUnit": "04d34f049f58ae359cf71d43466c429dac2a6d08",
-      "experimentsStart": "67cb1fc02fda06c75f12f8a46ee60347317ff27b",
-      "experimentsProductionUnit": "f7f2ddc91c77f7ee9260a8cb266ad4903574d21f"
+      "experimentsStart": "82445835725df21c03adee99ec97ab3548c85ed1",
+      "experimentsProductionUnit": "pending"
     },
-    "publication": "Experiments production commit f7f2ddc91c77f7ee9260a8cb266ad4903574d21f is published on origin/main after fetch-before-push verification; ProtoKits is unchanged at 04d34f049f58ae359cf71d43466c429dac2a6d08."
+    "publication": "Pending fetch-before-push publication; ProtoKits is unchanged at 04d34f049f58ae359cf71d43466c429dac2a6d08."
   },
   "exactNextUnit": {
     "phase": "playable-experiment-upgrade",
     "epoch": 0,
-    "scope": "next-ledge-counterwind-pressure-crescendo",
-    "goal": "Deepen the four-anchor counterwind opening with earlier gust anticipation and a stronger pressure-to-recovery crescendo at Counterwind Rest while preserving the clean first-screen hierarchy."
+    "scope": "next-ledge-post-rest-route-choice",
+    "goal": "Continue beyond Counterwind Rest with one short visible choice between a safe recovery ascent and a higher-pressure signal shortcut while preserving one pressure owner and the clean first-screen hierarchy."
   }
 }

@@ -65,6 +65,10 @@ export function adaptProjectedRouteToClimbRoute(projectedRoute, climb = {}) {
         openingRole: beat.role ?? `opening-beat-${order}`,
         openingOrder: order,
         windDirection: Number(opening.windDirection ?? 1),
+        openingGustIntensity: Number(beat.gustIntensity ?? 0),
+        openingPressureDelta: Number(beat.pressureDelta ?? 0),
+        openingPressureRecovery: Number(beat.pressureRecovery ?? 0),
+        openingStatus: beat.status ?? null,
         authoredRouteBeat: true
       }
     };
@@ -108,6 +112,10 @@ export function adaptProjectedRouteToClimbRoute(projectedRoute, climb = {}) {
       id: opening.id ?? "counterwind-opening",
       label: opening.label ?? "Counterwind opening",
       windDirection: Number(opening.windDirection ?? 1),
+      baseStrength: Number(opening.baseStrength ?? 0.007),
+      peakStrength: Number(opening.peakStrength ?? 0.024),
+      response: Number(opening.response ?? 0.18),
+      approach: { ...(opening.approach ?? {}) },
       beatIds: openingBeats.map((beat) => beat.id).filter(Boolean),
       endIndex: Math.min(ledges.length - 1, openingBeats.length)
     } : null,

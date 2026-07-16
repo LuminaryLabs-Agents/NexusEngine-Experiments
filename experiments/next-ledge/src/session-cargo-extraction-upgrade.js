@@ -1,6 +1,6 @@
 import * as NexusEngine from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js";
 import { createGenericRouteCargoExtractionKit } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-route-cargo-extraction-kit/index.js";
-import { createNextLedgeSession as createVisualNextLedgeSession } from "./session-visual-upgrade.js?v=counterwind-handoff-1";
+import { createNextLedgeSession as createVisualNextLedgeSession } from "./session-visual-upgrade.js?v=counterwind-crescendo-1";
 import { createNextLedgeRouteCargoDomainKit } from "./route-cargo-fractal-kits.js";
 import { createNextLedgeTraversalReadabilityDomainKit } from "./traversal-readability-kits.js";
 import { createNextLedgeAnchorTimingReadabilityDomainKit } from "./anchor-timing-readability-kits.js";
@@ -101,6 +101,8 @@ export function createNextLedgeSession(options = {}) {
       if (evt.type === "released") facade.adjustPressure?.("fall-pressure", 3, { commandId: `cargo:${key}:release-pressure`, reason: "released" });
       if (evt.type === "wall-bounced") facade.adjustPressure?.("fall-pressure", 9, { commandId: `cargo:${key}:wall-pressure`, reason: "wall-bounced" });
       if (evt.type === "failed") facade.adjustPressure?.("fall-pressure", 100, { commandId: `cargo:${key}:fail-pressure`, reason: "failed" });
+      if (evt.type === "counterwind-pressure-surged") facade.adjustPressure?.("fall-pressure", Number(evt.pressureDelta ?? 0), { commandId: `cargo:${key}:counterwind-surge`, reason: evt.openingRole ?? "counterwind-surge" });
+      if (evt.type === "counterwind-recovered") facade.recoverPressure?.("fall-pressure", Number(evt.pressureRecovery ?? 100), { commandId: `cargo:${key}:counterwind-recovery`, reason: "counterwind-rest" });
     }
 
     if (syncedEvents.size > 128) {

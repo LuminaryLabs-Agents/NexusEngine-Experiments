@@ -68,10 +68,10 @@
         "generic-traversal-feedback-kit",
         "generic-route-cargo-extraction-kit"
       ],
-      "feelAverageBefore": 8.3,
-      "feelAverageAfter": 9.3,
-      "validation": "Playwright completed the 25-anchor summit route, proved the keyboard broadcast/handshake/counterwind reveal, failure/retry, stable counterwind scene counts, closed diagnostics, Human View before/transition/final, and a zero-message console",
-      "packetId": "2026-07-16-next-ledge-counterwind-handoff"
+      "feelAverageBefore": 9.0,
+      "feelAverageAfter": 9.7,
+      "validation": "Playwright completed the four-beat counterwind pressure/recovery loop through actual input and ticks after runtime sector entry, proved pressure 14 to 35 to 64 to 0, failure/recovery, stable settled entity counts, closed diagnostics, same-load performance improvement, Human View before/peak/rest/final, and a zero-message console",
+      "packetId": "2026-07-16-next-ledge-counterwind-pressure-crescendo"
     }
   ],
   "experiments": []

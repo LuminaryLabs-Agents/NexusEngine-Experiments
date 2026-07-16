@@ -27,7 +27,7 @@ export function createCinematicSynth() {
     osc.stop(t + duration + 0.02);
   }
 
-  function playEvent(type) {
+  function playEvent(type, event = {}) {
     if (type === "grapple-fired") tone(900, 0.2, "sawtooth", 0.18, 150);
     else if (type === "grapple-latched") { tone(1200, 0.25, "sine", 0.18, 250); tone(80, 0.3, "triangle", 0.18); }
     else if (type === "released" || type === "wall-bounce") tone(110, 0.15, "triangle", 0.16, 45);
@@ -50,6 +50,15 @@ export function createCinematicSynth() {
       tone(196, 0.62, "sawtooth", 0.07, 98);
       tone(659.25, 0.7, "sine", 0.065, 1318.5);
     }
+    else if (type === "counterwind-pressure-surged") {
+      const intensity = Math.max(0, Math.min(1, Number(event.gustIntensity ?? 0.5)));
+      tone(138 + intensity * 54, 0.34 + intensity * 0.22, "sawtooth", 0.04 + intensity * 0.045, 72);
+      tone(540 + intensity * 220, 0.22, "triangle", 0.035 + intensity * 0.03, 320);
+    }
+    else if (type === "counterwind-recovered") {
+      tone(146.83, 0.65, "triangle", 0.09, 293.66);
+      [440, 659.25, 880].forEach((frequency, index) => setTimeout(() => tone(frequency, 0.42, "sine", 0.065, frequency * 1.25), index * 90));
+    }
   }
 
   return {
@@ -59,7 +68,7 @@ export function createCinematicSynth() {
         const key = `${event.at}:${event.type}:${event.targetId ?? event.reason ?? event.sector ?? ""}`;
         if (seen.has(key)) continue;
         seen.add(key);
-        playEvent(event.type);
+        playEvent(event.type, event);
       }
       if (seen.size > 80) {
         const keep = [...seen].slice(-40);

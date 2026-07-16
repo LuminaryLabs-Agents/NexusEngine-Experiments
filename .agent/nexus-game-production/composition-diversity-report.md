@@ -100,6 +100,7 @@ These are proof targets, not accepted experiment records. Seeds, candidate draw 
 - The other 33 top-level experiment folders remain baseline inventory until they pass the new gate.
 - The active legacy `next-ledge` upgrade now has a specific stormline signal-delivery fantasy, swing/release/re-grapple verb, stamina/cargo/fall-pressure loop, authored five-beat summit crest, and eight-feature ProtoKit signature. This materially deepens one proven composition; it does not create or claim a second production signature.
 - The counterwind handoff deepens that same proven stormline composition with a completion-gated broadcast, route handshake, reversed wind, and a four-beat opening. It does not change the fantasy, interaction family, or production signature, so creation and diversity counts remain unchanged.
+- The pressure-crescendo refinement makes that four-beat opening more readable and recoverable through authored gust stages and the existing generic pressure facade. It adds no kit, experiment, route family, signature, or production count.
 
 ## Diversity Gate
 
@@ -113,4 +114,5 @@ Every accepted experiment must record epoch, lifecycle status, seed, full candid
 - Implemented boundary duplication: 0 across contracts 001-010 after source, export, API, resource, event, ownership, and exclusion comparison.
 - Real composition pressure now exists for Quarantine Lantern, Rewilding Basin, Bridge Under Siege, Border Accord, and Lost Migration, but no seeded experiment draw or playable signature is claimed before the implementation gate closes.
 - The Next Ledge mastery crest is an in-place legacy upgrade, so duplicate and near-duplicate production-signature totals remain zero and production creation counts remain unchanged.
+- The Next Ledge counterwind pressure crescendo remains inside the same eight-feature signature; exact and near-duplicate production-signature totals remain zero.
 - Diversity claim: contract pressure only; no playable diversity claim yet.

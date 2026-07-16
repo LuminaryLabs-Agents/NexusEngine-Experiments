@@ -6,6 +6,8 @@ The final route now resolves into an authored mastery crest: recover at Stormbre
 
 After delivery, the advanced `N` action broadcasts the restored relay, waits for a visible route handshake, then reveals a mirrored four-anchor opening with reversed wind: Counterwind Gate, Leeward Cradle, Reverse Catch, and Counterwind Rest.
 
+That opening is an authored pressure crescendo: the fixed-size wind field accelerates and strengthens across the first three beats, the existing fall-pressure service records each gust load, and Counterwind Rest vents the pressure with a distinct recovery signal. Gust strength, pressure deltas, copy, and recovery live in the declarative climb preset; session, renderer, HUD, and audio consume the same state and events.
+
 The playable route composes real reusable features from NexusEngine-ProtoKits:
 
 ```txt

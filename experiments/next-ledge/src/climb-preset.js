@@ -21,11 +21,20 @@ export function createNextLedgeClimbPreset(options = {}) {
     id: `counterwind-opening-${sector}`,
     windDirection,
     label: windDirection < 0 ? "Westbound counterwind" : "Eastbound counterwind",
+    baseStrength: 0.007,
+    peakStrength: 0.024,
+    response: 0.18,
+    approach: {
+      gustIntensity: 0.38,
+      status: windDirection < 0
+        ? "Counterwind building from the right. Load into it before the gate."
+        : "Counterwind building from the left. Load into it before the gate."
+    },
     beats: [
-      { index: 1, id: "counterwind-gate", role: "opening-windward", label: "Counterwind gate", type: "normal", x: -72 * windDirection, y: 124, radius: 7.2, tags: ["counterwind-opening", "windward-load"] },
-      { index: 2, id: "leeward-cradle", role: "opening-leeward", label: "Leeward cradle", type: "normal", x: 52 * windDirection, y: 244, radius: 7.8, tags: ["counterwind-opening", "leeward-catch"] },
-      { index: 3, id: "reverse-catch", role: "opening-reverse", label: "Reverse catch", type: "normal", x: -76 * windDirection, y: 366, radius: 7, tags: ["counterwind-opening", "reverse-swing"] },
-      { index: 4, id: "counterwind-rest", role: "opening-rest", label: "Counterwind rest", type: "rest", x: 48 * windDirection, y: 486, radius: 9.5, tags: ["counterwind-opening", "recovery-confirmation"] }
+      { index: 1, id: "counterwind-gate", role: "opening-windward", label: "Counterwind gate", type: "normal", x: -72 * windDirection, y: 124, radius: 7.2, gustIntensity: 0.58, pressureDelta: 14, status: "Counterwind Gate secured. Gust building—load across it into Leeward Cradle.", tags: ["counterwind-opening", "windward-load"] },
+      { index: 2, id: "leeward-cradle", role: "opening-leeward", label: "Leeward cradle", type: "normal", x: 52 * windDirection, y: 244, radius: 7.8, gustIntensity: 0.8, pressureDelta: 22, status: "Leeward Cradle secured. Pressure rising—reverse hard into the exposed catch.", tags: ["counterwind-opening", "leeward-catch"] },
+      { index: 3, id: "reverse-catch", role: "opening-reverse", label: "Reverse catch", type: "normal", x: -76 * windDirection, y: 366, radius: 7, gustIntensity: 1, pressureDelta: 30, status: "Peak gust caught. One controlled release reaches Counterwind Rest.", tags: ["counterwind-opening", "reverse-swing"] },
+      { index: 4, id: "counterwind-rest", role: "opening-rest", label: "Counterwind rest", type: "rest", x: 48 * windDirection, y: 486, radius: 9.5, gustIntensity: 0.08, pressureRecovery: 100, status: "Counterwind Rest secured. Gust pressure vented—signal line stabilized.", tags: ["counterwind-opening", "recovery-confirmation"] }
     ]
   };
   return {
