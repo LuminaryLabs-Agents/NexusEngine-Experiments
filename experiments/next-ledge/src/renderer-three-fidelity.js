@@ -55,6 +55,7 @@ function aimEndpoint(snapshot) {
 }
 
 function colorForStyle(styleId = "") {
+  styleId = String(styleId ?? "");
   if (styleId.includes("summit")) return 0xffd65a;
   if (styleId.includes("danger")) return 0xff3858;
   if (styleId.includes("cloud")) return 0xbfeaff;

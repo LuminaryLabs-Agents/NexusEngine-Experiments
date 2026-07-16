@@ -6,6 +6,7 @@ const overlaySource = readFileSync("experiments/next-ledge/src/rescue-line-readi
 const kitSource = readFileSync("experiments/next-ledge/src/rescue-line-readiness-kits.js", "utf8");
 const anchorSmokeSource = readFileSync("tests/next-ledge-anchor-timing-cdn-state-input-smoke.mjs", "utf8");
 const manifestSource = readFileSync("experiments/domain-kit-cutover-manifest.json", "utf8");
+const diagnosticsSource = readFileSync("experiments/next-ledge/src/advanced-diagnostics.js", "utf8");
 
 const nexusEngineCdn = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js";
 const oldRuntimeCdn = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusRealtime@main/src/index.js";
@@ -13,7 +14,8 @@ const oldRuntimeCdn = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusRealtim
 assert.ok(overlaySource.includes(nexusEngineCdn), "rescue line overlay should import NexusEngine main through the CDN");
 assert.doesNotMatch(overlaySource, new RegExp(oldRuntimeCdn.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")), "rescue line overlay must not import old NexusRealtime runtime CDN");
 assert.match(routeShell, /rescue-line-readiness-renderer-handoff-pass/, "route shell should identify rescue line cutover");
-assert.match(routeShell, /rescue-line-readiness-entry\.js\?v=rescue-line-readiness-1/, "route shell should cache-bust rescue line overlay");
+assert.doesNotMatch(routeShell, /rescue-line-readiness-entry\.js/, "clean playable route should not auto-load rescue line overlay");
+assert.match(diagnosticsSource, /"rescue-line": "Rescue line:/, "advanced disclosure should preserve rescue-line diagnostic context");
 assert.match(overlaySource, /createNextLedgeRescueLineReadinessDomainKit/, "overlay should create the rescue line domain kit");
 assert.match(overlaySource, /getRescueLineReadiness/, "GameHost should expose rescue line readiness");
 assert.match(overlaySource, /getNextLedgeRescueLineReadiness/, "GameHost should expose route-specific rescue line readiness");

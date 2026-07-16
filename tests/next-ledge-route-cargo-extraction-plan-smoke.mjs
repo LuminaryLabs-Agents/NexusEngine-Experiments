@@ -6,40 +6,38 @@ const routeProgressSpec = JSON.parse(readFileSync("experiments/next-ledge-route-
 const domainManifest = JSON.parse(readFileSync("experiments/domain-kit-cutover-manifest.json", "utf8"));
 const replayManifest = JSON.parse(readFileSync("experiments/canonical-route-replay-manifest.json", "utf8"));
 const sessionSource = readFileSync("experiments/next-ledge/src/session.js", "utf8");
+const wrapperSource = readFileSync("experiments/next-ledge/src/session-cargo-extraction-upgrade.js", "utf8");
 
 assert.equal(plan.routeId, "next-ledge", "plan should target the canonical Next Ledge route");
 assert.equal(plan.scenarioLane, "traversal-cargo-pressure", "plan should stay on the traversal/cargo pressure lane");
 assert.equal(plan.higherLevelDomain, "Delivery/extraction loop", "plan should name the higher-level delivery/extraction domain");
-assert.equal(plan.status, "composite-consumption-planned", "route-cargo composite consumption should remain planned until source consumes it");
+assert.equal(plan.status, "composite-consumed-playable-proof", "route-cargo composite should record its playable source consumption");
 assert.equal(plan.fullLaneExecutableClaim, false, "plan must not claim the full lane executable replay early");
-assert.equal(plan.localJsReductionClaim, "none-yet-for-composite; this is guard/plan hardening only", "plan should not overclaim local JavaScript reduction");
+assert.match(plan.localJsReductionClaim, /centralizes reusable cargo, resource, pressure/, "plan should identify the bounded reusable-state reduction");
 
 const route = domainManifest.canonicalRoutes.find((entry) => entry.id === "next-ledge");
 assert.ok(route, "Next Ledge should remain manifest-owned");
 for (const required of [
-  "generic-route-progress-kit",
-  "generic-route-cargo-extraction-kit",
-  "generic-resource-loop-kit",
-  "generic-pressure-loop-kit"
+  "generic-route-cargo-extraction-kit"
 ]) {
   assert.ok(route.domainCutover.includes(required), `Next Ledge manifest should keep ${required} in the cutover target`);
 }
-assert.match(route.bridgeNeeded, /route-progress consumption is executable through engine\.n\.genericRouteProgress/, "manifest should preserve the existing executable route-progress seam");
-assert.match(route.bridgeNeeded, /cargo\/resource\/pressure consumption remains planned/, "manifest should preserve the remaining composite gap");
+assert.match(route.bridgeNeeded, /browser wrapper consumes NexusEngine main CDN/, "manifest should preserve the executable browser wrapper seam");
+assert.match(route.bridgeNeeded, /route-cargo/, "manifest should preserve composite route-cargo consumption");
 
 const replay = replayManifest.canonicalRouteReplays.find((entry) => entry.canonicalId === "next-ledge");
 assert.ok(replay, "Next Ledge should remain in the canonical replay manifest");
 assert.equal(replay.status, "planned-fixture", "replay manifest should not claim route-cargo executable replay yet");
 assert.ok(
-  replay.missingExecutableFixtures.some((fixture) => /generic-route-cargo-extraction-kit/.test(fixture)),
-  "replay manifest should keep the generic-route-cargo-extraction executable fixture gap explicit"
+  replay.missingExecutableFixtures.some((fixture) => /route-level deterministic replay/.test(fixture)),
+  "replay manifest should keep the route-level composite replay gap explicit"
 );
 
-assert.equal(routeProgressSpec.status, "partial-route-progress-dsk-consumed", "route-progress spec should remain the current executable seam");
+assert.equal(routeProgressSpec.status, "route-progress-and-cargo-dsk-consumed-playable", "route-progress spec should record both consumed DSK seams");
 assert.equal(routeProgressSpec.fullLaneExecutableClaim, false, "route-progress spec should not claim the full traversal/cargo lane");
 assert.ok(
-  routeProgressSpec.remainingExecutableGap.some((gap) => /cargo\/resource\/pressure/.test(gap)),
-  "route-progress spec should keep the cargo/resource/pressure gap explicit"
+  routeProgressSpec.remainingExecutableGap.some((gap) => /route-level deterministic replay/.test(gap)),
+  "route-progress spec should keep the route-level replay gap explicit"
 );
 
 assert.equal(plan.compositeBoundary.kit, "generic-route-cargo-extraction-kit", "plan should target the existing ProtoKit composite");
@@ -60,8 +58,13 @@ for (const method of ["completeCheckpoint", "pickupCargo", "deliverCargo", "adju
 
 assert.match(sessionSource, /createGenericRouteProgressKit/, "current source should still consume the route-progress ProtoKit");
 assert.match(sessionSource, /engine\.n\?\.genericRouteProgress/, "current source should still prefer the namespaced route-progress boundary");
-assert.doesNotMatch(sessionSource, /createGenericRouteCargoExtractionKit/, "source should not import the composite before the plan is executed");
+assert.match(wrapperSource, /createGenericRouteCargoExtractionKit/, "playable wrapper should consume the route-cargo composite");
+for (const child of ["genericRouteProgress", "genericResourceLoop", "genericPressureLoop"]) {
+  assert.ok(JSON.stringify(plan.compositeBoundary).includes(child), `composite plan should record child namespace ${child}`);
+}
+assert.match(wrapperSource, /engine\?\.n\?\.genericRouteCargoExtraction/, "playable wrapper should prefer the namespaced composite facade");
 assert.match(sessionSource, /routeProgress: routeProgressFacade\(engine\)\?\.getState/, "snapshots should still expose routeProgress explicitly");
+assert.match(wrapperSource, /routeCargoExtraction: cargoSnapshot/, "playable snapshots should expose routeCargoExtraction explicitly");
 
 for (const retained of [
   "tether physics",
@@ -83,6 +86,6 @@ for (const folded of ["Harbor Salvage", "Cargo Chain", "Sky Courier", "Trainyard
 const phaseText = JSON.stringify(plan.phasePlan);
 assert.match(phaseText, /no monolithic game-engine composite/, "plan should explicitly reject monolithic composite game engines");
 assert.match(phaseText, /cargo\/resource\/pressure/, "plan should require cargo/resource/pressure proof before migration");
-assert.match(plan.nextPatchGate, /Do not migrate source/, "plan should gate source migration until real composite consumption proof exists");
+assert.match(plan.nextPatchGate, /route-level fixed-tick replay/, "plan should gate executable promotion on route-level deterministic proof");
 
 console.log("Next Ledge route-cargo extraction plan smoke passed.");

@@ -12,7 +12,7 @@ const nexusEngineCdn = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine
 const oldRuntimeCdn = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusRealtime@main/src/index.js";
 
 assert.match(routeShell, /anchor-timing-readability-renderer-handoff-pass|traversal-readability-renderer-handoff-pass/, "route shell should identify the active Next Ledge readability cutover");
-assert.match(routeShell, /main\.js\?v=(anchor-timing-readability-1|traversal-readability-1)/, "route shell should cache-bust the upgraded module");
+assert.match(routeShell, /main\.js\?v=grapple-flow-1/, "route shell should cache-bust the playable upgrade module");
 assert.match(mainSource, /session-cargo-extraction-upgrade\.js/, "browser entry should still use the NexusEngine cargo/traversal wrapper");
 assert.ok(wrapperSource.includes(nexusEngineCdn), "changed wrapper should pull NexusEngine main through the CDN");
 assert.doesNotMatch(wrapperSource, new RegExp(oldRuntimeCdn.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")), "changed wrapper must not import the old NexusRealtime runtime CDN");
@@ -41,7 +41,7 @@ for (const required of [
 
 const intakeCases = [
   { name: "initial snapshot", expected: /traversalReadabilityDomain = createNextLedgeTraversalReadabilityDomainKit/ },
-  { name: "tick update", expected: /decorate\(base\.update\(dt, input\)\)/ },
+  { name: "tick update", expected: /const next = base\.update\(dt, input\)/ },
   { name: "restart", expected: /resetCargo\(next, "next-ledge-restart"\)/ },
   { name: "sector advance", expected: /resetCargo\(next, "next-ledge-sector-advance"\)/ },
   { name: "arc descriptors", expected: /swingArcs/ },

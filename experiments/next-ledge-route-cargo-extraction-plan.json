@@ -1,13 +1,14 @@
 {
-  "version": 1,
+  "version": 2,
   "routeId": "next-ledge",
   "canonicalPath": "experiments/next-ledge/",
   "scenarioLane": "traversal-cargo-pressure",
   "higherLevelDomain": "Delivery/extraction loop",
-  "status": "composite-consumption-planned",
+  "status": "composite-consumed-playable-proof",
   "fullLaneExecutableClaim": false,
   "sourceRouteProgressSpec": "experiments/next-ledge-route-progress-replay.json",
   "sourceSession": "experiments/next-ledge/src/session.js",
+  "sourceCompositeWrapper": "experiments/next-ledge/src/session-cargo-extraction-upgrade.js",
   "sourceManifest": "experiments/domain-kit-cutover-manifest.json",
   "sourceReplayManifest": "experiments/canonical-route-replay-manifest.json",
   "compositeBoundary": {
@@ -57,18 +58,19 @@
   },
   "phasePlan": [
     {
-      "phase": "0-current-guard",
-      "objective": "Keep the existing route-progress DSK consumption executable through engine.n.genericRouteProgress while blocking a premature route-cargo executable claim.",
+      "phase": "0-complete-playable-consumption",
+      "objective": "Keep route-progress and route-cargo DSK consumption playable while blocking a premature route-level deterministic replay claim.",
       "mustRemainTrue": [
         "Next Ledge imports createGenericRouteProgressKit",
         "Next Ledge snapshots expose domain.routeProgress",
-        "Next Ledge does not import createGenericRouteCargoExtractionKit yet",
+        "Next Ledge wrapper imports createGenericRouteCargoExtractionKit",
+        "Next Ledge snapshots expose domain.routeCargoExtraction",
         "canonical replay status remains planned-fixture for traversal-cargo-pressure"
       ]
     },
     {
-      "phase": "1-composite-import-candidate",
-      "objective": "Replace the standalone route-progress kit with generic-route-cargo-extraction-kit only when a concrete cargo/resource/pressure ledger can be removed from host code rather than invented as route fiction.",
+      "phase": "1-complete-composite-import",
+      "objective": "Keep the composite facade as reusable cargo/resource/pressure authority while the route translates only climb events and fiction.",
       "requiredProof": [
         "route checkpoints still flow through engine.n.genericRouteProgress",
         "cargo/resource deltas flow through engine.n.genericResourceLoop via the composite facade",
@@ -112,6 +114,6 @@
     "Dungeon Relay",
     "Floodplain Rescue"
   ],
-  "nextPatchGate": "Do not migrate source to createGenericRouteCargoExtractionKit until the patch removes or centralizes real cargo/resource/pressure bookkeeping and adds a route-level fixed-tick replay or spec smoke proving route/cargo/pressure descriptors together.",
-  "localJsReductionClaim": "none-yet-for-composite; this is guard/plan hardening only"
+  "nextPatchGate": "Add a route-level fixed-tick replay that proves route, cargo, pressure, and descriptor digests together before promoting Next Ledge to executable route-domain coverage.",
+  "localJsReductionClaim": "generic-route-cargo-extraction-kit now centralizes reusable cargo, resource, pressure, and descriptor state; route-local code retains event translation, fiction, browser input, tuning, and presentation"
 }

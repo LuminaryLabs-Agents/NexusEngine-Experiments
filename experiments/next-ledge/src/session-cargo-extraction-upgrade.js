@@ -1,5 +1,5 @@
 import * as NexusEngine from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js";
-import { createGenericRouteCargoExtractionKit } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusRealtime-ProtoKits@main/protokits/generic-route-cargo-extraction-kit/index.js";
+import { createGenericRouteCargoExtractionKit } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-route-cargo-extraction-kit/index.js";
 import { createNextLedgeSession as createVisualNextLedgeSession } from "./session-visual-upgrade.js";
 import { createNextLedgeRouteCargoDomainKit } from "./route-cargo-fractal-kits.js";
 import { createNextLedgeTraversalReadabilityDomainKit } from "./traversal-readability-kits.js";
@@ -59,6 +59,7 @@ export function createNextLedgeSession(options = {}) {
     });
     runtime.engine.tick?.(0);
     runtime = { ...runtime, config, key: routeKey(snapshot) };
+    syncedEvents.clear();
   }
 
   function ensureRuntime(snapshot = {}) {
@@ -166,7 +167,10 @@ export function createNextLedgeSession(options = {}) {
   }
 
   function update(dt, input = {}) {
-    return decorate(base.update(dt, input));
+    const next = base.update(dt, input);
+    if (input.restart) resetCargo(next, "next-ledge-input-restart");
+    else if (input.advanceSector) resetCargo(next, "next-ledge-input-sector-advance");
+    return decorate(next);
   }
 
   function snapshot() {

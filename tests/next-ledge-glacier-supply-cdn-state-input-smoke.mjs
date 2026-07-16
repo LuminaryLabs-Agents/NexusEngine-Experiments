@@ -8,7 +8,8 @@ const entry = readFileSync(new URL("../experiments/next-ledge/src/glacier-supply
 const kits = readFileSync(new URL("../experiments/next-ledge/src/glacier-supply-readiness-kits.js", import.meta.url), "utf8");
 
 assert.ok(indexHtml.includes("glacier-supply-readiness-renderer-handoff-pass"));
-assert.ok(indexHtml.includes("glacier-supply-readiness-entry.js?v=glacier-supply-readiness-1"));
+assert.ok(!indexHtml.includes("glacier-supply-readiness-entry.js"));
+assert.ok(indexHtml.includes('<option value="glacier-supply">Glacier supply</option>'));
 assert.ok(entry.includes(CDN_URL));
 assert.ok(!entry.includes("LuminaryLabs-Dev/NexusRealtime@main"));
 assert.ok(entry.includes("getNextLedgeGlacierSupplyReadiness"));

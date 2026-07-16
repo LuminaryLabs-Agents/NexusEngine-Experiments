@@ -7,6 +7,7 @@ const routeShell = readFileSync("experiments/next-ledge/index.html", "utf8");
 const entrySource = readFileSync("experiments/next-ledge/src/ravine-evacuation-readiness-entry.js", "utf8");
 const kitSource = readFileSync("experiments/next-ledge/src/ravine-evacuation-readiness-kits.js", "utf8");
 const anchorTimingSmokeSource = readFileSync("tests/next-ledge-anchor-timing-cdn-state-input-smoke.mjs", "utf8");
+const diagnosticsSource = readFileSync("experiments/next-ledge/src/advanced-diagnostics.js", "utf8");
 
 const nexusEngineCdn = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js";
 const oldRuntimeCdn = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusRealtime@main/src/index.js";
@@ -14,8 +15,9 @@ const oldRuntimeCdn = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusRealtim
 assert.ok(entrySource.includes(nexusEngineCdn), "ravine evacuation entry should import NexusEngine main through CDN");
 assert.doesNotMatch(entrySource, new RegExp(oldRuntimeCdn.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")), "changed ravine evacuation entry must not import old NexusRealtime runtime CDN");
 assert.match(routeShell, /ravine-evacuation-readiness-renderer-handoff-pass/, "route shell should identify ravine evacuation readiness pass");
-assert.match(routeShell, /ravine-evacuation-readiness-entry\.js\?v=ravine-evacuation-readiness-1/, "route shell should cache-bust ravine evacuation entry");
-assert.match(routeShell, /main\.js\?v=rescue-line-readiness-1-ravine-evacuation-1/, "route shell should cache-bust changed route shell load");
+assert.doesNotMatch(routeShell, /ravine-evacuation-readiness-entry\.js/, "clean playable route should not auto-load ravine evacuation overlay");
+assert.match(routeShell, /main\.js\?v=grapple-flow-1/, "route shell should cache-bust changed playable route load");
+assert.match(diagnosticsSource, /"ravine-evacuation": "Ravine evacuation:/, "advanced disclosure should preserve ravine context");
 assert.match(entrySource, /getRavineEvacuationReadiness/, "GameHost should expose ravine evacuation readiness state");
 assert.match(entrySource, /getNextLedgeRavineEvacuationReadiness/, "GameHost should expose route-scoped ravine evacuation accessor");
 assert.match(entrySource, /ravineEvacuationReadiness\?\.rendererHandoff/, "composed renderer handoff should include ravine evacuation descriptors");

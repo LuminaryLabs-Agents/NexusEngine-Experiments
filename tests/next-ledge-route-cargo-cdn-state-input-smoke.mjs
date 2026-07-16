@@ -8,10 +8,13 @@ const effectsSource = readFileSync("experiments/next-ledge/src/diegetic-effects.
 
 const nexusEngineCdn = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js";
 const oldRuntimeCdn = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusRealtime@main/src/index.js";
+const protoKitCdn = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-route-cargo-extraction-kit/index.js";
 
 assert.match(mainSource, /session-cargo-extraction-upgrade\.js/, "Next Ledge browser entry should use the cargo extraction wrapper");
 assert.ok(wrapperSource.includes(nexusEngineCdn), "cargo extraction wrapper should pull NexusEngine main through the CDN");
+assert.ok(wrapperSource.includes(protoKitCdn), "cargo extraction wrapper should pin the validated NexusEngine ProtoKit commit");
 assert.doesNotMatch(wrapperSource, new RegExp(oldRuntimeCdn.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")), "changed wrapper must not import the old NexusRealtime runtime CDN");
+assert.doesNotMatch(wrapperSource, /NexusRealtime-ProtoKits/, "changed wrapper must not import the retired ProtoKit repository");
 assert.match(wrapperSource, /createGenericRouteCargoExtractionKit/, "wrapper should install the generic route-cargo extraction composite kit");
 assert.match(wrapperSource, /engine\?\.n\?\.genericRouteCargoExtraction/, "wrapper should prefer the namespaced route-cargo extraction facade");
 assert.match(wrapperSource, /pickupCargo/, "wrapper should bridge pickup events into the composite facade");
@@ -35,7 +38,7 @@ for (const required of [
 
 const intakeCases = [
   { name: "initial snapshot", source: "snapshot", expected: /createCargoRuntime\(base\.snapshot\(\)/ },
-  { name: "tick update", source: "update", expected: /decorate\(base\.update\(dt, input\)\)/ },
+  { name: "tick update", source: "update", expected: /const next = base\.update\(dt, input\)/ },
   { name: "restart reset", source: "restart", expected: /resetCargo\(next, "next-ledge-restart"\)/ },
   { name: "sector advance reset", source: "advanceSector", expected: /resetCargo\(next, "next-ledge-sector-advance"\)/ },
   { name: "checkpoint enter", source: "event", expected: /enterCheckpoint/ },
@@ -49,6 +52,10 @@ const intakeCases = [
 for (const testCase of intakeCases) {
   assert.match(wrapperSource, testCase.expected, `${testCase.name} should be wired for ${testCase.source}`);
 }
+
+assert.match(wrapperSource, /if \(input\.restart\) resetCargo\(next, "next-ledge-input-restart"\)/, "keyboard retry should reset composite cargo state");
+assert.match(wrapperSource, /else if \(input\.advanceSector\) resetCargo\(next, "next-ledge-input-sector-advance"\)/, "keyboard sector advance should reset composite cargo state");
+assert.match(wrapperSource, /syncedEvents\.clear\(\)/, "composite resets should clear route event dedupe state");
 
 assert.match(effectsSource, /routeCargoVisual\?\.rendererHandoff\?\.descriptors/, "diegetic renderer should consume route-cargo renderer handoff descriptors");
 assert.match(effectsSource, /createCargoDescriptorLayer/, "diegetic renderer should add a cargo descriptor particle layer");

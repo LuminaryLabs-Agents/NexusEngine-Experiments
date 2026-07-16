@@ -16,7 +16,8 @@ NexusEngine-Experiments owns playable browser proof, product-specific content an
 
 - Durable state lives under `.agent/nexus-game-production/`.
 - Each run creates one `.agent/change-packets/<packet-id>/PACKET.md`; global and repository lock artifacts are deprecated and must not be created, inspected, or honored.
-- Gates are sequential through bootstrap: inventory, catalog, implementation, experiments, coverage, games, and documentation.
+- Playable experience is the production driver. Historical catalog and staged bootstrap gates are reference inventory and bookkeeping, never blockers for a coherent playable upgrade.
+- Implement or extract only the reusable ProtoKits required by the active experience, then preserve and update prior ledgers and counts after the playable result.
 - Bootstrap epoch 0 requires 100 accepted and implemented kits, 50 playable seeded experiments, and 10 documented games. These are minimums, not terminal caps.
 - After bootstrap, numbered production epochs continue forever. Each epoch adds exactly 10 accepted and implemented kits, 5 playable seeded experiments, 1 documented game that merges those five experiments, and 1 bounded refinement-and-pruning slice.
 - Every experiment records epoch, lifecycle status, seed, draws, rejections, accepted signature, coherence, fantasy, verb, pressure, objective, visual identity, interaction structure, and validation.
@@ -30,4 +31,5 @@ NexusEngine-Experiments owns playable browser proof, product-specific content an
 - Use seeded randomness and explicit fixed-time inputs; do not use `Math.random()` or wall-clock time in reusable simulation.
 - Do not count placeholders, route shells, duplicate signatures, documentation-only games, or unlaunched gameplay.
 - Validate the first screen around hero controls; keep optional or advanced controls under foldouts or dropdowns.
+- Every successful builder run must leave a visibly playable new experiment or a material player-visible upgrade; catalog, schema, documentation, or kit-only work does not satisfy the builder outcome.
 - Do not depend on ChatGPT Online audit agents for this local production pipeline.

@@ -1,4 +1,4 @@
-export function createInputController({ canvas, leftPad, rightPad }) {
+export function createInputController({ canvas, leftPad, rightPad, pauseButton, restartButton, advanceButton }) {
   const keys = new Set();
   const pointer = { x: innerWidth / 2, y: innerHeight / 2, active: false };
   const queued = { action: false, restart: false, advanceSector: false, pause: false, userGesture: false };
@@ -35,6 +35,20 @@ export function createInputController({ canvas, leftPad, rightPad }) {
 
   bindPad(leftPad, "left");
   bindPad(rightPad, "right");
+
+  function bindButton(node, key) {
+    if (!node) return;
+    node.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      queued[key] = true;
+      queued.userGesture = true;
+    });
+  }
+
+  bindButton(pauseButton, "pause");
+  bindButton(restartButton, "restart");
+  bindButton(advanceButton, "advanceSector");
 
   function read(renderer, snapshot) {
     const axis = (keys.has("d") || keys.has("arrowright") || pads.right ? 1 : 0) - (keys.has("a") || keys.has("arrowleft") || pads.left ? 1 : 0);

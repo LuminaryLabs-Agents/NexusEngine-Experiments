@@ -1,8 +1,8 @@
-import * as NexusRealtime from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusRealtime@main/src/index.js";
-import { createGenericAnchorDescriptorKit } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusRealtime-ProtoKits@0.0.1/protokits/generic-anchor-descriptor-kit/index.js";
-import { createGenericModeProjectedRoute, createProjectedRoute } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusRealtime-ProtoKits@0.0.1/protokits/generic-mode-projected-route/index.js";
-import { createGenericRouteProgressKit } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusRealtime-ProtoKits@main/protokits/generic-route-progress-kit/index.js";
-import { createGenericTetherTraversalDomainKits, createGenericTetherTraversalPreset } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusRealtime-ProtoKits@0.0.1/protokits/generic-tether-traversal-domain-kits/index.js";
+import * as NexusEngine from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js";
+import { createGenericAnchorDescriptorKit } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-anchor-descriptor-kit/index.js";
+import { createGenericModeProjectedRoute, createProjectedRoute } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-mode-projected-route/index.js";
+import { createGenericRouteProgressKit } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-route-progress-kit/index.js";
+import { createGenericTetherTraversalDomainKits, createGenericTetherTraversalPreset } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-tether-traversal-domain-kits/index.js";
 import { createNextLedgeClimbPreset } from "./climb-preset.js";
 import { adaptProjectedRouteToClimbRoute } from "./climb-anchor-adapter.js";
 import { createClimbActionAdapter } from "./climb-action-adapter.js";
@@ -13,14 +13,14 @@ const d2 = (a, b) => Math.hypot(n(a.x) - n(b.x), n(a.y) - n(b.y));
 const copy = (v) => typeof structuredClone === "function" ? structuredClone(v) : JSON.parse(JSON.stringify(v));
 
 const PLAYER_UPGRADE_PRESET = Object.freeze({
-  routePacing: { summitPerSectorY: 760, sampleSpacingY: 125, minAnchors: 15, jitterX: 168, jitterY: 38, restEvery: 4, maxEdgeDistance: 208 },
-  tetherMotion: { swingInputTorque: 0.0049, angularDamping: 0.9915, inputDrainPerFrame: 0.046, idleDrainPerFrame: 0.011, reelPull: 0.72, reelShortenRate: 2.2, airControl: 0.12 },
-  cableLaunch: { projectileSpeed: 10.8, liftBoost: 0.52, latchRadius: 12, sweepRadius: 8, aimAssistRadius: 28, aimAssistDistance: 185, aimAssistStrength: 0.72, maxProbeTicks: 86, launchStaminaCost: 3 },
-  traversalVitals: { maxStamina: 115, restRestore: 58, criticalStamina: 24, lowStaminaCue: 0.24 },
-  traversalRecovery: { scaffoldBoundary: 176, failFloorDistance: 520 },
-  traversalCamera: { z: 232, leadY: 68, swingFollow: 0.046, fallFollow: 0.094, anticipationY: 22 },
-  traversalCue: { swingHint: "Build arc, then release.", fallHint: "Aim and fire before the floor drops away.", restHint: "Restore unit synchronized.", summitHint: "Summit beam locked." },
-  traversalFeedback: { trailMax: 44, sparksOnLatch: 16, cameraImpulseLatch: 0.16 }
+  routePacing: { summitPerSectorY: 760, sampleSpacingY: 118, minAnchors: 16, jitterX: 158, jitterY: 34, restEvery: 4, maxEdgeDistance: 202 },
+  tetherMotion: { ropeLength: 56, maxCableLength: 184, swingInputTorque: 0.0064, angularDamping: 0.993, inputDrainPerFrame: 0.034, idleDrainPerFrame: 0.006, reelPull: 0.82, reelShortenRate: 2.7, airControl: 0.16 },
+  cableLaunch: { projectileSpeed: 11.8, liftBoost: 0.58, latchRadius: 15, sweepRadius: 11, aimAssistRadius: 36, aimAssistDistance: 205, aimAssistStrength: 0.82, maxProbeTicks: 92, launchStaminaCost: 2 },
+  traversalVitals: { maxStamina: 120, restRestore: 66, criticalStamina: 22, lowStaminaCue: 0.22 },
+  traversalRecovery: { scaffoldBoundary: 184, failFloorDistance: 320 },
+  traversalCamera: { z: 244, leadY: 78, swingFollow: 0.052, fallFollow: 0.108, anticipationY: 28 },
+  traversalCue: { swingHint: "Build flow, then release at speed.", fallHint: "Aim at the cyan anchor and fire.", restHint: "Recovery anchor locked. Stamina restored.", summitHint: "Summit delivery beam locked." },
+  traversalFeedback: { trailMax: 52, sparksOnLatch: 22, cameraImpulseLatch: 0.22, cameraImpulseFail: 0.42 }
 });
 
 function segmentDistance(px, py, ax, ay, bx, by) {
@@ -446,7 +446,8 @@ function stepState(state, dt) {
       addEvent(state, "wall-bounced", { x: state.player.x, y: state.player.y });
       if (["swinging", "reeling"].includes(state.mode)) release(state);
     }
-    if (["falling", "retracting"].includes(state.mode) && state.player.y < state.camera.y - n(state.tuning.failFloorDistance, 520)) fail(state, "Host aborted. Anchor connection lost below sector floor.");
+    const safeAnchorY = n(ledgeMap(state)[state.currentAnchorId]?.y, 0);
+    if (["falling", "retracting"].includes(state.mode) && state.player.y < safeAnchorY - n(state.tuning.failFloorDistance, 520)) fail(state, "Host aborted. Anchor connection lost below sector floor.");
   }
   updateDerived(state);
 }
@@ -472,16 +473,16 @@ export function createNextLedgeSession(options = {}) {
   const domainPreset = createDomainPreset(options);
   let state = createInitialState({ ...options, domainPreset });
   const level = { id: "next-ledge-projected-route-experiment", sceneRecipe: { id: "next-ledge-projected-route-scene", objects: [] }, steps: state.preset.objective.steps };
-  const engine = NexusRealtime.createRealtimeGame({
+  const engine = NexusEngine.createRealtimeGame({
     kits: [
-      ...createGenericTetherTraversalDomainKits(NexusRealtime, domainPreset),
-      NexusRealtime.createRenderDescriptorKit({ ...level, id: "next-ledge-render-descriptor-kit" }),
-      NexusRealtime.createObjectiveFlowKit({ id: "next-ledge-objective-flow-kit", objectiveDataset: state.preset.objective }),
-      createGenericAnchorDescriptorKit(NexusRealtime, { kitId: "next-ledge-anchor-descriptor-kit", anchors: state.projectedRoute.anchors }),
-      createGenericModeProjectedRoute(NexusRealtime, { ...state.preset.routeProjection, kitId: "next-ledge-projected-route-kit" }),
-      createGenericRouteProgressKit(NexusRealtime, { kitId: "next-ledge-route-progress-kit", ...createRouteProgressRoute(state) })
+      ...createGenericTetherTraversalDomainKits(NexusEngine, domainPreset),
+      NexusEngine.createRenderDescriptorKit({ ...level, id: "next-ledge-render-descriptor-kit" }),
+      NexusEngine.createObjectiveFlowKit({ id: "next-ledge-objective-flow-kit", objectiveDataset: state.preset.objective }),
+      createGenericAnchorDescriptorKit(NexusEngine, { kitId: "next-ledge-anchor-descriptor-kit", anchors: state.projectedRoute.anchors }),
+      createGenericModeProjectedRoute(NexusEngine, { ...state.preset.routeProjection, kitId: "next-ledge-projected-route-kit" }),
+      createGenericRouteProgressKit(NexusEngine, { kitId: "next-ledge-route-progress-kit", ...createRouteProgressRoute(state) })
     ],
-    renderer: typeof NexusRealtime.createRenderer === "function" ? NexusRealtime.createRenderer("headless") : undefined
+    renderer: typeof NexusEngine.createRenderer === "function" ? NexusEngine.createRenderer("headless") : undefined
   });
 
   function refreshTuning() {
@@ -559,5 +560,5 @@ export function createNextLedgeSession(options = {}) {
   };
 
   syncGeneratedRoute();
-  return { engine, NexusRealtime, level, update, snapshot, restart, advanceSector };
+  return { engine, NexusEngine, level, update, snapshot, restart, advanceSector };
 }

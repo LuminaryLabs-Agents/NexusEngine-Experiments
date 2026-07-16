@@ -25,8 +25,19 @@
     {
       "id": "next-ledge-grapple",
       "lifecycleStatus": "active-legacy-baseline",
-      "score": null,
-      "lastImprovedAt": null
+      "score": 83,
+      "lastImprovedAt": "2026-07-16T10:44:54-04:00",
+      "feelScores": {
+        "responsiveness": 9,
+        "predictability": 8,
+        "readability": 9,
+        "impact": 8,
+        "recovery": 8,
+        "delight": 8,
+        "replayDesire": 8,
+        "average": 8.3
+      },
+      "nextFeelProblem": "Late-route anchor cadence and summit delivery need a stronger mastery crest and completion celebration."
     },
     {
       "id": "rogue-lite-hellscape-siege",

@@ -1,24 +1,18 @@
 # Next Ledge
 
-A NexusRealtime playable experiment for the **Next Ledge** cinematic grapple-climb prototype.
+A Nexus Engine stormline-recovery grapple climb. Build a swing, release, aim into the cyan route, and re-grapple while carrying recovered signal cargo to the summit.
 
-This folder is intentionally small. Gameplay rules live in the ProtoKit:
-
-```txt
-NexusRealtime-ProtoKits/protokits/next-ledge-kit/cinematic-ascent-kit.js
-```
-
-The Experiment host only:
+The playable route composes real reusable features from NexusEngine-ProtoKits:
 
 ```txt
-imports NexusRealtime and the ProtoKit
-maps browser input into engine.nextLedge APIs
-ticks the runtime
-renders the snapshot with Three.js
-plays small Web Audio cues from kit events
-shows two tiny HUD readouts
-exposes window.GameHost for inspection
+generic tether motion + cable launch
+traversal vitals + recovery
+traversal camera + cues + feedback
+generic route progress
+generic route-cargo extraction (resource + pressure children)
 ```
+
+The experiment keeps browser input, route fiction, Three.js presentation, Web Audio, local tuning, and contextual HUD copy. Optional historical readiness layers remain preserved in source but are explained under the Advanced foldout instead of covering the player view.
 
 ## Run
 
@@ -31,8 +25,8 @@ experiments/next-ledge/index.html
 The browser needs internet access for CDN module imports:
 
 ```txt
-NexusRealtime runtime
-next-ledge-kit ProtoKit
+NexusEngine runtime
+NexusEngine-ProtoKits
 Three.js
 ```
 
@@ -41,10 +35,11 @@ If a CDN import fails, the visible error panel prints the startup error instead 
 ## Controls
 
 ```txt
-Click / tap / Space  release, fire, retract, or cancel depending on current mode
-A / D or arrows      swing momentum while tethered
-R                    restart current sector
-N                    advance to next generated sector
+Click / tap / Space  release, fire, retract, or cancel by current mode
+A / D or arrows      build swing momentum; air-correct while falling
+R                    recover at the current sector's first anchor
+P                    pause
+N                    advance to the next generated sector (advanced)
 ```
 
 ## Debug
@@ -62,14 +57,12 @@ GameHost.tick(1 / 60, { action: true });
 ## Architecture
 
 ```txt
-ProtoKit owns:
-  procedural ledges
-  sector progression
-  stamina
-  swing/fall/grapple/reel/win/death rules
-  rope nodes
-  trajectory descriptors
-  gameplay event log
+ProtoKits own:
+  deterministic tether, cable, stamina, recovery, route, cargo, and pressure state
+  domain events, snapshots, resources, methods, and renderer-neutral descriptors
+
+Experiment owns:
+  route fiction, local tuning, player-facing copy, and semantic event translation
 
 Renderer owns:
   Three.js scene setup
@@ -81,7 +74,7 @@ Input owns:
   one-frame command flushing into kit APIs
 
 HUD owns:
-  small read-only text binding
+  first-screen purpose, hero controls, live resources, and contextual action prompts
 ```
 
-See `PLAN.md` for the full conversion and promotion plan.
+See `PLAN.md` plus the route progress and route-cargo manifests for the remaining deterministic replay promotion gate.

@@ -1,5 +1,11 @@
 # Cycle State
 
+## 2026-07-16 Experience-First Playable Upgrade
+
+The builder now treats historical catalog/bootstrap work as nonblocking reference inventory. The active playable result is `experiments/next-ledge/`: a materially upgraded stormline-recovery grapple climb using current Nexus Engine Core and eight meaningful ProtoKit features. The route now boots, presents purpose and hero controls on the first screen, advances signal cargo through release/re-grapple, raises and recovers fall pressure, reaches a real dead state below the last safe anchor, and resets climb/cargo/pressure through keyboard or advanced retry. Human View before/after and Playwright launch, loop, failure, recovery, disclosure, and zero-console-error proof are recorded in `.agent/change-packets/2026-07-16-next-ledge-grapple-flow-upgrade/`.
+
+Exact next playable unit: add a short authored late-route mastery sequence and unmistakable summit signal-delivery celebration without weakening the validated grapple feel or moving browser, renderer, audio, fiction, or tuning ownership into ProtoKits.
+
 ## 2026-07-15 Game Production Pipeline
 
 The durable production pipeline lives in `.agent/nexus-game-production/`. Its schemas separate bootstrap epoch 0 from perpetual numbered production epochs and track lifetime-created, active, merged, archived, and retired assets without resetting the baseline. Existing 514 ProtoKit folders, 100 flat AAA routes, 33 other experiment folders, and 4 games remain baseline-only. Bootstrap Phase B is complete with all 100 catalog contracts accepted after sixty duplicate/Core-overlap/blurred-scope rejections. Bootstrap Phase C has implemented and validated contracts 001-010 as ten active production kits; no production experiment or game exists yet. The exact next bounded unit is `implementation-batch-011-020` in NexusEngine-ProtoKits.

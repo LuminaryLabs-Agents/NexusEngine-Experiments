@@ -22,9 +22,8 @@ assert.doesNotMatch(wrapperSource, new RegExp(oldRuntimeCdn.replace(/[.*+?^${}()
 assert.match(routeShell, /rescue-line-readiness-renderer-handoff-pass/, "route shell should identify the latest rescue line readability cutover");
 assert.match(routeShell, /summit-bivouac-readiness-renderer-handoff-pass/, "route shell should identify the summit bivouac readability cutover");
 assert.match(routeShell, /ravine-evacuation-readiness-renderer-handoff-pass/, "route shell should identify the ravine evacuation readiness cutover");
-assert.match(routeShell, /main\.js\?v=rescue-line-readiness-1-ravine-evacuation-1/, "route shell should cache-bust the latest Next Ledge upgrade");
-assert.match(routeShell, /summit-bivouac-readiness-entry\.js\?v=summit-bivouac-readiness-1/, "route shell should cache-bust the summit bivouac upgrade");
-assert.match(routeShell, /ravine-evacuation-readiness-entry\.js\?v=ravine-evacuation-readiness-1/, "route shell should cache-bust the ravine evacuation upgrade");
+assert.match(routeShell, /main\.js\?v=grapple-flow-1/, "route shell should cache-bust the latest playable upgrade");
+assert.doesNotMatch(routeShell, /readiness-entry\.js/, "clean playable route should not auto-load preserved diagnostic overlays");
 assert.match(wrapperSource, /createNextLedgeAnchorTimingReadabilityDomainKit/, "wrapper should import the anchor timing domain kit");
 assert.match(wrapperSource, /anchorTimingReadabilityDomain\.describe\(snapshot, cargoSnapshot, traversalReadability\)/, "wrapper should derive anchor timing descriptors from state/cargo/traversal input");
 assert.match(wrapperSource, /anchorTimingReadabilityDescriptors/, "visual quality report should count anchor timing descriptors");
@@ -62,7 +61,7 @@ const intakeCases = [
 ];
 
 for (const testCase of intakeCases) {
-  assert.match(`${wrapperSource}\n${loopSource}\n${effectsSource}`, testCase.expected, `anchor timing smoke should cover ${testCase.name}`);
+  assert.match(`${wrapperSource}\n${loopSource}\n${effectsSource}\n${kitSource}`, testCase.expected, `anchor timing smoke should cover ${testCase.name}`);
 }
 
 console.log("next ledge anchor timing CDN/state/input smoke passed");

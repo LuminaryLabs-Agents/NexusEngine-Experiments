@@ -4,13 +4,13 @@ Status: active
 
 ## Intent
 
-Build a durable staged production pipeline that bootstraps 100 reusable ProtoKits, 50 deterministic playable experiments, and 10 documented Nexus Engine games, then continues forever through numbered creation plus refinement epochs.
+Build and deepen visibly playable Nexus Engine experiments first, extracting the smallest reusable ProtoKits needed by each coherent player fantasy while preserving the historical bootstrap catalog and lifetime ledgers as nonblocking inventory.
 
 ## Success Criteria
 
 - Treat `/Users/crimsonwheeler/Documents/GitHub/NexusEngine` as read-only Core authority.
 - Keep reusable renderer-agnostic behavior in NexusEngine-ProtoKits; keep browser input, content, tuning, presentation, routes, and playable proof in NexusEngine-Experiments.
-- Bootstrap epoch 0 accepts and implements 100 genuinely new kit contracts, validates 50 coherent seeded compositions of roughly 3-8 real kits, and maps exactly five experiments into each of 10 games.
+- Treat the 100-kit, 50-experiment, and 10-game bootstrap plan as tracked reference inventory rather than a gate that can replace playable work.
 - After bootstrap, every numbered epoch adds exactly 10 accepted and implemented kits, 5 playable experiments, 1 documented game, and 1 bounded refinement-and-pruning slice.
 - Track bootstrap separately from lifetime-created, active, merged, archived, and retired totals; never hide pruning by reducing lifetime counts.
 - Preserve valuable source features through explicit `keep`, `upgrade`, `merge`, or `drop` dispositions and successor proof before any source retirement.
@@ -19,4 +19,4 @@ Build a durable staged production pipeline that bootstraps 100 reusable ProtoKit
 
 ## Current Gate
 
-Perpetual-state migration and bootstrap Phase B are complete. Bootstrap Phase C has implemented and validated contracts 001-010 as ten active production kits; the next bounded unit is `implementation-batch-011-020` in NexusEngine-ProtoKits under the same deterministic behavior, export, contract, existing-harness, and post-code domain-audit gates.
+`next-ledge` is the active playable experiment. Its grapple-flow upgrade now consumes current Nexus Engine and NexusEngine-ProtoKits, exposes the hero verb and resources on the first screen, and proves release, re-grapple, failure, and retry. The exact next playable unit is summit-delivery pacing: add a short authored mastery sequence and clear completion celebration without weakening deterministic kit ownership.

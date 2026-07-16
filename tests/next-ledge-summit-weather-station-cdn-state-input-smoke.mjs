@@ -6,7 +6,8 @@ const html = readFileSync(new URL("../experiments/next-ledge/index.html", import
 const entry = readFileSync(new URL("../experiments/next-ledge/src/summit-weather-station-readiness-entry.js", import.meta.url), "utf8");
 const kits = readFileSync(new URL("../experiments/next-ledge/src/summit-weather-station-readiness-kits.js", import.meta.url), "utf8");
 assert.ok(html.includes("summit-weather-station-readiness-renderer-handoff-pass"), "route marker should advertise summit weather pass");
-assert.ok(html.includes("summit-weather-station-readiness-entry.js"), "route should load summit weather entry");
+assert.ok(!html.includes("summit-weather-station-readiness-entry.js"), "clean playable route should not auto-load summit weather entry");
+assert.ok(html.includes('<option value="weather-station">Weather station</option>'), "advanced disclosure should preserve weather station context");
 assert.ok(entry.includes("https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js"), "entry should import NexusEngine main CDN");
 assert.ok(!entry.includes("NexusRealtime@"), "changed entry should not import old NexusRealtime runtime CDN");
 assert.ok(entry.includes("getNextLedgeSummitWeatherStationReadiness"), "entry should expose GameHost readiness accessor");

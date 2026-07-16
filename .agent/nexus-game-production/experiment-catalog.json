@@ -12,7 +12,7 @@
     "archived": 0,
     "retired": 0
   },
-  "status": "blocked-on-bootstrap-kit-implementation-gate",
+  "status": "experience-first-active-legacy-upgrade",
   "compositionKitCount": {
     "minimum": 3,
     "maximum": 8
@@ -40,5 +40,39 @@
     "otherTopLevelExperimentFolders": 33,
     "reason": "Predates this production pipeline and has not passed the new seeded-composition gate."
   },
+  "legacyPlayableUpgradeCounts": {
+    "lifetimeUpgraded": 1,
+    "active": 1,
+    "merged": 0,
+    "archived": 0,
+    "retired": 0
+  },
+  "activeLegacyUpgrades": [
+    {
+      "id": "next-ledge-grapple-flow",
+      "route": "experiments/next-ledge/",
+      "lifecycleStatus": "active-legacy-upgrade",
+      "uniqueFantasy": "stormline recovery operator climbing a broken summit relay",
+      "verb": "build swing, release, and re-grapple",
+      "pressureLoop": "stamina, fall pressure, carried signal cargo, and rest-anchor recovery",
+      "objective": "deliver recovered anchor signal cargo to the summit",
+      "visualIdentity": "cyan rescue geometry, amber climber, signal particles, and dark industrial cliff",
+      "interactionStructure": "continuous action canvas with first-screen hero controls and one advanced disclosure",
+      "acceptedKitSignature": [
+        "generic-tether-motion-kit",
+        "generic-cable-launch-kit",
+        "generic-traversal-vitals-kit",
+        "generic-traversal-recovery-kit",
+        "generic-traversal-camera-kit",
+        "generic-traversal-cue-kit",
+        "generic-traversal-feedback-kit",
+        "generic-route-cargo-extraction-kit"
+      ],
+      "feelAverageBefore": 3.7,
+      "feelAverageAfter": 8.3,
+      "validation": "Playwright release/re-grapple/progress/fail/retry plus Human View before/after and zero-error console",
+      "packetId": "2026-07-16-next-ledge-grapple-flow-upgrade"
+    }
+  ],
   "experiments": []
 }

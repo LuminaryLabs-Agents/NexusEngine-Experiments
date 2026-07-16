@@ -8,6 +8,7 @@ const entrySource = readFileSync("experiments/next-ledge/src/summit-bivouac-read
 const kitSource = readFileSync("experiments/next-ledge/src/summit-bivouac-readiness-kits.js", "utf8");
 const anchorTimingSmokeSource = readFileSync("tests/next-ledge-anchor-timing-cdn-state-input-smoke.mjs", "utf8");
 const manifestSource = readFileSync("experiments/domain-kit-cutover-manifest.json", "utf8");
+const diagnosticsSource = readFileSync("experiments/next-ledge/src/advanced-diagnostics.js", "utf8");
 
 const nexusEngineCdn = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js";
 const oldRuntimeCdn = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusRealtime@main/src/index.js";
@@ -15,10 +16,11 @@ const oldRuntimeCdn = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusRealtim
 assert.ok(entrySource.includes(nexusEngineCdn), "summit bivouac entry should import NexusEngine main through the CDN");
 assert.doesNotMatch(entrySource, new RegExp(oldRuntimeCdn.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")), "changed summit bivouac entry must not import old NexusRealtime runtime CDN");
 assert.match(routeShell, /summit-bivouac-readiness-renderer-handoff-pass/, "route shell should identify the summit bivouac readiness pass");
-assert.match(routeShell, /summit-bivouac-readiness-entry\.js\?v=summit-bivouac-readiness-1/, "route shell should cache-bust the summit bivouac entry");
+assert.doesNotMatch(routeShell, /summit-bivouac-readiness-entry\.js/, "clean playable route should not auto-load summit bivouac overlay");
+assert.match(diagnosticsSource, /"summit-bivouac": "Summit bivouac:/, "advanced disclosure should preserve summit-bivouac context");
 assert.match(entrySource, /getSummitBivouacReadiness/, "GameHost should expose summit bivouac readiness state");
 assert.match(entrySource, /getNextLedgeSummitBivouacReadiness/, "GameHost should expose route-scoped summit bivouac accessor");
-assert.match(entrySource, /summitBivouacReadiness\?\.rendererHandoff/, "composed renderer handoff should include summit bivouac descriptors");
+assert.match(entrySource, /computeReadiness\(host\)\?\.rendererHandoff/, "composed renderer handoff should include summit bivouac descriptors");
 assert.match(entrySource, /dataset\.nextLedgeSummitBivouac/, "entry should expose a CDN/runtime marker for Playwright-style state checks");
 assert.match(manifestSource, /next-ledge-summit-bivouac-readiness-domain-kit/, "manifest should register the summit bivouac domain kit");
 assert.match(anchorTimingSmokeSource, /next-ledge-summit-bivouac-readiness-kits-smoke\.mjs/, "existing routed Next Ledge check should import summit bivouac kit smoke");

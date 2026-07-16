@@ -58,9 +58,9 @@ gamehost-standard-kit
 
 ### Next Ledge
 
-`experiments/next-ledge/` is a cinematic grapple-climb validation demo. It imports the real Nexus Engine runtime, composes the Next Ledge cinematic ascent ProtoKit, maps browser input into route APIs, ticks the runtime, and renders snapshots with Three.js.
+`experiments/next-ledge/` is a playable stormline-recovery grapple climb. Its first screen exposes the swing/release/re-grapple verb, summit signal-delivery objective, stamina, cargo, fall pressure, and retry recovery while Three.js renders the route.
 
-Cutover target: preserve climb feel while migrating action input, route progress, cargo/extraction, risk/resource pressure, camera, feedback, and replay snapshots into domain-kit-owned state. Route-progress consumption is now executable through `engine.n.genericRouteProgress`; cargo/resource/pressure consumption and route-level deterministic replay are still planned.
+Current composition: Nexus Engine owns runtime composition; generic ProtoKits own tether motion, cable launch, traversal vitals/recovery/camera/cues/feedback, route progress, and route-cargo extraction. Browser input, route fiction, tuning, camera presentation, audio, and Three.js stay local. The remaining promotion gap is a route-level deterministic route/cargo/pressure descriptor replay, not playable source consumption.
 
 ### Fogline Relay
 

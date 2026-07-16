@@ -4,32 +4,88 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
   <title>Next Ledge — NexusEngine Experiment</title>
+  <link rel="icon" href="data:," />
   <style>
-    :root { --ink:#03070b; --danger:#ff5a5a; color-scheme:dark; }
+    :root { --ink:#03070b; --panel:rgba(3,10,16,.84); --line:rgba(119,232,255,.22); --cyan:#77e8ff; --amber:#ffc85a; --mint:#65ffb2; --danger:#ff5a73; color-scheme:dark; }
     *{box-sizing:border-box}
     html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--ink);color:#fffaf0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,sans-serif}
     main#app,canvas#game{position:fixed;inset:0}
     canvas#game{display:block;width:100vw;height:100vh;cursor:crosshair;touch-action:none}
-    #hud{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;padding:0}
+    .sr-only{position:absolute!important;width:1px!important;height:1px!important;margin:-1px!important;overflow:hidden!important;clip:rect(0 0 0 0)!important;white-space:nowrap!important;border:0!important;padding:0!important}
+    #gameUi{position:fixed;inset:0;z-index:24;pointer-events:none;padding:clamp(14px,2.4vw,28px);display:grid;grid-template-columns:minmax(0,420px) 1fr auto;grid-template-rows:auto 1fr auto;gap:14px}
+    .glass{background:linear-gradient(145deg,rgba(3,13,22,.9),rgba(4,9,15,.7));border:1px solid var(--line);box-shadow:0 18px 60px rgba(0,0,0,.34),inset 0 1px rgba(255,255,255,.035);backdrop-filter:blur(12px)}
+    #heroPanel{grid-column:1;grid-row:1;border-radius:18px;padding:16px 18px;max-width:420px}
+    .eyebrow{margin:0 0 6px;color:var(--cyan);font:750 11px/1.1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.16em;text-transform:uppercase}
+    h1{margin:0;font-size:clamp(24px,3vw,38px);line-height:.94;letter-spacing:-.055em}
+    #objective{margin:9px 0 12px;max-width:36ch;color:rgba(235,250,255,.78);font-size:13px;line-height:1.38}
+    #statusCopy{margin:0 0 12px;color:#fff7df;font-size:12px;line-height:1.35}
+    .hero-controls{display:flex;flex-wrap:wrap;gap:7px}
+    .key{display:inline-flex;align-items:center;gap:7px;padding:7px 9px;border-radius:999px;background:rgba(119,232,255,.075);border:1px solid rgba(119,232,255,.14);color:rgba(240,252,255,.84);font-size:11px;white-space:nowrap}
+    .key b{color:#fff;font:800 11px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em}
+    #stats{grid-column:3;grid-row:1;display:grid;grid-template-columns:repeat(3,minmax(82px,1fr));gap:8px;align-self:start}
+    .stat{min-width:88px;border-radius:14px;padding:10px 12px}
+    .stat span{display:block;color:rgba(220,243,250,.58);font:700 9px/1.1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.13em;text-transform:uppercase}
+    .stat strong{display:block;margin-top:5px;font-size:15px;line-height:1;color:#fff}
+    .meter{height:3px;margin-top:8px;border-radius:9px;overflow:hidden;background:rgba(255,255,255,.08)}
+    .meter::after{content:"";display:block;width:calc(var(--value,0)*1%);height:100%;background:var(--tone,var(--cyan));box-shadow:0 0 10px var(--tone,var(--cyan))}
+    #advancedPanel{grid-column:3;grid-row:1;margin-top:76px;justify-self:end;align-self:start;width:min(310px,34vw);pointer-events:auto;border-radius:14px;overflow:hidden}
+    #advancedPanel summary{cursor:pointer;list-style:none;padding:10px 12px;color:rgba(228,247,252,.72);font:700 10px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em;text-transform:uppercase}
+    #advancedPanel summary::-webkit-details-marker{display:none}
+    #advancedPanel[open] summary{border-bottom:1px solid var(--line);color:var(--cyan)}
+    .advanced-content{padding:12px;display:grid;gap:10px;color:rgba(229,246,250,.72);font-size:11px;line-height:1.4}
+    .advanced-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+    .advanced-actions button{border:1px solid rgba(119,232,255,.18);border-radius:9px;background:rgba(119,232,255,.08);color:#ecfbff;padding:8px 5px;font:700 10px/1 ui-monospace,SFMono-Regular,Menlo,monospace;cursor:pointer}
+    .advanced-actions button:hover,.advanced-actions button:focus-visible{background:rgba(119,232,255,.17);outline:none}
+    .diagnostic-picker{display:grid;grid-template-columns:1fr auto;gap:7px}
+    .diagnostic-picker select,.diagnostic-picker button{min-width:0;border:1px solid rgba(119,232,255,.18);border-radius:9px;background:#07131c;color:#ecfbff;padding:8px;font:700 10px/1.1 ui-monospace,SFMono-Regular,Menlo,monospace}
+    .diagnostic-picker button{cursor:pointer}
+    #diagnosticsStatus{color:rgba(169,222,235,.56)}
+    #actionPrompt{grid-column:1/4;grid-row:3;justify-self:center;align-self:end;min-width:min(520px,calc(100vw - 28px));border-radius:999px;padding:12px 20px;text-align:center;color:#fff;font:850 clamp(12px,1.45vw,16px)/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.12em;text-transform:uppercase;transition:border-color .15s,background .15s,transform .15s}
+    #actionPrompt[data-tone="ready"]{border-color:rgba(255,200,90,.55);background:rgba(52,32,4,.78);color:#fff2c3;transform:translateY(-2px)}
+    #actionPrompt[data-tone="danger"]{border-color:rgba(255,90,115,.5);background:rgba(49,7,14,.82);color:#ffe8ec}
+    #actionPrompt[data-tone="success"]{border-color:rgba(101,255,178,.5);background:rgba(5,43,27,.82);color:#e2fff1}
     #errorPanel{position:fixed;z-index:30;left:18px;right:18px;bottom:18px;padding:16px;border:0;border-radius:18px;background:rgba(42,4,2,.94);color:#fff1ea;white-space:pre-wrap;font:12px ui-monospace,SFMono-Regular,Menlo,monospace;box-shadow:0 22px 80px rgba(0,0,0,.54),inset 0 0 0 1px rgba(255,210,190,.22)}
     #errorPanel[hidden]{display:none}
+    @media (max-width:760px){#gameUi{grid-template-columns:1fr auto;padding:12px}.hero-controls{max-width:310px}#stats{grid-column:2;grid-template-columns:1fr}.stat{min-width:78px;padding:8px 9px}.stat .meter{display:none}#advancedPanel{grid-column:2;width:min(270px,68vw);margin-top:184px}#actionPrompt{grid-column:1/3}h1{font-size:26px}#heroPanel{max-width:min(350px,calc(100vw - 108px));padding:13px 14px}}
+    @media (max-height:620px){#objective,#statusCopy{display:none}#heroPanel{padding:11px 13px}.hero-controls .key:nth-child(n+3){display:none}#advancedPanel{display:none}}
     @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
   </style>
 </head>
 <body>
-  <main id="app" data-upgrade="rescue-line-readiness-renderer-handoff-pass summit-bivouac-readiness-renderer-handoff-pass ravine-evacuation-readiness-renderer-handoff-pass glacier-supply-readiness-renderer-handoff-pass avalanche-beacon-rescue-readiness-renderer-handoff-pass summit-weather-station-readiness-renderer-handoff-pass drone-relay-rescue-readiness-renderer-handoff-pass ridge-stretcher-relay-readiness-renderer-handoff-pass">
+  <main id="app" data-upgrade="grapple-flow-playable-upgrade traversal-readability-renderer-handoff-pass anchor-timing-readability-renderer-handoff-pass rescue-line-readiness-renderer-handoff-pass summit-bivouac-readiness-renderer-handoff-pass ravine-evacuation-readiness-renderer-handoff-pass glacier-supply-readiness-renderer-handoff-pass avalanche-beacon-rescue-readiness-renderer-handoff-pass summit-weather-station-readiness-renderer-handoff-pass drone-relay-rescue-readiness-renderer-handoff-pass ridge-stretcher-relay-readiness-renderer-handoff-pass">
     <canvas id="game" role="application" aria-label="Next Ledge summit weather station, drone relay, and ridge stretcher relay rescue readiness game canvas"></canvas>
-    <aside id="hud" aria-label="Game state for screen readers"><header id="status" aria-live="polite">Loading Next Ledge summit weather station, drone relay, and ridge stretcher relay rescue readiness</header><footer id="readout"></footer></aside>
+    <aside id="hud" class="sr-only" aria-label="Game state for screen readers"><header id="status" aria-live="polite">Loading Next Ledge</header><footer id="readout"></footer></aside>
+    <section id="gameUi" aria-label="Next Ledge controls and mission status">
+      <header id="heroPanel" class="glass">
+        <p class="eyebrow">Stormline recovery · Sector <span id="sectorLabel">1</span></p>
+        <h1>Next Ledge</h1>
+        <p id="objective">Carry the recovered anchor signal to the summit. Rest anchors restore stamina and bleed off fall pressure.</p>
+        <p id="statusCopy">Build momentum, then release into the next grapple.</p>
+        <div class="hero-controls" aria-label="Hero controls">
+          <span class="key"><b>A / D</b> swing</span>
+          <span class="key"><b>SPACE / CLICK</b> release · fire</span>
+          <span class="key"><b>R</b> retry</span>
+        </div>
+      </header>
+      <section id="stats" aria-label="Climb resources">
+        <article class="stat glass"><span>Stamina</span><strong id="staminaValue">100%</strong><div id="staminaMeter" class="meter" style="--value:100;--tone:var(--amber)"></div></article>
+        <article class="stat glass"><span>Signal cargo</span><strong id="cargoValue">0 / 0</strong><div id="cargoMeter" class="meter" style="--value:0;--tone:var(--mint)"></div></article>
+        <article class="stat glass"><span>Fall pressure</span><strong id="pressureValue">0%</strong><div id="pressureMeter" class="meter" style="--value:0;--tone:var(--danger)"></div></article>
+      </section>
+      <details id="advancedPanel" class="glass">
+        <summary>Advanced controls + diagnostic layers</summary>
+        <div class="advanced-content">
+          <div class="advanced-actions"><button id="pauseButton" type="button">P · Pause</button><button id="restartButton" type="button">R · Retry</button><button id="advanceButton" type="button">N · Next</button></div>
+          <div class="diagnostic-picker"><select id="diagnosticSelect" aria-label="Diagnostic focus"><option value="rescue-line">Rescue line</option><option value="summit-bivouac">Summit bivouac</option><option value="ravine-evacuation">Ravine evacuation</option><option value="glacier-supply">Glacier supply</option><option value="avalanche-beacon">Avalanche beacon</option><option value="weather-station">Weather station</option><option value="drone-relay">Drone relay</option><option value="stretcher-relay">Stretcher relay</option></select><button id="loadDiagnosticButton" type="button">Explain</button></div>
+          <div>Inspect the purpose of preserved readiness layers without covering or competing with the playable route.</div>
+          <div id="diagnosticsStatus">Choose a diagnostic focus to inspect.</div>
+        </div>
+      </details>
+      <div id="actionPrompt" class="glass" data-tone="ready">A / D — Build momentum</div>
+    </section>
     <section id="errorPanel" role="alert" hidden></section>
   </main>
-  <script type="module" src="./src/main.js?v=rescue-line-readiness-1-ravine-evacuation-1-glacier-supply-1-avalanche-beacon-rescue-1-summit-weather-station-1"></script>
-  <script type="module" src="./src/rescue-line-readiness-entry.js?v=rescue-line-readiness-1"></script>
-  <script type="module" src="./src/summit-bivouac-readiness-entry.js?v=summit-bivouac-readiness-1"></script>
-  <script type="module" src="./src/ravine-evacuation-readiness-entry.js?v=ravine-evacuation-readiness-1"></script>
-  <script type="module" src="./src/glacier-supply-readiness-entry.js?v=glacier-supply-readiness-1"></script>
-  <script type="module" src="./src/avalanche-beacon-rescue-readiness-entry.js?v=avalanche-beacon-rescue-readiness-1"></script>
-  <script type="module" src="./src/summit-weather-station-readiness-entry.js?v=summit-weather-station-readiness-1"></script>
-  <script type="module" src="./src/drone-relay-rescue-readiness-entry.js?v=drone-relay-rescue-readiness-1"></script>
-  <script type="module" src="./src/ridge-stretcher-relay-readiness-entry.js?v=ridge-stretcher-relay-readiness-1"></script>
+  <script type="module" src="./src/main.js?v=grapple-flow-1"></script>
+  <script type="module" src="./src/advanced-diagnostics.js?v=grapple-flow-1"></script>
 </body>
 </html>

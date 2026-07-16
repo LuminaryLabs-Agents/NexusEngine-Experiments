@@ -132,8 +132,8 @@ for (const requiredNextLedgeCoverage of [
   );
 }
 assert.ok(
-  nextLedgeReplay.missingExecutableFixtures.some((gap) => gap.includes("cargo/resource/pressure")),
-  "Next Ledge should keep the remaining cargo/resource/pressure executable fixture gap explicit"
+  nextLedgeReplay.missingExecutableFixtures.some((gap) => gap.includes("route-level deterministic replay")),
+  "Next Ledge should keep the remaining route-level deterministic fixture gap explicit"
 );
 
 console.log("Canonical route replay manifest smoke passed.");

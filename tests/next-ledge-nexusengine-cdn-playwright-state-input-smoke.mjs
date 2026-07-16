@@ -3,6 +3,10 @@ import { readFileSync } from "node:fs";
 
 const sessionVisual = readFileSync("experiments/next-ledge/src/session-visual-upgrade.js", "utf8");
 const visualKits = readFileSync("experiments/next-ledge/src/visual-fractal-kits.js", "utf8");
+const session = readFileSync("experiments/next-ledge/src/session.js", "utf8");
+const index = readFileSync("experiments/next-ledge/index.html", "utf8");
+const hud = readFileSync("experiments/next-ledge/src/hud.js", "utf8");
+const diagnostics = readFileSync("experiments/next-ledge/src/advanced-diagnostics.js", "utf8");
 
 assert.ok(sessionVisual.includes("https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js"));
 assert.ok(!sessionVisual.includes("LuminaryLabs-Dev/NexusRealtime@0.0.2"));
@@ -38,6 +42,19 @@ const expectedKits = [
   "no Three.js, DOM, input, or frame loop"
 ];
 for (const kit of expectedKits) assert.ok(visualKits.includes(kit), kit);
+
+assert.ok(session.includes("https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js"));
+assert.ok(session.includes("LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08"));
+assert.ok(!session.includes("NexusRealtime-ProtoKits"));
+assert.match(session, /safeAnchorY - n\(state\.tuning\.failFloorDistance/, "failure should use the last safe anchor instead of a following camera");
+for (const visibleSurface of ["Next Ledge", "A / D", "SPACE / CLICK", "R</b> retry", "Signal cargo", "Fall pressure", "Advanced controls + diagnostic layers"]) {
+  assert.ok(index.includes(visibleSurface), `first screen should include ${visibleSurface}`);
+}
+assert.doesNotMatch(index, /<script type="module" src="\.\/src\/.*readiness-entry\.js/, "readiness overlays must not cover the default playable view");
+assert.match(hud, /actionPrompt/, "HUD should drive the contextual hero prompt");
+assert.match(hud, /staminaMeter/, "HUD should expose player-readable stamina");
+assert.match(diagnostics, /diagnosticDescriptions/, "advanced diagnostics should explain preserved layers without importing presentation overlays");
+assert.doesNotMatch(diagnostics, /import\(diagnostic/, "advanced diagnostics should not destabilize the playable renderer with optional overlays");
 
 const intakes = Array.from({ length: 10 }, (_, i) => ({
   dt: i % 3 === 0 ? 1 / 30 : 1 / 60,

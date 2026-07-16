@@ -5,13 +5,13 @@
     "id": "nexus-engine-game-production-builder"
   },
   "inventoryCapturedAt": "2026-07-15T12:02:05-04:00",
-  "operatingMode": "bootstrap-plus-numbered-production-epochs",
-  "activePhase": "C-implementation",
+  "operatingMode": "experience-first-with-preserved-bootstrap-ledgers",
+  "activePhase": "playable-experiment-upgrade",
   "completedPhases": [
     "A-inventory",
     "B-catalog"
   ],
-  "status": "ready-for-next-bounded-unit",
+  "status": "active-playable-upgrade-validated",
   "repositories": {
     "core": {
       "path": "/Users/crimsonwheeler/Documents/GitHub/NexusEngine",
@@ -27,9 +27,10 @@
     }
   },
   "synchronizedStartingCommits": {
-      "coreRemoteDefault": "b941c9b2995e3449c6987908657753e2cf2df242",
-    "protokits": "ffdcc962d3c984864a2d78e9276879adf04250eb",
-    "experiments": "615a7e1e2170164acef0edebdbe0b88b8c01fd1b",
+    "coreRemoteDefault": "b941c9b2995e3449c6987908657753e2cf2df242",
+    "coreLocalReadOnly": "8b57b03904889cdbc71021d3bdb1d4070af5c8d3",
+    "protokits": "16e444d8f8fc43def17986fce2556dfb76d17be9",
+    "experiments": "e5b630591525ec47677bd52702ea7e49fbe992bb",
     "experimentsBaseline": "615a7e1e2170164acef0edebdbe0b88b8c01fd1b"
   },
   "baseline": {
@@ -127,34 +128,43 @@
       "retired": 0
     }
   },
+  "legacyPlayableUpgrades": {
+    "lifetimeUpgraded": 1,
+    "active": 1,
+    "merged": 0,
+    "archived": 0,
+    "retired": 0,
+    "note": "Legacy playable upgrades remain excluded from new-production creation counts."
+  },
   "lastCatalogUnit": {
     "packetId": "2026-07-16-bootstrap-catalog-091-100",
     "scope": "catalog-batch-091-100",
     "result": "Accepted 10 genuinely new natural-language kit contracts after six additional duplicate, catalog-overlap, or blurred-scope rejections; no implementation was created."
   },
   "lastCreationUnit": {
-    "packetId": "2026-07-16-bootstrap-implementation-001-010",
-    "scope": "implementation-batch-001-010",
-    "result": "Implemented accepted bootstrap contracts 001-010 as ten renderer-agnostic Domain Service Kits with real deterministic behavior, explicit exports, manifests, READMEs, reset/snapshot/load behavior, command idempotency, and existing-harness proof."
+    "packetId": "2026-07-16-next-ledge-grapple-flow-upgrade",
+    "scope": "legacy-active-experiment-player-visible-upgrade",
+    "result": "Upgraded Next Ledge into a visibly playable stormline-recovery grapple loop with current Nexus Engine/ProtoKit composition, first-screen hero controls, cargo/pressure HUD, real fail/retry recovery, and Playwright plus Human View proof; production creation counts remain unchanged."
   },
   "lastRefinementUnit": null,
   "lastCompletedUnit": {
-    "packetId": "2026-07-16-bootstrap-implementation-001-010",
-    "scope": "Bootstrap implementation batch 001-010",
-    "result": "Ten accepted contracts now have real NexusEngine DSK implementations and count as active production kits; no experiment, game, merge, archive, retirement, or gameplay-time claim changed.",
-    "validation": "Targeted syntax, manifests, docs, exports, semantic runtime replay, snapshot/reset/load, boundary scan, frozen inventory, pipeline JSON invariants, diff checks, and Playwright/Human View passed. The broader repository check reached the pre-existing package test reference tests/generic-defense-session-command-kit-smoke.mjs and stopped because that file is absent from the starting commit.",
+    "packetId": "2026-07-16-next-ledge-grapple-flow-upgrade",
+    "scope": "Next Ledge grapple-flow playable upgrade",
+    "result": "The canonical Next Ledge route now boots on current Nexus Engine and NexusEngine-ProtoKits, exposes a clean first-screen loop, progresses cargo through release/re-grapple, fails below the last safe anchor, and resets climb/cargo/pressure on retry.",
+    "validation": "Targeted source, manifest, syntax, composer, and route smokes passed. Playwright proved launch, hero controls, release, aim-assisted re-grapple, cargo/pressure deltas, dead-state failure, retry recovery, advanced disclosure, and a zero-error console. Human View before/after screenshots passed.",
     "commits": {
-      "protokitsStart": "ffdcc962d3c984864a2d78e9276879adf04250eb",
-      "protokitsProductionUnit": "16e444d8f8fc43def17986fce2556dfb76d17be9",
-      "experimentsStart": "17ece5e5a64d745abb455b92d1647cf02d3ebfe1",
-      "experimentsProductionUnit": "278d08763ec0898b85a5c29d85bea0243179a054"
+      "coreReadOnly": "8b57b03904889cdbc71021d3bdb1d4070af5c8d3",
+      "protokitsStart": "16e444d8f8fc43def17986fce2556dfb76d17be9",
+      "protokitsProductionUnit": "04d34f049f58ae359cf71d43466c429dac2a6d08",
+      "experimentsStart": "e5b630591525ec47677bd52702ea7e49fbe992bb",
+      "experimentsProductionUnit": "pending-current-unit"
     },
-    "publication": "ProtoKits production commit 16e444d8f8fc43def17986fce2556dfb76d17be9 and Experiments production commit 278d08763ec0898b85a5c29d85bea0243179a054 pushed to origin/main; remote verification passed before the publication receipt commit."
+    "publication": "ProtoKits commit 04d34f049f58ae359cf71d43466c429dac2a6d08 is published on origin/main; Experiments publication is pending the current validated unit commit."
   },
   "exactNextUnit": {
-    "phase": "C-implementation",
+    "phase": "playable-experiment-upgrade",
     "epoch": 0,
-    "scope": "implementation-batch-011-020",
-    "goal": "Implement accepted bootstrap kit contracts 011-020 with deterministic behavior, compatible exports, accurate natural-language contracts, existing-harness proof, and post-code domain audits."
+    "scope": "next-ledge-summit-mastery-sequence",
+    "goal": "Author a short late-route mastery sequence and unmistakable summit signal-delivery celebration while preserving the validated grapple response, recovery timing, and reusable kit ownership."
   }
 }

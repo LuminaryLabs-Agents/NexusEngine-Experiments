@@ -1,22 +1,22 @@
 {
-  "version": 1,
+  "version": 2,
   "routeId": "next-ledge",
   "canonicalPath": "experiments/next-ledge/",
   "scenarioLane": "traversal-cargo-pressure",
   "higherLevelDomain": "Delivery/extraction loop",
-  "status": "partial-route-progress-dsk-consumed",
+  "status": "route-progress-and-cargo-dsk-consumed-playable",
   "fullLaneExecutableClaim": false,
   "sourceManifest": "experiments/domain-kit-cutover-manifest.json",
   "sourceReplayManifest": "experiments/canonical-route-replay-manifest.json",
   "sourceSession": "experiments/next-ledge/src/session.js",
   "sourceProtoKitCoverage": [
     {
-      "repo": "LuminaryLabs-Agents/NexusRealtime-ProtoKits",
+      "repo": "LuminaryLabs-Agents/NexusEngine-ProtoKits",
       "test": "tests/generic-route-progress-kit-smoke.test.mjs",
       "coverage": "atomic route/checkpoint/objective-progress resources, events, methods, snapshots, and route-checkpoint descriptors"
     },
     {
-      "repo": "LuminaryLabs-Agents/NexusRealtime-ProtoKits",
+      "repo": "LuminaryLabs-Agents/NexusEngine-ProtoKits",
       "test": "tests/generic-route-progress-replay-smoke.test.mjs",
       "coverage": "deterministic route-progress replay through engine.n.genericRouteProgress without browser or renderer ownership"
     }
@@ -65,12 +65,12 @@
     "asset loading"
   ],
   "remainingExecutableGap": [
-    "cargo/resource/pressure deterministic replay that imports generic-route-cargo-extraction-kit after the route consumes cargo, resource, and pressure DSKs",
+    "route-level deterministic replay that drives the consumed generic-route-cargo-extraction-kit through Next Ledge climb events",
     "full traversal-cargo-pressure lane digest that proves route progress, cargo extraction, resource deltas, pressure deltas, and descriptor hashes together"
   ],
   "localJsReductionOpportunity": [
     "keep local checkpoint lists as route geometry source only while generic-route-progress owns objective/checkpoint state",
-    "move cargo/resource/pressure ledgers next, but only after this route-progress seam remains stable",
+    "keep cargo/resource/pressure ledgers in generic-route-cargo-extraction-kit and only translate route-specific climb events locally",
     "do not move tether physics, browser collision, DOM input, camera, renderer, route fiction, or assets into ProtoKits"
   ]
 }

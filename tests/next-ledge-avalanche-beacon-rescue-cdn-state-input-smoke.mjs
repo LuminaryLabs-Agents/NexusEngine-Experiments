@@ -8,7 +8,8 @@ const entry = readFileSync(new URL("../experiments/next-ledge/src/avalanche-beac
 const kits = readFileSync(new URL("../experiments/next-ledge/src/avalanche-beacon-rescue-readiness-kits.js", import.meta.url), "utf8");
 
 assert.ok(routeHtml.includes("avalanche-beacon-rescue-readiness-renderer-handoff-pass"));
-assert.ok(routeHtml.includes("avalanche-beacon-rescue-readiness-entry.js"));
+assert.ok(!routeHtml.includes("avalanche-beacon-rescue-readiness-entry.js"));
+assert.ok(routeHtml.includes('<option value="avalanche-beacon">Avalanche beacon</option>'));
 assert.ok(entry.includes(CDN_URL));
 assert.ok(!entry.includes("NexusRealtime@"));
 assert.ok(entry.includes("getAvalancheBeaconRescueReadiness"));

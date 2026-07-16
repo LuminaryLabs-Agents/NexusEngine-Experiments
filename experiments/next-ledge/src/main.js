@@ -19,8 +19,28 @@ async function boot() {
   const canvas = document.querySelector("#game");
   const session = sessionModule.createNextLedgeSession();
   const renderer = rendererModule.createThreeRenderer({ canvas });
-  const input = inputModule.createInputController({ canvas, leftPad: document.querySelector("#leftPad"), rightPad: document.querySelector("#rightPad") });
-  const hud = hudModule.createHud({ status: document.querySelector("#status"), readout: document.querySelector("#readout") });
+  const input = inputModule.createInputController({
+    canvas,
+    leftPad: document.querySelector("#leftPad"),
+    rightPad: document.querySelector("#rightPad"),
+    pauseButton: document.querySelector("#pauseButton"),
+    restartButton: document.querySelector("#restartButton"),
+    advanceButton: document.querySelector("#advanceButton")
+  });
+  const hud = hudModule.createHud({
+    status: document.querySelector("#status"),
+    readout: document.querySelector("#readout"),
+    statusCopy: document.querySelector("#statusCopy"),
+    objective: document.querySelector("#objective"),
+    sectorLabel: document.querySelector("#sectorLabel"),
+    actionPrompt: document.querySelector("#actionPrompt"),
+    staminaValue: document.querySelector("#staminaValue"),
+    staminaMeter: document.querySelector("#staminaMeter"),
+    cargoValue: document.querySelector("#cargoValue"),
+    cargoMeter: document.querySelector("#cargoMeter"),
+    pressureValue: document.querySelector("#pressureValue"),
+    pressureMeter: document.querySelector("#pressureMeter")
+  });
   const synth = synthModule.createCinematicSynth();
 
   loopModule.startLoop({ session, input, renderer, hud, synth });
