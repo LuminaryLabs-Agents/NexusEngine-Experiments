@@ -142,9 +142,9 @@
     "commits": {
       "protokitsStartAndFinal": "ffdcc962d3c984864a2d78e9276879adf04250eb",
       "experimentsStart": "47e2a7afcf55b854bf064a4fb93fb19e69f16673",
-      "experimentsProductionUnit": "recorded-by-publication-receipt-after-push"
+      "experimentsProductionUnit": "922211b48ab50201309bc7192d550a42e2eb0a0f"
     },
-    "publication": "validated production unit prepared for normal push; final receipt is recorded after publication"
+    "publication": "production commit published to origin/main; publication record commit intentionally not self-hashed"
   },
   "exactNextUnit": {
     "phase": "C-implementation",
