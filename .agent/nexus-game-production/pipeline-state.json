@@ -11,7 +11,7 @@
     "A-inventory",
     "B-catalog"
   ],
-  "status": "bounded-unit-validated-publication-pending",
+  "status": "ready-for-next-bounded-unit",
   "repositories": {
     "core": {
       "path": "/Users/crimsonwheeler/Documents/GitHub/NexusEngine",
@@ -147,9 +147,9 @@
       "protokitsStart": "ffdcc962d3c984864a2d78e9276879adf04250eb",
       "protokitsProductionUnit": "16e444d8f8fc43def17986fce2556dfb76d17be9",
       "experimentsStart": "17ece5e5a64d745abb455b92d1647cf02d3ebfe1",
-      "experimentsProductionUnit": null
+      "experimentsProductionUnit": "278d08763ec0898b85a5c29d85bea0243179a054"
     },
-    "publication": "pending"
+    "publication": "ProtoKits production commit 16e444d8f8fc43def17986fce2556dfb76d17be9 and Experiments production commit 278d08763ec0898b85a5c29d85bea0243179a054 pushed to origin/main; remote verification passed before the publication receipt commit."
   },
   "exactNextUnit": {
     "phase": "C-implementation",

@@ -2,7 +2,7 @@
 
 Packet ID: `2026-07-16-bootstrap-implementation-001-010`
 Automation: Nexus Engine Game Production Builder
-Status: implementation validated; publication pending
+Status: complete and published
 
 ## Result
 
@@ -86,7 +86,7 @@ before_evidence: prior packet shows 0 / 100 implemented and implementation-batch
 after_evidence: Playwright snapshot and screenshot of this packet show 10 / 100 implemented and implementation-batch-011-020 next; clean final session console contains 0 errors and 0 warnings
 perspective_results: reader-view passed; reviewer-view passed; task-completion-view passed; format-integrity-view passed
 failure_routes: none currently
-next_action: complete narrow staging, commits, fetch-check, and publication
+next_action: begin `implementation-batch-011-020`
 ```
 
 Mandatory question: `Have I checked what the human would actually see, and do I need screenshots, visual inspection, launch-state inspection, or before/after comparison to validate this properly?`
@@ -138,11 +138,11 @@ Root `memory.md` files remain unchanged because this unit applies existing archi
 ## Commits And Push
 
 - ProtoKits start: `ffdcc962d3c984864a2d78e9276879adf04250eb`; production commit `16e444d8f8fc43def17986fce2556dfb76d17be9`.
-- Experiments start: `17ece5e5a64d745abb455b92d1647cf02d3ebfe1`; final/production commit pending.
-- Pre-push fetch/rebase: pending.
-- ProtoKits push: pending.
-- Experiments push: pending.
-- Remote verification: pending.
+- Experiments start: `17ece5e5a64d745abb455b92d1647cf02d3ebfe1`; production commit `278d08763ec0898b85a5c29d85bea0243179a054`.
+- Pre-push fetch/rebase: both repositories fetched cleanly; each remote default was unchanged, so no rebase was required.
+- ProtoKits push: `16e444d8f8fc43def17986fce2556dfb76d17be9` published to `origin/main`.
+- Experiments push: `278d08763ec0898b85a5c29d85bea0243179a054` published to `origin/main`.
+- Remote verification: both published production commits matched `origin/main` before this Experiments-only publication receipt. The receipt commit is intentionally not self-hashed inside this packet.
 
 ## Exact Next Unit
 
