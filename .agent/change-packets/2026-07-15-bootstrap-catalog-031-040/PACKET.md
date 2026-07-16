@@ -2,7 +2,7 @@
 
 Packet ID: `2026-07-15-bootstrap-catalog-031-040`
 Automation: Nexus Engine Game Production Builder
-Status: complete; publication pending
+Status: complete and published
 
 ## Result
 
@@ -128,14 +128,18 @@ Answer: yes. This unit is not playable, so rendered artifact inspection plus Pla
 - Visual comparison: 30 / 100 with next 031-040 -> 40 / 100 with next 041-050; no implementation or lifecycle totals were presented as created assets.
 - Gameplay launch: not applicable; no playable or runtime file changed, and no gameplay claim is made.
 - `git diff --check`: passed.
-- Staged diff and final worktree checks: pending commit lifecycle.
+- `git diff --check` and staged diff checks passed; explicit review found only the 11 files owned by this run.
+- ProtoKits remained clean and unchanged; Experiments was clean after the production commit and push.
 
 ## Commits And Push
 
 - ProtoKits start/final: `ffdcc962d3c984864a2d78e9276879adf04250eb`; no changes planned.
 - Experiments start: `2333e61eb808831e59559462487c0c013108eee3`.
-- Production commit: pending.
-- Push: pending.
+- Production commit: `d7640696fa98f77372e7605e506584adcfe58094` (`Catalog bootstrap kits 031-040`).
+- Pre-push fetch: ProtoKits and Experiments remotes were unchanged; no rebase was required.
+- Push: `2333e61..d764069 main -> main` succeeded.
+- Remote verification: `origin/main` and `git ls-remote` both matched `d7640696fa98f77372e7605e506584adcfe58094` after the production push.
+- The later publication-record commit contains this receipt and is intentionally not self-hashed inside its own contents.
 
 ## Exact Next Unit
 
