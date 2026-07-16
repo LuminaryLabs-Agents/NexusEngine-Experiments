@@ -38,13 +38,25 @@ export function createCinematicSynth() {
       [261.63, 329.63, 392, 523.25, 659.25, 783.99].forEach((f, i) => setTimeout(() => tone(f, 0.48, "sine", 0.1, f * 1.5), i * 90));
       setTimeout(() => tone(1567.98, 0.9, "sine", 0.055, 2093), 580);
     }
+    else if (type === "sector-broadcast-started") {
+      tone(146.83, 0.72, "triangle", 0.12, 440);
+      setTimeout(() => tone(587.33, 0.55, "sine", 0.08, 1174.66), 160);
+    }
+    else if (type === "sector-handshake-accepted") {
+      tone(1046.5, 0.46, "sine", 0.09, 523.25);
+      setTimeout(() => tone(783.99, 0.52, "triangle", 0.075, 1567.98), 150);
+    }
+    else if (type === "sector-opening-revealed") {
+      tone(196, 0.62, "sawtooth", 0.07, 98);
+      tone(659.25, 0.7, "sine", 0.065, 1318.5);
+    }
   }
 
   return {
     update(snapshot, command = {}) {
       if (command.userGesture) init()?.resume?.();
       for (const event of snapshot?.recentEvents ?? []) {
-        const key = `${event.at}:${event.type}:${event.targetId ?? event.reason ?? ""}`;
+        const key = `${event.at}:${event.type}:${event.targetId ?? event.reason ?? event.sector ?? ""}`;
         if (seen.has(key)) continue;
         seen.add(key);
         playEvent(event.type);

@@ -1,5 +1,11 @@
 # Cycle State
 
+## 2026-07-16 Counterwind Sector Handoff Upgrade
+
+`experiments/next-ledge/` now carries a completed summit relay through a visible broadcast, route handshake, and sector-two reveal instead of resetting immediately. Sector two reverses deterministic wind direction and opens with four authored beats: Counterwind Gate, Leeward Cradle, Reverse Catch, and Counterwind Rest. Delivered cargo persists through the handoff, the new route owns its reset, diagnostics stay closed, the complete route plus failure/recovery passed Playwright, and the measured active-play FPS improved without steady-state entity growth.
+
+Exact next playable unit: deepen the four-anchor counterwind opening into a stronger pressure crescendo with earlier gust anticipation and a more satisfying recovery confirmation at Counterwind Rest.
+
 ## 2026-07-16 Summit Mastery Crest Upgrade
 
 `experiments/next-ledge/` now ends in an authored five-beat summit mastery crest: Stormbreak Rest, Commit Perch, Crosswind Catch, Relay Crown, and Summit Relay. The run also bounded swing/reel energy, made magnetized grapple shots own their selected anchor, repaired late-route objective and route-progress forwarding through the bounded event buffer, and added a persistent gold signal-delivery celebration. The complete 25-anchor route, miss/recover pressure loop, both objectives, Advanced disclosure, steady-state entity counts, and final zero-error player view passed Playwright and Human View.

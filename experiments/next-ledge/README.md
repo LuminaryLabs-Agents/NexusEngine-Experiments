@@ -4,6 +4,8 @@ A Nexus Engine stormline-recovery grapple climb. Build a swing, release, aim int
 
 The final route now resolves into an authored mastery crest: recover at Stormbreak Rest, build the high-commitment release from Commit Perch, catch the crosswind, reverse toward Relay Crown, and deliver the signal into a gold summit transmission.
 
+After delivery, the advanced `N` action broadcasts the restored relay, waits for a visible route handshake, then reveals a mirrored four-anchor opening with reversed wind: Counterwind Gate, Leeward Cradle, Reverse Catch, and Counterwind Rest.
+
 The playable route composes real reusable features from NexusEngine-ProtoKits:
 
 ```txt
@@ -41,7 +43,7 @@ Click / tap / Space  release, fire, retract, or cancel by current mode
 A / D or arrows      build swing momentum; air-correct while falling
 R                    recover at the current sector's first anchor
 P                    pause
-N                    advance to the next generated sector (advanced)
+N                    broadcast a completed relay into the next sector (advanced)
 ```
 
 ## Debug
@@ -53,6 +55,7 @@ GameHost.getState();
 GameHost.engine.nextLedge.getSnapshot();
 GameHost.restart();
 GameHost.advanceSector();
+GameHost.beginSectorTransition();
 GameHost.tick(1 / 60, { action: true });
 ```
 

@@ -54,7 +54,8 @@ for (const testCase of intakeCases) {
 }
 
 assert.match(wrapperSource, /if \(input\.restart\) resetCargo\(next, "next-ledge-input-restart"\)/, "keyboard retry should reset composite cargo state");
-assert.match(wrapperSource, /else if \(input\.advanceSector\) resetCargo\(next, "next-ledge-input-sector-advance"\)/, "keyboard sector advance should reset composite cargo state");
+assert.match(wrapperSource, /if \(key !== runtime\.key\) resetCargo\(snapshot, "route-cargo-route-changed"\)/, "completed sector handoff should reset composite cargo only when the generated route changes");
+assert.doesNotMatch(wrapperSource, /input\.advanceSector\) resetCargo/, "gated keyboard handoff should preserve delivered cargo through the broadcast phase");
 assert.match(wrapperSource, /syncedEvents\.clear\(\)/, "composite resets should clear route event dedupe state");
 
 assert.match(effectsSource, /routeCargoVisual\?\.rendererHandoff\?\.descriptors/, "diegetic renderer should consume route-cargo renderer handoff descriptors");

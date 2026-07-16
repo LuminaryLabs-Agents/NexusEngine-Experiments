@@ -12,7 +12,7 @@ const nexusEngineCdn = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine
 const oldRuntimeCdn = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusRealtime@main/src/index.js";
 
 assert.match(routeShell, /anchor-timing-readability-renderer-handoff-pass|traversal-readability-renderer-handoff-pass/, "route shell should identify the active Next Ledge readability cutover");
-assert.match(routeShell, /main\.js\?v=mastery-crest-1/, "route shell should cache-bust the playable upgrade module");
+assert.match(routeShell, /main\.js\?v=counterwind-handoff-1/, "route shell should cache-bust the playable upgrade module");
 assert.match(mainSource, /session-cargo-extraction-upgrade\.js/, "browser entry should still use the NexusEngine cargo/traversal wrapper");
 assert.ok(wrapperSource.includes(nexusEngineCdn), "changed wrapper should pull NexusEngine main through the CDN");
 assert.doesNotMatch(wrapperSource, new RegExp(oldRuntimeCdn.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")), "changed wrapper must not import the old NexusRealtime runtime CDN");

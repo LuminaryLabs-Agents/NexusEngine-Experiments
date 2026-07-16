@@ -42,6 +42,33 @@ export function adaptProjectedRouteToClimbRoute(projectedRoute, climb = {}) {
       metadata: anchor.metadata ?? {}
     };
   });
+  const opening = climb.openingPattern;
+  const openingBeats = Array.isArray(opening?.beats) ? opening.beats : [];
+  for (const [order, beat] of openingBeats.entries()) {
+    const index = Math.max(1, Math.min(ledges.length - 2, Math.floor(Number(beat.index ?? order + 1))));
+    const source = ledges[index];
+    if (!source) continue;
+    const type = beat.type ?? source.type;
+    ledges[index] = {
+      ...source,
+      id: beat.id ?? source.id,
+      x: Number(beat.x ?? source.x),
+      y: Number(beat.y ?? source.y),
+      r: Number(beat.radius ?? source.r),
+      type,
+      label: beat.label ?? source.label,
+      staminaRestore: type === "rest" ? Number(beat.staminaRestore ?? source.staminaRestore ?? climb.staminaRestore ?? 45) : 0,
+      tags: [...new Set([...(source.tags ?? []), ...(beat.tags ?? []), type])],
+      metadata: {
+        ...(source.metadata ?? {}),
+        openingPatternId: opening.id ?? "counterwind-opening",
+        openingRole: beat.role ?? `opening-beat-${order}`,
+        openingOrder: order,
+        windDirection: Number(opening.windDirection ?? 1),
+        authoredRouteBeat: true
+      }
+    };
+  }
   const crest = climb.masteryCrest;
   const crestBeats = Array.isArray(crest?.beats) ? crest.beats : [];
   const lastIndex = ledges.length - 1;
@@ -77,6 +104,13 @@ export function adaptProjectedRouteToClimbRoute(projectedRoute, climb = {}) {
     ledges,
     chunks: chunksFor(summitY),
     route: ledges.map((ledge) => ledge.id),
+    openingPattern: openingBeats.length ? {
+      id: opening.id ?? "counterwind-opening",
+      label: opening.label ?? "Counterwind opening",
+      windDirection: Number(opening.windDirection ?? 1),
+      beatIds: openingBeats.map((beat) => beat.id).filter(Boolean),
+      endIndex: Math.min(ledges.length - 1, openingBeats.length)
+    } : null,
     masteryCrest: crestBeats.length ? {
       id: crest.id ?? "summit-mastery-crest",
       beatIds: crestBeats.map((beat) => beat.id).filter(Boolean),

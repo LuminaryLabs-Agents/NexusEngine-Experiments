@@ -2,6 +2,7 @@ const n = (value, fallback = 0) => Number.isFinite(Number(value)) ? Number(value
 
 export function createNextLedgeClimbPreset(options = {}) {
   const sector = Math.max(1, Math.floor(Number(options.sector ?? 1)));
+  const windDirection = sector % 2 === 0 ? -1 : 1;
   const pacing = options.routePacing ?? options.pacing ?? options;
   const summitY = Number(options.summitY ?? n(pacing.summitBaseY, 2200) + sector * n(pacing.summitPerSectorY, 760));
   const routeId = `next-ledge-sector-${sector}`;
@@ -16,6 +17,17 @@ export function createNextLedgeClimbPreset(options = {}) {
       { fromSummit: 0, id: "summit", role: "crest-summit", label: "Summit relay", type: "summit", x: 0, yOffset: 0, radius: 20, tags: ["mastery-crest", "signal-delivery"] }
     ]
   };
+  const openingPattern = sector <= 1 ? null : options.openingPattern ?? {
+    id: `counterwind-opening-${sector}`,
+    windDirection,
+    label: windDirection < 0 ? "Westbound counterwind" : "Eastbound counterwind",
+    beats: [
+      { index: 1, id: "counterwind-gate", role: "opening-windward", label: "Counterwind gate", type: "normal", x: -72 * windDirection, y: 124, radius: 7.2, tags: ["counterwind-opening", "windward-load"] },
+      { index: 2, id: "leeward-cradle", role: "opening-leeward", label: "Leeward cradle", type: "normal", x: 52 * windDirection, y: 244, radius: 7.8, tags: ["counterwind-opening", "leeward-catch"] },
+      { index: 3, id: "reverse-catch", role: "opening-reverse", label: "Reverse catch", type: "normal", x: -76 * windDirection, y: 366, radius: 7, tags: ["counterwind-opening", "reverse-swing"] },
+      { index: 4, id: "counterwind-rest", role: "opening-rest", label: "Counterwind rest", type: "rest", x: 48 * windDirection, y: 486, radius: 9.5, tags: ["counterwind-opening", "recovery-confirmation"] }
+    ]
+  };
   return {
     id: "next-ledge-cinematic-ascent",
     sector,
@@ -28,8 +40,8 @@ export function createNextLedgeClimbPreset(options = {}) {
         type: "bezier",
         start: { x: 0, y: 0, z: 0 },
         controls: [
-          { x: -120, y: summitY * 0.28, z: 0 },
-          { x: 110, y: summitY * 0.72, z: 0 }
+          { x: -120 * windDirection, y: summitY * 0.28, z: 0 },
+          { x: 110 * windDirection, y: summitY * 0.72, z: 0 }
         ],
         end: { x: 0, y: summitY, z: 0 }
       },
@@ -62,7 +74,14 @@ export function createNextLedgeClimbPreset(options = {}) {
       restRadius: 7,
       summitRadius: 15,
       staminaRestore: n(options.restRestore, n(pacing.restRestore, 58)),
+      openingPattern,
       masteryCrest
+    },
+    transition: {
+      broadcastDuration: 0.72,
+      handshakeDuration: 0.78,
+      openingDuration: 1.08,
+      targetWindDirection: -windDirection
     },
     objective: {
       id: "next-ledge-objective-flow",

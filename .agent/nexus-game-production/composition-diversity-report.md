@@ -99,6 +99,7 @@ These are proof targets, not accepted experiment records. Seeds, candidate draw 
 - Shared route shells and a common kit stack do not prove distinct seeded-random composition.
 - The other 33 top-level experiment folders remain baseline inventory until they pass the new gate.
 - The active legacy `next-ledge` upgrade now has a specific stormline signal-delivery fantasy, swing/release/re-grapple verb, stamina/cargo/fall-pressure loop, authored five-beat summit crest, and eight-feature ProtoKit signature. This materially deepens one proven composition; it does not create or claim a second production signature.
+- The counterwind handoff deepens that same proven stormline composition with a completion-gated broadcast, route handshake, reversed wind, and a four-beat opening. It does not change the fantasy, interaction family, or production signature, so creation and diversity counts remain unchanged.
 
 ## Diversity Gate
 

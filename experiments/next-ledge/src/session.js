@@ -3,8 +3,8 @@ import { createGenericAnchorDescriptorKit } from "https://cdn.jsdelivr.net/gh/Lu
 import { createGenericModeProjectedRoute, createProjectedRoute } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-mode-projected-route/index.js";
 import { createGenericRouteProgressKit } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-route-progress-kit/index.js";
 import { createGenericTetherTraversalDomainKits, createGenericTetherTraversalPreset } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-tether-traversal-domain-kits/index.js";
-import { createNextLedgeClimbPreset } from "./climb-preset.js?v=mastery-crest-1";
-import { adaptProjectedRouteToClimbRoute } from "./climb-anchor-adapter.js?v=mastery-crest-1";
+import { createNextLedgeClimbPreset } from "./climb-preset.js?v=counterwind-handoff-1";
+import { adaptProjectedRouteToClimbRoute } from "./climb-anchor-adapter.js?v=counterwind-handoff-1";
 import { createClimbActionAdapter } from "./climb-action-adapter.js";
 
 const clamp = (v, a, b) => Math.max(a, Math.min(b, Number.isFinite(Number(v)) ? Number(v) : a));
@@ -160,7 +160,7 @@ function createInitialState(options = {}, status = "SYS_STATUS: ACTIVE") {
   const start = route.ledges[0] ?? { id: "start", x: 0, y: 0, r: 8, label: "Start" };
   const player = { x: start.x, y: start.y - ropeLength, z: 1, vx: 0, vy: 0, angle: 0, aVel: 0, scaleX: 1, scaleY: 1, scaleZ: 1, rotationX: 0, rotationY: 0 };
   return {
-    version: "next-ledge-generic-traversal-domain-0.2.0",
+    version: "next-ledge-generic-traversal-domain-0.3.0",
     levelId: route.id,
     frame: 0,
     sector,
@@ -179,7 +179,21 @@ function createInitialState(options = {}, status = "SYS_STATUS: ACTIVE") {
     constants: { gravity: n(options.gravityBase, tuning.gravityBase ?? 0.049) + sector * n(options.gravityPerSector, tuning.gravityPerSector ?? 0.0022), ropeLength, maxCableLength: maxCable, maxStamina, scaffoldBoundary: n(options.scaffoldBoundary, tuning.scaffoldBoundary ?? 176), ropeNodeCount: nodeCount },
     stamina: maxStamina,
     maxHeight: 0,
-    wind: { strength: (sector - 1) * n(tuning.windPerSector, 0.004), offset: 0 },
+    wind: {
+      strength: (sector - 1) * n(tuning.windPerSector, 0.004),
+      direction: n(route.openingPattern?.windDirection, sector % 2 === 0 ? -1 : 1),
+      offset: 0
+    },
+    sectorTransition: {
+      active: false,
+      phase: "idle",
+      elapsed: 0,
+      totalElapsed: 0,
+      sourceSector: sector,
+      targetSector: sector,
+      windDirection: n(route.openingPattern?.windDirection, sector % 2 === 0 ? -1 : 1),
+      label: route.openingPattern?.label ?? null
+    },
     aim: { x: 0, y: 1, worldX: 0, worldY: maxCable },
     input: { axis: 0 },
     player,
@@ -210,7 +224,7 @@ function enabledTargets(state) {
 }
 
 function setRope(state, a, b, slack = 8) {
-  state.rope = { ...state.rope, start: { x: a.x, y: a.y, z: 1 }, end: { x: b.x, y: b.y, z: 1 }, nodes: ropeNodes(a, b, state.constants.ropeNodeCount, state.wind.strength * n(state.tuning.windCoupling, 14), slack), targetLength: d2(a, b) + slack };
+  state.rope = { ...state.rope, start: { x: a.x, y: a.y, z: 1 }, end: { x: b.x, y: b.y, z: 1 }, nodes: ropeNodes(a, b, state.constants.ropeNodeCount, state.wind.strength * n(state.wind.direction, 1) * n(state.tuning.windCoupling, 14), slack), targetLength: d2(a, b) + slack };
 }
 
 function assistedAim(state) {
@@ -346,7 +360,7 @@ function stepSwing(state, dt) {
   const axis = clamp(state.input.axis, -1, 1);
   const ropeLength = state.constants.ropeLength;
   let acc = -(state.constants.gravity / ropeLength) * Math.sin(state.player.angle) + axis * n(state.tuning.swingInputTorque, 0.0049);
-  acc += state.wind.strength * Math.sin(state.wind.offset) * Math.cos(state.player.angle) / ropeLength;
+  acc += state.wind.strength * n(state.wind.direction, 1) * Math.sin(state.wind.offset) * Math.cos(state.player.angle) / ropeLength;
   const maxAngularSpeed = n(state.tuning.maxAngularSpeed, 0.15);
   state.player.aVel = clamp((state.player.aVel + acc) * n(state.tuning.angularDamping, 0.9915), -maxAngularSpeed, maxAngularSpeed);
   state.player.angle = Math.atan2(Math.sin(state.player.angle + state.player.aVel), Math.cos(state.player.angle + state.player.aVel));
@@ -362,7 +376,7 @@ function stepSwing(state, dt) {
 }
 
 function fallPlayer(state, dt, drag = true) {
-  const wind = state.wind.strength * Math.sin(state.wind.offset);
+  const wind = state.wind.strength * n(state.wind.direction, 1) * Math.sin(state.wind.offset);
   state.player.vx += wind * 0.15 * dt * 60;
   state.player.vx += clamp(state.input.axis, -1, 1) * n(state.tuning.airControl, 0.12) * dt * 60;
   state.player.vy -= state.constants.gravity * dt * 60;
@@ -543,8 +557,86 @@ export function createNextLedgeSession(options = {}) {
     return snapshot();
   }
 
+  function openingStatus(next = state) {
+    const direction = n(next.wind?.direction, 1);
+    return direction < 0
+      ? "Counterwind online. Load right, then release left through the reversed opening."
+      : "Counterwind online. Load left, then release right through the reversed opening.";
+  }
+
+  function beginSectorTransition(targetSector = state.sector + 1) {
+    if (state.sectorTransition?.active) return snapshot();
+    if (!state.completed || state.mode !== "won") {
+      state.status = "Restore the summit relay before requesting the next sector.";
+      state.stats.rejected += 1;
+      addEvent(state, "sector-transition-rejected", { sector: state.sector, reason: "summit-incomplete" });
+      return snapshot();
+    }
+    const transition = state.preset?.transition ?? {};
+    state.mode = "transitioning";
+    state.status = "Broadcasting recovered signal across the stormline.";
+    state.sectorTransition = {
+      active: true,
+      phase: "broadcast",
+      elapsed: 0,
+      totalElapsed: 0,
+      sourceSector: state.sector,
+      targetSector: Math.max(state.sector + 1, Math.floor(n(targetSector, state.sector + 1))),
+      windDirection: n(transition.targetWindDirection, state.sector % 2 === 0 ? 1 : -1),
+      label: "Broadcasting summit relay"
+    };
+    addEvent(state, "sector-broadcast-started", { sector: state.sector, targetSector: state.sectorTransition.targetSector });
+    return snapshot();
+  }
+
+  function stepSectorTransition(dt) {
+    const transition = state.sectorTransition;
+    if (!transition?.active) return false;
+    const delta = clamp(n(dt, 1 / 60), 0, 1 / 30);
+    state.frame += 1;
+    transition.elapsed += delta;
+    transition.totalElapsed += delta;
+    const config = state.preset?.transition ?? {};
+    if (transition.phase === "broadcast" && transition.elapsed >= n(config.broadcastDuration, 0.72)) {
+      transition.phase = "handshake";
+      transition.elapsed = 0;
+      transition.label = "Route handshake accepted";
+      state.status = `Sector ${transition.targetSector} answered. Reversing the wind field.`;
+      addEvent(state, "sector-handshake-accepted", { sector: state.sector, targetSector: transition.targetSector });
+    } else if (transition.phase === "handshake" && transition.elapsed >= n(config.handshakeDuration, 0.78)) {
+      const previousStats = copy(state.stats);
+      const targetSector = transition.targetSector;
+      const totalElapsed = transition.totalElapsed;
+      state = createInitialState({ ...options, sector: targetSector, domainPreset, settings: settingsFromEngine(engine, {}) });
+      state.stats = { ...state.stats, sectorsCleared: Math.max(previousStats.sectorsCleared + 1, targetSector - 1) };
+      state.sectorTransition = {
+        active: true,
+        phase: "opening",
+        elapsed: 0,
+        totalElapsed,
+        sourceSector: targetSector - 1,
+        targetSector,
+        windDirection: n(state.wind?.direction, transition.windDirection),
+        label: state.route?.openingPattern?.label ?? "Counterwind opening"
+      };
+      state.status = openingStatus(state);
+      engine.objectiveFlow?.reset?.();
+      syncGeneratedRoute();
+      addEvent(state, "sector-opening-revealed", { sector: targetSector, windDirection: state.sectorTransition.windDirection });
+    } else if (transition.phase === "opening" && transition.elapsed >= n(config.openingDuration, 1.08)) {
+      transition.active = false;
+      transition.phase = "complete";
+      transition.label = state.route?.openingPattern?.label ?? "Counterwind ready";
+      state.status = openingStatus(state);
+      addEvent(state, "sector-transition-complete", { sector: state.sector, windDirection: state.wind.direction });
+    }
+    updateDerived(state);
+    return true;
+  }
+
   function advanceSector(sector = state.sector + 1) {
     state = createInitialState({ ...options, sector, domainPreset, settings: settingsFromEngine(engine, {}) }, state.tuning?.nextSectorMessage ?? "Ascending next sector. New anchor field generated.");
+    if (state.route?.openingPattern) state.status = openingStatus(state);
     engine.objectiveFlow?.reset?.();
     syncGeneratedRoute();
     addEvent(state, "sector-advanced", { sector: state.sector });
@@ -554,7 +646,7 @@ export function createNextLedgeSession(options = {}) {
   function applyInput(raw = {}) {
     const input = createClimbActionAdapter(raw);
     if (input.restart) restart();
-    if (input.advanceSector) advanceSector();
+    if (input.advanceSector) beginSectorTransition();
     if (input.pause) state.paused = !state.paused;
     if (input.aimWorld) state.aim = { ...state.aim, ...aimFrom(state, input.aimWorld) };
     else if (input.aimVector) state.aim = { ...state.aim, ...aimFrom(state, input.aimVector) };
@@ -574,7 +666,7 @@ export function createNextLedgeSession(options = {}) {
     const beforeEvents = new Set(state.recentEvents);
     refreshTuning();
     applyInput(input);
-    stepState(state, clamp(n(dt, 1 / 60), 0, 1 / 30));
+    if (!stepSectorTransition(dt)) stepState(state, clamp(n(dt, 1 / 60), 0, 1 / 30));
     engine.tick(dt);
     syncObjective(beforeEvents);
     syncRouteProgressEvents(engine, state, beforeEvents);
@@ -588,6 +680,7 @@ export function createNextLedgeSession(options = {}) {
     getSnapshot: () => snapshot(),
     restart,
     advanceSector,
+    beginSectorTransition,
     swingAxis(axis = 0) { state.input.axis = state.mode === "swinging" ? clamp(axis, -1, 1) : 0; return snapshot(); },
     setAimWorld(x = 0, y = 1) { state.aim = { ...state.aim, ...aimFrom(state, { x, y }) }; return snapshot(); },
     setAimVector(dx = 0, dy = 1) { state.aim = { ...state.aim, ...aimFrom(state, { dx, dy }) }; return snapshot(); },
@@ -595,5 +688,5 @@ export function createNextLedgeSession(options = {}) {
   };
 
   syncGeneratedRoute();
-  return { engine, NexusEngine, level, update, snapshot, restart, advanceSector };
+  return { engine, NexusEngine, level, update, snapshot, restart, advanceSector, beginSectorTransition };
 }

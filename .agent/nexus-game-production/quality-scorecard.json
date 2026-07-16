@@ -25,19 +25,19 @@
     {
       "id": "next-ledge-grapple",
       "lifecycleStatus": "active-legacy-baseline",
-      "score": 89,
-      "lastImprovedAt": "2026-07-16T11:54:07-04:00",
+      "score": 93,
+      "lastImprovedAt": "2026-07-16T12:39:30-04:00",
       "feelScores": {
         "responsiveness": 9,
         "predictability": 9,
         "readability": 9,
-        "impact": 9,
+        "impact": 10,
         "recovery": 9,
-        "delight": 9,
-        "replayDesire": 8,
-        "average": 8.9
+        "delight": 10,
+        "replayDesire": 9,
+        "average": 9.3
       },
-      "nextFeelProblem": "The post-delivery next-sector action needs a visible transition and a distinct reversed-wind opening instead of an immediate generated reset."
+      "nextFeelProblem": "The four-anchor counterwind opening needs earlier gust anticipation and a stronger pressure-to-recovery crescendo at Counterwind Rest."
     },
     {
       "id": "rogue-lite-hellscape-siege",

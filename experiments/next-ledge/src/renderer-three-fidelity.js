@@ -151,6 +151,14 @@ export function createThreeRenderer({ canvas }) {
   const aimParticleGeometry = new THREE.BufferGeometry();
   aimParticleGeometry.setAttribute("position", new THREE.BufferAttribute(aimParticlePositions, 3));
   const aimParticles = new THREE.Points(aimParticleGeometry, m.aimParticle);
+  const windSegmentCount = 18;
+  const windPositions = new Float32Array(windSegmentCount * 2 * 3);
+  const windGeometry = new THREE.BufferGeometry();
+  windGeometry.setAttribute("position", new THREE.BufferAttribute(windPositions, 3));
+  const windMaterial = makeLineMaterial(0x77e8ff, 0.38);
+  const counterwindField = new THREE.LineSegments(windGeometry, windMaterial);
+  counterwindField.frustumCulled = false;
+  counterwindField.visible = false;
   const summitCelebration = new THREE.Group();
   const celebrationRings = [
     new THREE.Mesh(new THREE.TorusGeometry(32, 1.4, 10, 72), material(0xffd65a, 0.76, true)),
@@ -162,7 +170,7 @@ export function createThreeRenderer({ canvas }) {
   summitLight.position.z = 38;
   summitCelebration.add(summitLight);
   summitCelebration.visible = false;
-  scene.add(routeLine, player, staminaHalo, dangerHalo, probe, rope, traj, aim, reach, aimHead, aimEnd, aimCore, aimParticles, summitCelebration);
+  scene.add(routeLine, player, staminaHalo, dangerHalo, probe, rope, traj, aim, reach, aimHead, aimEnd, aimCore, aimParticles, counterwindField, summitCelebration);
 
   const diegeticEffects = createDiegeticEffects({ scene });
   let routeKey = "";
@@ -317,6 +325,35 @@ export function createThreeRenderer({ canvas }) {
     aimParticles.material.opacity = 0.35 + modeBoost * 0.42 + pulse * 0.16;
   }
 
+  function updateCounterwindField(snapshot, time) {
+    const opening = snapshot.route?.openingPattern;
+    const ledges = snapshot.route?.ledges ?? [];
+    const currentIndex = Math.max(0, ledges.findIndex((ledge) => ledge.id === snapshot.currentAnchorId));
+    const visible = Boolean(opening && (snapshot.sectorTransition?.phase === "opening" || currentIndex <= num(opening.endIndex, 4)));
+    counterwindField.visible = visible;
+    if (!visible) return;
+    const direction = num(snapshot.wind?.direction, opening.windDirection ?? -1) < 0 ? -1 : 1;
+    const centerY = num(snapshot.camera?.y, snapshot.player?.y);
+    const span = 132;
+    for (let i = 0; i < windSegmentCount; i += 1) {
+      const band = ((i * 47 + time * 86) % 620) - 310;
+      const phase = time * 2.8 + i * 1.73;
+      const startX = -direction * (206 + Math.sin(phase) * 26);
+      const startY = centerY + band + Math.sin(phase * 1.4) * 12;
+      const endX = startX + direction * (span + (i % 4) * 14);
+      const endY = startY + Math.cos(phase) * 18;
+      const offset = i * 6;
+      windPositions[offset] = startX;
+      windPositions[offset + 1] = startY;
+      windPositions[offset + 2] = 18 + (i % 3) * 5;
+      windPositions[offset + 3] = endX;
+      windPositions[offset + 4] = endY;
+      windPositions[offset + 5] = 18 + (i % 3) * 5;
+    }
+    windGeometry.attributes.position.needsUpdate = true;
+    windMaterial.opacity = 0.25 + (0.5 + 0.5 * Math.sin(time * 5.2)) * 0.22;
+  }
+
   function rebuild(snapshot) {
     routeKey = `${snapshot.levelId}:${snapshot.sector}:${snapshot.route?.ledges?.length ?? 0}`;
     dispose(world); dispose(ledges); dispose(beacons); world.clear(); ledges.clear(); beacons.clear(); ledgeMap.clear();
@@ -374,16 +411,24 @@ export function createThreeRenderer({ canvas }) {
     resize();
     const time = performance.now() / 1000;
     const key = `${snapshot.levelId}:${snapshot.sector}:${snapshot.route?.ledges?.length ?? 0}`;
-    if (key !== routeKey) rebuild(snapshot);
+    if (key !== routeKey) {
+      rebuild(snapshot);
+      if (snapshot.sectorTransition?.phase === "opening") {
+        presentedCameraY = snapshot.camera?.y ?? 0;
+        presentedCameraZ = snapshot.camera?.z ?? 244;
+      }
+    }
     const trauma = clamp01(snapshot.camera?.trauma ?? 0);
     const summit = snapshot.route?.ledges?.find((ledge) => ledge.type === "summit");
-    const targetCameraY = snapshot.completed && summit ? summit.y - 42 : snapshot.camera?.y ?? 0;
-    const targetCameraZ = snapshot.completed ? Math.max(272, snapshot.camera?.z ?? 210) : snapshot.camera?.z ?? 210;
+    const openingReveal = snapshot.sectorTransition?.phase === "opening";
+    const targetCameraY = openingReveal ? 242 : snapshot.completed && summit ? summit.y - 42 : snapshot.camera?.y ?? 0;
+    const targetCameraZ = openingReveal ? 500 : snapshot.completed ? Math.max(272, snapshot.camera?.z ?? 210) : snapshot.camera?.z ?? 210;
     presentedCameraY = presentedCameraY == null ? targetCameraY : presentedCameraY + (targetCameraY - presentedCameraY) * (snapshot.completed ? 0.065 : 0.24);
     presentedCameraZ = presentedCameraZ == null ? targetCameraZ : presentedCameraZ + (targetCameraZ - presentedCameraZ) * 0.08;
     camera.position.set((snapshot.camera?.x ?? 0) + Math.sin(time * 53) * trauma * 8, presentedCameraY + Math.cos(time * 47) * trauma * 6, presentedCameraZ);
     camera.lookAt(0, presentedCameraY, 0);
     updateParallax(snapshot, time);
+    updateCounterwindField(snapshot, time);
 
     const staminaPct = Math.max(0, Math.min(1, (snapshot.stamina ?? 0) / Math.max(1, snapshot.constants?.maxStamina ?? 100)));
     for (const [id, g] of ledgeMap) {
@@ -401,7 +446,7 @@ export function createThreeRenderer({ canvas }) {
         : 0.18 + Math.sin(time * 4.5 + beam.userData.sourceY) * 0.1;
       beam.rotation.y += beam.userData.type === "summit" ? 0.003 : 0.009;
     }
-    summitCelebration.visible = Boolean(snapshot.completed && summit);
+    summitCelebration.visible = Boolean(summit && (snapshot.completed || ["broadcast", "handshake"].includes(snapshot.sectorTransition?.phase)));
     if (summitCelebration.visible) {
       const pulse = 0.5 + 0.5 * Math.sin(time * 5.5);
       celebrationRings.forEach((ring, index) => {

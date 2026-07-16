@@ -51,6 +51,7 @@ export function startLoop({ session, input, renderer, hud, synth }) {
     tick: (dt = 1 / 60, command = {}) => tick(dt, command),
     restart: () => session.restart(),
     advanceSector: () => session.advanceSector(),
+    beginSectorTransition: () => session.beginSectorTransition?.(),
     stop() { running = false; },
     start() { if (running) return; running = true; last = performance.now(); requestAnimationFrame(frame); }
   };
