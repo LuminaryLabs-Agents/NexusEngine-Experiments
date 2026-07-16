@@ -2,7 +2,7 @@
 
 Packet: `2026-07-16-next-ledge-post-rejoin-consequence`
 
-Status: validated; publication receipt pending
+Status: validated and published
 
 Experiment: `experiments/next-ledge/`
 
@@ -119,9 +119,9 @@ Matched fresh-browser sample: `950 ms` warm-up followed by a `3.4 s` active keyb
 
 ## Publication
 
-- Production commit: recorded by the receipt commit after validation.
-- ProtoKits push: not required; repository remained clean and synchronized.
-- Experiments push: pending the production and receipt commits.
+- Production commit: `a9c1a94570100cf9f6a640dfbafe44f7de713a2e`.
+- ProtoKits push: not required; `main`, `HEAD`, and `origin/main` remained clean and synchronized at `04d34f049f58ae359cf71d43466c429dac2a6d08`.
+- Experiments push: production commit published to `origin/main` after a second fetch proved the remote still matched the starting commit.
 
 ## Exact Next Playable Improvement
 
