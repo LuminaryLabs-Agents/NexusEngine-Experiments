@@ -68,10 +68,10 @@
         "generic-traversal-feedback-kit",
         "generic-route-cargo-extraction-kit"
       ],
-      "feelAverageBefore": 9.0,
+      "feelAverageBefore": 8.0,
       "feelAverageAfter": 9.7,
-      "validation": "Playwright completed the four-beat counterwind pressure/recovery loop through actual input and ticks after runtime sector entry, proved pressure 14 to 35 to 64 to 0, failure/recovery, stable settled entity counts, closed diagnostics, same-load performance improvement, Human View before/peak/rest/final, and a zero-message console",
-      "packetId": "2026-07-16-next-ledge-counterwind-pressure-crescendo"
+      "validation": "Playwright completed the four-beat counterwind approach and both post-rest branches through actual session input: Shelter Rise rejoined at 0 pressure with 3.5 cargo, Signal Cut rejoined at 45 retained pressure with 4.25 cargo, failure reached the 100-pressure abort, retry restored a live zero-pressure state, Advanced closed after inspection, settled scene/DOM/descriptor counts stayed bounded, Human View passed, and the console remained empty.",
+      "packetId": "2026-07-16-next-ledge-post-rest-route-choice"
     }
   ],
   "experiments": []

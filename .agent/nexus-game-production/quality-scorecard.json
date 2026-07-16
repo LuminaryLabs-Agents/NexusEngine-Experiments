@@ -25,8 +25,8 @@
     {
       "id": "next-ledge-grapple",
       "lifecycleStatus": "active-legacy-baseline",
-      "score": 97,
-      "lastImprovedAt": "2026-07-16T13:16:31-04:00",
+      "score": 98,
+      "lastImprovedAt": "2026-07-16T14:32:32-04:00",
       "feelScores": {
         "responsiveness": 9,
         "predictability": 9,
@@ -37,7 +37,7 @@
         "replayDesire": 10,
         "average": 9.7
       },
-      "nextFeelProblem": "Counterwind Rest needs a short visible follow-through choice between safe recovery and a higher-pressure signal shortcut."
+      "nextFeelProblem": "Carry the chosen safe-versus-shortcut consequence through the first post-rejoin restore without adding a control or state owner."
     },
     {
       "id": "rogue-lite-hellscape-siege",

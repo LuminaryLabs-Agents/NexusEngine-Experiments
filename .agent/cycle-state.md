@@ -1,5 +1,11 @@
 # Cycle State
 
+## 2026-07-16 Post-Rest Signal Fork Refinement
+
+`experiments/next-ledge/` now turns Counterwind Rest into an authored route decision. Mint Shelter Rise restores the climber into a protected ascent; amber Signal Cut grants a 1.75-unit signal cache while adding 46 fall pressure; both paths converge at Fork Relay and keep route/cargo progress aligned. The preset owns authored content, the session owns the single choice state, existing route-progress/resource/pressure facades own deterministic mutations, and renderer/HUD/audio consume the resulting descriptors and events. Advanced diagnostics remain closed, Human View now keeps the HUD above WebGL foreground layers, both routes plus failure/retry passed Playwright, and settled entity counts remain bounded.
+
+Exact next playable unit: carry the chosen route consequence through the first post-rejoin restore with one protected grapple window after Shelter Rise versus a visible retained-pressure vent demand after Signal Cut, using the existing recovery and pressure owners.
+
 ## 2026-07-16 Counterwind Pressure Crescendo Refinement
 
 `experiments/next-ledge/` now forecasts sector-two counterwind before commitment, intensifies deterministic gust presentation and generic fall pressure through Counterwind Gate, Leeward Cradle, and Reverse Catch, then vents the pressure through a distinct mint recovery state at Counterwind Rest. Authored tuning flows through preset descriptors, the existing route-cargo pressure facade remains the only pressure owner, stale aim assist clears on latch, diagnostics stay closed, and the bounded opening passed input-driven Playwright, Human View, console, cleanup, and same-load performance proof.
