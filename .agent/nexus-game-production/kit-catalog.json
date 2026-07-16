@@ -4,13 +4,13 @@
   "bootstrapTarget": 100,
   "epochTarget": 10,
   "counts": {
-    "acceptedBootstrap": 40,
-    "acceptedCurrentEpoch": 40,
-    "acceptedLifetime": 40,
+    "acceptedBootstrap": 50,
+    "acceptedCurrentEpoch": 50,
+    "acceptedLifetime": 50,
     "implementedBootstrap": 0,
     "implementedCurrentEpoch": 0,
     "implementedLifetime": 0,
-    "rejectedLifetime": 24
+    "rejectedLifetime": 30
   },
   "status": "bootstrap-catalog-in-progress",
   "requiredFields": [
@@ -1045,6 +1045,256 @@
       "idempotencyRule": "Collection, seal, aliquot, exposure, and contamination IDs commit once against expected specimen revisions, lineage is append-only, and readiness events emit only on classification changes.",
       "duplicateAndMergeRisk": "Investigation owns cases, evidence, hypotheses, and conclusions, while perishability storage owns general batch freshness. Neither owns physical specimen collection condition, seals, aliquot lineage, preservation exposure, contamination, and analysis readiness; live inventory found no specimen owner.",
       "promotionPotential": "Experimental until branched aliquot lineage, seal failures, snapshot migration, deterministic replay, and biological plus geological profiles pass."
+    },
+    {
+      "id": "bootstrap-kit-041",
+      "name": "cryosphere-mass-balance-domain-kit",
+      "purpose": "Resolve authored snow, ice, and firn reservoirs through explicit accumulation, ablation, sublimation, compaction, calving, and meltwater-release facts while preserving a deterministic regional mass budget.",
+      "coreMapping": {
+        "configures": ["core-simulation-kit", "core-data-kit"],
+        "composesWith": ["core-world-domain", "core-spatial-kit"],
+        "nonDuplicatedMeaning": "Core owns resources, ticks, world cells, and spatial facts; this domain owns cryosphere reservoir classes, accumulation and ablation accounting, phase fractions, equilibrium condition, calving, and meltwater-release meaning."
+      },
+      "classification": "simulation-domain",
+      "ownership": ["authored cryosphere-zone profiles", "snow, firn, and ice mass reservoirs", "accumulation, ablation, sublimation, and compaction history", "calving and meltwater-release ledger", "regional equilibrium and persistence state"],
+      "exclusions": ["weather generation", "temperature or thermal-network ownership", "avalanche risk", "terrain geometry", "glacier rigid-body motion", "fluid simulation", "water rendering", "real climate forecasting"],
+      "actions": ["register cryosphere zone", "record accumulation", "record ablation", "apply compaction", "record calving", "release meltwater", "advance balance", "reset cryosphere"],
+      "resourcesAndState": ["cryosphereBalance.profiles", "cryosphereBalance.zones", "cryosphereBalance.flows", "cryosphereBalance.releases", "cryosphereBalance.tick"],
+      "events": ["cryosphere.accumulationRecorded", "cryosphere.ablationRecorded", "cryosphere.phaseChanged", "cryosphere.calved", "cryosphere.meltwaterReleased", "cryosphere.equilibriumChanged", "cryosphere.commandRejected", "cryosphere.reset"],
+      "methods": ["registerZone(definition)", "recordAccumulation(fact)", "recordAblation(fact)", "applyCompaction(command)", "recordCalving(fact)", "releaseMeltwater(command)", "advance(ticks)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned cryosphere mass-balance snapshot", "zone reservoir and phase descriptors", "accumulation and ablation flow descriptors", "calving, runoff-release, and equilibrium summaries"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable zone and observation IDs", "authored reservoir and transition profiles", "explicit precipitation, temperature, or fracture observations from adjacent domains"],
+      "expectedCompositions": ["flood-inundation-domain-kit", "aquifer-balance-domain-kit", "thermal-energy-network-domain-kit", "habitat-suitability-domain-kit"],
+      "plausibleUses": ["manage an alpine watershed as a shrinking glacier changes seasonal runoff", "stabilize an alien ice shelf whose calving threatens a research habitat"],
+      "experimentProof": "A seeded Frostvault Observatory route must replay accumulation, ablation, compaction, calving, fixed ticks, and release commands into identical snow, firn, ice, runoff, equilibrium, and rejection state across alpine and alien-ice profiles.",
+      "idempotencyRule": "Observation, compaction, calving, and release command IDs commit once, mass transfers resolve in stable zone and reservoir order, and repeated balance resolution at one tick cannot move mass twice.",
+      "duplicateAndMergeRisk": "The documented avalanche candidate owns snowpack trigger risk and terrain erosion owns surface reshaping. Neither owns conserved snow, firn, and ice reservoirs, accumulation and ablation accounting, calving, meltwater release, and cryosphere equilibrium; live inventory found no cryosphere mass-balance owner.",
+      "promotionPotential": "Hold until conservation tolerances, snapshot migration, long fixed-tick replay, calving and runoff coupling, and two cryosphere profiles pass."
+    },
+    {
+      "id": "bootstrap-kit-042",
+      "name": "wastewater-treatment-train-domain-kit",
+      "purpose": "Route authored wastewater batches through ordered treatment stages, constituent-load removal and transfer, bypasses, recirculation, residual production, and effluent classification without owning facility hardware or fluid physics.",
+      "coreMapping": {
+        "configures": ["core-simulation-kit", "core-data-kit", "core-policy-kit"],
+        "composesWith": ["core-world-domain", "core-scene-kit"],
+        "nonDuplicatedMeaning": "Core owns resources, deterministic resolution, ledgers, and guards; this domain owns treatment-train stage order, influent constituent load, removal and transfer efficiency, bypass, residual, and effluent-class meaning."
+      },
+      "classification": "process-domain",
+      "ownership": ["authored treatment-train profiles", "influent batch and constituent-load state", "ordered stage processing and recirculation", "stage removal, transfer, and bypass history", "residual and sludge outputs", "effluent classification and discharge readiness"],
+      "exclusions": ["potable-water distribution", "pipe pressure or pump hardware", "fluid dynamics", "molecular chemistry", "generic manufacturing work orders", "contaminant world propagation", "facility rendering", "real-world safety certification"],
+      "actions": ["register treatment train", "admit influent batch", "route batch to stage", "apply stage result", "recirculate batch", "bypass stage", "classify effluent", "reset treatment"],
+      "resourcesAndState": ["wastewaterTreatment.trains", "wastewaterTreatment.batches", "wastewaterTreatment.stageRuns", "wastewaterTreatment.residuals", "wastewaterTreatment.effluent"],
+      "events": ["wastewater.batchAdmitted", "wastewater.stageStarted", "wastewater.stageCompleted", "wastewater.recirculated", "wastewater.bypassed", "wastewater.residualCreated", "wastewater.effluentClassified", "wastewater.commandRejected", "wastewater.reset"],
+      "methods": ["registerTrain(definition)", "admitBatch(command)", "routeToStage(command)", "applyStageResult(fact)", "recirculate(command)", "bypass(command)", "classifyEffluent(batchId)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned treatment-train snapshot", "influent and constituent-load descriptors", "stage removal, transfer, bypass, and recirculation descriptors", "residual and effluent-readiness summaries"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable train, stage, batch, and constituent IDs", "authored removal and discharge profiles", "explicit energy, chemistry, or contamination observations from adjacent domains"],
+      "expectedCompositions": ["environmental-contamination-domain-kit", "material-recovery-stream-domain-kit", "chemical-reaction-batch-domain-kit", "power-distribution-domain-kit"],
+      "plausibleUses": ["restore a flooded settlement by bringing an overloaded treatment plant back through staged operation", "purify waste streams in a closed orbital habitat while recovering useful residuals"],
+      "experimentProof": "A seeded Underworks Renewal route must replay admissions, stage results, bypasses, recirculation, and classification into identical constituent loads, residuals, effluent classes, discharge readiness, and rejections across municipal and closed-habitat trains.",
+      "idempotencyRule": "Admission, route, stage-result, recirculation, bypass, and classification command IDs commit once, stage order is stable, and terminal batches reject further processing until explicitly reopened or reset.",
+      "duplicateAndMergeRisk": "Potable-water service owns treated supply delivery, contamination owns releases and cleanup, and semantic manufacturing owns generic processing. None owns influent-to-effluent treatment trains, constituent removal and transfer, recirculation, bypass, residuals, and discharge classification; live inventory found no wastewater owner.",
+      "promotionPotential": "Experimental until conservation checks, branched and recirculating trains, snapshot restore, deterministic replay, and two treatment contexts pass."
+    },
+    {
+      "id": "bootstrap-kit-043",
+      "name": "material-corrosion-domain-kit",
+      "purpose": "Track authored material surfaces and components through corrosive exposure, protective-layer depletion, pitting or section loss, inspection uncertainty, threshold crossings, and stabilization facts.",
+      "coreMapping": {
+        "configures": ["core-simulation-kit", "core-data-kit"],
+        "composesWith": ["core-scene-kit", "core-physics-kit", "core-diagnostics-kit"],
+        "nonDuplicatedMeaning": "Core owns scene identity, normalized physics observations, telemetry, resources, and thresholds; this domain owns corrosion mechanisms, exposure response, protective-layer depletion, material loss, inspection confidence, and corrosion-condition meaning."
+      },
+      "classification": "degradation-domain",
+      "ownership": ["authored material and corrosion-environment profiles", "component exposure history", "protective coating and inhibitor state", "pitting, uniform loss, and section-loss state", "inspection confidence and last-observed condition", "stabilized and threshold-crossing history"],
+      "exclusions": ["support-graph failure propagation", "generic item durability", "repair work orders", "chemistry simulation", "fluid or weather generation", "rust textures or shader effects", "asset replacement", "real engineering certification"],
+      "actions": ["register material profile", "register component", "record corrosive exposure", "apply protection", "record inspection", "advance degradation", "stabilize component", "reset corrosion"],
+      "resourcesAndState": ["materialCorrosion.materials", "materialCorrosion.components", "materialCorrosion.exposures", "materialCorrosion.protections", "materialCorrosion.inspections"],
+      "events": ["corrosion.exposureRecorded", "corrosion.protectionChanged", "corrosion.materialLost", "corrosion.thresholdCrossed", "corrosion.inspected", "corrosion.stabilized", "corrosion.commandRejected", "corrosion.reset"],
+      "methods": ["registerMaterial(definition)", "registerComponent(definition)", "recordExposure(fact)", "applyProtection(command)", "recordInspection(fact)", "advance(ticks)", "stabilize(command)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned material-corrosion snapshot", "exposure and protection descriptors", "pitting and section-loss descriptors", "inspection-confidence, threshold, and stabilization summaries"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable material, component, exposure, and inspection IDs", "authored corrosion and protection profiles", "explicit environment and load observations"],
+      "expectedCompositions": ["structural-support-network-domain-kit", "instrument-calibration-domain-kit", "thermal-energy-network-domain-kit", "specimen-integrity-domain-kit"],
+      "plausibleUses": ["inspect and protect a salt-battered harbor before support margins collapse", "keep a subterranean refinery operating through acidic vapor exposure"],
+      "experimentProof": "A seeded Saltworks Keep route must replay exposures, coating applications, inspections, fixed ticks, and stabilization commands into identical protection loss, corrosion depth, section loss, confidence, thresholds, and rejections across marine and industrial profiles.",
+      "idempotencyRule": "Exposure, protection, inspection, and stabilization IDs commit once against expected revisions, degradation resolves in stable component order, and an observation cannot consume protection twice.",
+      "duplicateAndMergeRisk": "Structural support owns topology and load-driven failure, while existing rust and aged-metal entries are presentation-only. Neither owns corrosive exposure, protection depletion, pitting, section loss, inspection confidence, and stabilization state; live inventory found no behavioral corrosion owner.",
+      "promotionPotential": "Hold until coupled exposure profiles, inspection uncertainty, snapshot migration, long replay, and two materially different corrosion mechanisms pass."
+    },
+    {
+      "id": "bootstrap-kit-044",
+      "name": "orbital-conjunction-risk-domain-kit",
+      "purpose": "Screen explicit tracked-object observations into deterministic close-approach candidates, uncertainty envelopes, severity classes, avoidance decisions, and resolved conjunction outcomes without integrating trajectories.",
+      "coreMapping": {
+        "configures": ["core-data-kit", "core-simulation-kit", "core-policy-kit"],
+        "composesWith": ["core-motion-kit", "core-physics-kit", "core-spatial-kit"],
+        "nonDuplicatedMeaning": "Core owns trajectories, normalized frames, spatial facts, resources, and guards; this domain owns conjunction screening, closest-approach interpretation, uncertainty growth, risk classification, avoidance commitment, and outcome meaning over supplied observations."
+      },
+      "classification": "risk-domain",
+      "ownership": ["authored conjunction-screening profiles", "tracked-object observation revisions", "candidate-pair screening state", "closest-approach and uncertainty records", "risk classifications and watch status", "avoidance decisions and resolved outcomes"],
+      "exclusions": ["orbit propagation", "trajectory generation", "collision resolution", "sensor hardware", "radar signal processing", "vehicle control", "space rendering", "real collision-probability claims"],
+      "actions": ["register screening profile", "record tracked-object observation", "screen candidate pairs", "update uncertainty", "classify conjunction", "commit avoidance decision", "resolve outcome", "reset screening"],
+      "resourcesAndState": ["orbitalConjunction.profiles", "orbitalConjunction.objects", "orbitalConjunction.candidates", "orbitalConjunction.decisions", "orbitalConjunction.outcomes"],
+      "events": ["conjunction.observationRecorded", "conjunction.candidateOpened", "conjunction.riskChanged", "conjunction.watchEscalated", "conjunction.avoidanceCommitted", "conjunction.resolved", "conjunction.commandRejected", "conjunction.reset"],
+      "methods": ["registerProfile(definition)", "recordObservation(fact)", "screen(command)", "updateUncertainty(fact)", "classify(candidateId)", "commitAvoidance(command)", "resolve(fact)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned conjunction-risk snapshot", "tracked-object revision descriptors", "closest-approach and uncertainty-envelope descriptors", "risk, watch, avoidance, and outcome summaries"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable object, observation, candidate, and decision IDs", "explicit position, velocity, covariance, or miss-distance observations", "authored screening and severity profiles"],
+      "expectedCompositions": ["orbital-transfer-window-domain-kit", "power-distribution-domain-kit", "supply-chain-fulfillment-domain-kit", "instrument-calibration-domain-kit"],
+      "plausibleUses": ["protect a crowded salvage orbit by prioritizing debris conjunctions and scarce avoidance burns", "keep a moon relay constellation intact during a cascading debris emergency"],
+      "experimentProof": "A seeded Debris Shepherd route must replay observation revisions, screening, uncertainty updates, classifications, and avoidance commitments into identical candidates, risk classes, watch transitions, outcomes, and rejections across relay and salvage orbits.",
+      "idempotencyRule": "Observation, screen, uncertainty, decision, and outcome IDs commit once, candidate pairs use a stable canonical order, and resolved conjunctions cannot reopen without a newer observation revision.",
+      "duplicateAndMergeRisk": "Core Motion and Physics own trajectories and frames, while orbital-transfer-window owns maneuver opportunities and arrival windows. Neither owns pairwise conjunction screening, uncertainty envelopes, risk classes, avoidance commitments, and resolved close-approach outcomes; live inventory found no conjunction owner.",
+      "promotionPotential": "Experimental until large-catalog screening, uncertainty replay, snapshot migration, avoidance coupling, and two orbital configurations pass."
+    },
+    {
+      "id": "bootstrap-kit-045",
+      "name": "celestial-event-visibility-domain-kit",
+      "purpose": "Evaluate authored celestial targets and events against explicit observer, illumination, occlusion, atmosphere, and instrument-readiness facts to open, complete, miss, or invalidate observation opportunities.",
+      "coreMapping": {
+        "configures": ["core-data-kit", "core-simulation-kit"],
+        "composesWith": ["core-spatial-kit", "core-capture-domain", "core-world-domain"],
+        "nonDuplicatedMeaning": "Core owns spatial facts, capture jobs, world coordination, timers, and ledgers; this domain owns celestial-event visibility conditions, observer-site eligibility, observation-opportunity state, acquisition completeness, and missed-event meaning."
+      },
+      "classification": "observation-domain",
+      "ownership": ["authored celestial target and event profiles", "observer-site eligibility profiles", "illumination, occlusion, atmosphere, and readiness observations", "open and invalidated visibility opportunities", "acquisition progress and completeness", "captured, missed, and expired event history"],
+      "exclusions": ["ephemeris or orbit integration", "orbital transfer planning", "capture rendering or encoding", "telescope hardware", "weather generation", "asset imagery", "UI charts", "real astronomical prediction"],
+      "actions": ["register celestial target", "register observer site", "record visibility observation", "evaluate event opportunity", "start acquisition", "record acquisition result", "close event", "reset observations"],
+      "resourcesAndState": ["celestialVisibility.targets", "celestialVisibility.sites", "celestialVisibility.observations", "celestialVisibility.opportunities", "celestialVisibility.acquisitions"],
+      "events": ["celestial.visibilityRecorded", "celestial.opportunityOpened", "celestial.opportunityInvalidated", "celestial.acquisitionStarted", "celestial.acquisitionProgressed", "celestial.eventCaptured", "celestial.eventMissed", "celestial.commandRejected", "celestial.reset"],
+      "methods": ["registerTarget(definition)", "registerSite(definition)", "recordVisibility(fact)", "evaluateOpportunity(command)", "startAcquisition(command)", "recordAcquisition(fact)", "closeEvent(command)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned celestial-visibility snapshot", "target, event, and observer-site descriptors", "visibility-condition and opportunity descriptors", "acquisition completeness and captured-or-missed summaries"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable target, event, site, observation, and acquisition IDs", "authored visibility and completion profiles", "explicit geometry, illumination, atmosphere, and instrument-readiness observations"],
+      "expectedCompositions": ["instrument-calibration-domain-kit", "navigation-knowledge-domain-kit", "seasonal-phenology-domain-kit", "circadian-entrainment-domain-kit"],
+      "plausibleUses": ["coordinate mountaintop observatories to capture a brief occultation through changing cloud gaps", "complete a ritual star survey from ruins with different horizons and damaged instruments"],
+      "experimentProof": "A seeded Night Archive route must replay visibility facts, opportunity evaluations, acquisition results, and closures into identical open windows, invalidations, completeness, captures, misses, expiries, and rejections across scientific and ritual profiles.",
+      "idempotencyRule": "Visibility, opportunity, acquisition, and closure command IDs commit once against event revisions, acquisition progress is monotonic per event and site, and terminal events cannot capture or miss twice.",
+      "duplicateAndMergeRisk": "Orbital-transfer-window owns maneuver opportunities from ephemeris facts, and Core Capture owns provider-neutral capture jobs. Neither owns celestial target visibility, observer-site eligibility, observation opportunity, acquisition completeness, and missed-event semantics; live inventory found no celestial visibility owner.",
+      "promotionPotential": "Hold until multi-site event replay, invalidation and recovery, snapshot migration, Core Capture composition, and two observation fantasies pass."
+    },
+    {
+      "id": "bootstrap-kit-046",
+      "name": "fermentation-culture-domain-kit",
+      "purpose": "Manage authored microbial cultures through inoculation, viability, substrate conversion, growth phases, contamination challenge, maturation, harvest, dormancy, and collapse using explicit fixed ticks.",
+      "coreMapping": {
+        "configures": ["core-simulation-kit", "core-data-kit"],
+        "composesWith": ["core-agent-kit", "core-world-domain"],
+        "nonDuplicatedMeaning": "Core owns resources, timers, deterministic streams, and observations; this domain owns culture inoculation, viability, growth phase, substrate conversion, contamination response, maturation, dormancy, harvest, and collapse meaning."
+      },
+      "classification": "biological-process-domain",
+      "ownership": ["authored culture and fermentation profiles", "culture inoculation and lineage", "viability and population phase", "substrate and product conversion state", "contamination challenge and competition state", "maturation, dormancy, harvest, and collapse history"],
+      "exclusions": ["individual microbe simulation", "pathogen transmission", "molecular reaction stoichiometry", "crafting inventory", "factory work orders", "vessel hardware", "food presentation", "real fermentation guidance"],
+      "actions": ["register culture profile", "inoculate batch", "record environment observation", "add substrate fact", "apply contamination challenge", "advance culture", "harvest product", "enter dormancy", "reset cultures"],
+      "resourcesAndState": ["fermentationCulture.profiles", "fermentationCulture.cultures", "fermentationCulture.substrates", "fermentationCulture.products", "fermentationCulture.tick"],
+      "events": ["fermentation.inoculated", "fermentation.viabilityChanged", "fermentation.phaseChanged", "fermentation.substrateConverted", "fermentation.contaminationChanged", "fermentation.matured", "fermentation.harvested", "fermentation.collapsed", "fermentation.commandRejected", "fermentation.reset"],
+      "methods": ["registerProfile(definition)", "inoculate(command)", "recordEnvironment(fact)", "addSubstrate(fact)", "applyContamination(fact)", "advance(ticks)", "harvest(command)", "enterDormancy(command)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned fermentation-culture snapshot", "culture lineage, viability, and phase descriptors", "substrate-conversion and product descriptors", "contamination, maturation, harvest, dormancy, and collapse summaries"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable profile, culture, batch, observation, and harvest IDs", "authored growth and conversion profiles", "explicit thermal, atmosphere, substrate, and contamination facts"],
+      "expectedCompositions": ["chemical-reaction-batch-domain-kit", "perishability-storage-domain-kit", "environmental-contamination-domain-kit", "thermal-energy-network-domain-kit"],
+      "plausibleUses": ["keep a settlement's starter cultures alive while rebuilding a contaminated food cellar", "mature alien symbiont cultures that produce habitat scrubber media"],
+      "experimentProof": "A seeded Sporehouse Covenant route must replay inoculation, substrate, environment, contamination, fixed ticks, dormancy, and harvest commands into identical viability, phases, conversion, products, maturation, collapse, and rejections across food and alien-symbiont profiles.",
+      "idempotencyRule": "Inoculation, observation, substrate, contamination, dormancy, and harvest IDs commit once, conversion resolves in stable culture and substrate order, and harvested mass cannot be claimed twice.",
+      "duplicateAndMergeRisk": "Chemical-reaction batches own stoichiometric reagent limits and crafting owns recipes and inventory. Neither owns living culture lineage, viability, growth phases, substrate conversion over time, contamination competition, maturation, dormancy, harvest, and collapse; live inventory found no fermentation owner.",
+      "promotionPotential": "Experimental until conservation tolerance, competing cultures, snapshot migration, long replay, and two unrelated culture profiles pass."
+    },
+    {
+      "id": "bootstrap-kit-047",
+      "name": "archaeological-stratigraphy-domain-kit",
+      "purpose": "Represent authored stratigraphic units and finds through deposition, cut, fill, containment, superposition, disturbance, mixing, and deterministic relative-chronology resolution.",
+      "coreMapping": {
+        "configures": ["core-data-kit", "core-policy-kit"],
+        "composesWith": ["core-scene-kit", "core-world-domain", "core-spatial-kit"],
+        "nonDuplicatedMeaning": "Core owns scene identity, world cells, spatial facts, graphs, ledgers, and validation; this domain owns stratigraphic-unit relationships, contextual association, disturbance and mixing, consistency checks, and relative chronology meaning."
+      },
+      "classification": "chronology-domain",
+      "ownership": ["authored stratigraphic-unit profiles", "deposition, cut, fill, and containment relationships", "find-to-context associations", "superposition and relative-order graph", "disturbance and mixing history", "chronology consistency and unresolved-conflict state"],
+      "exclusions": ["terrain excavation physics", "scene geometry generation", "artifact custody or provenance", "investigation hypotheses", "absolute dating algorithms", "asset classification", "excavation UI", "real archaeological conclusions"],
+      "actions": ["register stratigraphic unit", "record relationship", "associate find", "record disturbance", "resolve relative chronology", "invalidate observation", "close context", "reset stratigraphy"],
+      "resourcesAndState": ["archaeologicalStratigraphy.units", "archaeologicalStratigraphy.relationships", "archaeologicalStratigraphy.finds", "archaeologicalStratigraphy.disturbances", "archaeologicalStratigraphy.chronology"],
+      "events": ["stratigraphy.unitRegistered", "stratigraphy.relationshipRecorded", "stratigraphy.findAssociated", "stratigraphy.disturbed", "stratigraphy.orderResolved", "stratigraphy.conflictDetected", "stratigraphy.contextClosed", "stratigraphy.commandRejected", "stratigraphy.reset"],
+      "methods": ["registerUnit(definition)", "recordRelationship(fact)", "associateFind(fact)", "recordDisturbance(fact)", "resolveChronology(contextId)", "invalidateObservation(command)", "closeContext(command)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned stratigraphy snapshot", "unit and relationship descriptors", "find-context and disturbance descriptors", "relative-order, consistency, and unresolved-conflict summaries"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable context, unit, relationship, find, and observation IDs", "authored stratigraphic relation vocabulary", "explicit scene, spatial, and field observations"],
+      "expectedCompositions": ["specimen-integrity-domain-kit", "cultural-artifact-conservation-domain-kit", "navigation-knowledge-domain-kit", "instrument-calibration-domain-kit"],
+      "plausibleUses": ["reconstruct the occupation sequence of a flooded ruin without destroying context", "decode layered alien deposits whose later cuts conceal an older machine complex"],
+      "experimentProof": "A seeded Buried Observatory route must replay unit registration, relations, finds, disturbances, invalidations, and closure into identical relative order, conflicts, mixed contexts, unresolved links, and rejections across human-ruin and alien-deposit profiles.",
+      "idempotencyRule": "Unit, relationship, find, disturbance, invalidation, and closure IDs commit once, graph resolution uses stable IDs and relation precedence, and closed contexts reject mutation until reset or explicit revision.",
+      "duplicateAndMergeRisk": "Investigation owns cases, evidence, hypotheses, and conclusions, while Core Scene owns object identity and graphs. Neither owns deposition, cut, fill, containment, superposition, disturbance, mixing, and relative stratigraphic chronology; live inventory found no stratigraphy owner.",
+      "promotionPotential": "Hold until cyclic-conflict diagnostics, disturbed-context replay, snapshot migration, and two culturally unrelated stratigraphic datasets pass."
+    },
+    {
+      "id": "bootstrap-kit-048",
+      "name": "cultural-artifact-conservation-domain-kit",
+      "purpose": "Track authored cultural objects through material-specific condition observations, environmental exposure, treatment compatibility, reversibility, intervention history, stabilization, and display or storage readiness.",
+      "coreMapping": {
+        "configures": ["core-data-kit", "core-policy-kit", "core-simulation-kit"],
+        "composesWith": ["core-object-fidelity-domain", "core-scene-kit"],
+        "nonDuplicatedMeaning": "Core owns object fidelity, scene identity, ledgers, guards, and resource primitives; this domain owns cultural-object condition facets, conservation treatment compatibility, reversibility, intervention history, stabilization, and readiness meaning."
+      },
+      "classification": "preservation-domain",
+      "ownership": ["authored artifact and material profiles", "condition-facet observations and confidence", "environmental exposure history", "treatment compatibility and contraindications", "reversibility and intervention ledger", "stabilization, display, and storage readiness"],
+      "exclusions": ["infrastructure restoration", "generic item durability", "object authenticity or valuation", "legal custody", "specimen analysis readiness", "mesh or texture restoration", "museum UI", "real conservation advice"],
+      "actions": ["register artifact profile", "record condition observation", "record exposure", "propose treatment", "apply treatment", "reverse treatment", "evaluate readiness", "reset conservation"],
+      "resourcesAndState": ["artifactConservation.profiles", "artifactConservation.artifacts", "artifactConservation.observations", "artifactConservation.treatments", "artifactConservation.readiness"],
+      "events": ["conservation.conditionRecorded", "conservation.exposureRecorded", "conservation.treatmentProposed", "conservation.treatmentApplied", "conservation.treatmentReversed", "conservation.stabilized", "conservation.readinessChanged", "conservation.commandRejected", "conservation.reset"],
+      "methods": ["registerProfile(definition)", "recordCondition(fact)", "recordExposure(fact)", "proposeTreatment(command)", "applyTreatment(command)", "reverseTreatment(command)", "evaluateReadiness(artifactId)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned artifact-conservation snapshot", "material and condition-facet descriptors", "exposure, compatibility, and contraindication descriptors", "intervention, reversibility, stabilization, and readiness summaries"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable artifact, observation, treatment, and exposure IDs", "authored material and compatibility profiles", "explicit environment and instrument observations"],
+      "expectedCompositions": ["archaeological-stratigraphy-domain-kit", "instrument-calibration-domain-kit", "environmental-contamination-domain-kit", "perishability-storage-domain-kit"],
+      "plausibleUses": ["save a flooded museum collection by choosing reversible treatments under limited power", "stabilize recovered ceremonial machines without erasing their layered material history"],
+      "experimentProof": "A seeded Flooded Archive route must replay condition observations, exposures, treatment proposals, applications, reversals, and readiness evaluations into identical condition facets, incompatibilities, stabilization, readiness, and rejections across paper and composite-metal artifacts.",
+      "idempotencyRule": "Observation, exposure, proposal, treatment, reversal, and evaluation IDs commit once against expected artifact revisions, intervention history is append-only, and readiness events emit only on classification changes.",
+      "duplicateAndMergeRisk": "Existing restoration owns infrastructure diagnosis and commissioned work, and object fidelity owns alternate object forms. Neither owns cultural-object material condition, treatment compatibility, reversibility, intervention history, stabilization, and display or storage readiness; live inventory found no conservation owner.",
+      "promotionPotential": "Experimental until multi-material compatibility, reversible interventions, snapshot migration, deterministic replay, and two artifact classes pass."
+    },
+    {
+      "id": "bootstrap-kit-049",
+      "name": "circadian-entrainment-domain-kit",
+      "purpose": "Advance authored biological clock profiles through internal phase, explicit zeitgeber observations, entrainment, phase shifts, desynchronization, adaptation, and activity-readiness windows without owning fatigue or schedules.",
+      "coreMapping": {
+        "configures": ["core-simulation-kit", "core-data-kit"],
+        "composesWith": ["core-agent-kit", "core-world-domain"],
+        "nonDuplicatedMeaning": "Core owns timers, agents, deterministic state, and observations; this domain owns biological phase, zeitgeber response, entrainment strength, desynchronization, phase adaptation, and circadian readiness meaning."
+      },
+      "classification": "biological-rhythm-domain",
+      "ownership": ["authored biological clock profiles", "subject internal phase and cycle length", "zeitgeber observation history", "entrainment strength and phase offset", "desynchronization and adaptation state", "activity-readiness windows"],
+      "exclusions": ["wall-clock time", "weather or day-night rendering", "fatigue and survival-needs resources", "NPC schedules", "animation state", "medical outcomes", "UI clocks", "real chronobiology guidance"],
+      "actions": ["register clock profile", "register subject clock", "record zeitgeber", "apply phase-shift fact", "advance phase", "evaluate readiness", "adapt clock", "reset rhythms"],
+      "resourcesAndState": ["circadianEntrainment.profiles", "circadianEntrainment.subjects", "circadianEntrainment.zeitgebers", "circadianEntrainment.readiness", "circadianEntrainment.tick"],
+      "events": ["circadian.zeitgeberRecorded", "circadian.phaseAdvanced", "circadian.entrainmentChanged", "circadian.desynchronized", "circadian.readinessChanged", "circadian.adapted", "circadian.commandRejected", "circadian.reset"],
+      "methods": ["registerProfile(definition)", "registerSubject(definition)", "recordZeitgeber(fact)", "applyPhaseShift(fact)", "advance(ticks)", "evaluateReadiness(subjectId)", "adapt(command)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned circadian-entrainment snapshot", "subject phase and cycle descriptors", "zeitgeber, entrainment, and phase-offset descriptors", "desynchronization, adaptation, and readiness summaries"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable profile, subject, zeitgeber, and phase-shift IDs", "authored biological cycle and response profiles", "explicit light, temperature, meal, or social timing observations"],
+      "expectedCompositions": ["habitat-atmosphere-balance-domain-kit", "thermal-energy-network-domain-kit", "seasonal-phenology-domain-kit", "celestial-event-visibility-domain-kit"],
+      "plausibleUses": ["rotate a habitat crew through a long artificial day without losing synchronized activity windows", "guide nocturnal pollinators through a moonless seasonal shift"],
+      "experimentProof": "A seeded Longnight Habitat route must replay zeitgebers, phase shifts, fixed ticks, readiness checks, and adaptation commands into identical phase, offset, entrainment, desynchronization, readiness, and rejection state across human-shift and nocturnal-species profiles.",
+      "idempotencyRule": "Zeitgeber, phase-shift, readiness, and adaptation IDs commit once, phase advances only from explicit ticks in stable subject order, and readiness events emit only on window transitions.",
+      "duplicateAndMergeRisk": "Crew fatigue and actor-fatigue candidates own exertion and recovery, NPC schedules own planned activities, and phenology owns seasonal biological stages. None owns internal daily phase, zeitgeber entrainment, desynchronization, adaptation, and circadian readiness; live inventory found no circadian owner.",
+      "promotionPotential": "Hold until different cycle lengths, competing zeitgebers, snapshot migration, long replay, and two biological subject classes pass."
+    },
+    {
+      "id": "bootstrap-kit-050",
+      "name": "environmental-trace-persistence-domain-kit",
+      "purpose": "Track authored physical traces left in the world through emission, spatial anchoring, aging, intensity decay, disturbance, masking, contamination, transfer, and terminal disappearance without owning perception or investigation conclusions.",
+      "coreMapping": {
+        "configures": ["core-data-kit", "core-simulation-kit"],
+        "composesWith": ["core-scene-kit", "core-spatial-kit", "core-agent-kit"],
+        "nonDuplicatedMeaning": "Core owns scene identities, spatial facts, agents, timers, and ledgers; this domain owns environmental trace emission lineage, persistence, age, intensity, disturbance, masking, contamination, transfer, and disappearance meaning."
+      },
+      "classification": "world-state-domain",
+      "ownership": ["authored trace-medium and trace-type profiles", "source-to-trace emission lineage", "portable spatial anchors and affected media", "trace age, intensity, and decay state", "disturbance, masking, contamination, and transfer history", "active, ambiguous, and disappeared trace classification"],
+      "exclusions": ["raw contact detection", "agent perception or suspicion", "investigation hypotheses", "pathfinding", "terrain deformation", "scent or footprint rendering", "decal assets", "tracking UI"],
+      "actions": ["register trace profile", "emit trace", "record disturbance", "mask trace", "contaminate trace", "transfer trace", "advance decay", "remove trace", "reset traces"],
+      "resourcesAndState": ["environmentalTrace.profiles", "environmentalTrace.traces", "environmentalTrace.lineage", "environmentalTrace.disturbances", "environmentalTrace.tick"],
+      "events": ["trace.emitted", "trace.disturbed", "trace.masked", "trace.contaminated", "trace.transferred", "trace.intensityChanged", "trace.disappeared", "trace.commandRejected", "trace.reset"],
+      "methods": ["registerProfile(definition)", "emit(command)", "recordDisturbance(fact)", "mask(command)", "contaminate(fact)", "transfer(command)", "advance(ticks)", "remove(command)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned environmental-trace snapshot", "trace source, medium, and anchor descriptors", "age, intensity, decay, and transfer descriptors", "disturbance, masking, contamination, ambiguity, and disappearance summaries"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable source, trace, anchor, disturbance, and transfer IDs", "authored trace-medium response and decay profiles", "explicit contact, environment, and disturbance observations"],
+      "expectedCompositions": ["navigation-knowledge-domain-kit", "environmental-contamination-domain-kit", "rescue-triage-domain-kit", "core-interaction-kit"],
+      "plausibleUses": ["track missing wildlife across rain, mud, and crowded crossings before signs disappear", "follow a masked machine trail through a damaged station while contamination creates false leads"],
+      "experimentProof": "A seeded Whitewood Pursuit route must replay emissions, weather-like disturbance facts, masking, contamination, transfers, and fixed decay ticks into identical lineage, intensity, ambiguity, disappearance, and rejection state across wildlife and machine traces.",
+      "idempotencyRule": "Emission, disturbance, mask, contamination, transfer, and removal IDs commit once, decay advances only from explicit ticks in stable trace order, and disappeared traces cannot transfer or decay again.",
+      "duplicateAndMergeRisk": "Sensory-agent and perception kits own observations and detection, investigation owns evidence and hypotheses, and vegetation footprints or decals are presentation facts. None owns persistent trace lineage, medium-dependent decay, disturbance, masking, contamination, transfer, and disappearance; live inventory found no environmental-trace owner.",
+      "promotionPotential": "Experimental until dense-trace scale, mixed-media transfer, snapshot migration, long replay, and wildlife plus machine trace profiles pass."
     }
   ],
   "rejectedCandidates": [
@@ -1167,6 +1417,36 @@
       "name": "ecosystem-restoration-domain-kit",
       "rejectionClass": "vague-or-blurred-scope",
       "reason": "A broad restoration boundary blurred interventions, work plans, habitat fit, population outcomes, succession, and content. Existing engine.n.restoration owns diagnosis and work commissioning; the accepted habitat-succession boundary owns only ecological stage transitions and alternate stable states."
+    },
+    {
+      "name": "immune-response-lifecycle-domain-kit",
+      "rejectionClass": "duplicate-catalog-candidate",
+      "reason": "Accepted contagion-transmission-domain-kit already owns subject infection stages, recovery, immunity windows, exposure lineage, and deterministic outbreak state; a second immune lifecycle would split the same subject-state owner."
+    },
+    {
+      "name": "wildlife-migration-route-domain-kit",
+      "rejectionClass": "duplicate-existing-kit",
+      "reason": "The current idea inventory already declares migration-route-kit for paths and timing and wildlife-population-kit for population groups and migration, while accepted ecosystem population and habitat corridor contracts own adjacent cohort and connectivity meaning."
+    },
+    {
+      "name": "tidal-cycle-window-domain-kit",
+      "rejectionClass": "duplicate-existing-kit",
+      "reason": "The current idea inventory already declares tidal-cycle-kit with tides and shoreline exposure. Re-accepting the same periodic access and shoreline boundary under a domain suffix would not be genuinely new."
+    },
+    {
+      "name": "landslide-slope-stability-domain-kit",
+      "rejectionClass": "duplicate-existing-kit",
+      "reason": "The current idea inventory already declares landslide-risk-kit with slope stress, debris paths, and blockage, while terrain erosion and structural support own adjacent surface and support behavior."
+    },
+    {
+      "name": "pressure-vessel-integrity-domain-kit",
+      "rejectionClass": "duplicate-existing-kit",
+      "reason": "The current inventory already declares pressure-surge-kit, pipe-break-kit, and water-pressure-kit with pressure, valves, rupture risk, leaks, and repair needs; the proposed vessel boundary did not establish a distinct owner beyond those pressure-system semantics."
+    },
+    {
+      "name": "weather-risk-forecast-domain-kit",
+      "rejectionClass": "duplicate-existing-kit",
+      "reason": "The existing idea and game-domain inventories already declare weather-alert, hazard-forecast, storm-front, risk-forecast, and dependency-forecast owners. A new weather-risk wrapper would deepen the same prediction and alert overlap cluster."
     }
   ]
 }

@@ -1,7 +1,7 @@
 # Core Domain Coverage Report
 
 Status: bootstrap Phase B catalog in progress
-Accepted catalog definitions: 40 of 100 bootstrap definitions
+Accepted catalog definitions: 50 of 100 bootstrap definitions
 Implemented production kits: 0
 Playable production experiments: 0
 
@@ -53,6 +53,16 @@ Core is authoritative. A new kit must name the Core domains it configures or com
 | `instrument-calibration-domain-kit` | data + diagnostics + policy + scene facts | reference comparison, drift, bias, uncertainty, adjustment, validity, and measurement fitness | pass |
 | `chemical-reaction-batch-domain-kit` | simulation + data + policy observations | stoichiometric limits, reaction stages, yield, byproducts, quench, and terminal outcomes | pass |
 | `specimen-integrity-domain-kit` | data + simulation + policy + scene/world facts | collection condition, seals, aliquot lineage, preservation exposure, contamination, and analysis readiness | pass |
+| `cryosphere-mass-balance-domain-kit` | simulation + data + world/spatial observations | snow, firn, and ice reservoirs, accumulation, ablation, calving, runoff release, and equilibrium | pass |
+| `wastewater-treatment-train-domain-kit` | simulation + data + policy + world/scene facts | ordered treatment stages, constituent removal and transfer, bypass, residuals, and effluent classes | pass |
+| `material-corrosion-domain-kit` | simulation + data + scene/physics/diagnostics observations | corrosive exposure, protective-layer depletion, pitting, section loss, inspection confidence, and stabilization | pass |
+| `orbital-conjunction-risk-domain-kit` | data + simulation + policy + motion/physics/spatial observations | conjunction screening, closest approach, uncertainty envelopes, risk classes, avoidance, and outcomes | pass |
+| `celestial-event-visibility-domain-kit` | data + simulation + spatial/capture/world observations | observer eligibility, visibility conditions, event opportunities, acquisition completeness, and missed events | pass |
+| `fermentation-culture-domain-kit` | simulation + data + agent/world facts | living culture lineage, viability, growth phases, conversion, contamination, maturation, and harvest | pass |
+| `archaeological-stratigraphy-domain-kit` | data + policy + scene/world/spatial facts | deposition, cut, fill, containment, disturbance, mixing, and relative chronology | pass |
+| `cultural-artifact-conservation-domain-kit` | data + policy + simulation + object-fidelity/scene facts | cultural-object condition, treatment compatibility, reversibility, stabilization, and readiness | pass |
+| `circadian-entrainment-domain-kit` | simulation + data + agent/world observations | biological phase, zeitgeber entrainment, desynchronization, adaptation, and readiness windows | pass |
+| `environmental-trace-persistence-domain-kit` | data + simulation + scene/spatial/agent facts | trace lineage, persistence, decay, disturbance, masking, contamination, transfer, and disappearance | pass |
 
 No definition claims Core state primitives, provider implementations, renderer ownership, raw input, browser lifecycle, or game-specific content.
 
@@ -82,6 +92,12 @@ No definition claims Core state primitives, provider implementations, renderer o
 - `manufacturing-workflow-domain-kit`: existing semantic manufacturing/processing and crafting owners cover known-input production; refined to heterogeneous material recovery.
 - `chain-of-custody-domain-kit`: existing custody/provenance declarations and investigation evidence ownership overlap; specimen integrity excludes evidentiary custody.
 - `ecosystem-restoration-domain-kit`: blurred work plans, habitat fit, populations, interventions, and outcomes; refined to ecological succession stages only.
+- `immune-response-lifecycle-domain-kit`: accepted contagion transmission already owns infection stages, recovery, immunity windows, exposure lineage, and outbreak state.
+- `wildlife-migration-route-domain-kit`: documented migration-route and wildlife-population candidates already own paths, timing, population groups, and migration.
+- `tidal-cycle-window-domain-kit`: the documented tidal-cycle candidate already owns tides and shoreline exposure.
+- `landslide-slope-stability-domain-kit`: the documented landslide-risk candidate already owns slope stress, debris paths, and blockage.
+- `pressure-vessel-integrity-domain-kit`: existing pressure-surge, pipe-break, and water-pressure declarations already own pressure, rupture, leak, valve, and repair semantics.
+- `weather-risk-forecast-domain-kit`: existing weather-alert, hazard-forecast, storm-front, risk-forecast, and dependency-forecast declarations already own the proposed surface.
 
 ## Baseline Risk Map
 
@@ -100,4 +116,4 @@ No definition claims Core state primitives, provider implementations, renderer o
 
 ## Exact Next Audit
 
-Audit bootstrap catalog definitions 041-050 against all 514 existing top-level folders, nested declarations, package exports, and the current Core map before acceptance.
+Audit bootstrap catalog definitions 051-060 against all 514 existing top-level folders, nested declarations, package exports, and the current Core map before acceptance.

@@ -2,11 +2,11 @@
 
 Status: catalog-only; experiment gate remains blocked
 Accepted production experiment signatures: 0 of 50 bootstrap experiments
-Accepted bootstrap kit contracts: 40 of 100
+Accepted bootstrap kit contracts: 50 of 100
 
 ## Catalog Composition Pressure
 
-The first forty definitions are not route shells. They support at least twenty-one mechanically distinct future seeded proof clusters:
+The first fifty definitions are not route shells. They support at least thirty-one mechanically distinct future seeded proof clusters:
 
 - Quarantine Lantern: contagion + triage + rumor + navigation knowledge.
 - Rewilding Basin: ecosystem population + habitat suitability + territory influence.
@@ -29,6 +29,16 @@ The first forty definitions are not route shells. They support at least twenty-o
 - Caldera Watch: volcanic eruption sequence + seismic event sequence + contamination + navigation knowledge.
 - Circular Foundry: material recovery + chemical reaction batches + power distribution + supply-chain fulfillment.
 - Quarantine Lab: instrument calibration + specimen integrity + contagion transmission + contamination.
+- Frostvault Observatory: cryosphere mass balance + flood inundation + aquifer balance + thermal energy.
+- Underworks Renewal: wastewater treatment + contamination + material recovery + power distribution.
+- Saltworks Keep: material corrosion + structural support + instrument calibration + thermal energy.
+- Debris Shepherd: orbital conjunction risk + orbital transfer windows + power distribution + supply-chain fulfillment.
+- Night Archive: celestial-event visibility + instrument calibration + navigation knowledge + circadian entrainment.
+- Sporehouse Covenant: fermentation culture + chemical reaction batches + perishability storage + contamination.
+- Buried Observatory: archaeological stratigraphy + specimen integrity + artifact conservation + navigation knowledge.
+- Flooded Archive: artifact conservation + contamination + instrument calibration + perishability storage.
+- Longnight Habitat: circadian entrainment + habitat atmosphere + thermal energy + celestial-event visibility.
+- Whitewood Pursuit: environmental trace persistence + navigation knowledge + contamination + rescue triage.
 
 These are proof targets, not accepted experiment records. Seeds, candidate draw order, rejections, kit signatures, routes, and playable validation do not exist yet and therefore do not count.
 
@@ -47,5 +57,5 @@ Every accepted experiment must record epoch, lifecycle status, seed, full candid
 
 - Exact duplicate production signatures: 0 because no production signatures are accepted.
 - Near-duplicate production signatures: 0 because no production signatures are accepted.
-- Catalog boundary duplication: 0 accepted; twenty-four candidates were rejected before acceptance across the first four batches.
+- Catalog boundary duplication: 0 accepted; thirty candidates were rejected before acceptance across the first five batches.
 - Diversity claim: contract pressure only; no playable diversity claim yet.
