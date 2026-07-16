@@ -2,7 +2,7 @@
 
 Packet ID: `2026-07-16-next-ledge-summit-mastery-crest`
 Automation: Nexus Engine Game Production Builder
-Status: validated; awaiting publication
+Status: validated and published
 
 ## Intent
 
@@ -97,5 +97,5 @@ The primary FPS metric improved by about 50.8 percent. Final steady state held a
 
 - Starting Experiments commit: `240949b96b8b9a7629359949c222abda6e2d9a19`.
 - Starting and final ProtoKits commit: `04d34f049f58ae359cf71d43466c429dac2a6d08`.
-- Experiments production commit: pending publication.
+- Experiments production commit: `32603170fc41a808bac10b99078d019c2ef04ac4`, published on `origin/main` after a fetch confirmed the remote remained at the starting commit.
 - Exact next playable improvement: replace the immediate `N` reset with a visible broadcast-to-new-route transition and a reversed-wind opening pattern.
