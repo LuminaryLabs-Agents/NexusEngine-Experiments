@@ -1,9 +1,9 @@
 # Core Domain Map
 
 Status: Phase A baseline complete
-Authority: read-only `NexusEngine` `origin/main` at `cd5c8f84cb00ff02970419f3316e1908ada5651d`
+Authority: read-only `NexusEngine` `origin/main` at `49fa98f5f0644294b97572c3bb87b14ce359856b`
 
-The local Core worktree was 246 commits behind after fetch, so this map uses files read directly from `origin/main` without changing the Core worktree.
+The local Core worktree was 284 commits behind after fetch, so this map uses files read directly from `origin/main` without changing the Core worktree. The authority change since the prior catalog batch touched Core Graphics procedural-material descriptor implementation only; it did not change natural-language domain ownership or export counts.
 
 ## Boundary Rule
 

@@ -2,11 +2,11 @@
 
 Status: catalog-only; experiment gate remains blocked
 Accepted production experiment signatures: 0 of 50 bootstrap experiments
-Accepted bootstrap kit contracts: 50 of 100
+Accepted bootstrap kit contracts: 60 of 100
 
 ## Catalog Composition Pressure
 
-The first fifty definitions are not route shells. They support at least thirty-one mechanically distinct future seeded proof clusters:
+The first sixty definitions are not route shells. They support at least forty-one mechanically distinct future seeded proof clusters:
 
 - Quarantine Lantern: contagion + triage + rumor + navigation knowledge.
 - Rewilding Basin: ecosystem population + habitat suitability + territory influence.
@@ -39,6 +39,16 @@ The first fifty definitions are not route shells. They support at least thirty-o
 - Flooded Archive: artifact conservation + contamination + instrument calibration + perishability storage.
 - Longnight Habitat: circadian entrainment + habitat atmosphere + thermal energy + celestial-event visibility.
 - Whitewood Pursuit: environmental trace persistence + navigation knowledge + contamination + rescue triage.
+- Riven Span: material fatigue + structural support + corrosion + instrument calibration.
+- Grinding Frontier: mechanical wear + material fatigue + material recovery + power distribution.
+- Phaseglass Foundry: material phase transition + thermal energy + chemical reaction + instrument calibration.
+- Stormcatcher Basin: watershed runoff + flood inundation + aquifer balance + cryosphere mass balance.
+- Saltline Sanctuary: water salinity + aquifer balance + habitat suitability + contamination.
+- Blackwater Reef: aquatic oxygen + water salinity + organic decomposition + ecosystem population.
+- Carbon Garden: carbon cycling + soil nutrients + organic decomposition + habitat atmosphere.
+- Signal School: behavioral conditioning + collective resolve + language comprehension + environmental traces.
+- Lantern Commons: cultural norm adoption + rumor propagation + governance resolution + language comprehension.
+- Polarity Vault: magnetic interaction + power distribution + structural support + instrument calibration.
 
 These are proof targets, not accepted experiment records. Seeds, candidate draw order, rejections, kit signatures, routes, and playable validation do not exist yet and therefore do not count.
 
@@ -57,5 +67,5 @@ Every accepted experiment must record epoch, lifecycle status, seed, full candid
 
 - Exact duplicate production signatures: 0 because no production signatures are accepted.
 - Near-duplicate production signatures: 0 because no production signatures are accepted.
-- Catalog boundary duplication: 0 accepted; thirty candidates were rejected before acceptance across the first five batches.
+- Catalog boundary duplication: 0 accepted; thirty-six candidates were rejected before acceptance across the first six batches.
 - Diversity claim: contract pressure only; no playable diversity claim yet.

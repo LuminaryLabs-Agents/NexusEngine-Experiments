@@ -16,7 +16,7 @@ Bootstrap minimums are not terminal caps. Epoch 1 must open after bootstrap docu
 
 | Epoch | Status | Accepted kits | Implemented kits | Playable experiments | Games | Refinement slices | Last unit | Exact next unit |
 | ---: | --- | ---: | ---: | ---: | ---: | ---: | --- | --- |
-| 0 | in progress | 50 / 100 | 0 / 100 | 0 / 50 | 0 / 10 | 0 / 0 | `catalog-batch-041-050` | `catalog-batch-051-060` |
+| 0 | in progress | 60 / 100 | 0 / 100 | 0 / 50 | 0 / 10 | 0 / 0 | `catalog-batch-051-060` | `catalog-batch-061-070` |
 
 ## Lifecycle Totals
 
@@ -38,3 +38,4 @@ Accepted catalog definitions are tracked separately and do not count as created 
 | `2026-07-15-bootstrap-catalog-021-030` | 0 | Catalog 021-030 | 10 definitions accepted; 6 candidates rejected; zero implementation | production commit `6f6b0b3bf5137c6d882bde0264682e6e0d12c5de` published |
 | `2026-07-15-bootstrap-catalog-031-040` | 0 | Catalog 031-040 | 10 definitions accepted; 6 candidates rejected; zero implementation | production commit `d7640696fa98f77372e7605e506584adcfe58094` published |
 | `2026-07-15-bootstrap-catalog-041-050` | 0 | Catalog 041-050 | 10 definitions accepted; 6 candidates rejected; zero implementation | production commit `31d5c48e7b31855044b2eeadc9d6f07a14f98bf9` published |
+| `2026-07-16-bootstrap-catalog-051-060` | 0 | Catalog 051-060 | 10 definitions accepted; 6 candidates rejected; zero implementation | pending publication |

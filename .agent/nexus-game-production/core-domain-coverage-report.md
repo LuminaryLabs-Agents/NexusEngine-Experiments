@@ -1,7 +1,7 @@
 # Core Domain Coverage Report
 
 Status: bootstrap Phase B catalog in progress
-Accepted catalog definitions: 50 of 100 bootstrap definitions
+Accepted catalog definitions: 60 of 100 bootstrap definitions
 Implemented production kits: 0
 Playable production experiments: 0
 
@@ -63,6 +63,16 @@ Core is authoritative. A new kit must name the Core domains it configures or com
 | `cultural-artifact-conservation-domain-kit` | data + policy + simulation + object-fidelity/scene facts | cultural-object condition, treatment compatibility, reversibility, stabilization, and readiness | pass |
 | `circadian-entrainment-domain-kit` | simulation + data + agent/world observations | biological phase, zeitgeber entrainment, desynchronization, adaptation, and readiness windows | pass |
 | `environmental-trace-persistence-domain-kit` | data + simulation + scene/spatial/agent facts | trace lineage, persistence, decay, disturbance, masking, contamination, transfer, and disappearance | pass |
+| `material-fatigue-domain-kit` | simulation + data + physics/diagnostics/scene observations | cyclic damage, crack progression, inspection confidence, and fatigue service state | pass |
+| `mechanical-wear-domain-kit` | simulation + data + physics/diagnostics/scene observations | contact-pair wear, lubrication, surface loss, debris, friction drift, and seizure risk | pass |
+| `material-phase-transition-domain-kit` | simulation + data + physics/world observations | phase fractions, latent-energy budgets, hysteresis, reversal, and transition completion | pass |
+| `watershed-runoff-domain-kit` | simulation + data + world/spatial/physics observations | catchment partition, routing, storage, outlet hydrographs, peaks, and recession | pass |
+| `water-salinity-balance-domain-kit` | simulation + data + world/spatial/physics observations | salt mass, salinity, stratification, intrusion, flushing, and recovery | pass |
+| `aquatic-oxygen-balance-domain-kit` | simulation + data + world/agent/physics observations | dissolved oxygen, saturation, biological demand, reaeration, hypoxia, and recovery | pass |
+| `biogeochemical-carbon-cycle-domain-kit` | simulation + data + world/agent observations | carbon reservoirs, flux lineage, sequestration, release, conservation, and balance | pass |
+| `behavioral-conditioning-domain-kit` | data + simulation + agent/input/interaction observations | cue-action-outcome associations, habituation, extinction, generalization, and discrimination | pass |
+| `cultural-norm-adoption-domain-kit` | data + policy + simulation + agent/interaction observations | norm adoption lineage, compliance, sanctions, exemptions, contest, and replacement | pass |
+| `magnetic-interaction-domain-kit` | simulation + data + physics/spatial/scene observations | polarity, magnetization, remanence, saturation, coupling, and force-intent descriptors | pass |
 
 No definition claims Core state primitives, provider implementations, renderer ownership, raw input, browser lifecycle, or game-specific content.
 
@@ -98,6 +108,12 @@ No definition claims Core state primitives, provider implementations, renderer o
 - `landslide-slope-stability-domain-kit`: the documented landslide-risk candidate already owns slope stress, debris paths, and blockage.
 - `pressure-vessel-integrity-domain-kit`: existing pressure-surge, pipe-break, and water-pressure declarations already own pressure, rupture, leak, valve, and repair semantics.
 - `weather-risk-forecast-domain-kit`: existing weather-alert, hazard-forecast, storm-front, risk-forecast, and dependency-forecast declarations already own the proposed surface.
+- `reproductive-life-cycle-domain-kit`: ecosystem population already owns reproduction and births, phenology owns life-stage timing, and genetic diversity owns parent contributions and inheritance.
+- `combustion-process-domain-kit`: chemical reaction batches own reaction stages and byproducts while wildfire propagation owns spatial fuel ignition and burn spread.
+- `fire-suppression-response-domain-kit`: existing fire-smoke and hazard-suppression declarations plus accepted wildfire containment already own suppression actions.
+- `debt-obligation-domain-kit`: existing debt, invoice, social-debt, promise, and contract declarations plus negotiation commitments already own the lifecycle.
+- `soil-moisture-balance-domain-kit`: the idea inventory explicitly declares soil moisture and agriculture already owns plot watering observations.
+- `collective-consensus-domain-kit`: governance resolution owns proposals, quorum, ballots, ratification, enactment, challenge, and appeal; collective resolve owns group rally and break state.
 
 ## Baseline Risk Map
 
@@ -116,4 +132,4 @@ No definition claims Core state primitives, provider implementations, renderer o
 
 ## Exact Next Audit
 
-Audit bootstrap catalog definitions 051-060 against all 514 existing top-level folders, nested declarations, package exports, and the current Core map before acceptance.
+Audit bootstrap catalog definitions 061-070 against all 514 existing top-level folders, nested declarations, package exports, and the current Core map before acceptance.
