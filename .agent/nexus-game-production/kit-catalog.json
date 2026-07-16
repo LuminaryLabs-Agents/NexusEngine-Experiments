@@ -4,13 +4,13 @@
   "bootstrapTarget": 100,
   "epochTarget": 10,
   "counts": {
-    "acceptedBootstrap": 80,
-    "acceptedCurrentEpoch": 80,
-    "acceptedLifetime": 80,
+    "acceptedBootstrap": 90,
+    "acceptedCurrentEpoch": 90,
+    "acceptedLifetime": 90,
     "implementedBootstrap": 0,
     "implementedCurrentEpoch": 0,
     "implementedLifetime": 0,
-    "rejectedLifetime": 48
+    "rejectedLifetime": 54
   },
   "status": "bootstrap-catalog-in-progress",
   "requiredFields": [
@@ -2045,6 +2045,256 @@
       "idempotencyRule": "Condition, nucleus, inclusion, dissolution, annealing, and harvest IDs commit once, nuclei and fronts resolve in stable order, and accepted material is conserved across dissolved, growing, and completed stores.",
       "duplicateAndMergeRisk": "Material phase transition owns bulk phase fractions and Core Object Shape owns geometry derivation. Live inventory has no reusable owner for nucleus lineage, growth-front competition, crystal habit, inclusions, defects, dissolution, annealing, and quality.",
       "promotionPotential": "Experimental until multi-nucleus competition, material conservation, defect replay, snapshot migration, shape-descriptor handoff, and fabrication plus environmental consumers pass."
+    },
+    {
+      "id": "bootstrap-kit-081",
+      "name": "chromatographic-separation-domain-kit",
+      "purpose": "Resolve authored mixtures through stationary-phase and mobile-phase programs into retained bands, elution order, peak resolution, collected fractions, purity, recovery, and column service state without solving fluid motion or molecular chemistry.",
+      "coreMapping": {
+        "configures": ["core-simulation-kit", "core-data-kit"],
+        "composesWith": ["core-diagnostics-kit", "core-physics-kit", "core-world-domain"],
+        "nonDuplicatedMeaning": "Core owns deterministic resources, observations, and diagnostics while surface sorption owns finite-site occupancy; this domain owns separation-run identity, band migration, elution order, peak resolution, fraction collection, purity, recovery, and column service meaning."
+      },
+      "classification": "process-domain",
+      "ownership": ["authored separation, column, mobile-phase, and analyte profiles", "injected mixture and analyte mass ledger", "mobile-phase program and column-condition history", "retained-band migration and elution order", "peak overlap, resolution, and breakthrough state", "collected-fraction purity, recovery, and service classifications"],
+      "exclusions": ["fluid dynamics or pressure solving", "surface-site adsorption and desorption kinetics", "chemical reactions or molecular transformation", "detector hardware and signal rendering", "specimen custody", "browser charts or UI", "asset-specific laboratory fiction", "real analytical guidance"],
+      "actions": ["register separation profile", "register column", "inject mixture", "record mobile-phase fact", "advance elution", "collect fraction", "wash or regenerate column", "record calibration", "retire column", "reset separation"],
+      "resourcesAndState": ["chromatographicSeparation.profiles", "chromatographicSeparation.columns", "chromatographicSeparation.runs", "chromatographicSeparation.bands", "chromatographicSeparation.fractions", "chromatographicSeparation.tick"],
+      "events": ["chromatography.mixtureInjected", "chromatography.bandAdvanced", "chromatography.peakResolved", "chromatography.fractionCollected", "chromatography.breakthroughRaised", "chromatography.columnRegenerated", "chromatography.runCompleted", "chromatography.commandRejected", "chromatography.reset"],
+      "methods": ["registerProfile(definition)", "registerColumn(definition)", "inject(command)", "recordMobilePhase(fact)", "advance(ticks)", "collectFraction(command)", "regenerate(command)", "recordCalibration(fact)", "retire(command)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned chromatographic-separation snapshot", "column, mobile-phase, analyte, and injection descriptors", "band-position, retention, peak, and resolution descriptors", "fraction purity, recovery, breakthrough, regeneration, and run summaries"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable profile, column, run, injection, mobile-phase, fraction, calibration, and retirement IDs", "authored fictional retention and elution rules", "explicit flow, solvent, temperature, pressure, detector, and service observations"],
+      "expectedCompositions": ["surface-sorption-domain-kit", "instrument-calibration-domain-kit", "specimen-integrity-domain-kit", "chemical-reaction-batch-domain-kit"],
+      "plausibleUses": ["separate color-coded memory inks before an archive seal accepts the correct fractions", "recover trace xenobiotic signatures from stormwater samples while a damaged column loses resolution"],
+      "experimentProof": "A seeded Ribbon Labyrinth route must replay identical injections, mobile-phase facts, fixed ticks, collections, calibrations, and regeneration commands into the same band order, peak resolution, fraction purity, recovery, breakthrough, rejections, and digest across memory-ink and stormwater profiles.",
+      "idempotencyRule": "Injection, mobile-phase, collection, calibration, regeneration, and retirement IDs commit once, bands resolve in stable analyte order, and accepted analyte mass is conserved across retained, eluted, collected, and lost stores.",
+      "duplicateAndMergeRisk": "Surface sorption owns finite-site occupancy and instrument calibration owns measurement fitness. Live inventory has no reusable owner for separation-run lineage, band migration, elution order, peak resolution, fraction collection, purity, and recovery.",
+      "promotionPotential": "Hold until overlapping peaks, gradient programs, mass conservation, snapshot migration, detector-adapter parity, and environmental plus archival consumers pass."
+    },
+    {
+      "id": "bootstrap-kit-082",
+      "name": "fractional-distillation-domain-kit",
+      "purpose": "Advance authored multicomponent mixtures through staged vaporization, condensation, reflux, reboil, component partition, cut collection, purity, recovery, flooding, and dryout state from explicit energy and flow observations.",
+      "coreMapping": {
+        "configures": ["core-simulation-kit", "core-data-kit"],
+        "composesWith": ["core-physics-kit", "core-world-domain", "core-diagnostics-kit"],
+        "nonDuplicatedMeaning": "Core owns resources and provider observations while material phase transition owns bulk phase fractions; this domain owns stage-wise component partition, reflux and reboil lineage, cut collection, purity, recovery, flooding, and dryout meaning."
+      },
+      "classification": "process-domain",
+      "ownership": ["authored mixture, component, stage, and separation profiles", "stage-wise liquid and vapor component inventories", "vaporization, condensation, reflux, and reboil ledger", "component volatility and partition bands", "collected cuts, purity, and recovery state", "idle, equilibrating, separating, flooding, dry, off-spec, and complete classifications"],
+      "exclusions": ["heat-transfer or fluid-flow solving", "generic bulk phase-fraction ownership", "chemical reaction and stoichiometry", "pressure-vessel integrity", "boiler or condenser hardware", "renderer vapor and gauges", "asset-specific production recipes", "real process guidance"],
+      "actions": ["register distillation profile", "register train", "charge mixture", "record energy fact", "record flow observation", "advance stages", "set reflux policy", "collect cut", "drain or recover train", "reset distillation"],
+      "resourcesAndState": ["fractionalDistillation.profiles", "fractionalDistillation.trains", "fractionalDistillation.stages", "fractionalDistillation.componentLedger", "fractionalDistillation.cuts", "fractionalDistillation.tick"],
+      "events": ["distillation.chargeAccepted", "distillation.stageEquilibrated", "distillation.componentTransferred", "distillation.cutCollected", "distillation.floodingRaised", "distillation.dryoutRaised", "distillation.offSpecRaised", "distillation.runCompleted", "distillation.commandRejected", "distillation.reset"],
+      "methods": ["registerProfile(definition)", "registerTrain(definition)", "charge(command)", "recordEnergy(fact)", "recordFlow(fact)", "setReflux(command)", "advance(ticks)", "collectCut(command)", "recover(command)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned fractional-distillation snapshot", "mixture, component, stage, energy, and flow descriptors", "liquid-vapor partition, reflux, reboil, and equilibrium descriptors", "cut purity, recovery, flooding, dryout, off-spec, and completion summaries"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable profile, train, charge, energy, flow, reflux, cut, recovery, and stage IDs", "authored fictional volatility and stage-transfer rules", "explicit temperature, energy, pressure, flow, composition, and level observations"],
+      "expectedCompositions": ["material-phase-transition-domain-kit", "thermal-energy-network-domain-kit", "chemical-reaction-batch-domain-kit", "instrument-calibration-domain-kit"],
+      "plausibleUses": ["recover breathable solvents from a drifting habitat before the separation train floods", "separate volatile star-nectar fractions while a damaged reflux loop threatens product purity"],
+      "experimentProof": "A seeded Vapor Crown route must replay identical charges, energy and flow facts, reflux commands, fixed ticks, cut collections, and recovery into the same stage inventories, component partitions, purities, flooding, dryout, rejections, and digest across habitat-solvent and star-nectar profiles.",
+      "idempotencyRule": "Charge, energy, flow, reflux, cut, and recovery IDs commit once, stages resolve in stable train order, and each component is conserved across stage, collected, residue, vented, and lost stores.",
+      "duplicateAndMergeRisk": "Material phase transition owns generic phase fractions and chemical reaction owns conversion. Live inventory has no reusable owner for stage-wise volatile-component partition, reflux, reboil, cut collection, purity, flooding, and dryout.",
+      "promotionPotential": "Experimental until multistage balances, reflux transitions, cut recovery, snapshot migration, thermal-adapter parity, and habitat plus fabrication consumers pass."
+    },
+    {
+      "id": "bootstrap-kit-083",
+      "name": "depth-filtration-domain-kit",
+      "purpose": "Track authored particulate streams through layered porous media into capture distribution, media loading, supplied head-loss bands, channeling, breakthrough, backwash, regeneration, and service state without solving fluid flow.",
+      "coreMapping": {
+        "configures": ["core-simulation-kit", "core-data-kit"],
+        "composesWith": ["core-physics-kit", "core-world-domain", "core-diagnostics-kit"],
+        "nonDuplicatedMeaning": "Core owns resources and flow observations while selective membrane transport owns species flux through semipermeable boundaries; this domain owns depth-wise particulate capture, media loading, channeling, breakthrough, backwash, and service meaning."
+      },
+      "classification": "process-domain",
+      "ownership": ["authored particulate, stream, media, layer, and filter profiles", "layer-wise retained particulate mass", "media loading and supplied head-loss history", "capture efficiency and channeling state", "breakthrough and effluent particulate classes", "clean, loading, channeling, breakthrough, backwashing, regenerated, spent, and failed classifications"],
+      "exclusions": ["fluid dynamics or pressure solving", "molecular or ionic membrane selectivity", "finite-site surface sorption", "chemical treatment stages", "generic contamination transport", "filter mesh rendering", "asset-specific utility hardware", "real filtration guidance"],
+      "actions": ["register filtration profile", "register filter", "record influent lot", "record flow observation", "advance capture", "record integrity fact", "start backwash", "complete regeneration", "replace media", "reset filtration"],
+      "resourcesAndState": ["depthFiltration.profiles", "depthFiltration.filters", "depthFiltration.layers", "depthFiltration.influentLedger", "depthFiltration.retainedMass", "depthFiltration.tick"],
+      "events": ["depthFiltration.influentAccepted", "depthFiltration.captureCommitted", "depthFiltration.loadingChanged", "depthFiltration.channelingRaised", "depthFiltration.breakthroughRaised", "depthFiltration.backwashStarted", "depthFiltration.regenerated", "depthFiltration.mediaSpent", "depthFiltration.commandRejected", "depthFiltration.reset"],
+      "methods": ["registerProfile(definition)", "registerFilter(definition)", "recordInfluent(fact)", "recordFlow(fact)", "advance(ticks)", "recordIntegrity(fact)", "startBackwash(command)", "completeRegeneration(command)", "replaceMedia(command)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned depth-filtration snapshot", "stream, particulate, filter, media, and layer descriptors", "capture, loading, supplied head-loss, and channeling descriptors", "breakthrough, effluent, backwash, regeneration, spent-media, and service summaries"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable profile, filter, layer, influent, flow, integrity, backwash, regeneration, and replacement IDs", "authored fictional capture and loading rules", "explicit particulate, flow, pressure-drop, integrity, and service observations"],
+      "expectedCompositions": ["environmental-contamination-domain-kit", "wastewater-treatment-train-domain-kit", "potable-water-service-domain-kit", "instrument-calibration-domain-kit"],
+      "plausibleUses": ["keep a desert observatory's dust filters online while channeling threatens its sealed instruments", "restore a flooded settlement's layered water beds before particulate breakthrough reaches storage"],
+      "experimentProof": "A seeded Dustwell Gauntlet route must replay identical influent, flow, integrity, fixed-tick, backwash, regeneration, and media-replacement facts into the same layer loading, capture, channeling, breakthrough, effluent, rejections, and digest across air-dust and water-silt profiles.",
+      "idempotencyRule": "Influent, flow, integrity, backwash, regeneration, and replacement IDs commit once, layers resolve in stable flow order, and particulate mass is conserved across retained, effluent, backwash, and disposed stores.",
+      "duplicateAndMergeRisk": "Selective membrane transport owns species flux and selectivity, surface sorption owns finite sites, and wastewater treatment owns ordered facility stages. None owns depth-wise particulate capture, media loading, channeling, backwash, and breakthrough.",
+      "promotionPotential": "Hold until multilayer capture, channeling, backwash conservation, snapshot migration, flow-observation adapters, and air plus water consumers pass."
+    },
+    {
+      "id": "bootstrap-kit-084",
+      "name": "sintering-densification-domain-kit",
+      "purpose": "Advance authored particulate compacts through neck formation, pore closure, densification, shrinkage intents, warpage risk, defect accumulation, hold, cooling, and terminal quality from explicit thermal and load observations.",
+      "coreMapping": {
+        "configures": ["core-simulation-kit", "core-data-kit"],
+        "composesWith": ["core-physics-kit", "core-diagnostics-kit", "core-object-shape-domain"],
+        "nonDuplicatedMeaning": "Core Object Shape owns provider-coordinated geometry derivation, granular state owns loose packing, and plastic deformation owns bulk yield; this domain owns compact neck connectivity, pore closure, densification, sintering shrinkage intent, warpage risk, and terminal quality meaning."
+      },
+      "classification": "process-domain",
+      "ownership": ["authored powder, compact, and sintering profiles", "compact green-density and pore-fraction state", "interparticle neck-connectivity history", "densification and pore-closure ledger", "shrinkage, warpage, and defect intents", "green, heating, necking, densifying, overfired, warped, cooled, and complete classifications"],
+      "exclusions": ["individual-particle dynamics", "loose granular packing and discharge", "bulk plastic yield", "crystal nucleation or habit growth", "heat-transfer solving", "mesh or geometry mutation", "Core shape-derivation jobs", "real manufacturing guidance"],
+      "actions": ["register sintering profile", "register compact", "record thermal observation", "record load fact", "advance densification", "hold compact", "record atmosphere fact", "cool compact", "accept or reject compact", "reset sintering"],
+      "resourcesAndState": ["sinteringDensification.profiles", "sinteringDensification.compacts", "sinteringDensification.necks", "sinteringDensification.poreLedger", "sinteringDensification.qualityLedger", "sinteringDensification.tick"],
+      "events": ["sintering.compactRegistered", "sintering.necksFormed", "sintering.densityChanged", "sintering.poresClosed", "sintering.warpageRiskRaised", "sintering.overfired", "sintering.cooled", "sintering.completed", "sintering.commandRejected", "sintering.reset"],
+      "methods": ["registerProfile(definition)", "registerCompact(definition)", "recordThermal(fact)", "recordLoad(fact)", "recordAtmosphere(fact)", "advance(ticks)", "hold(command)", "cool(command)", "accept(command)", "getShapeDescriptors()", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned sintering-densification snapshot", "powder, compact, thermal, load, and atmosphere descriptors", "neck-connectivity, pore-fraction, density, and hold descriptors", "shrinkage, warpage-risk, defect, cooling, quality, and completion summaries"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable profile, compact, thermal, load, atmosphere, hold, cooling, and acceptance IDs", "authored fictional necking and densification rules", "explicit temperature, duration, pressure, atmosphere, geometry, and support observations"],
+      "expectedCompositions": ["granular-material-state-domain-kit", "thermal-energy-network-domain-kit", "material-phase-transition-domain-kit", "instrument-calibration-domain-kit"],
+      "plausibleUses": ["fire porous bridge tiles until their neck network can survive the next crossing", "densify lunar regolith seals without warping the habitat ports they must fit"],
+      "experimentProof": "A seeded Kilnweb Station route must replay identical compact registration, thermal, load, atmosphere, hold, cooling, and acceptance facts into the same neck connectivity, pore fraction, density, shrinkage, warpage risk, quality, rejections, and digest across ceramic-tile and regolith-seal profiles.",
+      "idempotencyRule": "Thermal, load, atmosphere, hold, cooling, and acceptance IDs commit once, compacts resolve in stable order, and pore-volume reduction plus explicit losses remains bounded by authored densification rules.",
+      "duplicateAndMergeRisk": "Granular state owns loose-lot packing and plastic deformation owns yield history; crystal growth owns nucleus and facet competition. Live inventory has no reusable owner for compact neck formation, pore closure, sintering densification, shrinkage intent, warpage risk, and fired quality.",
+      "promotionPotential": "Experimental until multi-stage firing, shrinkage bounds, defect replay, snapshot migration, shape-descriptor handoff, and ceramic plus habitat consumers pass."
+    },
+    {
+      "id": "bootstrap-kit-085",
+      "name": "emulsion-stability-domain-kit",
+      "purpose": "Track authored dispersed and continuous liquid phases through droplet-population state, emulsifier coverage, flocculation, creaming or sedimentation, coalescence, inversion, breaking, and restabilization from explicit mixing and environment observations.",
+      "coreMapping": {
+        "configures": ["core-simulation-kit", "core-data-kit"],
+        "composesWith": ["core-physics-kit", "core-world-domain", "core-spatial-kit"],
+        "nonDuplicatedMeaning": "Core owns resources and provider observations while material phase transition owns bulk phase fractions; this domain owns dispersed-phase droplet populations, stability history, separation modes, inversion, breaking, and restabilization meaning."
+      },
+      "classification": "simulation-domain",
+      "ownership": ["authored liquid-phase, emulsifier, vessel, and stability profiles", "continuous and dispersed phase inventories", "droplet-size population bands", "emulsifier coverage and interfacial stability state", "flocculation, creaming, sedimentation, coalescence, and inversion history", "mixed, stable, drifting, flocculated, coalescing, inverted, broken, and restored classifications"],
+      "exclusions": ["fluid dynamics or turbulence solving", "bulk phase-transition ownership", "surface-site sorption", "membrane transport", "chemical reaction and formulation content", "droplet rendering", "asset-specific food or cosmetic systems", "real formulation guidance"],
+      "actions": ["register emulsion profile", "register vessel", "charge phases", "record mixing observation", "record environment fact", "add stabilizer fact", "advance stability", "separate or invert emulsion", "restabilize batch", "reset emulsion"],
+      "resourcesAndState": ["emulsionStability.profiles", "emulsionStability.vessels", "emulsionStability.batches", "emulsionStability.dropletBands", "emulsionStability.stabilityLedger", "emulsionStability.tick"],
+      "events": ["emulsion.phasesCharged", "emulsion.mixingRecorded", "emulsion.dropletsChanged", "emulsion.flocculated", "emulsion.coalesced", "emulsion.inverted", "emulsion.broken", "emulsion.restabilized", "emulsion.commandRejected", "emulsion.reset"],
+      "methods": ["registerProfile(definition)", "registerVessel(definition)", "charge(command)", "recordMixing(fact)", "recordEnvironment(fact)", "addStabilizer(fact)", "advance(ticks)", "invert(command)", "restabilize(command)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned emulsion-stability snapshot", "phase, emulsifier, vessel, mixing, and environment descriptors", "droplet-band, coverage, flocculation, and drift descriptors", "coalescence, inversion, breakage, restoration, and batch summaries"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable profile, vessel, batch, charge, mixing, environment, stabilizer, inversion, and restoration IDs", "authored fictional emulsion-stability rules", "explicit composition, mixing, temperature, gravity, flow, and contamination observations"],
+      "expectedCompositions": ["material-phase-transition-domain-kit", "surface-sorption-domain-kit", "chemical-reaction-batch-domain-kit", "instrument-calibration-domain-kit"],
+      "plausibleUses": ["keep a two-phase coolant stable while gravity shifts across an orbital refinery", "restore a broken luminous resin emulsion before its suspended memory droplets settle"],
+      "experimentProof": "A seeded Pearl Current route must replay identical phase charges, mixing, environment, stabilizer, fixed-tick, inversion, and restoration facts into the same droplet bands, stability, drift, coalescence, breakage, rejections, and digest across coolant and memory-resin profiles.",
+      "idempotencyRule": "Charge, mixing, environment, stabilizer, inversion, and restoration IDs commit once, droplet bands resolve in stable size order, and phase mass is conserved across dispersed, continuous, separated, and lost stores.",
+      "duplicateAndMergeRisk": "Material phase transition owns bulk phases, surface sorption owns site occupancy, and fluid providers own motion. Live inventory has no reusable owner for droplet-population stability, flocculation, coalescence, inversion, breakage, and restabilization.",
+      "promotionPotential": "Hold until multimodal droplets, inversion and restoration, phase conservation, snapshot migration, provider-observation parity, and industrial plus fantasy consumers pass."
+    },
+    {
+      "id": "bootstrap-kit-086",
+      "name": "bulk-foam-evolution-domain-kit",
+      "purpose": "Advance authored gas-liquid or fictional foams through bubble-population state, liquid drainage, coarsening, coalescence, stabilization, collapse, and recovery from explicit formation and environment observations without rendering whitewater or solving fluid motion.",
+      "coreMapping": {
+        "configures": ["core-simulation-kit", "core-data-kit"],
+        "composesWith": ["core-physics-kit", "core-world-domain", "core-spatial-kit"],
+        "nonDuplicatedMeaning": "Core owns resources and observations while existing foam-field kits emit water-surface presentation descriptors; this domain owns bulk foam composition, bubble-population lineage, drainage, coarsening, coalescence, collapse, and recovery meaning."
+      },
+      "classification": "simulation-domain",
+      "ownership": ["authored liquid, gas, stabilizer, vessel, and foam profiles", "gas and liquid inventory within foam batches", "bubble-size population bands", "liquid-drainage and film-thickness state", "coarsening, coalescence, and collapse history", "forming, stable, draining, coarsening, coalescing, collapsed, and recovered classifications"],
+      "exclusions": ["water whitecap or shoreline foam descriptors", "renderer particles and materials", "fluid dynamics and surface-wave solving", "cavitation cavity populations", "boiling and bulk phase transition", "fire-suppression policy", "asset-specific recipes", "real foam engineering guidance"],
+      "actions": ["register foam profile", "register vessel", "form foam batch", "record environment observation", "add stabilizer fact", "advance foam", "drain liquid", "collapse batch", "recover or reform batch", "reset foam"],
+      "resourcesAndState": ["bulkFoamEvolution.profiles", "bulkFoamEvolution.vessels", "bulkFoamEvolution.batches", "bulkFoamEvolution.bubbleBands", "bulkFoamEvolution.liquidLedger", "bulkFoamEvolution.tick"],
+      "events": ["bulkFoam.formed", "bulkFoam.bubblesChanged", "bulkFoam.drained", "bulkFoam.coarsened", "bulkFoam.coalesced", "bulkFoam.collapsed", "bulkFoam.recovered", "bulkFoam.commandRejected", "bulkFoam.reset"],
+      "methods": ["registerProfile(definition)", "registerVessel(definition)", "form(command)", "recordEnvironment(fact)", "addStabilizer(fact)", "advance(ticks)", "drain(command)", "collapse(command)", "recover(command)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned bulk-foam-evolution snapshot", "liquid, gas, stabilizer, vessel, and formation descriptors", "bubble-band, drainage, film, coarsening, and coalescence descriptors", "collapse, recovery, gas-liquid balance, and service summaries"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable profile, vessel, batch, formation, environment, stabilizer, drainage, collapse, and recovery IDs", "authored fictional foam-evolution rules", "explicit gas, liquid, pressure, temperature, gravity, contamination, and agitation observations"],
+      "expectedCompositions": ["emulsion-stability-domain-kit", "material-phase-transition-domain-kit", "environmental-contamination-domain-kit", "instrument-calibration-domain-kit"],
+      "plausibleUses": ["stabilize a buoyant mineral foam long enough to separate ore from flooded caverns", "reform a habitat's sacrificial sealing foam after drainage opens dangerous gaps"],
+      "experimentProof": "A seeded Bubbleworks Breach route must replay identical formation, environment, stabilizer, fixed-tick, drainage, collapse, and recovery facts into the same bubble bands, liquid balance, coarsening, coalescence, collapse, rejections, and digest across mineral and habitat-seal profiles.",
+      "idempotencyRule": "Formation, environment, stabilizer, drainage, collapse, and recovery IDs commit once, bubble bands resolve in stable size order, and gas plus liquid inventories remain conserved across foam, drained, released, and lost stores.",
+      "duplicateAndMergeRisk": "Existing generic foam fields own water-surface whitewater descriptors and cavitation owns vapor cavities. Live inventory has no reusable owner for bulk gas-liquid foam batches, bubble-population evolution, drainage, coarsening, coalescence, collapse, and recovery.",
+      "promotionPotential": "Experimental until coarsening and drainage fixtures, gas-liquid conservation, snapshot migration, provider-observation parity, and separation plus sealing consumers pass."
+    },
+    {
+      "id": "bootstrap-kit-087",
+      "name": "photosynthetic-assimilation-domain-kit",
+      "purpose": "Track authored photosynthetic organisms through light capture, carbon-intake acceptance, energy-carrier and fixed-carbon pools, saturation, photoinhibition, dark recovery, and productivity from explicit environmental observations.",
+      "coreMapping": {
+        "configures": ["core-simulation-kit", "core-data-kit"],
+        "composesWith": ["core-agent-kit", "core-world-domain", "core-diagnostics-kit"],
+        "nonDuplicatedMeaning": "Core owns resources and observations while the carbon cycle owns ecosystem-scale reservoir transfers; this domain owns organism-level light capture, assimilation capacity, fixed-carbon production, photoinhibition, dark recovery, and productivity meaning."
+      },
+      "classification": "biological-process-domain",
+      "ownership": ["authored photosynthetic organism, pigment, and assimilation profiles", "light-capture and carbon-intake observation ledger", "energy-carrier and fixed-carbon pools", "assimilation-capacity and saturation state", "photoinhibition and dark-recovery history", "dark, limited, productive, saturated, inhibited, recovering, and failed classifications"],
+      "exclusions": ["weather, sky, or light generation", "plant transpiration and internal water balance", "soil nutrients", "ecosystem carbon-reservoir ownership", "organism growth, health, or reproduction", "leaf or chloroplast geometry", "renderer glow and vegetation", "real agronomy claims"],
+      "actions": ["register assimilation profile", "register organism", "record light observation", "record carbon-intake fact", "record resource observation", "advance assimilation", "apply shade or protection fact", "advance dark recovery", "retire organism", "reset assimilation"],
+      "resourcesAndState": ["photosyntheticAssimilation.profiles", "photosyntheticAssimilation.organisms", "photosyntheticAssimilation.observations", "photosyntheticAssimilation.carbonLedger", "photosyntheticAssimilation.energyPools", "photosyntheticAssimilation.tick"],
+      "events": ["photosynthesis.lightRecorded", "photosynthesis.carbonAccepted", "photosynthesis.assimilationCommitted", "photosynthesis.saturated", "photosynthesis.inhibited", "photosynthesis.recoveryStarted", "photosynthesis.productivityChanged", "photosynthesis.commandRejected", "photosynthesis.reset"],
+      "methods": ["registerProfile(definition)", "registerOrganism(definition)", "recordLight(fact)", "recordCarbon(fact)", "recordResource(fact)", "advance(ticks)", "applyProtection(fact)", "recover(ticks)", "retire(command)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned photosynthetic-assimilation snapshot", "organism, pigment, light, carbon, and resource descriptors", "energy-carrier, fixed-carbon, capacity, and saturation descriptors", "inhibition, recovery, productivity, and service summaries"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable profile, organism, light, carbon, resource, protection, and retirement IDs", "authored fictional assimilation and recovery rules", "explicit light-band, carbon-availability, water-status, nutrient-status, temperature, and damage observations"],
+      "expectedCompositions": ["plant-transpiration-domain-kit", "biogeochemical-carbon-cycle-domain-kit", "soil-nutrient-cycle-domain-kit", "seasonal-phenology-domain-kit"],
+      "plausibleUses": ["rotate a drowned sunfarm's canopy through scarce light windows without triggering photoinhibition", "cultivate phototrophic hull mats that store carbon energy during a vessel's day side"],
+      "experimentProof": "A seeded Sunken Sunfarm route must replay identical light, carbon, resource, protection, dark-recovery, retirement, and fixed-tick facts into the same energy pools, fixed carbon, saturation, inhibition, recovery, productivity, rejections, and digest across canopy and hull-mat profiles.",
+      "idempotencyRule": "Light, carbon, resource, protection, and retirement IDs commit once, organisms resolve in stable order, and accepted carbon is conserved across available, fixed, released, and explicitly lost stores.",
+      "duplicateAndMergeRisk": "The carbon cycle owns ecosystem reservoirs, plant transpiration owns water stores, and phenology owns biological timing. Live inventory has no reusable owner for organism-level light capture, assimilation capacity, fixed-carbon production, photoinhibition, and dark recovery.",
+      "promotionPotential": "Hold until light-response curves, inhibition and recovery, carbon conservation, snapshot migration, ecological-adapter parity, and plant plus microbial consumers pass."
+    },
+    {
+      "id": "bootstrap-kit-088",
+      "name": "atmospheric-aerosol-lifecycle-domain-kit",
+      "purpose": "Track authored suspended particulate populations through source injection, size and composition bands, coagulation, aging, supplied transport observations, dry deposition, washout, resuspension, and clearance without generating weather or rendering particles.",
+      "coreMapping": {
+        "configures": ["core-simulation-kit", "core-data-kit"],
+        "composesWith": ["core-world-domain", "core-spatial-kit", "core-physics-kit"],
+        "nonDuplicatedMeaning": "Core World and Spatial own cells and provider observations while contamination owns pollutant releases and cleanup; this domain owns suspended aerosol population lineage, size/composition evolution, coagulation, aging, deposition, washout, resuspension, and clearance meaning."
+      },
+      "classification": "world-state-domain",
+      "ownership": ["authored aerosol species, source, region, and lifecycle profiles", "size-band and composition-band populations", "source and transfer lineage", "coagulation and aging history", "dry deposition, washout, and resuspension ledger", "clear, loading, aged, depositing, washed, resuspended, and cleared classifications"],
+      "exclusions": ["weather, cloud, wind, or precipitation generation", "fluid or atmospheric-dynamics solving", "generic contamination cleanup ownership", "agent dose and health", "optical rendering or fog", "browser particles", "real air-quality forecasting", "wall-clock time"],
+      "actions": ["register aerosol profile", "register region", "record source fact", "record transport observation", "advance aerosol state", "record precipitation fact", "deposit particles", "resuspend deposit", "clear region", "reset aerosols"],
+      "resourcesAndState": ["atmosphericAerosol.profiles", "atmosphericAerosol.regions", "atmosphericAerosol.populations", "atmosphericAerosol.transferLedger", "atmosphericAerosol.depositLedger", "atmosphericAerosol.tick"],
+      "events": ["aerosol.sourceRecorded", "aerosol.populationTransferred", "aerosol.coagulated", "aerosol.aged", "aerosol.deposited", "aerosol.washedOut", "aerosol.resuspended", "aerosol.cleared", "aerosol.commandRejected", "aerosol.reset"],
+      "methods": ["registerProfile(definition)", "registerRegion(definition)", "recordSource(fact)", "recordTransport(fact)", "recordPrecipitation(fact)", "advance(ticks)", "deposit(command)", "resuspend(command)", "clear(command)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned atmospheric-aerosol snapshot", "species, source, region, transport, and precipitation descriptors", "size-band, composition-band, coagulation, and aging descriptors", "deposition, washout, resuspension, clearance, and population-balance summaries"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable profile, region, source, transport, precipitation, deposition, resuspension, and clearance IDs", "authored fictional aerosol evolution rules", "explicit wind, exchange, humidity, precipitation, surface, and disturbance observations"],
+      "expectedCompositions": ["environmental-contamination-domain-kit", "optical-propagation-domain-kit", "watershed-runoff-domain-kit", "instrument-calibration-domain-kit"],
+      "plausibleUses": ["track volcanic ash through observatory sectors until washout opens a safe observation window", "contain luminous industrial dust that ages, settles, and resuspends across a rotating habitat"],
+      "experimentProof": "A seeded Ashfall Observatory route must replay identical source, transport, precipitation, deposition, resuspension, clearance, and fixed-tick facts into the same size bands, aging, deposits, washout, regional clearance, rejections, and digest across volcanic-ash and luminous-dust profiles.",
+      "idempotencyRule": "Source, transport, precipitation, deposition, resuspension, and clearance IDs commit once, regions and size bands resolve in stable order, and particulate mass is conserved across suspended, deposited, washed, cleared, and lost stores.",
+      "duplicateAndMergeRisk": "Atmosphere kits own weather and visibility descriptors while contamination owns release risk and remediation. Live inventory has no reusable owner for suspended aerosol size populations, coagulation, aging, deposition, washout, and resuspension.",
+      "promotionPotential": "Experimental until multi-region transfers, coagulation and washout balance, snapshot migration, weather-observation adapters, and environmental plus habitat consumers pass."
+    },
+    {
+      "id": "bootstrap-kit-089",
+      "name": "stable-isotope-fractionation-domain-kit",
+      "purpose": "Track authored stable-isotope inventories and ratios across transfers, equilibrium or kinetic fractionation steps, mixing, exchange, signature formation, and provenance comparison without owning radioactive decay or real isotope data.",
+      "coreMapping": {
+        "configures": ["core-simulation-kit", "core-data-kit"],
+        "composesWith": ["core-diagnostics-kit", "core-world-domain", "core-policy-kit"],
+        "nonDuplicatedMeaning": "Core owns deterministic data and diagnostics while radioactive decay owns unstable nuclide branches; this domain owns stable-isotope ratio inventories, process-specific fractionation, mixing, exchange, signature formation, and comparison meaning."
+      },
+      "classification": "observation-domain",
+      "ownership": ["authored isotope-system, reservoir, process, and reference profiles", "stable-isotope quantity and ratio inventories", "equilibrium and kinetic fractionation ledger", "reservoir transfer, mixing, and exchange history", "derived signature and provenance-comparison state", "unresolved, mixed, fractionating, equilibrated, shifted, matched, and ambiguous classifications"],
+      "exclusions": ["radioactive decay or daughter production", "nuclear reaction and radiation fields", "chemical reaction and molecular structure", "generic specimen custody", "instrument calibration ownership", "real isotope constants", "real forensic or geologic claims", "renderer spectra or charts"],
+      "actions": ["register isotope system", "register reservoir", "record inventory fact", "record transfer", "apply fractionation step", "mix reservoirs", "exchange reservoirs", "compare signature", "retire reservoir", "reset fractionation"],
+      "resourcesAndState": ["stableIsotopeFractionation.systems", "stableIsotopeFractionation.reservoirs", "stableIsotopeFractionation.inventories", "stableIsotopeFractionation.processLedger", "stableIsotopeFractionation.signatures", "stableIsotopeFractionation.tick"],
+      "events": ["isotope.inventoryRecorded", "isotope.transferred", "isotope.fractionated", "isotope.mixed", "isotope.exchanged", "isotope.signatureChanged", "isotope.signatureMatched", "isotope.ambiguityRaised", "isotope.commandRejected", "isotope.reset"],
+      "methods": ["registerSystem(definition)", "registerReservoir(definition)", "recordInventory(fact)", "recordTransfer(fact)", "applyFractionation(command)", "mix(command)", "exchange(command)", "compareSignature(command)", "retire(command)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned stable-isotope-fractionation snapshot", "system, reservoir, reference, and inventory descriptors", "ratio, transfer, mixing, exchange, and fractionation descriptors", "signature, match, ambiguity, provenance, and balance summaries"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable system, reservoir, inventory, transfer, process, mixing, exchange, comparison, and retirement IDs", "authored fictional fractionation and reference rules", "explicit quantity, phase, temperature, source, transfer, and measurement observations"],
+      "expectedCompositions": ["radioactive-decay-chain-domain-kit", "specimen-integrity-domain-kit", "instrument-calibration-domain-kit", "biogeochemical-carbon-cycle-domain-kit"],
+      "plausibleUses": ["trace stolen water between lunar settlements by comparing fictional stable-isotope signatures", "reconstruct an extinct creature's migration from preserved shell layers without invoking radioactive dating"],
+      "experimentProof": "A seeded Isotope Cartographer route must replay identical inventories, transfers, fractionation steps, mixing, exchange, comparisons, and retirement facts into the same ratios, signatures, matches, ambiguity, balances, rejections, and digest across lunar-water and fossil-shell profiles.",
+      "idempotencyRule": "Inventory, transfer, process, mixing, exchange, comparison, and retirement IDs commit once, systems and reservoirs resolve in stable order, and each isotope quantity is conserved across reservoirs, transfers, and explicit losses.",
+      "duplicateAndMergeRisk": "Radioactive decay owns unstable nuclide branching and specimen integrity owns sample condition. Live inventory has no reusable owner for stable-isotope ratio inventories, process fractionation, mixing, signature formation, and provenance comparison.",
+      "promotionPotential": "Hold until multi-isotope systems, mixing and exchange, conservation, snapshot migration, instrument-observation parity, and ecological plus provenance consumers pass."
+    },
+    {
+      "id": "bootstrap-kit-090",
+      "name": "semiconductor-carrier-domain-kit",
+      "purpose": "Resolve authored semiconductor regions and junctions through supplied electric, thermal, and illumination observations into carrier populations, injection, extraction, recombination, trapping, depletion, conductivity bands, and breakdown-risk intents without solving fields or circuits.",
+      "coreMapping": {
+        "configures": ["core-simulation-kit", "core-data-kit"],
+        "composesWith": ["core-physics-kit", "core-spatial-kit", "core-diagnostics-kit"],
+        "nonDuplicatedMeaning": "Core Physics owns observations, dielectric interaction owns polarization and stored charge, and power distribution owns source-to-load service; this domain owns mobile-carrier populations, junction depletion, injection, recombination, trapping, conductivity bands, and semiconductor service meaning."
+      },
+      "classification": "simulation-domain",
+      "ownership": ["authored semiconductor material, region, junction, and carrier profiles", "electron-like and hole-like carrier populations", "doping and depletion-region state", "carrier injection, extraction, recombination, and trapping ledger", "mobility and conductivity bands", "off, depleted, conducting, saturated, trapped, breakdown-risk, damaged, and recovered classifications"],
+      "exclusions": ["electromagnetic field or quantum solving", "circuit simulation and power allocation", "bulk dielectric polarization and capacitive storage", "electrochemical energy storage", "device geometry generation", "renderer lights or materials", "asset-specific electronics puzzles", "real semiconductor guidance"],
+      "actions": ["register carrier profile", "register region", "register junction", "record electric observation", "record thermal observation", "record illumination fact", "advance carriers", "inject or extract carriers", "clear traps or recover junction", "reset carriers"],
+      "resourcesAndState": ["semiconductorCarrier.profiles", "semiconductorCarrier.regions", "semiconductorCarrier.junctions", "semiconductorCarrier.populations", "semiconductorCarrier.transferLedger", "semiconductorCarrier.tick"],
+      "events": ["semiconductor.observationRecorded", "semiconductor.carriersInjected", "semiconductor.carriersRecombined", "semiconductor.carriersTrapped", "semiconductor.depletionChanged", "semiconductor.conductivityChanged", "semiconductor.breakdownRiskRaised", "semiconductor.recovered", "semiconductor.commandRejected", "semiconductor.reset"],
+      "methods": ["registerProfile(definition)", "registerRegion(definition)", "registerJunction(definition)", "recordElectric(fact)", "recordThermal(fact)", "recordIllumination(fact)", "advance(ticks)", "transferCarriers(command)", "recover(command)", "getSnapshot()", "reset()"],
+      "snapshotsAndDescriptors": ["versioned semiconductor-carrier snapshot", "material, region, junction, field, thermal, and illumination descriptors", "carrier-population, depletion, injection, recombination, trap, and conductivity descriptors", "saturation, breakdown-risk, damage, recovery, and service summaries"],
+      "dependencies": ["NexusEngine defineDomainServiceKit", "stable profile, region, junction, electric, thermal, illumination, transfer, and recovery IDs", "authored fictional carrier and junction rules", "explicit field, voltage, current, temperature, illumination, geometry, and damage observations"],
+      "expectedCompositions": ["dielectric-interaction-domain-kit", "power-distribution-domain-kit", "photoluminescence-domain-kit", "instrument-calibration-domain-kit"],
+      "plausibleUses": ["repair a light-sensitive junction garden by clearing traps before its signal paths saturate", "route charge carriers through an ancient crystal computer while heat expands its depleted regions"],
+      "experimentProof": "A seeded Junction Garden route must replay identical electric, thermal, illumination, transfer, recovery, and fixed-tick facts into the same carrier populations, depletion, recombination, traps, conductivity, breakdown risk, rejections, and digest across sensor-garden and crystal-computer profiles.",
+      "idempotencyRule": "Observation, transfer, recovery, and junction IDs commit once, regions and junctions resolve in stable order, and carrier totals remain bounded by authored generation, injection, recombination, extraction, trapping, and loss facts.",
+      "duplicateAndMergeRisk": "Dielectric interaction owns polarization, electrochemical storage owns cell charge, and power distribution owns grid service. Live inventory has no reusable owner for semiconductor carrier populations, junction depletion, injection, recombination, trapping, and conductivity bands.",
+      "promotionPotential": "Experimental until multi-junction transfer, carrier balance, trap recovery, snapshot migration, field-observation parity, and sensing plus computation consumers pass."
     }
   ],
   "rejectedCandidates": [
@@ -2287,6 +2537,36 @@
       "name": "biological-tissue-repair-domain-kit",
       "rejectionClass": "duplicate-existing-kit",
       "reason": "Existing damage-health kits already own health, wounds, healing, restoration, defeat, and invulnerability, while status-effect and contagion owners cover staged subject conditions. The proposed repair lifecycle did not clear that existing healing boundary."
+    },
+    {
+      "name": "powder-compaction-domain-kit",
+      "rejectionClass": "duplicate-catalog-candidate",
+      "reason": "Accepted granular-material-state-domain-kit already owns packing and compaction while plastic-deformation-domain-kit owns load-driven yield and permanent set. The accepted sintering boundary starts after a compact exists and owns only neck formation, pore closure, densification, and fired quality."
+    },
+    {
+      "name": "organism-thermoregulation-domain-kit",
+      "rejectionClass": "duplicate-existing-kit",
+      "reason": "The existing survival-needs-domain-service-kit explicitly owns health, hunger, thirst, stamina, temperature, sleep, and exposure descriptors, while Core and generic pressure meters own threshold resources. A second organism-temperature ledger did not clear that implemented semantic boundary."
+    },
+    {
+      "name": "refrigeration-cycle-domain-kit",
+      "rejectionClass": "duplicate-catalog-candidate",
+      "reason": "Accepted thermal-energy-network-domain-kit owns zone heat transfer and material-phase-transition-domain-kit owns latent phase changes, while power distribution owns supplied service. A refrigeration cycle is a composition of those owners plus host-authored machinery observations."
+    },
+    {
+      "name": "dune-migration-domain-kit",
+      "rejectionClass": "duplicate-existing-kit",
+      "reason": "The current idea inventory already declares sediment-flow-kit, terrain-erosion-solver-domain-kit emits sediment and deposition deltas, and wind fields provide transport observations. A dune wrapper would specialize the same sediment and terrain state to one landform."
+    },
+    {
+      "name": "electroplating-deposition-domain-kit",
+      "rejectionClass": "duplicate-catalog-candidate",
+      "reason": "Accepted chemical-reaction batches own conversion and yield, crystal nucleation owns growth fronts and defects, corrosion owns surface loss, and power distribution owns electrical service. Electroplating did not isolate durable state beyond that explicit composition."
+    },
+    {
+      "name": "cloud-microphysics-domain-kit",
+      "rejectionClass": "duplicate-existing-kit",
+      "reason": "Existing atmosphere and cloud families already own cloud, humidity, precipitation, and visibility descriptors, while accepted bulk phase, capillary, and aerosol boundaries own adjacent condensation and suspended-particle state. The proposal blurred weather generation with those owners."
     }
   ]
 }

@@ -2,11 +2,11 @@
 
 Status: catalog-only; experiment gate remains blocked
 Accepted production experiment signatures: 0 of 50 bootstrap experiments
-Accepted bootstrap kit contracts: 80 of 100
+Accepted bootstrap kit contracts: 90 of 100
 
 ## Catalog Composition Pressure
 
-The first eighty definitions are not route shells. They support at least sixty-one mechanically distinct future seeded proof clusters:
+The first ninety definitions are not route shells. They support at least seventy-one mechanically distinct future seeded proof clusters:
 
 - Quarantine Lantern: contagion + triage + rumor + navigation knowledge.
 - Rewilding Basin: ecosystem population + habitat suitability + territory influence.
@@ -69,6 +69,16 @@ The first eighty definitions are not route shells. They support at least sixty-o
 - Canopy Lifeline: plant transpiration + soil nutrients + capillary wetting + phenology.
 - Thunderstone Relay: piezoelectric transduction + dielectric interaction + resonance + energy storage.
 - Crystal Nursery: crystal nucleation and growth + phase transition + thermal energy + calibration.
+- Ribbon Labyrinth: chromatographic separation + surface sorption + specimen integrity + calibration.
+- Vapor Crown: fractional distillation + phase transition + thermal energy + calibration.
+- Dustwell Gauntlet: depth filtration + contamination + potable-water service + calibration.
+- Kilnweb Station: sintering densification + granular material state + thermal energy + calibration.
+- Pearl Current: emulsion stability + phase transition + surface sorption + chemical reaction.
+- Bubbleworks Breach: bulk foam evolution + emulsion stability + contamination + calibration.
+- Sunken Sunfarm: photosynthetic assimilation + plant transpiration + soil nutrients + carbon cycling.
+- Ashfall Observatory: atmospheric aerosol lifecycle + contamination + optical propagation + watershed runoff.
+- Isotope Cartographer: stable-isotope fractionation + radioactive decay + specimen integrity + calibration.
+- Junction Garden: semiconductor carriers + dielectric interaction + power distribution + photoluminescence.
 
 These are proof targets, not accepted experiment records. Seeds, candidate draw order, rejections, kit signatures, routes, and playable validation do not exist yet and therefore do not count.
 
@@ -87,5 +97,5 @@ Every accepted experiment must record epoch, lifecycle status, seed, full candid
 
 - Exact duplicate production signatures: 0 because no production signatures are accepted.
 - Near-duplicate production signatures: 0 because no production signatures are accepted.
-- Catalog boundary duplication: 0 accepted; forty-eight candidates were rejected before acceptance across the first eight batches.
+- Catalog boundary duplication: 0 accepted; fifty-four candidates were rejected before acceptance across the first nine batches.
 - Diversity claim: contract pressure only; no playable diversity claim yet.

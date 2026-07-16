@@ -1,7 +1,7 @@
 # Core Domain Coverage Report
 
 Status: bootstrap Phase B catalog in progress
-Accepted catalog definitions: 80 of 100 bootstrap definitions
+Accepted catalog definitions: 90 of 100 bootstrap definitions
 Implemented production kits: 0
 Playable production experiments: 0
 
@@ -93,6 +93,16 @@ Core is authoritative. A new kit must name the Core domains it configures or com
 | `plant-transpiration-domain-kit` | simulation + data + world/agent/spatial observations | plant water stores, stomatal regulation, transpiration, turgor, wilting, and recovery | pass |
 | `piezoelectric-transduction-domain-kit` | simulation + data + physics/spatial/diagnostics observations | bidirectional strain-charge transduction, orientation, coupling, saturation, and depolarization | pass |
 | `crystal-nucleation-growth-domain-kit` | simulation + data + physics/world observations; Core Object Shape handoff | nucleus lineage, growth-front competition, habit, inclusions, defects, annealing, and quality | pass |
+| `chromatographic-separation-domain-kit` | simulation + data + diagnostics/physics/world observations | separation runs, band migration, elution order, peak resolution, fraction purity, and recovery | pass |
+| `fractional-distillation-domain-kit` | simulation + data + physics/world/diagnostics observations | stage-wise component partition, reflux, reboil, cut collection, purity, flooding, and dryout | pass |
+| `depth-filtration-domain-kit` | simulation + data + physics/world/diagnostics observations | depth-wise particulate capture, media loading, channeling, breakthrough, backwash, and service | pass |
+| `sintering-densification-domain-kit` | simulation + data + physics/diagnostics observations; Core Object Shape handoff | compact neck formation, pore closure, densification, shrinkage intents, warpage risk, and quality | pass |
+| `emulsion-stability-domain-kit` | simulation + data + physics/world/spatial observations | droplet populations, flocculation, drift, coalescence, inversion, breakage, and restoration | pass |
+| `bulk-foam-evolution-domain-kit` | simulation + data + physics/world/spatial observations | bulk foam batches, bubble populations, drainage, coarsening, coalescence, collapse, and recovery | pass |
+| `photosynthetic-assimilation-domain-kit` | simulation + data + agent/world/diagnostics observations | light capture, assimilation capacity, fixed-carbon pools, photoinhibition, recovery, and productivity | pass |
+| `atmospheric-aerosol-lifecycle-domain-kit` | simulation + data + world/spatial/physics observations | aerosol populations, coagulation, aging, deposition, washout, resuspension, and clearance | pass |
+| `stable-isotope-fractionation-domain-kit` | simulation + data + diagnostics/world/policy observations | stable-isotope inventories, process fractionation, mixing, signatures, and provenance comparison | pass |
+| `semiconductor-carrier-domain-kit` | simulation + data + physics/spatial/diagnostics observations | carrier populations, junction depletion, injection, recombination, trapping, and conductivity bands | pass |
 
 No definition claims Core state primitives, provider implementations, renderer ownership, raw input, browser lifecycle, or game-specific content.
 
@@ -146,6 +156,12 @@ No definition claims Core state primitives, provider implementations, renderer o
 - `permafrost-thaw-domain-kit`: accepted cryosphere, phase-transition, thermal, and carbon boundaries already own its proposed state.
 - `ocean-carbonate-balance-domain-kit`: accepted acid-base, carbon, salinity, and oxygen boundaries already own its proposed state.
 - `biological-tissue-repair-domain-kit`: existing damage-health and status owners already own wounds, healing, restoration, and staged subject conditions.
+- `powder-compaction-domain-kit`: accepted granular packing and plastic yield owners already cover the proposed compacting state; sintering starts after a compact exists.
+- `organism-thermoregulation-domain-kit`: existing survival-needs semantics already own temperature and exposure descriptors while promoted pressure resources own thresholds.
+- `refrigeration-cycle-domain-kit`: accepted thermal, phase-transition, and power owners already provide the complete composition boundary.
+- `dune-migration-domain-kit`: documented sediment flow, terrain erosion, and wind observations already own the proposed landform-specific state.
+- `electroplating-deposition-domain-kit`: accepted reaction, crystal-growth, corrosion, and power boundaries already own its reusable state.
+- `cloud-microphysics-domain-kit`: existing atmosphere/cloud families plus accepted phase, capillary, and aerosol owners already cover the blurred proposal.
 
 ## Baseline Risk Map
 
@@ -165,4 +181,4 @@ No definition claims Core state primitives, provider implementations, renderer o
 
 ## Exact Next Audit
 
-Audit bootstrap catalog definitions 081-090 against all 514 existing top-level folders, nested declarations, package exports, and the current Core map before acceptance.
+Audit bootstrap catalog definitions 091-100 against all 514 existing top-level folders, nested declarations, package exports, and the current Core map before acceptance.
