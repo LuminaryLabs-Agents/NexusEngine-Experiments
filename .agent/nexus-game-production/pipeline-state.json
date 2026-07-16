@@ -30,7 +30,7 @@
     "coreRemoteDefault": "80146b8947e0877e26b851563bd17f5cdfcbf38a",
     "coreLocalReadOnly": "8b57b03904889cdbc71021d3bdb1d4070af5c8d3",
     "protokits": "04d34f049f58ae359cf71d43466c429dac2a6d08",
-    "experiments": "b3b9553e3ee495a66debe9cf3509134a62b31597",
+    "experiments": "87e3a1b10d1bba9d21b520b5b8f316f365a3050d",
     "experimentsBaseline": "615a7e1e2170164acef0edebdbe0b88b8c01fd1b"
   },
   "baseline": {
@@ -142,9 +142,9 @@
     "result": "Accepted 10 genuinely new natural-language kit contracts after six additional duplicate, catalog-overlap, or blurred-scope rejections; no implementation was created."
   },
   "lastCreationUnit": {
-    "packetId": "2026-07-16-next-ledge-counterwind-handoff",
+    "packetId": "2026-07-16-next-ledge-post-rejoin-consequence",
     "scope": "legacy-active-experiment-player-visible-upgrade",
-    "result": "Upgraded Next Ledge with a completion-gated summit broadcast, route handshake, reversed-wind sector opening, four authored counterwind anchors, and measured Playwright plus Human View proof; production creation counts remain unchanged."
+    "result": "Upgraded Next Ledge so Shelter Rise earns one protected post-rejoin grapple while Signal Cut retains fall pressure until a deliberate Stormlock vent; production creation counts remain unchanged."
   },
   "lastRefinementUnit": {
     "packetId": "2026-07-16-next-ledge-post-rest-route-choice",
@@ -152,23 +152,23 @@
     "result": "Counterwind Rest now opens one readable mint recovery line and one amber signal shortcut at +46 pressure; both paths use the existing route/cargo/pressure owners and converge at Fork Relay."
   },
   "lastCompletedUnit": {
-    "packetId": "2026-07-16-next-ledge-post-rest-route-choice",
-    "scope": "Next Ledge post-rest safe-versus-pressure route choice",
-    "result": "Counterwind Rest now presents Shelter Rise as a zero-pressure recovery ascent and Signal Cut as a 1.75-cargo shortcut at +46 pressure before both paths rejoin at Fork Relay.",
-    "validation": "All 28 Next Ledge test entrypoints and changed-file syntax passed. Playwright traversed both complete changed branches through session input, proved 0-pressure/3.5-cargo safe rejoin, 45-pressure/4.25-cargo shortcut rejoin, 100-pressure failure and zero-pressure retry, closed/open/closed Advanced disclosure, stable settled DOM/entity/descriptor counts, and zero console messages. Human View passed first-screen, choice, both rejoin, failure, and recovery screenshots; the fresh-browser matched active-play sample held 8.83 to 8.80 FPS (-0.4%) while aggregate long-task rate and duration improved.",
+    "packetId": "2026-07-16-next-ledge-post-rejoin-consequence",
+    "scope": "Next Ledge first post-rejoin branch consequence",
+    "result": "Fork Relay now carries the chosen branch into Stormlock Restore: Shelter Rise grants one protected grapple and Signal Cut retains 45 fall pressure until a deliberate vent.",
+    "validation": "All 28 Next Ledge test entrypoints and changed-file syntax passed. Playwright traversed both changed branches through public session input, proved the protected safe catch and retained-pressure shortcut vent, reached a real dead state and keyboard retry, completed the final cleanup replay, checked closed/open/closed Advanced disclosure, stable settled DOM/entity/descriptor counts, and zero console messages. Human View passed first-screen, active consequence, and resolved screenshots; matched clean-browser FPS improved from 16.54 to 33.96 and p95 frame time improved from 82.50 ms to 34.30 ms.",
     "commits": {
       "coreReadOnly": "8b57b03904889cdbc71021d3bdb1d4070af5c8d3",
       "protokitsStart": "04d34f049f58ae359cf71d43466c429dac2a6d08",
       "protokitsProductionUnit": "04d34f049f58ae359cf71d43466c429dac2a6d08",
-      "experimentsStart": "b3b9553e3ee495a66debe9cf3509134a62b31597",
-      "experimentsProductionUnit": "38b782940c62c473cb87c65b7235e916f8a9155d"
+      "experimentsStart": "87e3a1b10d1bba9d21b520b5b8f316f365a3050d",
+      "experimentsProductionUnit": "PENDING"
     },
-    "publication": "Experiments production commit 38b782940c62c473cb87c65b7235e916f8a9155d is published on origin/main after fetch-before-push verification; ProtoKits is unchanged and synchronized at 04d34f049f58ae359cf71d43466c429dac2a6d08."
+    "publication": "Validated production unit is ready for the owned production and receipt commits; ProtoKits is unchanged and synchronized at 04d34f049f58ae359cf71d43466c429dac2a6d08."
   },
   "exactNextUnit": {
     "phase": "playable-experiment-upgrade",
     "epoch": 0,
-    "scope": "next-ledge-post-rejoin-choice-consequence",
-    "goal": "Carry the chosen route consequence through the first post-rejoin restore with one protected grapple window after Shelter Rise versus a visible retained-pressure vent demand after Signal Cut, using the existing recovery and pressure owners."
+    "scope": "next-ledge-post-stormlock-payoff",
+    "goal": "Add one immediate post-Stormlock payoff anchor where safe protection becomes a faster launch window and shortcut cargo opens a harder amber high line, without a new control or state owner."
   }
 }

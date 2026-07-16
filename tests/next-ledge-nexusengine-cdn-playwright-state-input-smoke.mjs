@@ -50,25 +50,32 @@ for (const kit of expectedKits) assert.ok(visualKits.includes(kit), kit);
 assert.ok(session.includes("https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js"));
 assert.ok(session.includes("LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08"));
 assert.ok(!session.includes("NexusRealtime-ProtoKits"));
-assert.match(session, /safeAnchorY - n\(state\.tuning\.failFloorDistance/, "failure should use the last safe anchor instead of a following camera");
+assert.match(session, /safeAnchorY - failFloorDistance/, "failure should use the last safe anchor plus the active recovery window instead of a following camera");
 for (const visibleSurface of ["Next Ledge", "A / D", "SPACE / CLICK", "R</b> retry", "Signal cargo", "Fall pressure", "Advanced controls + diagnostic layers"]) {
   assert.ok(index.includes(visibleSurface), `first screen should include ${visibleSurface}`);
 }
 for (const masterySurface of ["Stormbreak rest", "Commit perch", "Crosswind catch", "Relay crown", "Summit relay"]) {
   assert.ok(climbPreset.includes(masterySurface), `authored mastery crest should include ${masterySurface}`);
 }
-for (const choiceSurface of ["Shelter rise", "Signal cut", "Fork relay", "pressureDelta: 46", "cargoBonus: 1.75"]) {
+for (const choiceSurface of ["Shelter rise", "Signal cut", "Fork relay", "Stormlock restore", "pressureDelta: 46", "cargoBonus: 1.75", "protectedFailFloorBonus: 210", "pressureRecovery: 100"]) {
   assert.ok(climbPreset.includes(choiceSurface), `authored post-rest choice should include ${choiceSurface}`);
 }
 assert.match(climbAdapter, /postRestChoice/, "route adapter should expose the authored post-rest choice descriptor");
 assert.match(climbAdapter, /routeChoiceRole/, "route adapter should preserve safe, shortcut, and rejoin roles");
 assert.match(session, /routeChoice: createInitialRouteChoice/, "session should own one deterministic route-choice state");
 assert.match(session, /route-choice-skipped/, "unselected branch should reconcile through the existing route-progress ledger");
+assert.match(session, /protectedRecoveryWindow/, "the safe consequence should extend the existing recovery window rather than add a second recovery owner");
+assert.match(session, /post-rejoin-protected-grapple-consumed/, "the safe consequence should resolve after one protected grapple");
+assert.match(session, /post-rejoin-pressure-vented/, "the shortcut consequence should publish one semantic pressure vent event");
 assert.match(cargoWrapper, /post-rest-route-choice-committed/, "shortcut commitment should bridge into the existing route-cargo facade");
+assert.match(cargoWrapper, /post-rejoin-pressure-vented/, "the post-rejoin vent should bridge into the existing route-cargo pressure facade");
 assert.match(cargoWrapper, /syncCurrentCargoCheckpoint/, "route-cargo progress should begin from the current anchor instead of a stale base checkpoint");
 assert.match(renderer, /safeChoiceLine/, "renderer should expose the mint branch through a bounded line entity");
 assert.match(renderer, /shortcutChoiceLine/, "renderer should expose the amber branch through a bounded line entity");
+assert.match(renderer, /consequenceLine/, "renderer should expose one bounded post-rejoin consequence line");
 assert.match(hud, /MINT — Shelter recovery · AMBER — Signal shortcut/, "the contextual hero prompt should explain both routes without adding a control");
+assert.match(hud, /MINT WINDOW — Protected grapple to Stormlock Restore/, "the contextual hero prompt should explain the safe post-rejoin consequence");
+assert.match(hud, /AMBER PRESSURE — Grapple Stormlock Restore to vent/, "the contextual hero prompt should explain the shortcut vent demand");
 assert.match(climbAdapter, /masteryCrestId/, "route adapter should preserve mastery crest metadata");
 assert.match(climbAdapter, /authoredRouteBeat/, "route adapter should mark authored late-route beats");
 assert.match(index, /id="completionPanel"/, "route shell should provide an unmistakable summit completion surface");

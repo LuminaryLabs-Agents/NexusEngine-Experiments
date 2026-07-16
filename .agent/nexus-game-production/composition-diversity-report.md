@@ -102,6 +102,7 @@ These are proof targets, not accepted experiment records. Seeds, candidate draw 
 - The counterwind handoff deepens that same proven stormline composition with a completion-gated broadcast, route handshake, reversed wind, and a four-beat opening. It does not change the fantasy, interaction family, or production signature, so creation and diversity counts remain unchanged.
 - The pressure-crescendo refinement makes that four-beat opening more readable and recoverable through authored gust stages and the existing generic pressure facade. It adds no kit, experiment, route family, signature, or production count.
 - The post-rest signal fork deepens the same composition with a safe recovery line and a pressure-for-reward shortcut that rejoin inside one route. It preserves the eight-feature signature and creates no new experiment, route family, or production count.
+- The post-rejoin consequence upgrade carries that fork into one protected grapple or one retained-pressure vent at Stormlock Restore. It preserves the same fantasy, verb, interaction structure, and eight-feature signature, so creation and diversity counts remain unchanged.
 
 ## Diversity Gate
 
@@ -117,4 +118,5 @@ Every accepted experiment must record epoch, lifecycle status, seed, full candid
 - The Next Ledge mastery crest is an in-place legacy upgrade, so duplicate and near-duplicate production-signature totals remain zero and production creation counts remain unchanged.
 - The Next Ledge counterwind pressure crescendo remains inside the same eight-feature signature; exact and near-duplicate production-signature totals remain zero.
 - The Next Ledge post-rest route choice remains an in-place legacy refinement; its safe and shortcut branches share one route-progress/cargo/pressure composition and do not create a duplicate production signature.
+- The Next Ledge Stormlock consequence remains an in-place legacy refinement; it adds no kit, experiment, route family, production signature, or production count.
 - Diversity claim: contract pressure only; no playable diversity claim yet.

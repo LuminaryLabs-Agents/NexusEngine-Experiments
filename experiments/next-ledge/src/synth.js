@@ -75,6 +75,13 @@ export function createCinematicSynth() {
     else if (type === "post-rest-route-choice-rejoined") {
       [392, 523.25, 783.99].forEach((frequency, index) => setTimeout(() => tone(frequency, 0.32, "sine", 0.05, frequency * 1.2), index * 70));
     }
+    else if (type === "post-rejoin-protected-grapple-consumed") {
+      [329.63, 493.88, 783.99].forEach((frequency, index) => setTimeout(() => tone(frequency, 0.36, "sine", 0.06, frequency * 1.22), index * 72));
+    }
+    else if (type === "post-rejoin-pressure-vented") {
+      tone(174.61, 0.5, "sawtooth", 0.07, 87.31);
+      [392, 587.33, 880].forEach((frequency, index) => setTimeout(() => tone(frequency, 0.38, "triangle", 0.06, frequency * 1.18), 110 + index * 76));
+    }
   }
 
   return {

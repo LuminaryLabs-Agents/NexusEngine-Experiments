@@ -83,6 +83,26 @@ export function createNextLedgeClimbPreset(options = {}) {
       radius: 8.8,
       status: "Fork Relay secured. Route choice banked—carry the signal upward.",
       tags: ["post-rest-choice", "route-rejoin", "signal-relay"]
+    },
+    postRejoin: {
+      index: 8,
+      id: "stormlock-restore",
+      role: "post-rejoin-restore",
+      label: "Stormlock restore",
+      type: "rest",
+      x: 68 * windDirection,
+      y: 864,
+      radius: 10.2,
+      staminaRestore: 74,
+      gustIntensity: 0.1,
+      pressureRecovery: 100,
+      protectedFailFloorBonus: 210,
+      protectedAimAssistBonus: 30,
+      safeStatus: "Shelter line banked. One protected grapple reaches Stormlock Restore.",
+      shortcutStatus: "Signal pressure retained. Grapple Stormlock Restore to vent the amber line.",
+      resolvedSafeStatus: "Protected catch confirmed. Stormlock Restore is stable.",
+      resolvedShortcutStatus: "Stormlock vent secured. Retained signal pressure released.",
+      tags: ["post-rest-choice", "post-rejoin-restore", "pressure-vent", "protected-catch"]
     }
   };
   return {

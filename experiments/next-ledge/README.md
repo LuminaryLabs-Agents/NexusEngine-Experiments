@@ -10,6 +10,8 @@ That opening is an authored pressure crescendo: the fixed-size wind field accele
 
 Counterwind Rest now opens a short two-line decision without adding a control: grapple onto the mint Shelter Rise for a protected stamina recovery, or commit to the amber Signal Cut for a faster cache while the existing fall-pressure service rises to 46%. Both authored lines rejoin at Fork Relay, the unselected branch closes, and the same route-progress/cargo services preserve state across the decision.
 
+That choice now persists beyond the rejoin. Shelter Rise grants one protected grapple window to the authored Stormlock Restore, extending the existing traversal-recovery floor and aim-assist tuning until the catch lands. Signal Cut keeps its amber pressure live through Fork Relay and names Stormlock Restore as the deliberate vent target; the existing route-cargo pressure facade performs the recovery when the player secures it. The same route-choice state owns both consequences, and no new control or pressure ledger is introduced.
+
 The playable route composes real reusable features from NexusEngine-ProtoKits:
 
 ```txt

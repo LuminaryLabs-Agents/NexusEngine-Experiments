@@ -154,8 +154,10 @@ export function createThreeRenderer({ canvas }) {
   const routeLine = new THREE.Line(new THREE.BufferGeometry(), makeLineMaterial(0x133a4a, 0.42));
   const safeChoiceLine = new THREE.Line(new THREE.BufferGeometry(), makeLineMaterial(0x3dffa3, 0.5));
   const shortcutChoiceLine = new THREE.Line(new THREE.BufferGeometry(), makeLineMaterial(0xffb83d, 0.52));
+  const consequenceLine = new THREE.Line(new THREE.BufferGeometry(), makeLineMaterial(0x3dffa3, 0.62));
   safeChoiceLine.visible = false;
   shortcutChoiceLine.visible = false;
+  consequenceLine.visible = false;
   const traj = new THREE.Line(new THREE.BufferGeometry(), makeLineMaterial(0xffb83d, 0.42));
   const aim = new THREE.Line(new THREE.BufferGeometry(), makeLineMaterial(0xfff3bd, 0.86));
   const reach = new THREE.Mesh(new THREE.RingGeometry(148.8, 150, 64), m.reach);
@@ -186,7 +188,7 @@ export function createThreeRenderer({ canvas }) {
   summitLight.position.z = 38;
   summitCelebration.add(summitLight);
   summitCelebration.visible = false;
-  scene.add(routeLine, safeChoiceLine, shortcutChoiceLine, player, staminaHalo, dangerHalo, probe, rope, traj, aim, reach, aimHead, aimEnd, aimCore, aimParticles, counterwindField, summitCelebration);
+  scene.add(routeLine, safeChoiceLine, shortcutChoiceLine, consequenceLine, player, staminaHalo, dangerHalo, probe, rope, traj, aim, reach, aimHead, aimEnd, aimCore, aimParticles, counterwindField, summitCelebration);
 
   const diegeticEffects = createDiegeticEffects({ scene });
   let routeKey = "";
@@ -346,7 +348,7 @@ export function createThreeRenderer({ canvas }) {
     const ledges = snapshot.route?.ledges ?? [];
     const currentIndex = Math.max(0, ledges.findIndex((ledge) => ledge.id === snapshot.currentAnchorId));
     const choice = snapshot.routeChoice;
-    const shortcutActive = choice?.status === "committed" && choice.selectedRole === "pressure-shortcut";
+    const shortcutActive = ["committed", "consequence-active"].includes(choice?.status) && choice.selectedRole === "pressure-shortcut";
     const visible = Boolean(opening && (snapshot.sectorTransition?.phase === "opening" || currentIndex <= num(opening.endIndex, 4) || choice?.status === "open" || shortcutActive));
     counterwindField.visible = visible;
     if (!visible) return;
@@ -423,12 +425,13 @@ export function createThreeRenderer({ canvas }) {
       ledges.add(g);
       ledgeMap.set(l.id, g);
       if (!choiceTargetIds.has(l.id)) routePoints.push({ x: l.x, y: l.y, z: -0.5 });
-      if (l.type === "summit" || (l.type === "rest" && !choiceRole)) {
+      if (l.type === "summit" || (l.type === "rest" && (!choiceRole || choiceRole === "post-rejoin-restore"))) {
         const height = l.type === "summit" ? 420 : 120;
-        const beamMaterial = l.type === "summit" ? m.summitBeam : m.beacon;
+        const beamMaterial = choiceRole === "post-rejoin-restore" ? m.beacon.clone() : l.type === "summit" ? m.summitBeam : m.beacon;
         const beam = new THREE.Mesh(new THREE.CylinderGeometry(l.type === "summit" ? 7 : 4, l.type === "summit" ? 1.8 : 0.8, height, 18, 1, true), beamMaterial);
         beam.position.set(l.x, l.y + height / 2, -2);
         beam.userData = { id: l.id, sourceY: l.y, type: l.type, choiceRole };
+        if (choiceRole === "post-rejoin-restore") beam.userData.ownsMaterial = true;
         beacons.add(beam);
       }
     }
@@ -439,11 +442,14 @@ export function createThreeRenderer({ canvas }) {
       const safe = byId[choice.safeAnchorId];
       const shortcut = byId[choice.shortcutAnchorId];
       const rejoin = byId[choice.rejoinAnchorId];
+      const postRejoin = byId[choice.postRejoinAnchorId];
       setLine(safeChoiceLine, [rest, safe, rejoin].filter(Boolean).map(({ x, y }) => ({ x, y, z: 0 })));
       setLine(shortcutChoiceLine, [rest, shortcut, rejoin].filter(Boolean).map(({ x, y }) => ({ x, y, z: 0 })));
+      setLine(consequenceLine, [rejoin, postRejoin].filter(Boolean).map(({ x, y }) => ({ x, y, z: 24 })));
     } else {
       setLine(safeChoiceLine, []);
       setLine(shortcutChoiceLine, []);
+      setLine(consequenceLine, []);
     }
     const summit = snapshot.route?.ledges?.find((ledge) => ledge.type === "summit");
     if (summit) summitCelebration.position.set(summit.x, summit.y, 12);
@@ -464,10 +470,13 @@ export function createThreeRenderer({ canvas }) {
     const trauma = clamp01(snapshot.camera?.trauma ?? 0);
     const summit = snapshot.route?.ledges?.find((ledge) => ledge.type === "summit");
     const openingReveal = snapshot.sectorTransition?.phase === "opening";
-    const choiceFraming = snapshot.routeChoice?.status === "open";
+    const choiceFraming = ["open", "consequence-active"].includes(snapshot.routeChoice?.status);
     const choiceRest = snapshot.route?.ledges?.find((ledge) => ledge.id === snapshot.routeChoice?.restAnchorId);
     const choiceRejoin = snapshot.route?.ledges?.find((ledge) => ledge.id === snapshot.routeChoice?.rejoinAnchorId);
-    const choiceCameraY = choiceRest && choiceRejoin ? (choiceRest.y + choiceRejoin.y) * 0.5 : snapshot.camera?.y ?? 0;
+    const postRejoin = snapshot.route?.ledges?.find((ledge) => ledge.id === snapshot.routeChoice?.postRejoinAnchorId);
+    const choiceCameraY = snapshot.routeChoice?.status === "consequence-active" && choiceRejoin && postRejoin
+      ? (choiceRejoin.y + postRejoin.y) * 0.5
+      : choiceRest && choiceRejoin ? (choiceRest.y + choiceRejoin.y) * 0.5 : snapshot.camera?.y ?? 0;
     const targetCameraY = openingReveal ? 242 : choiceFraming ? choiceCameraY : snapshot.completed && summit ? summit.y - 42 : snapshot.camera?.y ?? 0;
     const targetCameraZ = openingReveal ? 500 : choiceFraming ? 340 : snapshot.completed ? Math.max(272, snapshot.camera?.z ?? 210) : snapshot.camera?.z ?? 210;
     presentedCameraY = presentedCameraY == null ? targetCameraY : presentedCameraY + (targetCameraY - presentedCameraY) * (snapshot.completed ? 0.065 : 0.24);
@@ -478,32 +487,45 @@ export function createThreeRenderer({ canvas }) {
     updateCounterwindField(snapshot, time);
     const choice = snapshot.routeChoice;
     const currentIndex = (snapshot.route?.ledges ?? []).findIndex((ledge) => ledge.id === snapshot.currentAnchorId);
-    const choiceVisible = Boolean(choice && choice.status !== "rejoined" && currentIndex >= Math.max(0, num(snapshot.route?.openingPattern?.endIndex, 4) - 1));
+    const choiceVisible = Boolean(choice && ["open", "committed"].includes(choice.status) && currentIndex >= Math.max(0, num(snapshot.route?.openingPattern?.endIndex, 4) - 1));
     safeChoiceLine.visible = choiceVisible;
     shortcutChoiceLine.visible = choiceVisible;
     if (choiceVisible) {
       safeChoiceLine.material.opacity = choice.status === "committed" && choice.selectedRole !== "safe-recovery" ? 0.08 : 0.56;
       shortcutChoiceLine.material.opacity = choice.status === "committed" && choice.selectedRole !== "pressure-shortcut" ? 0.08 : 0.58;
     }
+    consequenceLine.visible = choice?.status === "consequence-active";
+    if (consequenceLine.visible) {
+      consequenceLine.material.color.setHex(choice.selectedRole === "pressure-shortcut" ? 0xffb83d : 0x3dffa3);
+      consequenceLine.material.opacity = 0.56 + (0.5 + 0.5 * Math.sin(time * 7.5)) * 0.24;
+    }
 
     const staminaPct = Math.max(0, Math.min(1, (snapshot.stamina ?? 0) / Math.max(1, snapshot.constants?.maxStamina ?? 100)));
     for (const [id, g] of ledgeMap) {
-      const unselected = ["committed", "rejoined"].includes(choice?.status) && id === choice.unselectedAnchorId;
+      const unselected = ["committed", "consequence-active", "resolved"].includes(choice?.status) && id === choice.unselectedAnchorId;
       const selected = id === choice?.selectedAnchorId;
+      const consequenceTarget = choice?.status === "consequence-active" && id === choice.postRejoinAnchorId;
       g.visible = !unselected;
-      const hot = id === snapshot.hoveredId || snapshot.enabledTargetIds?.includes(id) || id === snapshot.aimAssistTargetId || selected;
+      const hot = id === snapshot.hoveredId || snapshot.enabledTargetIds?.includes(id) || id === snapshot.aimAssistTargetId || selected || consequenceTarget;
       const pulse = 1 + Math.sin(time * 6 + (g.position.y || 0) * 0.01) * 0.045;
       g.scale.setScalar((id === snapshot.hoveredId || id === snapshot.aimAssistTargetId ? 1.3 : hot ? 1.12 : 1) * pulse);
-      g.userData.core.material = matFor(m, g.userData.type, id === snapshot.hoveredId || id === snapshot.aimAssistTargetId, g.userData.choiceRole);
+      g.userData.core.material = consequenceTarget
+        ? choice.selectedRole === "pressure-shortcut" ? m.shortcutChoice : m.safeChoice
+        : matFor(m, g.userData.type, id === snapshot.hoveredId || id === snapshot.aimAssistTargetId, g.userData.choiceRole);
       g.userData.halo.visible = hot || g.userData.type !== "normal" || Boolean(g.userData.choiceRole && choice?.status === "open");
       g.userData.halo.material.opacity = g.userData.type === "normal" ? (hot ? 0.22 + staminaPct * 0.18 : 0.05) : 0.32 + Math.sin(time * 4) * 0.08;
       g.userData.halo.rotation.z += 0.012;
     }
     for (const beam of beacons.children) {
-      beam.visible = !(["committed", "rejoined"].includes(choice?.status) && beam.userData.id === choice.unselectedAnchorId);
+      beam.visible = !(["committed", "consequence-active", "resolved"].includes(choice?.status) && beam.userData.id === choice.unselectedAnchorId);
+      const consequenceBeam = beam.userData.id === choice?.postRejoinAnchorId;
+      if (consequenceBeam) {
+        beam.visible = ["consequence-active", "resolved"].includes(choice?.status);
+        beam.material.color.setHex(choice?.selectedRole === "pressure-shortcut" ? 0xffb83d : 0x3dffa3);
+      }
       beam.material.opacity = beam.userData.type === "summit"
         ? (snapshot.completed ? 0.58 : 0.14) + Math.sin(time * (snapshot.completed ? 5.2 : 2.2)) * (snapshot.completed ? 0.16 : 0.04)
-        : 0.18 + Math.sin(time * 4.5 + beam.userData.sourceY) * 0.1;
+        : consequenceBeam ? 0.38 + Math.sin(time * 6.5) * 0.14 : 0.18 + Math.sin(time * 4.5 + beam.userData.sourceY) * 0.1;
       beam.rotation.y += beam.userData.type === "summit" ? 0.003 : 0.009;
     }
     summitCelebration.visible = Boolean(summit && (snapshot.completed || ["broadcast", "handshake"].includes(snapshot.sectorTransition?.phase)));
@@ -569,7 +591,8 @@ export function createThreeRenderer({ canvas }) {
         aim: aim.geometry.getAttribute("position")?.count ?? 0,
         route: routeLine.geometry.getAttribute("position")?.count ?? 0,
         safeChoice: safeChoiceLine.geometry.getAttribute("position")?.count ?? 0,
-        shortcutChoice: shortcutChoiceLine.geometry.getAttribute("position")?.count ?? 0
+        shortcutChoice: shortcutChoiceLine.geometry.getAttribute("position")?.count ?? 0,
+        consequence: consequenceLine.geometry.getAttribute("position")?.count ?? 0
       }
     };
   }

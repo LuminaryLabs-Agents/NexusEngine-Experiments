@@ -1,5 +1,11 @@
 # Cycle State
 
+## 2026-07-16 Post-Rejoin Consequence Upgrade
+
+`experiments/next-ledge/` now preserves the safe-versus-shortcut decision after Fork Relay. Shelter Rise earns one protected grapple to Stormlock Restore through the existing recovery and aim-assist path; Signal Cut retains 45 fall pressure and marks Stormlock as the single amber vent target until the existing pressure facade resolves it. Authored descriptors remain in the preset, the existing route-choice state remains the only consequence owner, and HUD/renderer/audio consume its events. Both branches, a real dead/retry path, the final cleanup replay, disclosure, stable counts, fresh-browser performance, Human View, and a zero-message console passed.
+
+Exact next playable unit: turn Stormlock resolution into one immediate payoff anchor where the safe branch converts protection into a faster launch window and the shortcut converts banked cargo into a harder amber high line, without adding a control or another state owner.
+
 ## 2026-07-16 Post-Rest Signal Fork Refinement
 
 `experiments/next-ledge/` now turns Counterwind Rest into an authored route decision. Mint Shelter Rise restores the climber into a protected ascent; amber Signal Cut grants a 1.75-unit signal cache while adding 46 fall pressure; both paths converge at Fork Relay and keep route/cargo progress aligned. The preset owns authored content, the session owns the single choice state, existing route-progress/resource/pressure facades own deterministic mutations, and renderer/HUD/audio consume the resulting descriptors and events. Advanced diagnostics remain closed, Human View now keeps the HUD above WebGL foreground layers, both routes plus failure/retry passed Playwright, and settled entity counts remain bounded.

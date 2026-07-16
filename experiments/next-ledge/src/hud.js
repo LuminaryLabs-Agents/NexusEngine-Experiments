@@ -31,6 +31,10 @@ function promptFor(snapshot) {
     text: choice.selectedRole === "pressure-shortcut" ? "AMBER ROUTE — Hold pressure to Fork Relay" : "MINT ROUTE — Recover through Fork Relay",
     tone: choice.selectedRole === "pressure-shortcut" ? "danger" : "success"
   };
+  if (choice?.status === "consequence-active") return {
+    text: choice.selectedRole === "pressure-shortcut" ? "AMBER PRESSURE — Grapple Stormlock Restore to vent" : "MINT WINDOW — Protected grapple to Stormlock Restore",
+    tone: choice.selectedRole === "pressure-shortcut" ? "danger" : "success"
+  };
   const speed = Math.hypot(number(snapshot.player?.vx), number(snapshot.player?.vy));
   return speed >= 1.7
     ? { text: "Space / click — Release now", tone: "ready" }
@@ -83,6 +87,10 @@ export function createHud(nodes = {}) {
           ? snapshot.routeChoice.selectedRole === "pressure-shortcut"
             ? "Hold the amber shortcut under pressure and secure Fork Relay before continuing upward."
             : "Climb the protected mint ascent and secure Fork Relay before continuing upward."
+        : snapshot.routeChoice?.status === "consequence-active"
+          ? snapshot.routeChoice.selectedRole === "pressure-shortcut"
+            ? "Retained pressure is still live. Grapple the amber-marked Stormlock Restore to deliberately vent it."
+            : "Shelter Rise earned one protected grapple window. Use it now to secure Stormlock Restore."
         : snapshot.completed
           ? "Signal delivered. The summit relay is broadcasting through the storm."
         : cargoAmount > 0
