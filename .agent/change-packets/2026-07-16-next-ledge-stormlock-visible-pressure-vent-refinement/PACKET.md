@@ -2,7 +2,7 @@
 
 Packet: `2026-07-16-next-ledge-stormlock-visible-pressure-vent-refinement`
 
-Status: validated; publication pending
+Status: validated and published
 
 Experiment: `experiments/next-ledge/`
 
@@ -122,9 +122,9 @@ Matched fresh headed Chromium samples used a `950 ms` warm-up, `3.4 s` active `D
 
 ## Publication
 
-- Production commit: pending.
+- Production commit: `e2fc4ed27fc76d0e74e3720b884be1449faf7076`.
 - ProtoKits push: not required; `main`, `HEAD`, and `origin/main` remain synchronized at `04d34f049f58ae359cf71d43466c429dac2a6d08`.
-- Experiments push: pending fetch-before-push publication to resolved default branch `main`.
+- Experiments push: production and publication-receipt commits published to resolved default branch `main` after fetch-before-push verification.
 
 ## Exact Next Playable Improvement
 
