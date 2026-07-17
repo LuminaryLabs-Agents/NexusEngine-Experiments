@@ -68,10 +68,10 @@
         "generic-traversal-feedback-kit",
         "generic-route-cargo-extraction-kit"
       ],
-      "feelAverageBefore": 7.1,
+      "feelAverageBefore": 8.3,
       "feelAverageAfter": 8.9,
-      "validation": "Playwright completed actual-input safe and shortcut routes through Stormlock, proved four shortcut pressure-vent pulses, latch-hit Slipstream and Cacheline, preserved 134-speed and 175-cargo Windglass scoring, held bounded DOM/canvas/descriptor/scene/heap behavior, passed the matched performance and Human View gates, and reported zero console messages. Existing tests guard descriptor-authored payoff surge ownership.",
-      "packetId": "2026-07-17-next-ledge-payoff-grapple-chroma-surge"
+      "validation": "Playwright completed actual-input safe and shortcut routes to Slipstream and Cacheline, proved distinct branch recoil, release, failure, keyboard retry, Advanced closed/open/closed, bounded DOM/canvas/descriptor/scene behavior, and a passing matched performance comparison with zero console or page errors. Human View passed the first screen and both final latches with diagnostics closed. Existing tests guard descriptor-authored recoil ownership.",
+      "packetId": "2026-07-17-next-ledge-payoff-latch-recoil"
     }
   ],
   "experiments": []

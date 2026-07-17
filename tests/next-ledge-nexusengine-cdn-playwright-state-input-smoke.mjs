@@ -59,7 +59,7 @@ for (const visibleSurface of ["Next Ledge", "A / D", "SPACE / CLICK", "R</b> ret
 for (const masterySurface of ["Stormbreak rest", "Commit perch", "Crosswind catch", "Relay crown", "Summit relay"]) {
   assert.ok(climbPreset.includes(masterySurface), `authored mastery crest should include ${masterySurface}`);
 }
-for (const choiceSurface of ["Shelter rise", "Signal cut", "Fork relay", "Stormlock restore", "Slipstream launch", "Cacheline high", "Windglass relay", "pressureDelta: 46", "cargoBonus: 1.75", "protectedFailFloorBonus: 210", "rejoinFailFloorBonus: 260", "rejoinAimAssistBonus: 34", "rejoinCameraZoomBonus: 96", "pressureRecovery: 100", "ventPulseCount: 4", "confirmationFrames: 24", "confirmationHandoffFrames: 12", "grappleSurgeFrames: 18", "grappleSurgeColor: 0x3dffa3", "grappleSurgeColor: 0xffb83d", "ZERO PRESSURE", "launchSpeedMultiplier: 1.34", "cargoRequired: 1.75", "scoreMetric: \"preserved-speed\"", "scoreMetric: \"cargo-mastery\""]) {
+for (const choiceSurface of ["Shelter rise", "Signal cut", "Fork relay", "Stormlock restore", "Slipstream launch", "Cacheline high", "Windglass relay", "pressureDelta: 46", "cargoBonus: 1.75", "protectedFailFloorBonus: 210", "rejoinFailFloorBonus: 260", "rejoinAimAssistBonus: 34", "rejoinCameraZoomBonus: 96", "pressureRecovery: 100", "ventPulseCount: 4", "confirmationFrames: 24", "confirmationHandoffFrames: 12", "grappleSurgeFrames: 18", "grappleSurgeColor: 0x3dffa3", "grappleSurgeColor: 0xffb83d", "latchRecoilStyle: \"mint-forward-pull\"", "latchRecoilStyle: \"amber-impact-snap\"", "latchRecoilCameraImpulse: 0.28", "latchRecoilCameraImpulse: 0.46", "ZERO PRESSURE", "launchSpeedMultiplier: 1.34", "cargoRequired: 1.75", "scoreMetric: \"preserved-speed\"", "scoreMetric: \"cargo-mastery\""]) {
   assert.ok(climbPreset.includes(choiceSurface), `authored post-rest choice should include ${choiceSurface}`);
 }
 assert.match(climbAdapter, /postRestChoice/, "route adapter should expose the authored post-rest choice descriptor");
@@ -68,6 +68,9 @@ assert.match(climbAdapter, /routeChoiceConfirmationHandoffFrames/, "route adapte
 assert.match(climbAdapter, /routeChoicePayoffGrappleSurgeFrames/, "route adapter should preserve the authored payoff cable surge window");
 assert.match(climbAdapter, /routeChoicePayoffGrappleSurgeColor/, "route adapter should preserve the selected payoff surge color");
 assert.match(climbAdapter, /routeChoicePayoffGrappleImpactScale/, "route adapter should preserve the bounded payoff impact scale");
+assert.match(climbAdapter, /routeChoicePayoffLatchRecoilStyle/, "route adapter should preserve the branch-aware latch recoil style");
+assert.match(climbAdapter, /routeChoicePayoffLatchRecoilImpulse/, "route adapter should preserve the branch-aware latch impulse");
+assert.match(climbAdapter, /routeChoicePayoffLatchRecoilSquashX/, "route adapter should preserve the existing player-squash tuning");
 assert.match(session, /routeChoice: createInitialRouteChoice/, "session should own one deterministic route-choice state");
 assert.match(session, /route-choice-skipped/, "unselected branch should reconcile through the existing route-progress ledger");
 assert.match(session, /protectedRecoveryWindow/, "the safe consequence should extend the existing recovery window rather than add a second recovery owner");
@@ -80,6 +83,9 @@ assert.match(session, /updateStormlockConfirmation/, "the confirmation beat shou
 assert.match(session, /stormlock-confirmation-started/, "Stormlock should publish one semantic branch-aware confirmation event");
 assert.match(session, /payoffLaunchWindow/, "the safe payoff should modulate the existing cable launch settings without adding a second launch owner");
 assert.match(session, /payoffTargetTuning/, "both payoff branches should consume authored target-specific aim tuning without a second launch owner");
+assert.match(session, /payoffLatchRecoil/, "the existing latch path should consume authored branch recoil without another state owner");
+assert.match(session, /activePayoffLatchRecoil/, "the existing player squash should derive its bounded beat from grapple-latched event age");
+assert.match(session, /recoilStyle: recoil\?\.style/, "the existing grapple-latched event should carry branch recoil evidence without a new event");
 assert.match(session, /routeChoiceAimAssistLeadY/, "route-choice aim compensation should remain authored descriptor data");
 assert.match(session, /routeChoiceAimAssistMinBuildAngle/, "authored shortcut aim assistance should require its advertised build window");
 assert.match(session, /post-stormlock-payoff-opened/, "Stormlock should open one branch-specific payoff through the existing route-choice state");
@@ -104,6 +110,7 @@ assert.match(renderer, /payoffTargetActive/, "renderer should reuse the bounded 
 assert.match(renderer, /payoffGrappleSurge/, "renderer should derive the brief cable and probe surge from the existing grapple fire event");
 assert.match(effects, /payoffGrappleSurge/, "existing bounded sparks should derive payoff fire and latch color without another effect pool");
 assert.match(synth, /payoffRole/, "existing grapple audio should derive its branch accent from the selected payoff target");
+assert.match(synth, /type === "grapple-latched"/, "the existing grapple-latched synth path should present the branch-aware recoil beat");
 assert.match(renderer, /convergenceTargetActive/, "renderer should reuse the bounded consequence line for the Windglass convergence target");
 assert.match(renderer, /rejoinTargetActive/, "renderer should reuse the bounded consequence line for the original generic rejoin target");
 assert.match(hud, /MINT — Shelter recovery · AMBER — Signal shortcut/, "the contextual hero prompt should explain both routes without adding a control");

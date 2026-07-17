@@ -66,6 +66,8 @@ Stormlock's final `12` confirmation frames now grow the existing consequence lin
 
 The first payoff grapple now carries that selection through the existing cable, probe, spark pool, and fire cue as a brief mint recovery or amber mastery surge. Route descriptors author the color, duration, and impact scale; existing grapple events drive the presentation without another cable, effect pool, event, timer, or state owner.
 
+The payoff latch now finishes the same branch beat physically. Slipstream applies a mint forward pull and tall squash; Cacheline applies a stronger amber snap and wide compression. Descriptor tuning flows through the existing latch velocity, camera-trauma, player-scale, and synth owners, with the existing `grapple-latched` event age bounding the effect.
+
 ### Fogline Relay
 
 `experiments/fogline-relay/` is a first-person fog-forest relay experiment. It composes reusable kit surfaces, keeps the Canvas renderer presentation-only, and validates renderer-agnostic visual buckets, fog volumes, volumetric light descriptors, relay scanning, objective flow, and wraith hazards.

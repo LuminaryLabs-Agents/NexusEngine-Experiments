@@ -3,8 +3,8 @@ import { createGenericAnchorDescriptorKit } from "https://cdn.jsdelivr.net/gh/Lu
 import { createGenericModeProjectedRoute, createProjectedRoute } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-mode-projected-route/index.js";
 import { createGenericRouteProgressKit } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-route-progress-kit/index.js";
 import { createGenericTetherTraversalDomainKits, createGenericTetherTraversalPreset } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-tether-traversal-domain-kits/index.js";
-import { createNextLedgeClimbPreset } from "./climb-preset.js?v=payoff-grapple-surge-1";
-import { adaptProjectedRouteToClimbRoute } from "./climb-anchor-adapter.js?v=payoff-grapple-surge-1";
+import { createNextLedgeClimbPreset } from "./climb-preset.js?v=payoff-latch-recoil-1";
+import { adaptProjectedRouteToClimbRoute } from "./climb-anchor-adapter.js?v=payoff-latch-recoil-1";
 import { createClimbActionAdapter } from "./climb-action-adapter.js";
 
 const clamp = (v, a, b) => Math.max(a, Math.min(b, Number.isFinite(Number(v)) ? Number(v) : a));
@@ -494,6 +494,38 @@ function payoffLaunchWindow(state) {
   return tuning?.selectedRole === "safe-recovery" ? tuning : null;
 }
 
+function payoffLatchRecoil(state, target) {
+  const choice = state.routeChoice;
+  if (choice?.status !== "payoff-active" || target?.id !== choice.payoffTargetId) return null;
+  return {
+    targetId: target.id,
+    style: target.metadata?.routeChoicePayoffLatchRecoilStyle ?? (choice.selectedRole === "pressure-shortcut" ? "amber-impact-snap" : "mint-forward-pull"),
+    frames: Math.max(1, Math.floor(n(target.metadata?.routeChoicePayoffLatchRecoilFrames, 1))),
+    impulse: Math.max(0, n(target.metadata?.routeChoicePayoffLatchRecoilImpulse, 0)),
+    cameraImpulse: clamp(n(target.metadata?.routeChoicePayoffLatchRecoilCameraImpulse, state.tuning.cameraImpulseLatch), 0, 1),
+    squashX: clamp(n(target.metadata?.routeChoicePayoffLatchRecoilSquashX, 1), 0.35, 2),
+    squashY: clamp(n(target.metadata?.routeChoicePayoffLatchRecoilSquashY, 1), 0.35, 2)
+  };
+}
+
+function activePayoffLatchRecoil(state) {
+  const choice = state.routeChoice;
+  const target = ledgeMap(state)[choice?.payoffTargetId];
+  const recoil = payoffLatchRecoil(state, target);
+  if (!recoil) return null;
+  let event = null;
+  for (let index = state.recentEvents.length - 1; index >= 0; index -= 1) {
+    const candidate = state.recentEvents[index];
+    if (candidate.type === "grapple-latched" && candidate.targetId === recoil.targetId) {
+      event = candidate;
+      break;
+    }
+  }
+  const age = event ? state.frame - n(event.at, state.frame) : recoil.frames + 1;
+  if (age < 0 || age >= recoil.frames) return null;
+  return { ...recoil, strength: clamp(1 - age / recoil.frames, 0, 1) };
+}
+
 function setRope(state, a, b, slack = 8) {
   state.rope = { ...state.rope, start: { x: a.x, y: a.y, z: 1 }, end: { x: b.x, y: b.y, z: 1 }, nodes: ropeNodes(a, b, state.constants.ropeNodeCount, state.wind.strength * n(state.wind.direction, 1) * n(state.tuning.windCoupling, 14), slack), targetLength: d2(a, b) + slack };
 }
@@ -584,6 +616,14 @@ function launch(state) {
 }
 
 function grab(state, ledge) {
+  const recoil = payoffLatchRecoil(state, ledge);
+  if (recoil?.impulse) {
+    const dx = ledge.x - state.player.x;
+    const dy = ledge.y - state.player.y;
+    const length = Math.hypot(dx, dy) || 1;
+    state.player.vx += dx / length * recoil.impulse;
+    state.player.vy += dy / length * recoil.impulse;
+  }
   state.mode = "reeling";
   state.anchorLedge = ledge;
   const ropeLength = d2(ledge, state.player) + 24;
@@ -591,9 +631,9 @@ function grab(state, ledge) {
   state.probe.visible = false;
   state.rope.visible = true;
   state.stats.latches += 1;
-  state.camera.trauma = Math.max(state.camera.trauma ?? 0, n(state.tuning.cameraImpulseLatch, 0.16));
+  state.camera.trauma = Math.max(state.camera.trauma ?? 0, recoil?.cameraImpulse ?? n(state.tuning.cameraImpulseLatch, 0.16));
   state.status = `Latched ${ledge.label}. Winch pulling to swing radius.`;
-  addEvent(state, "grapple-latched", { targetId: ledge.id, ledgeType: ledge.type });
+  addEvent(state, "grapple-latched", { targetId: ledge.id, ledgeType: ledge.type, recoilStyle: recoil?.style ?? null, recoilImpulse: recoil?.impulse ?? 0 });
 }
 
 function updateStormlockVent(state, anchor) {
@@ -968,8 +1008,13 @@ function stepReeling(state, dt) {
 }
 
 function updateDerived(state) {
+  const latchRecoil = activePayoffLatchRecoil(state);
   state.player.scaleX = clamp(1 + Math.abs(state.player.vx) * 0.038, 0.35, 2);
   state.player.scaleY = clamp(1 + Math.abs(state.player.vy) * 0.038, 0.35, 2);
+  if (latchRecoil) {
+    state.player.scaleX = clamp(state.player.scaleX * (1 + (latchRecoil.squashX - 1) * latchRecoil.strength), 0.35, 2);
+    state.player.scaleY = clamp(state.player.scaleY * (1 + (latchRecoil.squashY - 1) * latchRecoil.strength), 0.35, 2);
+  }
   state.player.rotationX += 0.035;
   state.player.rotationY += state.player.vx * 0.04;
   const follow = ["falling", "retracting", "launched"].includes(state.mode) ? n(state.tuning.fallFollow, 0.094) : n(state.tuning.swingFollow, 0.046);

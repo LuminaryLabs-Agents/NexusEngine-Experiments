@@ -22,7 +22,7 @@ assert.doesNotMatch(wrapperSource, new RegExp(oldRuntimeCdn.replace(/[.*+?^${}()
 assert.match(routeShell, /rescue-line-readiness-renderer-handoff-pass/, "route shell should identify the latest rescue line readability cutover");
 assert.match(routeShell, /summit-bivouac-readiness-renderer-handoff-pass/, "route shell should identify the summit bivouac readability cutover");
 assert.match(routeShell, /ravine-evacuation-readiness-renderer-handoff-pass/, "route shell should identify the ravine evacuation readiness cutover");
-assert.match(routeShell, /main\.js\?v=payoff-grapple-surge-1/, "route shell should cache-bust the latest playable upgrade");
+assert.match(routeShell, /main\.js\?v=payoff-latch-recoil-1/, "route shell should cache-bust the latest playable upgrade");
 assert.doesNotMatch(routeShell, /readiness-entry\.js/, "clean playable route should not auto-load preserved diagnostic overlays");
 assert.match(wrapperSource, /createNextLedgeAnchorTimingReadabilityDomainKit/, "wrapper should import the anchor timing domain kit");
 assert.match(wrapperSource, /anchorTimingReadabilityDomain\.describe\(snapshot, cargoSnapshot, traversalReadability\)/, "wrapper should derive anchor timing descriptors from state/cargo/traversal input");

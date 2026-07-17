@@ -34,7 +34,11 @@ export function createCinematicSynth() {
       if (payoffRole === "pressure-shortcut") tone(329.63, 0.24, "triangle", 0.065, 987.77);
       else if (payoffRole === "safe-recovery") tone(659.25, 0.24, "sine", 0.06, 1318.5);
     }
-    else if (type === "grapple-latched") { tone(1200, 0.25, "sine", 0.18, 250); tone(80, 0.3, "triangle", 0.18); }
+    else if (type === "grapple-latched") {
+      if (payoffRole === "pressure-shortcut") { tone(164.81, 0.18, "sawtooth", 0.12, 82.41); tone(1318.51, 0.1, "triangle", 0.08, 659.25); }
+      else if (payoffRole === "safe-recovery") { tone(523.25, 0.28, "sine", 0.1, 783.99); tone(130.81, 0.32, "triangle", 0.12, 261.63); }
+      else { tone(1200, 0.25, "sine", 0.18, 250); tone(80, 0.3, "triangle", 0.18); }
+    }
     else if (type === "released" || type === "wall-bounce") tone(110, 0.15, "triangle", 0.16, 45);
     else if (type === "restored") tone(440, 0.5, "sine", 0.08, 880);
     else if (type === "failed") tone(150, 1.0, "sawtooth", 0.22, 30);

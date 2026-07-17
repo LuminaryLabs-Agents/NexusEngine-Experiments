@@ -30,7 +30,7 @@
     "coreRemoteDefault": "70cc2a1590677b872d40a42f7b7bb7e174941eb0",
     "coreLocalReadOnly": "70cc2a1590677b872d40a42f7b7bb7e174941eb0",
     "protokits": "04d34f049f58ae359cf71d43466c429dac2a6d08",
-    "experiments": "56333afcbb34d1876aaf06bbc5dc6e4a6ab77647",
+    "experiments": "e6c3a83eee44db7e1636d4c6853f7ae45e25ce23",
     "experimentsBaseline": "615a7e1e2170164acef0edebdbe0b88b8c01fd1b"
   },
   "baseline": {
@@ -147,28 +147,28 @@
     "result": "Upgraded Next Ledge so Slipstream Launch and Cacheline High converge at Windglass Relay, banking 134 preserved speed or 175 cargo mastery before generic ascent resumes; production creation counts remain unchanged."
   },
   "lastRefinementUnit": {
-    "packetId": "2026-07-17-next-ledge-payoff-grapple-chroma-surge",
-    "scope": "Next Ledge payoff grapple chroma surge",
-    "result": "The first selected payoff grapple now carries mint recovery or amber mastery through the existing cable, probe, spark pool, and fire cue for one bounded descriptor-authored surge."
+    "packetId": "2026-07-17-next-ledge-payoff-latch-recoil",
+    "scope": "Next Ledge payoff latch recoil",
+    "result": "Slipstream now lands as a mint forward pull while Cacheline lands as a harder amber snap through descriptor-authored tuning and existing latch, camera, squash, event, and synth owners."
   },
   "lastCompletedUnit": {
-    "packetId": "2026-07-17-next-ledge-payoff-grapple-chroma-surge",
-    "scope": "Next Ledge payoff grapple chroma-surge feel refinement",
-    "result": "Slipstream and Cacheline now carry their selected mint or amber branch energy through the existing payoff grapple cable, probe, spark impact, and fire cue without another presentation or state owner.",
-    "validation": "All 28 existing Next Ledge test entrypoints, affected JavaScript syntax checks, JSON, and diff checks passed. Playwright completed actual-input safe and shortcut routes through Stormlock, proved four shortcut pressure-vent pulses, latch-hit both payoff targets, preserved 134-speed and 175-cargo Windglass scoring, held bounded DOM/canvas/descriptor/scene/heap behavior, and reported zero console messages. Human View passed the first screen and mint payoff impact with diagnostics closed. Matched 60-tick warm-up plus 180-tick active performance improved from 58.48 to 52.80 ms average tick, p95 improved from 77.2 to 73.8 ms, settled scene nodes stayed at 277, and five follow-up samples showed no steady growth.",
+    "packetId": "2026-07-17-next-ledge-payoff-latch-recoil",
+    "scope": "Next Ledge payoff latch recoil feel refinement",
+    "result": "Both selected payoff catches now have readable branch-specific physical recoil: a mint forward/tall pull for Slipstream and a stronger amber/wide snap for Cacheline, without a new state, event, timer, entity, or feedback owner.",
+    "validation": "All existing Next Ledge test entrypoints, affected JavaScript syntax checks, JSON, and diff checks passed. Playwright completed actual-input safe and shortcut routes to both payoff latches, proved release, failure, keyboard retry, and Advanced closed/open/closed, held 69 DOM nodes, one canvas, 76 descriptors, and 277 settled scene nodes, and reported zero console or page errors. Human View passed the first screen plus final mint and amber payoff latches with diagnostics closed. The matched 60-tick warm-up plus 180-tick active performance window improved from 218.26 to 130.15 ms average tick, 4.58 to 7.68 measured FPS, and 314.30 to 180.70 ms p95; settled entity counts stayed bounded.",
     "commits": {
       "coreReadOnly": "70cc2a1590677b872d40a42f7b7bb7e174941eb0",
       "protokitsStart": "04d34f049f58ae359cf71d43466c429dac2a6d08",
       "protokitsProductionUnit": "04d34f049f58ae359cf71d43466c429dac2a6d08",
-      "experimentsStart": "8452f5d6a6e3617d66e57a2011e7ddc122a2d5e2",
-      "experimentsProductionUnit": "dbc2ea76626ba5713efca7c17534664263b594ed"
+      "experimentsStart": "e6c3a83eee44db7e1636d4c6853f7ae45e25ce23",
+      "experimentsProductionUnit": "pending-owned-production-commit"
     },
-    "publication": "Experiments production and publication-receipt commits published to resolved default branch main after fetch-before-push verification; ProtoKits is unchanged and synchronized at 04d34f049f58ae359cf71d43466c429dac2a6d08."
+    "publication": "Pending fetch-before-push publication receipt; ProtoKits is unchanged and synchronized at 04d34f049f58ae359cf71d43466c429dac2a6d08."
   },
   "exactNextUnit": {
     "phase": "playable-experiment-upgrade",
     "epoch": 0,
-    "scope": "next-ledge-payoff-latch-recoil",
-    "goal": "Give the payoff latch one branch-aware recoil beat—mint forward pull or amber snap—using the existing grapple-latched, camera-trauma, and player-squash owners without new state or events."
+    "scope": "next-ledge-first-swing-branch-release-cue",
+    "goal": "Let the payoff recoil resolve into one branch-specific first-swing release cue—mint glide window or amber aftershock—using existing swing angle, route-choice, HUD, and cue owners without a new control or state."
   }
 }

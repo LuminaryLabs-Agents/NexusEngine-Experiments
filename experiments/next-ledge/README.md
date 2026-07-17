@@ -24,6 +24,8 @@ The amber shortcut now vents its retained pressure visibly during the physical S
 
 Stormlock lock now holds one branch-aware confirmation for `24` deterministic route frames before the next payoff opens. The shortcut keeps its explicit zero-pressure result on screen while Cacheline accepts the banked cargo; the safe route confirms its protected catch while Slipstream charges. Authored timing and copy stay in the route descriptor, and the existing route-choice phase, frame counter, target, beam, HUD, and payoff event remain the only owners.
 
+The payoff latch now lands with branch-specific physical recoil. Slipstream adds a bounded mint pull toward the target, a tall climber stretch, softer camera kick, and rising latch chord. Cacheline adds a stronger amber target impulse, wide compression, harder camera snap, and descending impact chord. The climb preset authors the values; the existing latch, velocity, camera-trauma, player-scale, `grapple-latched`, and synth owners consume them without another state, event, timer, entity, or feedback path.
+
 The playable route composes real reusable features from NexusEngine-ProtoKits:
 
 ```txt

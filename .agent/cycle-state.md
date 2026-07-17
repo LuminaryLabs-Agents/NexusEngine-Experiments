@@ -1,5 +1,11 @@
 # Cycle State
 
+## 2026-07-17 Payoff Latch Recoil Refinement
+
+`experiments/next-ledge/` now finishes the selected payoff grapple with one branch-aware physical latch beat. Slipstream applies a mint forward pull, tall squash, softer camera kick, and rising latch chord; Cacheline applies a stronger amber snap, wide compression, harder kick, and descending chord. Authored descriptors feed the existing latch velocity, camera-trauma, player-scale, `grapple-latched`, and synth owners; no state, event, timer, entity, control, or feedback owner was added. Playwright drove both actual-input sector-two routes to their payoff latches, proved real release/failure/keyboard retry and Advanced closed/open/closed, held `69` DOM nodes / one canvas / `76` descriptors / `277` settled scene nodes, improved the matched warm/active metric from `218.26` to `130.15` ms average tick (`4.58` to `7.68` measured FPS), and reported zero console or page errors. Human View passed the first screen plus mint and amber latch frames with diagnostics closed.
+
+Exact next playable unit: let the recoil resolve into one branch-specific first-swing release cue—mint glide window or amber aftershock—using existing swing angle, route-choice, HUD, and cue owners without a new control or state.
+
 ## 2026-07-16 Stormlock Payoff Line Handoff Refinement
 
 `experiments/next-ledge/` now spends the final `12` frames of Stormlock's existing confirmation growing the existing consequence line into the selected Slipstream or Cacheline target. The selected ledge scales into view and the existing camera eases toward the pair before input returns; no line, target, event, DOM node, or route-choice state was added. Playwright drove the safe route through the exact frame boundary and one payoff event, continued to the `134` preserved-speed Windglass score, proved real failure/keyboard retry, checked Advanced closed/open/closed, held `69` DOM nodes / one canvas / `72` descriptors / `236` scene nodes without steady growth, stayed within the performance budget at `27.56` to `27.22` FPS, passed all 28 Next Ledge tests, and reported zero console messages. Human View passed the first screen, final line handoff, and opened Slipstream payoff with diagnostics closed.
