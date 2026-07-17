@@ -1,5 +1,11 @@
 # Cycle State
 
+## 2026-07-17 Windglass Cyan Rejoin Release Refinement
+
+`experiments/next-ledge/` now turns either Windglass branch settle into one readable cyan high-build release. The shared descriptor consumer reuses existing swing angle/angular velocity, release, camera, recovery, HUD, sparks, player light, atmosphere, and synth owners; authored `0.42x` lateral damping keeps both the `134 SPEED` mint line and `175 CARGO` amber line on the original `anchor-11` catch. Playwright physically completed both routes, caught the original anchor, proved real failure/keyboard retry and Advanced closed/open/closed, held `69` DOM nodes / one canvas / `76` descriptors / `277` settled scene nodes through the growth window, stayed inside the `10%` primary performance budget, passed all 28 Next Ledge tests, and reported zero console or page errors. Human View passed cyan ready/release, secured rejoin, failure, and recovery frames with diagnostics closed. ProtoKits and Core remain unchanged.
+
+Exact next playable unit: let original `anchor-11` answer the secured cyan release with one short score-preserving rebound and confirmation beat, reusing `windglass-rejoin-secured`, tether, camera, player-scale, spark, and synth owners.
+
 ## 2026-07-17 Windglass Branch Settle Refinement
 
 `experiments/next-ledge/` now preserves branch identity through the Windglass score: a `24`-frame mint float banks `134 SPEED`, while a `16`-frame amber brake banks `175 CARGO`. Authored payoff descriptors extend the existing score event and reuse tether motion, camera, materials, player scale, sparks, HUD, and synth. Both physical routes, original `anchor-11` rejoin, failure/retry, Advanced disclosure, steady counts, matched performance, Human View, all 28 Next Ledge tests, and a zero-message console passed. ProtoKits and Core remain unchanged.

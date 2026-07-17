@@ -40,7 +40,10 @@ export function createCinematicSynth() {
       else { tone(1200, 0.25, "sine", 0.18, 250); tone(80, 0.3, "triangle", 0.18); }
     }
     else if (type === "released" && event.releaseCueActive) {
-      if (event.releaseCueStyle === "amber-aftershock") {
+      if (event.releaseCueStyle === "cyan-high-build-window") {
+        tone(523.25, 0.28, "triangle", 0.085, 1046.5);
+        setTimeout(() => tone(1567.98, 0.22, "sine", 0.06, 2093), 46);
+      } else if (event.releaseCueStyle === "amber-aftershock") {
         tone(98, 0.34, "sawtooth", 0.13, 49);
         setTimeout(() => tone(987.77, 0.16, "triangle", 0.08, 493.88), 42);
       } else {

@@ -15,7 +15,7 @@ function payoffGrappleSurge(snapshot, event) {
   };
 }
 
-export function describeFirstSwingReleaseSurge(snapshot) {
+export function describeReleaseCueSurge(snapshot) {
   const events = snapshot.recentEvents ?? [];
   for (let index = events.length - 1; index >= 0; index -= 1) {
     const event = events[index];
@@ -24,7 +24,7 @@ export function describeFirstSwingReleaseSurge(snapshot) {
     if (age < 0 || age > 10) return null;
     return {
       color: Math.max(0, Math.floor(num(event.releaseCueColor, 0xffb83d))),
-      style: event.releaseCueStyle ?? "first-swing-release",
+      style: event.releaseCueStyle ?? "release-cue",
       strength: clamp(1 - age / 10, 0, 1)
     };
   }
@@ -269,7 +269,7 @@ export function createDiegeticEffects({ scene }) {
   };
 }
 
-export function updateDiegeticPlayerSignals({ snapshot, playerMaterial, staminaHalo, dangerHalo, modeLight, dangerLight, releaseSurge = describeFirstSwingReleaseSurge(snapshot), windglassSettle = null }) {
+export function updateDiegeticPlayerSignals({ snapshot, playerMaterial, staminaHalo, dangerHalo, modeLight, dangerLight, releaseSurge = describeReleaseCueSurge(snapshot), windglassSettle = null }) {
   const time = (snapshot.frame ?? 0) / 60;
   const staminaPct = clamp((snapshot.stamina ?? 0) / Math.max(1, snapshot.constants?.maxStamina ?? 100), 0, 1);
   const cargoValue = snapshot.domain?.routeCargoExtraction?.cargo?.resources?.[0]?.value ?? 0;

@@ -1,4 +1,4 @@
-import { describePayoffFirstSwingReleaseCue, describeWindglassScoreSettle } from "./climb-anchor-adapter.js?v=windglass-settle-1";
+import { describeActiveSwingReleaseCue, describeWindglassScoreSettle } from "./climb-anchor-adapter.js?v=windglass-rejoin-release-1";
 
 const pct = (value, max = 100) => `${Math.round(Math.max(0, value) / Math.max(1, max) * 100)}%`;
 const number = (value, fallback = 0) => Number.isFinite(Number(value)) ? Number(value) : fallback;
@@ -17,7 +17,7 @@ function confirmationTarget(snapshot) {
   return snapshot.route?.ledges?.find((ledge) => ledge.id === snapshot.routeChoice?.postRejoinAnchorId);
 }
 
-function promptFor(snapshot, firstSwingReleaseCue = describePayoffFirstSwingReleaseCue(snapshot), windglassSettle = describeWindglassScoreSettle(snapshot)) {
+function promptFor(snapshot, swingReleaseCue = describeActiveSwingReleaseCue(snapshot), windglassSettle = describeWindglassScoreSettle(snapshot)) {
   const transition = snapshot.sectorTransition;
   const choice = snapshot.routeChoice;
   const ledges = snapshot.route?.ledges ?? [];
@@ -76,13 +76,13 @@ function promptFor(snapshot, firstSwingReleaseCue = describePayoffFirstSwingRele
     text: choice.selectedRole === "pressure-shortcut" ? "AMBER HIGH LINE — Commit to Cacheline High" : "MINT OVERCHARGE — Fire for Slipstream Launch",
     tone: choice.selectedRole === "pressure-shortcut" ? "danger" : "success"
   };
-  if (choice?.status === "convergence-active" && firstSwingReleaseCue) return firstSwingReleaseCue.ready
+  if (choice?.status === "convergence-active" && swingReleaseCue) return swingReleaseCue.ready
     ? {
-        text: firstSwingReleaseCue.prompt ?? `${choice.selectedRole === "pressure-shortcut" ? "AMBER AFTERSHOCK" : "MINT GLIDE"} READY — Release`,
+        text: swingReleaseCue.prompt ?? `${choice.selectedRole === "pressure-shortcut" ? "AMBER AFTERSHOCK" : "MINT GLIDE"} READY — Release`,
         tone: choice.selectedRole === "pressure-shortcut" ? "amber" : "mint"
       }
     : {
-        text: firstSwingReleaseCue.buildPrompt ?? `Build ${firstSwingReleaseCue.directionLabel} into the branch release band`,
+        text: swingReleaseCue.buildPrompt ?? `Build ${swingReleaseCue.directionLabel} into the branch release band`,
         tone: choice.selectedRole === "pressure-shortcut" ? "amber" : "mint"
       };
   if (choice?.status === "convergence-active") return {
@@ -94,6 +94,12 @@ function promptFor(snapshot, firstSwingReleaseCue = describePayoffFirstSwingRele
   if (choice?.status === "rejoin-active" && windglassSettle) return {
     text: windglassSettle.prompt ?? "WINDGLASS SETTLE — Score banked · recover high",
     tone: choice.selectedRole === "pressure-shortcut" ? "amber" : "mint"
+  };
+  if (choice?.status === "rejoin-active" && swingReleaseCue) return {
+    text: swingReleaseCue.ready
+      ? swingReleaseCue.prompt ?? "CYAN REJOIN READY — Release upward"
+      : swingReleaseCue.buildPrompt ?? `CYAN REJOIN — Build ${swingReleaseCue.directionLabel} high`,
+    tone: "cyan"
   };
   if (choice?.status === "rejoin-active") return {
     text: "REJOIN WINDOW — Build high · Fire for cyan ascent anchor",
@@ -109,7 +115,11 @@ function setMeter(node, value) {
   node?.style?.setProperty("--value", String(Math.max(0, Math.min(100, value))));
 }
 
-function playerStatus(snapshot) {
+function playerStatus(snapshot, swingReleaseCue = null) {
+  if (swingReleaseCue && snapshot.mode !== "swinging") return swingReleaseCue.status ?? "Release committed. Fire the grapple into the marked ascent anchor.";
+  if (snapshot.routeChoice?.status === "rejoin-active" && swingReleaseCue) return swingReleaseCue.ready
+    ? "Cyan rejoin aligned. Release upward, then fire for the original ascent anchor."
+    : `Load ${swingReleaseCue.directionLabel} and high until the shared cyan release cue flashes.`;
   const status = String(snapshot.status ?? "");
   if (!status || status.startsWith("SYS_STATUS")) return "Build flow, release at speed, and fire toward the next cyan anchor.";
   return status;
@@ -130,9 +140,9 @@ export function createHud(nodes = {}) {
       const cargoAmount = number(cargo?.value);
       const cargoMax = Math.max(1, number(cargo?.max, 1));
       const pressurePercent = Math.round(number(pressure?.value) / Math.max(1, number(pressure?.max, 100)) * 100);
-      const firstSwingReleaseCue = describePayoffFirstSwingReleaseCue(snapshot);
+      const swingReleaseCue = describeActiveSwingReleaseCue(snapshot);
       const windglassSettle = describeWindglassScoreSettle(snapshot);
-      const prompt = promptFor(snapshot, firstSwingReleaseCue, windglassSettle);
+      const prompt = promptFor(snapshot, swingReleaseCue, windglassSettle);
       const postRejoinTarget = confirmationTarget(snapshot);
       if (status && statusText !== lastStatus) {
         status.textContent = statusText;
@@ -142,7 +152,7 @@ export function createHud(nodes = {}) {
         readout.textContent = readoutText;
         lastReadout = readoutText;
       }
-      if (statusCopy) statusCopy.textContent = playerStatus(snapshot);
+      if (statusCopy) statusCopy.textContent = playerStatus(snapshot, swingReleaseCue);
       const transition = snapshot.sectorTransition;
       if (objective) objective.textContent = transition?.active
         ? transition.phase === "opening"
@@ -166,14 +176,20 @@ export function createHud(nodes = {}) {
           ? snapshot.routeChoice.selectedRole === "pressure-shortcut"
             ? "Your banked signal cargo unlocked Cacheline High. Build one rightward arc and fire through the smaller amber catch."
             : "Stormlock converted shelter protection into a faster cable launch. Fire through the mint Slipstream Launch now."
-        : snapshot.routeChoice?.status === "convergence-active" && firstSwingReleaseCue
-          ? firstSwingReleaseCue.objective ?? `Build ${firstSwingReleaseCue.directionLabel} into the branch release cue, then carry the payoff into Windglass Relay.`
+        : snapshot.routeChoice?.status === "convergence-active" && swingReleaseCue
+          ? snapshot.mode === "swinging"
+            ? swingReleaseCue.objective ?? `Build ${swingReleaseCue.directionLabel} into the branch release cue, then carry the payoff into Windglass Relay.`
+            : swingReleaseCue.status ?? "Release committed. Fire the grapple into Windglass Relay."
         : snapshot.routeChoice?.status === "convergence-active"
           ? snapshot.routeChoice.selectedRole === "pressure-shortcut"
             ? `Cacheline High banked ${Math.round(number(snapshot.routeChoice.scoreValue))} cargo mastery. Carry it into the shared Windglass Relay catch.`
             : `Slipstream Launch preserved ${Math.round(number(snapshot.routeChoice.scoreValue))} speed. Carry it into the shared Windglass Relay catch.`
         : snapshot.routeChoice?.status === "rejoin-active" && windglassSettle
           ? windglassSettle.objective ?? "Windglass is holding the branch score for one beat. Recover high into the protected cyan rejoin."
+        : snapshot.routeChoice?.status === "rejoin-active" && swingReleaseCue
+          ? snapshot.mode === "swinging"
+            ? swingReleaseCue.objective ?? `Build ${swingReleaseCue.directionLabel} high into the shared cyan release cue, then fire for the original ascent.`
+            : swingReleaseCue.status ?? "Cyan rejoin released. Fire for the original ascent anchor."
         : snapshot.routeChoice?.status === "rejoin-active"
           ? `Windglass banked ${Math.round(number(snapshot.routeChoice.scoreValue))} ${snapshot.routeChoice.scoreMetric === "cargo-mastery" ? "cargo mastery" : "speed"}. Build above the relay and fire for the bright cyan ascent anchor; this catch has a protected recovery window.`
         : snapshot.completed

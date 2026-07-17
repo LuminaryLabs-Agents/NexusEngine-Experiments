@@ -21,25 +21,35 @@ function chunksFor(summitY, h = 600) {
 
 const finite = (value, fallback = 0) => Number.isFinite(Number(value)) ? Number(value) : fallback;
 
-export function describePayoffFirstSwingReleaseCue(snapshot = {}) {
+function activeWindglassSettle(snapshot = {}) {
+  if (snapshot.routeChoice?.status !== "rejoin-active") return null;
+  const events = snapshot.recentEvents ?? [];
+  for (let index = events.length - 1; index >= 0; index -= 1) {
+    const event = events[index];
+    if (event.type !== "windglass-relay-scored" || !event.settleStyle) continue;
+    const frames = Math.max(1, Math.floor(finite(event.settleFrames, 1)));
+    const age = finite(snapshot.frame) - finite(event.at);
+    return age >= 0 && age <= frames ? { event, frames, age } : null;
+  }
+  return null;
+}
+
+function describeDirectedReleaseCue(snapshot, source, target, prefix, defaultColor) {
   const choice = snapshot.routeChoice;
-  if (choice?.status !== "convergence-active" || snapshot.currentAnchorId !== choice.payoffTargetId) return null;
-  const ledges = snapshot.route?.ledges ?? [];
-  const payoff = ledges.find((ledge) => ledge.id === choice.payoffTargetId);
-  const convergence = ledges.find((ledge) => ledge.id === choice.convergenceAnchorId);
-  const metadata = payoff?.metadata;
-  const style = metadata?.routeChoiceFirstSwingReleaseStyle;
-  if (!style || !convergence) return null;
-  const direction = Math.sign(finite(convergence.x) - finite(payoff.x)) || 1;
-  const minAngle = Math.max(0, finite(metadata.routeChoiceFirstSwingReleaseMinDirectedAngle));
-  const maxAngle = Math.max(minAngle, finite(metadata.routeChoiceFirstSwingReleaseMaxDirectedAngle, 1.2));
-  const minSpeed = Math.max(0, finite(metadata.routeChoiceFirstSwingReleaseMinDirectedSpeed));
+  const metadata = source?.metadata;
+  const value = (name, fallback) => metadata?.[`${prefix}${name}`] ?? fallback;
+  const style = value("Style");
+  if (!style || !target) return null;
+  const direction = Math.sign(finite(target.x) - finite(source.x)) || 1;
+  const minAngle = Math.max(0, finite(value("MinDirectedAngle")));
+  const maxAngle = Math.max(minAngle, finite(value("MaxDirectedAngle"), 1.2));
+  const minSpeed = Math.max(0, finite(value("MinDirectedSpeed")));
   const directedAngle = direction * finite(snapshot.player?.angle);
   const directedSpeed = direction * finite(snapshot.player?.aVel);
   const directionLabel = direction < 0 ? "left" : "right";
   const directionalCopy = (value) => typeof value === "string" ? value.replaceAll("{direction}", directionLabel) : value;
   return {
-    targetId: convergence.id,
+    targetId: target.id,
     style,
     direction,
     directionLabel,
@@ -49,37 +59,47 @@ export function describePayoffFirstSwingReleaseCue(snapshot = {}) {
     directedAngle,
     directedSpeed,
     ready: snapshot.mode === "swinging" && directedAngle >= minAngle && directedAngle <= maxAngle && directedSpeed >= minSpeed,
-    velocityMultiplier: Math.max(1, finite(metadata.routeChoiceFirstSwingReleaseVelocityMultiplier, 1)),
-    liftImpulse: Math.max(0, finite(metadata.routeChoiceFirstSwingReleaseLiftImpulse)),
-    cameraImpulse: Math.max(0, Math.min(1, finite(metadata.routeChoiceFirstSwingReleaseCameraImpulse))),
-    color: Math.max(0, Math.floor(finite(metadata.routeChoiceFirstSwingReleaseColor, choice.selectedRole === "pressure-shortcut" ? 0xffb83d : 0x3dffa3))),
-    buildPrompt: directionalCopy(metadata.routeChoiceFirstSwingReleaseBuildPrompt),
-    prompt: directionalCopy(metadata.routeChoiceFirstSwingReleasePrompt),
-    objective: directionalCopy(metadata.routeChoiceFirstSwingReleaseObjective),
-    status: directionalCopy(metadata.routeChoiceFirstSwingReleaseStatus)
+    velocityMultiplier: Math.max(1, finite(value("VelocityMultiplier"), 1)),
+    horizontalVelocityMultiplier: Math.max(0, finite(value("HorizontalVelocityMultiplier"), value("VelocityMultiplier", 1))),
+    liftImpulse: Math.max(0, finite(value("LiftImpulse"))),
+    cameraImpulse: Math.max(0, Math.min(1, finite(value("CameraImpulse")))),
+    color: Math.max(0, Math.floor(finite(value("Color"), defaultColor ?? (choice?.selectedRole === "pressure-shortcut" ? 0xffb83d : 0x3dffa3)))),
+    buildPrompt: directionalCopy(value("BuildPrompt")),
+    prompt: directionalCopy(value("Prompt")),
+    objective: directionalCopy(value("Objective")),
+    status: directionalCopy(value("Status"))
   };
 }
 
-export function describeWindglassScoreSettle(snapshot = {}) {
-  if (snapshot.routeChoice?.status !== "rejoin-active") return null;
-  const events = snapshot.recentEvents ?? [];
-  for (let index = events.length - 1; index >= 0; index -= 1) {
-    const event = events[index];
-    if (event.type !== "windglass-relay-scored" || !event.settleStyle) continue;
-    const frames = Math.max(1, Math.floor(finite(event.settleFrames, 1)));
-    const age = finite(snapshot.frame) - finite(event.at);
-    if (age < 0 || age > frames) return null;
-    return {
-      style: event.settleStyle,
-      color: Math.max(0, Math.floor(finite(event.settleColor, 0xe4fbff))),
-      strength: Math.max(0, Math.min(1, 1 - age / frames)),
-      scaleX: Math.max(0.5, finite(event.settleScaleX, 1)),
-      scaleY: Math.max(0.5, finite(event.settleScaleY, 1)),
-      prompt: event.settlePrompt,
-      objective: event.settleObjective
-    };
+export function describeActiveSwingReleaseCue(snapshot = {}) {
+  const choice = snapshot.routeChoice;
+  const ledges = snapshot.route?.ledges ?? [];
+  if (choice?.status === "convergence-active" && snapshot.currentAnchorId === choice.payoffTargetId) {
+    const payoff = ledges.find((ledge) => ledge.id === choice.payoffTargetId);
+    const convergence = ledges.find((ledge) => ledge.id === choice.convergenceAnchorId);
+    return describeDirectedReleaseCue(snapshot, payoff, convergence, "routeChoiceFirstSwingRelease");
+  }
+  if (choice?.status === "rejoin-active" && snapshot.currentAnchorId === choice.convergenceAnchorId && !activeWindglassSettle(snapshot)) {
+    const convergence = ledges.find((ledge) => ledge.id === choice.convergenceAnchorId);
+    const rejoin = ledges.find((ledge) => ledge.id === choice.genericRejoinAnchorId);
+    return describeDirectedReleaseCue(snapshot, convergence, rejoin, "routeChoiceGenericRejoinRelease", 0x77e8ff);
   }
   return null;
+}
+
+export function describeWindglassScoreSettle(snapshot = {}) {
+  const active = activeWindglassSettle(snapshot);
+  if (!active) return null;
+  const { event, frames, age } = active;
+  return {
+    style: event.settleStyle,
+    color: Math.max(0, Math.floor(finite(event.settleColor, 0xe4fbff))),
+    strength: Math.max(0, Math.min(1, 1 - age / frames)),
+    scaleX: Math.max(0.5, finite(event.settleScaleX, 1)),
+    scaleY: Math.max(0.5, finite(event.settleScaleY, 1)),
+    prompt: event.settlePrompt,
+    objective: event.settleObjective
+  };
 }
 
 function choiceBeatLedge(source, beat, choiceId, defaultStaminaRestore = 45) {
@@ -129,6 +149,7 @@ function choiceBeatLedge(source, beat, choiceId, defaultStaminaRestore = 45) {
       routeChoiceFirstSwingReleaseMaxDirectedAngle: Number(beat.firstSwingReleaseMaxDirectedAngle ?? 0),
       routeChoiceFirstSwingReleaseMinDirectedSpeed: Number(beat.firstSwingReleaseMinDirectedSpeed ?? 0),
       routeChoiceFirstSwingReleaseVelocityMultiplier: Number(beat.firstSwingReleaseVelocityMultiplier ?? 1),
+      routeChoiceFirstSwingReleaseHorizontalVelocityMultiplier: Number(beat.firstSwingReleaseHorizontalVelocityMultiplier ?? beat.firstSwingReleaseVelocityMultiplier ?? 1),
       routeChoiceFirstSwingReleaseLiftImpulse: Number(beat.firstSwingReleaseLiftImpulse ?? 0),
       routeChoiceFirstSwingReleaseCameraImpulse: Number(beat.firstSwingReleaseCameraImpulse ?? 0),
       routeChoiceFirstSwingReleaseColor: Number(beat.firstSwingReleaseColor ?? 0),
@@ -162,6 +183,19 @@ function choiceBeatLedge(source, beat, choiceId, defaultStaminaRestore = 45) {
       routeChoiceGenericRejoinFailFloorBonus: Number(beat.rejoinFailFloorBonus ?? 0),
       routeChoiceGenericRejoinAimAssistBonus: Number(beat.rejoinAimAssistBonus ?? 0),
       routeChoiceGenericRejoinCameraZoomBonus: Number(beat.rejoinCameraZoomBonus ?? 0),
+      routeChoiceGenericRejoinReleaseStyle: beat.rejoinReleaseStyle ?? null,
+      routeChoiceGenericRejoinReleaseMinDirectedAngle: Number(beat.rejoinReleaseMinDirectedAngle ?? 0),
+      routeChoiceGenericRejoinReleaseMaxDirectedAngle: Number(beat.rejoinReleaseMaxDirectedAngle ?? 0),
+      routeChoiceGenericRejoinReleaseMinDirectedSpeed: Number(beat.rejoinReleaseMinDirectedSpeed ?? 0),
+      routeChoiceGenericRejoinReleaseVelocityMultiplier: Number(beat.rejoinReleaseVelocityMultiplier ?? 1),
+      routeChoiceGenericRejoinReleaseHorizontalVelocityMultiplier: Number(beat.rejoinReleaseHorizontalVelocityMultiplier ?? beat.rejoinReleaseVelocityMultiplier ?? 1),
+      routeChoiceGenericRejoinReleaseLiftImpulse: Number(beat.rejoinReleaseLiftImpulse ?? 0),
+      routeChoiceGenericRejoinReleaseCameraImpulse: Number(beat.rejoinReleaseCameraImpulse ?? 0),
+      routeChoiceGenericRejoinReleaseColor: Number(beat.rejoinReleaseColor ?? 0),
+      routeChoiceGenericRejoinReleaseBuildPrompt: beat.rejoinReleaseBuildPrompt ?? null,
+      routeChoiceGenericRejoinReleasePrompt: beat.rejoinReleasePrompt ?? null,
+      routeChoiceGenericRejoinReleaseObjective: beat.rejoinReleaseObjective ?? null,
+      routeChoiceGenericRejoinReleaseStatus: beat.rejoinReleaseStatus ?? null,
       routeChoiceStatus: beat.status ?? null,
       routeChoiceResolvedStatus: beat.resolvedStatus ?? null,
       routeChoiceSafeStatus: beat.safeStatus ?? null,

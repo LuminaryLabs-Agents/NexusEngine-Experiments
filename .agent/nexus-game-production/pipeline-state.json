@@ -27,10 +27,10 @@
     }
   },
   "synchronizedStartingCommits": {
-    "coreRemoteDefault": "70cc2a1590677b872d40a42f7b7bb7e174941eb0",
-    "coreLocalReadOnly": "70cc2a1590677b872d40a42f7b7bb7e174941eb0",
+    "coreRemoteDefault": "a5882b47bd5a9284550bb3af1f0cd8580c62665e",
+    "coreLocalReadOnly": "a5882b47bd5a9284550bb3af1f0cd8580c62665e",
     "protokits": "04d34f049f58ae359cf71d43466c429dac2a6d08",
-    "experiments": "e7920f97ed923ad3975a58416f49a70881d0de24",
+    "experiments": "9e183248ce5e8c75fb78c7f7ce562d34a4d81a67",
     "experimentsBaseline": "615a7e1e2170164acef0edebdbe0b88b8c01fd1b"
   },
   "baseline": {
@@ -147,28 +147,28 @@
     "result": "Upgraded Next Ledge so Slipstream Launch and Cacheline High converge at Windglass Relay, banking 134 preserved speed or 175 cargo mastery before generic ascent resumes; production creation counts remain unchanged."
   },
   "lastRefinementUnit": {
-    "packetId": "2026-07-17-next-ledge-windglass-branch-settle-refinement",
-    "scope": "Next Ledge Windglass branch score settle",
-    "result": "Windglass now banks the safe line through a buoyant mint float and the shortcut through a compressed amber brake using descriptor-authored tuning and existing score, tether, camera, material, player-scale, spark, HUD, and synth owners."
+    "packetId": "2026-07-17-next-ledge-windglass-rejoin-release-cue",
+    "scope": "Next Ledge Windglass branch-neutral rejoin release cue",
+    "result": "Windglass now turns either settled branch score into one cyan high-build release, with authored upward lift and lateral damping carrying physical input reliably into original anchor-11 through existing release and feedback owners."
   },
   "lastCompletedUnit": {
-    "packetId": "2026-07-17-next-ledge-windglass-branch-settle-refinement",
-    "scope": "Next Ledge Windglass branch score feel refinement",
-    "result": "The shared Windglass score now answers Slipstream with a 24-frame mint float and Cacheline with a 16-frame amber brake before restoring the protected cyan rejoin, without a new state, timer, control, event type, material, entity, effect pool, or feedback owner.",
-    "validation": "All 28 existing Next Ledge test entrypoints, affected JavaScript syntax checks, JSON, and diff checks passed. Playwright completed actual-input safe and shortcut routes through 134-speed and 175-cargo Windglass scores, repeated the complete safe loop after cleanup, secured the original anchor-11 rejoin, proved real failure, keyboard retry, and Advanced closed/open/closed, held 69 DOM nodes, one canvas, 76 active-sector descriptors, and 277 settled scene nodes, and reported zero console or page errors. Human View passed the first screen plus final mint and amber settle frames with diagnostics closed, including a compositor-clean failure state. The final matched 60-tick warm-up plus 180-tick fixed active window improved from 86.81 to 61.40 ms average tick, 11.52 to 16.29 simulated FPS, and 129.80 to 98.70 ms p95; counts stayed bounded and heap settled to 21.73 MB after the growth window.",
+    "packetId": "2026-07-17-next-ledge-windglass-rejoin-release-cue",
+    "scope": "Next Ledge Windglass-to-anchor-11 hero release refinement",
+    "result": "Both the 134-speed safe line and 175-cargo shortcut now resolve their Windglass settle into one readable cyan release-ready cue, authored upward launch, bounded lateral damping, physical re-grapple, and secured original anchor-11 without a new state, timer, control, event type, material, entity, effect pool, or feedback owner.",
+    "validation": "All 28 existing Next Ledge test entrypoints, affected JavaScript syntax checks, JSON, and diff checks passed. Playwright physically completed safe and shortcut routes through their scores, cyan release, and original anchor-11, proved real failure, keyboard retry, and Advanced closed/open/closed, held 69 DOM nodes, one canvas, 76 active-sector descriptors, 32 ledges, and 277 settled scene nodes, and reported zero console or page errors. Human View passed the first screen, both cyan-ready and release frames, both secured frames, failure, and recovery with diagnostics closed. The matched 60-tick warm-up plus 180-tick active window changed from 61.40 to 66.18 ms average tick, 16.29 to 15.11 simulated FPS, and 98.70 to 84.80 ms p95; the primary metric remained inside the 10 percent budget, counts stayed bounded through 360 further active ticks, and heap stabilized near 26.35 MB.",
     "commits": {
-      "coreReadOnly": "70cc2a1590677b872d40a42f7b7bb7e174941eb0",
+      "coreReadOnly": "a5882b47bd5a9284550bb3af1f0cd8580c62665e",
       "protokitsStart": "04d34f049f58ae359cf71d43466c429dac2a6d08",
       "protokitsProductionUnit": "04d34f049f58ae359cf71d43466c429dac2a6d08",
-      "experimentsStart": "e7920f97ed923ad3975a58416f49a70881d0de24",
-      "experimentsProductionUnit": "72de9134e2f4643f4e0a4f50326c4f5f81f8fa52"
+      "experimentsStart": "9e183248ce5e8c75fb78c7f7ce562d34a4d81a67",
+      "experimentsProductionUnit": "pending"
     },
-    "publication": "Experiments production commit 72de9134e2f4643f4e0a4f50326c4f5f81f8fa52 published to resolved default branch main after fetch-before-push verification; publication receipt pending. ProtoKits is unchanged and synchronized at 04d34f049f58ae359cf71d43466c429dac2a6d08."
+    "publication": "Validation complete; Experiments production publication is pending. ProtoKits is unchanged and synchronized at 04d34f049f58ae359cf71d43466c429dac2a6d08."
   },
   "exactNextUnit": {
     "phase": "playable-experiment-upgrade",
     "epoch": 0,
-    "scope": "next-ledge-windglass-rejoin-release-ready-cue",
-    "goal": "Add one branch-neutral high-build release-ready cue from Windglass into original anchor-11, reusing existing swing readiness and release owners so the score settle flows into recovery without another state or control."
+    "scope": "next-ledge-anchor-11-rejoin-secured-rebound",
+    "goal": "Let original anchor-11 answer the secured cyan release with one short score-preserving rebound and confirmation beat, reusing windglass-rejoin-secured, tether, camera, player-scale, spark, and synth owners without another state or control."
   }
 }

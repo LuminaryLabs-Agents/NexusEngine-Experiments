@@ -59,7 +59,7 @@ for (const visibleSurface of ["Next Ledge", "A / D", "SPACE / CLICK", "R</b> ret
 for (const masterySurface of ["Stormbreak rest", "Commit perch", "Crosswind catch", "Relay crown", "Summit relay"]) {
   assert.ok(climbPreset.includes(masterySurface), `authored mastery crest should include ${masterySurface}`);
 }
-for (const choiceSurface of ["Shelter rise", "Signal cut", "Fork relay", "Stormlock restore", "Slipstream launch", "Cacheline high", "Windglass relay", "pressureDelta: 46", "cargoBonus: 1.75", "protectedFailFloorBonus: 210", "rejoinFailFloorBonus: 260", "rejoinAimAssistBonus: 34", "rejoinCameraZoomBonus: 96", "pressureRecovery: 100", "ventPulseCount: 4", "confirmationFrames: 24", "confirmationHandoffFrames: 12", "grappleSurgeFrames: 18", "grappleSurgeColor: 0x3dffa3", "grappleSurgeColor: 0xffb83d", "latchRecoilStyle: \"mint-forward-pull\"", "latchRecoilStyle: \"amber-impact-snap\"", "latchRecoilCameraImpulse: 0.28", "latchRecoilCameraImpulse: 0.46", "firstSwingReleaseStyle: \"mint-glide-window\"", "firstSwingReleaseStyle: \"amber-aftershock\"", "firstSwingReleaseMaxDirectedAngle: 1.08", "firstSwingReleaseVelocityMultiplier: 1.08", "firstSwingReleaseVelocityMultiplier: 1.18", "MINT GLIDE READY", "AMBER AFTERSHOCK READY", "ZERO PRESSURE", "launchSpeedMultiplier: 1.34", "cargoRequired: 1.75", "scoreMetric: \"preserved-speed\"", "scoreMetric: \"cargo-mastery\""]) {
+for (const choiceSurface of ["Shelter rise", "Signal cut", "Fork relay", "Stormlock restore", "Slipstream launch", "Cacheline high", "Windglass relay", "pressureDelta: 46", "cargoBonus: 1.75", "protectedFailFloorBonus: 210", "rejoinFailFloorBonus: 260", "rejoinAimAssistBonus: 34", "rejoinCameraZoomBonus: 96", "rejoinReleaseStyle: \"cyan-high-build-window\"", "rejoinReleaseVelocityMultiplier: 1.12", "rejoinReleaseHorizontalVelocityMultiplier: 0.42", "rejoinReleaseLiftImpulse: 0.58", "CYAN REJOIN READY", "pressureRecovery: 100", "ventPulseCount: 4", "confirmationFrames: 24", "confirmationHandoffFrames: 12", "grappleSurgeFrames: 18", "grappleSurgeColor: 0x3dffa3", "grappleSurgeColor: 0xffb83d", "latchRecoilStyle: \"mint-forward-pull\"", "latchRecoilStyle: \"amber-impact-snap\"", "latchRecoilCameraImpulse: 0.28", "latchRecoilCameraImpulse: 0.46", "firstSwingReleaseStyle: \"mint-glide-window\"", "firstSwingReleaseStyle: \"amber-aftershock\"", "firstSwingReleaseMaxDirectedAngle: 1.08", "firstSwingReleaseVelocityMultiplier: 1.08", "firstSwingReleaseVelocityMultiplier: 1.18", "MINT GLIDE READY", "AMBER AFTERSHOCK READY", "ZERO PRESSURE", "launchSpeedMultiplier: 1.34", "cargoRequired: 1.75", "scoreMetric: \"preserved-speed\"", "scoreMetric: \"cargo-mastery\""]) {
   assert.ok(climbPreset.includes(choiceSurface), `authored post-rest choice should include ${choiceSurface}`);
 }
 assert.match(climbAdapter, /postRestChoice/, "route adapter should expose the authored post-rest choice descriptor");
@@ -71,11 +71,14 @@ assert.match(climbAdapter, /routeChoicePayoffGrappleImpactScale/, "route adapter
 assert.match(climbAdapter, /routeChoicePayoffLatchRecoilStyle/, "route adapter should preserve the branch-aware latch recoil style");
 assert.match(climbAdapter, /routeChoicePayoffLatchRecoilImpulse/, "route adapter should preserve the branch-aware latch impulse");
 assert.match(climbAdapter, /routeChoicePayoffLatchRecoilSquashX/, "route adapter should preserve the existing player-squash tuning");
-assert.match(climbAdapter, /describePayoffFirstSwingReleaseCue/, "one descriptor consumer should derive the branch release window for session and HUD");
+assert.match(climbAdapter, /describeActiveSwingReleaseCue/, "one descriptor consumer should derive both payoff and Windglass release windows for session and HUD");
 assert.match(climbAdapter, /routeChoiceFirstSwingReleaseMinDirectedAngle/, "route adapter should preserve the authored branch release angle");
 assert.match(climbAdapter, /routeChoiceFirstSwingReleaseVelocityMultiplier/, "route adapter should preserve the authored branch release motion tuning");
 assert.match(climbAdapter, /routeChoiceWindglassSettleStyle/, "route adapter should preserve authored Windglass branch settle tuning");
 assert.match(climbAdapter, /describeWindglassScoreSettle/, "presentation should derive the bounded settle from the existing score event");
+assert.match(climbAdapter, /routeChoiceGenericRejoinReleaseMinDirectedAngle/, "route adapter should preserve the authored branch-neutral rejoin release angle");
+assert.match(climbAdapter, /routeChoiceGenericRejoinReleaseVelocityMultiplier/, "route adapter should preserve the authored rejoin release motion tuning");
+assert.match(climbAdapter, /routeChoiceGenericRejoinReleaseHorizontalVelocityMultiplier/, "route adapter should preserve the authored rejoin horizontal damping");
 assert.match(session, /routeChoice: createInitialRouteChoice/, "session should own one deterministic route-choice state");
 assert.match(session, /route-choice-skipped/, "unselected branch should reconcile through the existing route-progress ledger");
 assert.match(session, /protectedRecoveryWindow/, "the safe consequence should extend the existing recovery window rather than add a second recovery owner");
@@ -92,7 +95,8 @@ assert.match(session, /payoffLatchRecoil/, "the existing latch path should consu
 assert.match(session, /activePayoffLatchRecoil/, "the existing player squash should derive its bounded beat from grapple-latched event age");
 assert.match(session, /recoilStyle: recoil\?\.style/, "the existing grapple-latched event should carry branch recoil evidence without a new event");
 assert.match(session, /releaseCueActive: Boolean\(releaseCue\?\.ready\)/, "the existing released event should carry branch cue evidence without a new event type");
-assert.match(session, /state\.player\.vy \* releaseCue\.velocityMultiplier \+ releaseCue\.liftImpulse/, "the existing release path should apply authored glide or aftershock motion");
+assert.match(session, /state\.player\.vy \* releaseCue\.velocityMultiplier \+ releaseCue\.liftImpulse/, "the existing release path should apply authored branch or cyan rejoin motion");
+assert.match(session, /state\.player\.vx \*= releaseCue\.horizontalVelocityMultiplier/, "the existing release path should damp lateral rejoin momentum through authored tuning");
 assert.match(session, /routeChoiceAimAssistLeadY/, "route-choice aim compensation should remain authored descriptor data");
 assert.match(session, /routeChoiceAimAssistMinBuildAngle/, "authored shortcut aim assistance should require its advertised build window");
 assert.match(session, /post-stormlock-payoff-opened/, "Stormlock should open one branch-specific payoff through the existing route-choice state");
@@ -120,6 +124,7 @@ assert.match(effects, /payoffGrappleSurge/, "existing bounded sparks should deri
 assert.match(synth, /payoffRole/, "existing grapple audio should derive its branch accent from the selected payoff target");
 assert.match(synth, /type === "grapple-latched"/, "the existing grapple-latched synth path should present the branch-aware recoil beat");
 assert.match(synth, /event\.releaseCueStyle === "amber-aftershock"/, "the existing released synth path should distinguish amber aftershock from mint glide");
+assert.match(synth, /event\.releaseCueStyle === "cyan-high-build-window"/, "the existing released synth path should distinguish the shared cyan rejoin launch");
 assert.match(effects, /evt\.releaseCueColor/, "the existing released spark path should consume the authored branch color");
 assert.match(renderer, /convergenceTargetActive/, "renderer should reuse the bounded consequence line for the Windglass convergence target");
 assert.match(renderer, /rejoinTargetActive/, "renderer should reuse the bounded consequence line for the original generic rejoin target");
@@ -131,8 +136,9 @@ assert.match(hud, /MINT OVERCHARGE — Fire for Slipstream Launch/, "the safe pa
 assert.match(hud, /AMBER HIGH LINE — Commit to Cacheline High/, "the shortcut payoff prompt should expose the harder cargo-unlocked line");
 assert.match(hud, /WINDGLASS RELAY — Preserve/, "the shared convergence prompt should expose the preserved-speed score");
 assert.match(hud, /WINDGLASS RELAY — Bank/, "the shared convergence prompt should expose the cargo-mastery score");
-assert.match(hud, /describePayoffFirstSwingReleaseCue/, "the HUD should consume the same branch release descriptor as the session");
-assert.match(hud, /REJOIN WINDOW — Build high · Fire for cyan ascent anchor/, "the contextual hero prompt should expose the branch-neutral recovery catch");
+assert.match(hud, /describeActiveSwingReleaseCue/, "the HUD should consume the same active release descriptor as the session");
+assert.match(hud, /CYAN REJOIN READY — Release upward/, "the contextual hero prompt should expose the branch-neutral high-build recovery cue");
+assert.match(hud, /Cyan rejoin aligned\. Release upward/, "the existing status owner should replace stale branch-settle copy when the cyan release is ready");
 assert.match(climbAdapter, /masteryCrestId/, "route adapter should preserve mastery crest metadata");
 assert.match(climbAdapter, /authoredRouteBeat/, "route adapter should mark authored late-route beats");
 assert.match(index, /id="completionPanel"/, "route shell should provide an unmistakable summit completion surface");

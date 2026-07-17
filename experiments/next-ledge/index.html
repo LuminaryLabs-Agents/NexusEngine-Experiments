@@ -49,6 +49,7 @@
     #actionPrompt[data-tone="ready"]{border-color:rgba(255,200,90,.55);background:rgba(52,32,4,.78);color:#fff2c3;transform:translateY(-2px)}
     #actionPrompt[data-tone="mint"]{border-color:rgba(101,255,178,.7);background:rgba(5,55,34,.9);color:#e2fff1;box-shadow:0 0 34px rgba(61,255,163,.18);transform:translateY(-2px)}
     #actionPrompt[data-tone="amber"]{border-color:rgba(255,184,61,.72);background:rgba(62,31,3,.9);color:#fff0c4;box-shadow:0 0 34px rgba(255,152,38,.2);transform:translateY(-2px)}
+    #actionPrompt[data-tone="cyan"]{border-color:rgba(119,232,255,.78);background:rgba(3,42,58,.92);color:#e4fbff;box-shadow:0 0 36px rgba(119,232,255,.22);transform:translateY(-2px)}
     #actionPrompt[data-tone="danger"]{border-color:rgba(255,90,115,.5);background:rgba(49,7,14,.82);color:#ffe8ec}
     #actionPrompt[data-tone="success"]{border-color:rgba(101,255,178,.5);background:rgba(5,43,27,.82);color:#e2fff1}
     #completionPanel{grid-column:1/4;grid-row:2;align-self:center;justify-self:center;width:min(540px,calc(100vw - 32px));padding:26px 30px;border-radius:24px;text-align:center;border-color:rgba(255,214,90,.56);background:radial-gradient(circle at 50% 0,rgba(255,214,90,.2),rgba(16,12,4,.9) 58%);box-shadow:0 26px 100px rgba(0,0,0,.6),0 0 80px rgba(255,214,90,.16),inset 0 0 0 1px rgba(255,244,190,.1)}
@@ -69,7 +70,7 @@
   </style>
 </head>
 <body>
-  <main id="app" data-upgrade="grapple-flow-playable-upgrade counterwind-sector-handoff-pass counterwind-pressure-crescendo-pass post-rest-route-choice-pass signal-cut-one-launch-pass signal-pressure-carry-window-pass stormlock-visible-pressure-vent-pass stormlock-confirmation-beat-pass stormlock-payoff-line-handoff-pass payoff-grapple-chroma-surge-pass payoff-latch-recoil-pass post-rejoin-consequence-pass post-stormlock-payoff-pass windglass-relay-convergence-pass windglass-branch-settle-pass windglass-generic-rejoin-pass traversal-readability-renderer-handoff-pass anchor-timing-readability-renderer-handoff-pass rescue-line-readiness-renderer-handoff-pass summit-bivouac-readiness-renderer-handoff-pass ravine-evacuation-readiness-renderer-handoff-pass glacier-supply-readiness-renderer-handoff-pass avalanche-beacon-rescue-readiness-renderer-handoff-pass summit-weather-station-readiness-renderer-handoff-pass drone-relay-rescue-readiness-renderer-handoff-pass ridge-stretcher-relay-readiness-renderer-handoff-pass">
+  <main id="app" data-upgrade="grapple-flow-playable-upgrade counterwind-sector-handoff-pass counterwind-pressure-crescendo-pass post-rest-route-choice-pass signal-cut-one-launch-pass signal-pressure-carry-window-pass stormlock-visible-pressure-vent-pass stormlock-confirmation-beat-pass stormlock-payoff-line-handoff-pass payoff-grapple-chroma-surge-pass payoff-latch-recoil-pass post-rejoin-consequence-pass post-stormlock-payoff-pass windglass-relay-convergence-pass windglass-branch-settle-pass windglass-rejoin-release-cue-pass windglass-generic-rejoin-pass traversal-readability-renderer-handoff-pass anchor-timing-readability-renderer-handoff-pass rescue-line-readiness-renderer-handoff-pass summit-bivouac-readiness-renderer-handoff-pass ravine-evacuation-readiness-renderer-handoff-pass glacier-supply-readiness-renderer-handoff-pass avalanche-beacon-rescue-readiness-renderer-handoff-pass summit-weather-station-readiness-renderer-handoff-pass drone-relay-rescue-readiness-renderer-handoff-pass ridge-stretcher-relay-readiness-renderer-handoff-pass">
     <canvas id="game" role="application" aria-label="Next Ledge summit weather station, drone relay, and ridge stretcher relay rescue readiness game canvas"></canvas>
     <aside id="hud" class="sr-only" aria-label="Game state for screen readers"><header id="status" aria-live="polite">Loading Next Ledge</header><footer id="readout"></footer></aside>
     <section id="gameUi" aria-label="Next Ledge controls and mission status">
@@ -108,7 +109,7 @@
     </section>
     <section id="errorPanel" role="alert" hidden></section>
   </main>
-  <script type="module" src="./src/main.js?v=windglass-settle-1"></script>
+  <script type="module" src="./src/main.js?v=windglass-rejoin-release-1"></script>
   <script type="module" src="./src/advanced-diagnostics.js?v=mastery-crest-1"></script>
 </body>
 </html>
