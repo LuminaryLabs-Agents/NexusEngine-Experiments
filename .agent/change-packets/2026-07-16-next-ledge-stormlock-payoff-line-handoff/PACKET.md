@@ -6,7 +6,7 @@
 - Experiment: `experiments/next-ledge/`
 - Result: material player-visible refinement; no new experiment or production count
 - Experiments start: `f9657638115325c45780daf157df157c7a47159a`
-- Experiments production commit: pending
+- Experiments production commit: `069e7de6a1979c1569f8ce066c7242a6e8817475`
 - ProtoKits: `04d34f049f58ae359cf71d43466c429dac2a6d08` unchanged
 - Core reference: `70cc2a1590677b872d40a42f7b7bb7e174941eb0` read-only
 
