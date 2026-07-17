@@ -2,7 +2,7 @@
 
 - Packet: `2026-07-17-next-ledge-windglass-rejoin-release-cue`
 - Run started: `2026-07-17T05:05:30-04:00`
-- Result: validated playable upgrade; publication pending
+- Result: validated playable upgrade; production commit published
 - Experiment-game: `experiments/next-ledge/`
 - Starting commits: Experiments `9e183248ce5e8c75fb78c7f7ce562d34a4d81a67`; ProtoKits `04d34f049f58ae359cf71d43466c429dac2a6d08`; Core read-only `a5882b47bd5a9284550bb3af1f0cd8580c62665e`
 
@@ -72,6 +72,6 @@
 
 ## Publication
 
-- Production commit: pending.
-- Final receipt commit: pending.
+- Production commit: `daa38593d31d5c4b76e2bbe9f904541d7a3ef9c8`, published to resolved default branch `main` after fetch-before-push verification.
+- Final receipt commit: this publication-receipt commit; exact final repository head is recorded in the automation run summary.
 - ProtoKits: unchanged at `04d34f049f58ae359cf71d43466c429dac2a6d08`.
