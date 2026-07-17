@@ -2,7 +2,7 @@
 
 Packet: `2026-07-16-next-ledge-signal-cut-one-launch-refinement`
 
-Status: validated; publication receipt pending
+Status: validated and published
 
 Experiment: `experiments/next-ledge/`
 
@@ -119,9 +119,9 @@ Matched fresh headed Chromium samples used `950 ms` warm-up, `3.4 s` active `D` 
 
 ## Publication
 
-- Production commit: `PENDING_PRODUCTION_COMMIT`.
+- Production commit: `593b78647715cd089fc1f858a06efe4b2bb3c1a1`.
 - ProtoKits push: not required; `main`, `HEAD`, and `origin/main` remain synchronized at `04d34f049f58ae359cf71d43466c429dac2a6d08`.
-- Experiments push: pending fetch-before-push verification.
+- Experiments push: production and receipt commits published to `origin/main` after fetch-before-push verification.
 
 ## Exact Next Playable Improvement
 
