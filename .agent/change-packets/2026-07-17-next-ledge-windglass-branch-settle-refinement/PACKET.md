@@ -3,8 +3,8 @@
 - Packet: `2026-07-17-next-ledge-windglass-branch-settle-refinement`
 - Experiment-game: `experiments/next-ledge/`
 - Starting commits: Experiments `e7920f97ed923ad3975a58416f49a70881d0de24`; ProtoKits `04d34f049f58ae359cf71d43466c429dac2a6d08`; Core read-only `70cc2a1590677b872d40a42f7b7bb7e174941eb0`
-- Production commit: pending
-- Status: validated, pending publication
+- Production commit: `72de9134e2f4643f4e0a4f50326c4f5f81f8fa52`
+- Status: validated; production published; receipt pending
 
 ## Intent And Ownership
 
@@ -66,6 +66,6 @@
 ## Publication
 
 - ProtoKits: unchanged at `04d34f049f58ae359cf71d43466c429dac2a6d08`.
-- Experiments production commit: pending.
-- Push: pending fetch-before-push verification.
+- Experiments production commit: `72de9134e2f4643f4e0a4f50326c4f5f81f8fa52`.
+- Push: production commit published to resolved default branch `main` after fetch-before-push verified remote `e7920f97ed923ad3975a58416f49a70881d0de24`; publication receipt pending.
 - Exact next playable improvement: add one branch-neutral high-build release-ready cue from Windglass into original `anchor-11`, reusing existing swing readiness and release owners so the score settle flows into recovery without another state or control.
