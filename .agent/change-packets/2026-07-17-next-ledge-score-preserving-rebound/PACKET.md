@@ -2,7 +2,7 @@
 
 - Packet: `2026-07-17-next-ledge-score-preserving-rebound`
 - Run started: `2026-07-17T14:03:18-04:00`
-- Result: validated playable upgrade; publication pending
+- Result: validated playable upgrade; production commit published
 - Experiment-game: `experiments/next-ledge/`
 - Starting commits: Experiments `10e1c998ce0582238dcb236093e727a05b63b2b5`; ProtoKits `bb3d787da372bf001653635d6e57eb7ce54e3c50`; Core read-only `a5882b47bd5a9284550bb3af1f0cd8580c62665e`
 
@@ -74,6 +74,6 @@
 ## Publication
 
 - ProtoKits: unchanged at `bb3d787da372bf001653635d6e57eb7ce54e3c50`.
-- Experiments production commit: pending.
-- Final receipt commit: pending.
+- Experiments production commit: `951f105aad815320e5a02781e567899319f87a75`, published to resolved default branch `main` after fetch-before-push verification.
+- Final receipt commit: this publication-receipt commit; exact final repository head is recorded in the automation run summary.
 - Exact next playable improvement: turn the `anchor-11` rebound into one score-aware first-swing release toward `anchor-12`, reusing the existing route-choice score, release, tether, camera, HUD, spark, and synth owners without another state or control.
