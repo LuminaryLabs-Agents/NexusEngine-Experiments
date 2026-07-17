@@ -2,7 +2,7 @@
 
 Packet: `2026-07-16-next-ledge-signal-pressure-carry-refinement`
 
-Status: validated locally; publication pending
+Status: validated and published
 
 Experiment: `experiments/next-ledge/`
 
@@ -112,9 +112,9 @@ Matched fresh headed Chromium samples used `950 ms` warm-up, `3.4 s` active `D` 
 
 ## Publication
 
-- Production commit: pending.
+- Production commit: `e2160861620cfae8edf6b96ebe31d222f76ae40f`.
 - ProtoKits push: not required; `main`, `HEAD`, and `origin/main` remain synchronized at `04d34f049f58ae359cf71d43466c429dac2a6d08`.
-- Experiments push: pending fetch-before-push verification.
+- Experiments push: production and publication-receipt commits published to resolved default branch `main` after fetch-before-push verification.
 
 ## Exact Next Playable Improvement
 
