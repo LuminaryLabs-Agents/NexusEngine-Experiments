@@ -5,7 +5,8 @@
 - Result: materially upgraded active experiment-game
 - Experiment-game: `experiments/next-ledge/`
 - Starting commits: Experiments `e6c3a83eee44db7e1636d4c6853f7ae45e25ce23`; ProtoKits `04d34f049f58ae359cf71d43466c429dac2a6d08`; Core read-only `70cc2a1590677b872d40a42f7b7bb7e174941eb0`
-- Production commit: pending owned commit and publication receipt
+- Production commit: `ace593a1a998309d44c25271500ed47c377e8470`
+- Publication: production commit published to resolved default branch `main`; this packet update is the publication receipt
 
 ## Intent
 
