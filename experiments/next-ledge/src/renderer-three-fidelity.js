@@ -33,6 +33,23 @@ function confirmationHandoffProgress(snapshot, stormlock) {
   return smoothstep((handoffFrames - remainingFrames) / Math.max(1, handoffFrames - 1));
 }
 
+function payoffGrappleSurge(snapshot, payoffTarget) {
+  const frames = Math.max(0, Math.floor(num(payoffTarget?.metadata?.routeChoicePayoffGrappleSurgeFrames, 0)));
+  if (snapshot.routeChoice?.status !== "payoff-active" || !frames || payoffTarget?.id !== snapshot.routeChoice?.payoffTargetId) return null;
+  const recentEvents = snapshot.recentEvents ?? [];
+  let fired = null;
+  for (let index = recentEvents.length - 1; index >= 0; index -= 1) {
+    const event = recentEvents[index];
+    if (event.type === "grapple-fired" && event.targetId === payoffTarget.id) { fired = event; break; }
+  }
+  const age = fired ? num(snapshot.frame) - num(fired.at) : frames + 1;
+  if (age < 0 || age > frames) return null;
+  return {
+    color: Math.max(0, Math.floor(num(payoffTarget.metadata.routeChoicePayoffGrappleSurgeColor, snapshot.routeChoice?.selectedRole === "pressure-shortcut" ? 0xffb83d : 0x3dffa3))),
+    strength: smoothstep(1 - age / Math.max(1, frames))
+  };
+}
+
 function dispose(root, { materials = false } = {}) {
   root.traverse?.((child) => {
     child.geometry?.dispose?.();
@@ -218,6 +235,7 @@ export function createThreeRenderer({ canvas }) {
   let presentedCameraY = null;
   let presentedCameraZ = null;
   let lastEffectTime = performance.now() / 1000;
+  let payoffSurgeApplied = false;
   const ledgeMap = new Map();
   const parallaxGroups = new Map();
 
@@ -499,6 +517,7 @@ export function createThreeRenderer({ canvas }) {
     const convergenceTarget = snapshot.route?.ledges?.find((ledge) => ledge.id === snapshot.routeChoice?.convergenceAnchorId);
     const genericRejoinTarget = snapshot.route?.ledges?.find((ledge) => ledge.id === snapshot.routeChoice?.genericRejoinAnchorId);
     const confirmationHandoff = confirmationHandoffProgress(snapshot, postRejoin);
+    const payoffSurge = payoffGrappleSurge(snapshot, payoffTarget);
     const payoffCameraZoomBonus = num(payoffTarget?.metadata?.routeChoicePayoffCameraZoomBonus, 0);
     const rejoinCameraZoomBonus = num(convergenceTarget?.metadata?.routeChoiceGenericRejoinCameraZoomBonus, 0);
     const choiceCameraY = snapshot.routeChoice?.status === "rejoin-active" && genericRejoinTarget
@@ -618,6 +637,21 @@ export function createThreeRenderer({ canvas }) {
     probe.visible = Boolean(snapshot.probe?.visible);
     probe.position.set(snapshot.probe?.x ?? 0, snapshot.probe?.y ?? 0, snapshot.probe?.z ?? 1);
     setLine(rope, snapshot.rope?.visible ? snapshot.rope.nodes : []);
+    if (payoffSurge) {
+      rope.material.color.setHex(payoffSurge.color);
+      rope.material.opacity = 0.9 + payoffSurge.strength * 0.1;
+      m.probe.color.setHex(payoffSurge.color);
+      m.probe.emissive.setHex(payoffSurge.color);
+      m.probe.emissiveIntensity = 3.2 + payoffSurge.strength * 2.4;
+      payoffSurgeApplied = true;
+    } else if (payoffSurgeApplied) {
+      rope.material.color.setHex(0x00f0ff);
+      rope.material.opacity = 0.9;
+      m.probe.color.setHex(0x00f0ff);
+      m.probe.emissive.setHex(0x00f0ff);
+      m.probe.emissiveIntensity = 3.2;
+      payoffSurgeApplied = false;
+    }
     setLine(traj, snapshot.trajectory ?? []);
     updateAimGuide(snapshot, time);
     reach.position.set(snapshot.reach?.x ?? snapshot.player.x, snapshot.reach?.y ?? snapshot.player.y, -1);

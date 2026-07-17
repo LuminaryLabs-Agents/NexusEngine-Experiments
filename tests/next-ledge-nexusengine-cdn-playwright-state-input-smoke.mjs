@@ -10,6 +10,8 @@ const diagnostics = readFileSync("experiments/next-ledge/src/advanced-diagnostic
 const climbPreset = readFileSync("experiments/next-ledge/src/climb-preset.js", "utf8");
 const climbAdapter = readFileSync("experiments/next-ledge/src/climb-anchor-adapter.js", "utf8");
 const renderer = readFileSync("experiments/next-ledge/src/renderer-three-fidelity.js", "utf8");
+const effects = readFileSync("experiments/next-ledge/src/diegetic-effects.js", "utf8");
+const synth = readFileSync("experiments/next-ledge/src/synth.js", "utf8");
 const cargoWrapper = readFileSync("experiments/next-ledge/src/session-cargo-extraction-upgrade.js", "utf8");
 
 assert.ok(sessionVisual.includes("https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js"));
@@ -57,12 +59,15 @@ for (const visibleSurface of ["Next Ledge", "A / D", "SPACE / CLICK", "R</b> ret
 for (const masterySurface of ["Stormbreak rest", "Commit perch", "Crosswind catch", "Relay crown", "Summit relay"]) {
   assert.ok(climbPreset.includes(masterySurface), `authored mastery crest should include ${masterySurface}`);
 }
-for (const choiceSurface of ["Shelter rise", "Signal cut", "Fork relay", "Stormlock restore", "Slipstream launch", "Cacheline high", "Windglass relay", "pressureDelta: 46", "cargoBonus: 1.75", "protectedFailFloorBonus: 210", "rejoinFailFloorBonus: 260", "rejoinAimAssistBonus: 34", "rejoinCameraZoomBonus: 96", "pressureRecovery: 100", "ventPulseCount: 4", "confirmationFrames: 24", "confirmationHandoffFrames: 12", "ZERO PRESSURE", "launchSpeedMultiplier: 1.34", "cargoRequired: 1.75", "scoreMetric: \"preserved-speed\"", "scoreMetric: \"cargo-mastery\""]) {
+for (const choiceSurface of ["Shelter rise", "Signal cut", "Fork relay", "Stormlock restore", "Slipstream launch", "Cacheline high", "Windglass relay", "pressureDelta: 46", "cargoBonus: 1.75", "protectedFailFloorBonus: 210", "rejoinFailFloorBonus: 260", "rejoinAimAssistBonus: 34", "rejoinCameraZoomBonus: 96", "pressureRecovery: 100", "ventPulseCount: 4", "confirmationFrames: 24", "confirmationHandoffFrames: 12", "grappleSurgeFrames: 18", "grappleSurgeColor: 0x3dffa3", "grappleSurgeColor: 0xffb83d", "ZERO PRESSURE", "launchSpeedMultiplier: 1.34", "cargoRequired: 1.75", "scoreMetric: \"preserved-speed\"", "scoreMetric: \"cargo-mastery\""]) {
   assert.ok(climbPreset.includes(choiceSurface), `authored post-rest choice should include ${choiceSurface}`);
 }
 assert.match(climbAdapter, /postRestChoice/, "route adapter should expose the authored post-rest choice descriptor");
 assert.match(climbAdapter, /routeChoiceRole/, "route adapter should preserve safe, shortcut, and rejoin roles");
 assert.match(climbAdapter, /routeChoiceConfirmationHandoffFrames/, "route adapter should preserve the authored Stormlock line handoff window");
+assert.match(climbAdapter, /routeChoicePayoffGrappleSurgeFrames/, "route adapter should preserve the authored payoff cable surge window");
+assert.match(climbAdapter, /routeChoicePayoffGrappleSurgeColor/, "route adapter should preserve the selected payoff surge color");
+assert.match(climbAdapter, /routeChoicePayoffGrappleImpactScale/, "route adapter should preserve the bounded payoff impact scale");
 assert.match(session, /routeChoice: createInitialRouteChoice/, "session should own one deterministic route-choice state");
 assert.match(session, /route-choice-skipped/, "unselected branch should reconcile through the existing route-progress ledger");
 assert.match(session, /protectedRecoveryWindow/, "the safe consequence should extend the existing recovery window rather than add a second recovery owner");
@@ -96,6 +101,9 @@ assert.match(renderer, /consequenceLine/, "renderer should expose one bounded po
 assert.match(renderer, /confirmationHandoffProgress/, "renderer should derive the payoff-line handoff from the existing confirmation frame boundary");
 assert.match(renderer, /payoffTargetPreview/, "renderer should reveal the selected existing payoff target during the line handoff");
 assert.match(renderer, /payoffTargetActive/, "renderer should reuse the bounded consequence line for the selected payoff target");
+assert.match(renderer, /payoffGrappleSurge/, "renderer should derive the brief cable and probe surge from the existing grapple fire event");
+assert.match(effects, /payoffGrappleSurge/, "existing bounded sparks should derive payoff fire and latch color without another effect pool");
+assert.match(synth, /payoffRole/, "existing grapple audio should derive its branch accent from the selected payoff target");
 assert.match(renderer, /convergenceTargetActive/, "renderer should reuse the bounded consequence line for the Windglass convergence target");
 assert.match(renderer, /rejoinTargetActive/, "renderer should reuse the bounded consequence line for the original generic rejoin target");
 assert.match(hud, /MINT — Shelter recovery · AMBER — Signal shortcut/, "the contextual hero prompt should explain both routes without adding a control");

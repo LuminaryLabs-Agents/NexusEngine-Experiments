@@ -3,8 +3,8 @@ import { createGenericAnchorDescriptorKit } from "https://cdn.jsdelivr.net/gh/Lu
 import { createGenericModeProjectedRoute, createProjectedRoute } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-mode-projected-route/index.js";
 import { createGenericRouteProgressKit } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-route-progress-kit/index.js";
 import { createGenericTetherTraversalDomainKits, createGenericTetherTraversalPreset } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-tether-traversal-domain-kits/index.js";
-import { createNextLedgeClimbPreset } from "./climb-preset.js?v=stormlock-handoff-1";
-import { adaptProjectedRouteToClimbRoute } from "./climb-anchor-adapter.js?v=stormlock-handoff-1";
+import { createNextLedgeClimbPreset } from "./climb-preset.js?v=payoff-grapple-surge-1";
+import { adaptProjectedRouteToClimbRoute } from "./climb-anchor-adapter.js?v=payoff-grapple-surge-1";
 import { createClimbActionAdapter } from "./climb-action-adapter.js";
 
 const clamp = (v, a, b) => Math.max(a, Math.min(b, Number.isFinite(Number(v)) ? Number(v) : a));

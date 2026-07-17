@@ -4,6 +4,17 @@ const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 const num = (value, fallback = 0) => Number.isFinite(Number(value)) ? Number(value) : fallback;
 const eventKey = (event = {}) => `${event.at}:${event.type}:${event.targetId ?? event.reason ?? event.sector ?? ""}`;
 
+function payoffGrappleSurge(snapshot, event) {
+  const targetId = snapshot.routeChoice?.payoffTargetId;
+  if (!targetId || event.targetId !== targetId || !["grapple-fired", "grapple-latched"].includes(event.type)) return null;
+  const target = snapshot.route?.ledges?.find((ledge) => ledge.id === targetId);
+  if (!num(target?.metadata?.routeChoicePayoffGrappleSurgeFrames, 0)) return null;
+  return {
+    color: Math.max(0, Math.floor(num(target.metadata.routeChoicePayoffGrappleSurgeColor, snapshot.routeChoice?.selectedRole === "pressure-shortcut" ? 0xffb83d : 0x3dffa3))),
+    impactScale: clamp(num(target.metadata.routeChoicePayoffGrappleImpactScale, 1), 1, 1.5)
+  };
+}
+
 function seeded(seed = 1) {
   let s = seed >>> 0;
   return () => {
@@ -198,9 +209,10 @@ export function createDiegeticEffects({ scene }) {
         seen.add(key);
         const ledge = evt.targetId ? snapshot.route?.ledges?.find((candidate) => candidate.id === evt.targetId) : null;
         const origin = ledge ?? (evt.type === "grapple-fired" ? snapshot.probe : snapshot.player);
+        const payoffSurge = payoffGrappleSurge(snapshot, evt);
         if (evt.type === "released") makeSparks(snapshot.player, 0xffb83d, 16, 18, 0.55, 0.8);
-        else if (evt.type === "grapple-fired") makeSparks(snapshot.probe, 0x00f0ff, 22, 24, 0.65, 0.75);
-        else if (evt.type === "grapple-latched") makeSparks(origin, 0x00f0ff, 36, 30, 0.85, 1.0);
+        else if (evt.type === "grapple-fired") makeSparks(snapshot.probe, payoffSurge?.color ?? 0x00f0ff, Math.round(22 * (payoffSurge?.impactScale ?? 1)), 24 * (payoffSurge?.impactScale ?? 1), 0.65, 0.75 * (payoffSurge?.impactScale ?? 1));
+        else if (evt.type === "grapple-latched") makeSparks(origin, payoffSurge?.color ?? 0x00f0ff, Math.round(36 * (payoffSurge?.impactScale ?? 1)), 30 * (payoffSurge?.impactScale ?? 1), 0.85, 1.0 * (payoffSurge?.impactScale ?? 1));
         else if (evt.type === "restored" || evt.type === "rest") makeSparks(origin, 0x3dffa3, 42, 34, 1.1, 1.1);
         else if (evt.type === "failed") makeSparks(snapshot.player, 0xff3858, 48, 38, 1.2, 1.2);
         else if (evt.type === "summit-reached" || evt.type === "summit") makeSparks(origin, 0xffd65a, 80, 54, 1.6, 1.3);

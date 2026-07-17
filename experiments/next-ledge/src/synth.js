@@ -27,8 +27,13 @@ export function createCinematicSynth() {
     osc.stop(t + duration + 0.02);
   }
 
-  function playEvent(type, event = {}) {
-    if (type === "grapple-fired") tone(900, 0.2, "sawtooth", 0.18, 150);
+  function playEvent(type, event = {}, snapshot = {}) {
+    const payoffRole = event.targetId === snapshot.routeChoice?.payoffTargetId ? snapshot.routeChoice?.selectedRole : null;
+    if (type === "grapple-fired") {
+      tone(900, 0.2, "sawtooth", 0.18, 150);
+      if (payoffRole === "pressure-shortcut") tone(329.63, 0.24, "triangle", 0.065, 987.77);
+      else if (payoffRole === "safe-recovery") tone(659.25, 0.24, "sine", 0.06, 1318.5);
+    }
     else if (type === "grapple-latched") { tone(1200, 0.25, "sine", 0.18, 250); tone(80, 0.3, "triangle", 0.18); }
     else if (type === "released" || type === "wall-bounce") tone(110, 0.15, "triangle", 0.16, 45);
     else if (type === "restored") tone(440, 0.5, "sine", 0.08, 880);
@@ -126,7 +131,7 @@ export function createCinematicSynth() {
         const key = `${event.at}:${event.type}:${event.targetId ?? event.reason ?? event.sector ?? ""}`;
         if (seen.has(key)) continue;
         seen.add(key);
-        playEvent(event.type, event);
+        playEvent(event.type, event, snapshot);
       }
       if (seen.size > 80) {
         const keep = [...seen].slice(-40);
