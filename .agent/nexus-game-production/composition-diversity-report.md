@@ -109,6 +109,7 @@ These are proof targets, not accepted experiment records. Seeds, candidate draw 
 - The Windglass generic-rejoin refinement derives the preserved original route anchor, adds one bounded recovery phase to existing route-choice state, and reuses the same camera/cue/feedback presentation. It preserves the same fantasy, verb, pressure loop, interaction structure, and eight-feature signature, so creation and diversity counts remain unchanged.
 - The Signal Cut one-launch refinement retunes authored target geometry and makes the existing cable launcher consume a gated branch-aim descriptor. It preserves the same fantasy, verb, pressure loop, interaction structure, and eight-feature signature, so creation and diversity counts remain unchanged.
 - The Signal Cut pressure-carry refinement adds a role-scoped Fork Relay angle/speed descriptor, one existing-launcher assist, and event-driven landing feedback. It preserves the same fantasy, verb, pressure loop, interaction structure, and eight-feature signature, so creation and diversity counts remain unchanged.
+- The Stormlock visible-pressure-vent refinement derives four bounded pulses from the existing reel, recovers through the existing pressure facade, and reuses the existing HUD, route line, beam, camera, audio, and effect owners. It preserves the same fantasy, verb, pressure loop, interaction structure, and eight-feature signature, so creation and diversity counts remain unchanged.
 
 ## Diversity Gate
 
@@ -131,4 +132,5 @@ Every accepted experiment must record epoch, lifecycle status, seed, full candid
 - The Next Ledge Windglass generic-rejoin pass remains an in-place legacy refinement; it composes the same route-choice, recovery, camera, cue, feedback, and renderer features without adding a kit, experiment, route family, or duplicate production signature.
 - The Next Ledge Signal Cut one-launch pass remains an in-place legacy refinement; it composes the same route-choice, cable, camera, cargo, pressure, cue, feedback, and renderer features without adding a kit, experiment, route family, or duplicate production signature.
 - The Next Ledge Signal Cut pressure-carry pass remains an in-place legacy refinement; it composes the same route-choice, cable, camera, cargo, pressure, cue, feedback, and renderer features without adding a kit, experiment, route family, or duplicate production signature.
+- The Next Ledge Stormlock vent pass remains an in-place legacy refinement; it composes the same reel, route-choice, pressure, recovery, camera, cue, feedback, and renderer features without adding a kit, experiment, route family, or duplicate production signature.
 - Diversity claim: contract pressure only; no playable diversity claim yet.

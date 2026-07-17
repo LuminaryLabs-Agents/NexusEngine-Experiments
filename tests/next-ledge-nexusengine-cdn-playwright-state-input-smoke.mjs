@@ -57,7 +57,7 @@ for (const visibleSurface of ["Next Ledge", "A / D", "SPACE / CLICK", "R</b> ret
 for (const masterySurface of ["Stormbreak rest", "Commit perch", "Crosswind catch", "Relay crown", "Summit relay"]) {
   assert.ok(climbPreset.includes(masterySurface), `authored mastery crest should include ${masterySurface}`);
 }
-for (const choiceSurface of ["Shelter rise", "Signal cut", "Fork relay", "Stormlock restore", "Slipstream launch", "Cacheline high", "Windglass relay", "pressureDelta: 46", "cargoBonus: 1.75", "protectedFailFloorBonus: 210", "rejoinFailFloorBonus: 260", "rejoinAimAssistBonus: 34", "rejoinCameraZoomBonus: 96", "pressureRecovery: 100", "launchSpeedMultiplier: 1.34", "cargoRequired: 1.75", "scoreMetric: \"preserved-speed\"", "scoreMetric: \"cargo-mastery\""]) {
+for (const choiceSurface of ["Shelter rise", "Signal cut", "Fork relay", "Stormlock restore", "Slipstream launch", "Cacheline high", "Windglass relay", "pressureDelta: 46", "cargoBonus: 1.75", "protectedFailFloorBonus: 210", "rejoinFailFloorBonus: 260", "rejoinAimAssistBonus: 34", "rejoinCameraZoomBonus: 96", "pressureRecovery: 100", "ventPulseCount: 4", "launchSpeedMultiplier: 1.34", "cargoRequired: 1.75", "scoreMetric: \"preserved-speed\"", "scoreMetric: \"cargo-mastery\""]) {
   assert.ok(climbPreset.includes(choiceSurface), `authored post-rest choice should include ${choiceSurface}`);
 }
 assert.match(climbAdapter, /postRestChoice/, "route adapter should expose the authored post-rest choice descriptor");
@@ -67,6 +67,8 @@ assert.match(session, /route-choice-skipped/, "unselected branch should reconcil
 assert.match(session, /protectedRecoveryWindow/, "the safe consequence should extend the existing recovery window rather than add a second recovery owner");
 assert.match(session, /post-rejoin-protected-grapple-consumed/, "the safe consequence should resolve after one protected grapple");
 assert.match(session, /post-rejoin-pressure-vented/, "the shortcut consequence should publish one semantic pressure vent event");
+assert.match(session, /post-rejoin-pressure-vent-pulsed/, "Stormlock should publish bounded reel-time vent pulses before the final lock event");
+assert.match(session, /updateStormlockVent/, "the existing reel path should drive authored Stormlock vent progress");
 assert.match(session, /payoffLaunchWindow/, "the safe payoff should modulate the existing cable launch settings without adding a second launch owner");
 assert.match(session, /payoffTargetTuning/, "both payoff branches should consume authored target-specific aim tuning without a second launch owner");
 assert.match(session, /routeChoiceAimAssistLeadY/, "route-choice aim compensation should remain authored descriptor data");
@@ -93,6 +95,7 @@ assert.match(renderer, /rejoinTargetActive/, "renderer should reuse the bounded 
 assert.match(hud, /MINT — Shelter recovery · AMBER — Signal shortcut/, "the contextual hero prompt should explain both routes without adding a control");
 assert.match(hud, /MINT WINDOW — Protected grapple to Stormlock Restore/, "the contextual hero prompt should explain the safe post-rejoin consequence");
 assert.match(hud, /AMBER PRESSURE — Grapple Stormlock Restore to vent/, "the contextual hero prompt should explain the shortcut vent demand");
+assert.match(hud, /STORMLOCK VENT/, "the reel-time hero prompt should expose live pressure drain");
 assert.match(hud, /MINT OVERCHARGE — Fire for Slipstream Launch/, "the safe payoff prompt should expose the faster launch window without a new control");
 assert.match(hud, /AMBER HIGH LINE — Commit to Cacheline High/, "the shortcut payoff prompt should expose the harder cargo-unlocked line");
 assert.match(hud, /WINDGLASS RELAY — Preserve/, "the shared convergence prompt should expose the preserved-speed score");

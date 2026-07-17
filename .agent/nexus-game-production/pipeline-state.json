@@ -27,10 +27,10 @@
     }
   },
   "synchronizedStartingCommits": {
-    "coreRemoteDefault": "ebb63803f1e7f6e096abec9e0377a693fd1d8e01",
-    "coreLocalReadOnly": "8b57b03904889cdbc71021d3bdb1d4070af5c8d3",
+    "coreRemoteDefault": "70cc2a1590677b872d40a42f7b7bb7e174941eb0",
+    "coreLocalReadOnly": "70cc2a1590677b872d40a42f7b7bb7e174941eb0",
     "protokits": "04d34f049f58ae359cf71d43466c429dac2a6d08",
-    "experiments": "f0f85148a4e8d499ca85b71cd62cbc4837dadac1",
+    "experiments": "98fb9ae0cb72d7eb817f79a7b055cb15dd0747fb",
     "experimentsBaseline": "615a7e1e2170164acef0edebdbe0b88b8c01fd1b"
   },
   "baseline": {
@@ -147,28 +147,28 @@
     "result": "Upgraded Next Ledge so Slipstream Launch and Cacheline High converge at Windglass Relay, banking 134 preserved speed or 175 cargo mastery before generic ascent resumes; production creation counts remain unchanged."
   },
   "lastRefinementUnit": {
-    "packetId": "2026-07-16-next-ledge-signal-pressure-carry-refinement",
-    "scope": "Next Ledge Signal Cut pressure carry to Fork Relay",
-    "result": "Signal Cut now requires one readable left-build angle and target-directed speed window before the existing cable launcher grants a shortcut-only Fork Relay assist, then confirms the one-launch landing while preserving retained pressure and the unchanged Shelter Rise path."
+    "packetId": "2026-07-16-next-ledge-stormlock-visible-pressure-vent-refinement",
+    "scope": "Next Ledge Stormlock visible retained-pressure vent",
+    "result": "Stormlock now converts the retained Signal Cut pressure into four visible reel-time pulses through the existing pressure facade, with one authoritative meter and reused HUD, renderer, camera, audio, and bounded effect owners."
   },
   "lastCompletedUnit": {
-    "packetId": "2026-07-16-next-ledge-signal-pressure-carry-refinement",
-    "scope": "Next Ledge Signal Cut pressure-carry feel refinement",
-    "result": "The 46-pressure Signal Cut route now teaches a left build, opens one amber release cue only at the authored angle and directed speed, lands Fork Relay in the baseline 37 ticks with explicit fire and landing feedback, and grants no assist or event to Shelter Rise.",
-    "validation": "All 28 existing Next Ledge test entrypoints, all route JavaScript syntax checks, JSON, and diff checks passed. Playwright completed the safe branch and the full shortcut through Fork Relay, Stormlock, Cacheline, Windglass, and original anchor-11; exercised real failure and keyboard retry; checked closed/open/closed Advanced disclosure; held bounded DOM, canvas, descriptor, and scene counts; and reported zero console messages. Human View rejected a compositor-torn capture, promoted each UI surface above the unpromoted canvas, and passed the recaptured first screen, build cue, amber window, landing, rejoin, and failure states with diagnostics closed. Matched fresh-browser active-play performance held from 28.42 to 28.81 FPS with p95 at 50 ms and no count growth.",
+    "packetId": "2026-07-16-next-ledge-stormlock-visible-pressure-vent-refinement",
+    "scope": "Next Ledge Stormlock visible-pressure-vent feel refinement",
+    "result": "The retained Signal Cut pressure now drains through four authored reel-time pulses before Stormlock lock, keeping the existing route-cargo pressure facade authoritative while the meter, pulse-stage copy, consequence line, beam, sparks, camera, and audio expose progress.",
+    "validation": "All 28 existing Next Ledge test entrypoints, all route JavaScript syntax checks, JSON, and diff checks passed. Playwright completed the shortcut through Fork Relay, four Stormlock pulses, Cacheline, and the 175-cargo Windglass score; exercised real failure and keyboard retry; checked closed/open/closed Advanced disclosure; held bounded DOM, canvas, descriptor, scene, and heap behavior; and reported zero console messages. Human View passed the first screen, Stormlock demand, mid-vent pulse, and secured state with diagnostics closed. Matched fresh-browser active-play performance improved from 19.61 to 21.67 FPS, p95 held near 67 ms, and no count growth appeared.",
     "commits": {
-      "coreReadOnly": "8b57b03904889cdbc71021d3bdb1d4070af5c8d3",
+      "coreReadOnly": "70cc2a1590677b872d40a42f7b7bb7e174941eb0",
       "protokitsStart": "04d34f049f58ae359cf71d43466c429dac2a6d08",
       "protokitsProductionUnit": "04d34f049f58ae359cf71d43466c429dac2a6d08",
-      "experimentsStart": "f0f85148a4e8d499ca85b71cd62cbc4837dadac1",
-      "experimentsProductionUnit": "e2160861620cfae8edf6b96ebe31d222f76ae40f"
+      "experimentsStart": "98fb9ae0cb72d7eb817f79a7b055cb15dd0747fb",
+      "experimentsProductionUnit": "pending-publication"
     },
-    "publication": "Experiments production and publication-receipt commits published to resolved default branch main after fetch-before-push verification; ProtoKits is unchanged and synchronized at 04d34f049f58ae359cf71d43466c429dac2a6d08."
+    "publication": "Pending production commit and fetch-before-push publication; ProtoKits is unchanged and synchronized at 04d34f049f58ae359cf71d43466c429dac2a6d08."
   },
   "exactNextUnit": {
     "phase": "playable-experiment-upgrade",
     "epoch": 0,
-    "scope": "next-ledge-stormlock-visible-pressure-vent",
-    "goal": "Make the Stormlock vent drain retained pressure visibly during the reel instead of snapping only on lock, using the existing pressure owner and no new meter."
+    "scope": "next-ledge-stormlock-zero-pressure-confirmation",
+    "goal": "Keep the final zero-pressure Stormlock confirmation visible for one short branch-aware beat before the Cacheline or Slipstream payoff instruction replaces it, using the existing route-choice sequence and no new state owner."
   }
 }

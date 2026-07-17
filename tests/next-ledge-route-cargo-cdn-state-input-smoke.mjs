@@ -24,6 +24,7 @@ assert.match(wrapperSource, /recoverPressure/, "wrapper should bridge recovery i
 assert.match(wrapperSource, /syncCurrentCargoCheckpoint/, "wrapper should align route-cargo progress with the session's current anchor");
 assert.match(wrapperSource, /post-rest-route-choice-committed/, "wrapper should consume the authored signal-shortcut commitment event");
 assert.match(wrapperSource, /post-rejoin-pressure-vented/, "wrapper should consume the authored post-rejoin pressure vent event");
+assert.match(wrapperSource, /post-rejoin-pressure-vent-pulsed/, "wrapper should route bounded reel-time vent pulses through the existing pressure facade");
 assert.match(wrapperSource, /post-stormlock-payoff-opened/, "wrapper should consume the authored shortcut payoff unlock event");
 assert.match(wrapperSource, /shortcut-cache/, "shortcut should bank its authored cargo bonus through the cargo facade");
 assert.match(wrapperSource, /shortcut-pressure/, "shortcut should raise the existing fall-pressure channel instead of creating another owner");

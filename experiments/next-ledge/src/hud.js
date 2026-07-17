@@ -41,6 +41,10 @@ function promptFor(snapshot) {
   if (snapshot.mode === "falling") return { text: "Aim + space / click — Fire grapple", tone: "danger" };
   if (snapshot.mode === "launched") return { text: "Guide the line · Click to retract", tone: "ready" };
   if (snapshot.mode === "retracting") return { text: "Steer while the line resets", tone: "danger" };
+  if (snapshot.mode === "reeling" && choice?.status === "consequence-active" && choice.selectedRole === "pressure-shortcut" && snapshot.anchorLedge?.id === choice.postRejoinAnchorId) {
+    const pressure = pressureState(snapshot);
+    return { text: `STORMLOCK VENT — ${Math.round(number(pressure?.value))}% PRESSURE · HOLD LINE`, tone: "ready" };
+  }
   if (snapshot.mode === "reeling") return { text: "Latch incoming · Click to cut line", tone: "success" };
   if (choice?.status === "open") return shortcutHighBuild
     ? { text: "AMBER WINDOW — Release high · fire Signal Cut", tone: "ready" }

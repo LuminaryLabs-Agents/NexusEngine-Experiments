@@ -86,6 +86,10 @@ export function createCinematicSynth() {
     else if (type === "post-rejoin-protected-grapple-consumed") {
       [329.63, 493.88, 783.99].forEach((frequency, index) => setTimeout(() => tone(frequency, 0.36, "sine", 0.06, frequency * 1.22), index * 72));
     }
+    else if (type === "post-rejoin-pressure-vent-pulsed") {
+      const stage = Math.max(1, Math.min(4, Number(event.ventStage ?? 1)));
+      tone(146.83 + stage * 55, 0.18, "triangle", 0.045 + stage * 0.008, 293.66 + stage * 110);
+    }
     else if (type === "post-rejoin-pressure-vented") {
       tone(174.61, 0.5, "sawtooth", 0.07, 87.31);
       [392, 587.33, 880].forEach((frequency, index) => setTimeout(() => tone(frequency, 0.38, "triangle", 0.06, frequency * 1.18), 110 + index * 76));

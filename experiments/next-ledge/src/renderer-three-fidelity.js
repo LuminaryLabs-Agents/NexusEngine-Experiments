@@ -523,7 +523,8 @@ export function createThreeRenderer({ canvas }) {
         : [anchor(choice.rejoinAnchorId), anchor(choice.postRejoinAnchorId)];
       setLine(consequenceLine, points.filter(Boolean).map(({ x, y }) => ({ x, y, z: 24 })));
       consequenceLine.material.color.setHex(choice.status === "rejoin-active" ? 0x77e8ff : choice.selectedRole === "pressure-shortcut" ? 0xffb83d : 0x3dffa3);
-      consequenceLine.material.opacity = 0.56 + (0.5 + 0.5 * Math.sin(time * 7.5)) * 0.24;
+      const ventProgress = choice.status === "consequence-active" && choice.selectedRole === "pressure-shortcut" ? clamp01(num(choice.ventProgress, 0)) : 0;
+      consequenceLine.material.opacity = 0.56 + (0.5 + 0.5 * Math.sin(time * 7.5)) * 0.24 - ventProgress * 0.28;
     }
 
     const staminaPct = Math.max(0, Math.min(1, (snapshot.stamina ?? 0) / Math.max(1, snapshot.constants?.maxStamina ?? 100)));
@@ -564,7 +565,7 @@ export function createThreeRenderer({ canvas }) {
       beam.material.opacity = beam.userData.type === "summit"
         ? (snapshot.completed ? 0.58 : 0.14) + Math.sin(time * (snapshot.completed ? 5.2 : 2.2)) * (snapshot.completed ? 0.16 : 0.04)
         : windglassBeam ? 0.46 + Math.sin(time * 8.5) * 0.18
-        : consequenceBeam ? 0.38 + Math.sin(time * 6.5) * 0.14 : 0.18 + Math.sin(time * 4.5 + beam.userData.sourceY) * 0.1;
+        : consequenceBeam ? 0.38 + Math.sin(time * 6.5) * 0.14 + clamp01(num(choice?.ventProgress, 0)) * 0.28 : 0.18 + Math.sin(time * 4.5 + beam.userData.sourceY) * 0.1;
       beam.rotation.y += beam.userData.type === "summit" ? 0.003 : 0.009;
     }
     summitCelebration.visible = Boolean(summit && (snapshot.completed || ["broadcast", "handshake"].includes(snapshot.sectorTransition?.phase)));

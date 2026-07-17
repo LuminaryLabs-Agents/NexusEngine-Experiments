@@ -3,8 +3,8 @@ import { createGenericAnchorDescriptorKit } from "https://cdn.jsdelivr.net/gh/Lu
 import { createGenericModeProjectedRoute, createProjectedRoute } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-mode-projected-route/index.js";
 import { createGenericRouteProgressKit } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-route-progress-kit/index.js";
 import { createGenericTetherTraversalDomainKits, createGenericTetherTraversalPreset } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-tether-traversal-domain-kits/index.js";
-import { createNextLedgeClimbPreset } from "./climb-preset.js?v=signal-carry-window-1";
-import { adaptProjectedRouteToClimbRoute } from "./climb-anchor-adapter.js?v=signal-carry-window-1";
+import { createNextLedgeClimbPreset } from "./climb-preset.js?v=stormlock-vent-1";
+import { adaptProjectedRouteToClimbRoute } from "./climb-anchor-adapter.js?v=stormlock-vent-1";
 import { createClimbActionAdapter } from "./climb-action-adapter.js";
 
 const clamp = (v, a, b) => Math.max(a, Math.min(b, Number.isFinite(Number(v)) ? Number(v) : a));
@@ -114,7 +114,10 @@ function createInitialRouteChoice(route) {
     pressureDelta: 0,
     cargoBonus: 0,
     protectedGrapplesRemaining: 0,
-    ventRequired: false
+    ventRequired: false,
+    ventStage: 0,
+    ventProgress: 0,
+    ventRecovered: 0
   };
 }
 
@@ -277,10 +280,11 @@ function openingWindStage(state) {
     };
   }
   if (choice?.status === "consequence-active") {
+    const ventProgress = choice.selectedRole === "pressure-shortcut" ? clamp(n(choice.ventProgress, 0), 0, 1) : 1;
     return {
       phase: choice.selectedRole === "pressure-shortcut" ? "retained-pressure" : "protected-grapple",
-      intensity: choice.selectedRole === "pressure-shortcut" ? 0.72 : 0.1,
-      resolved: choice.selectedRole !== "pressure-shortcut"
+      intensity: choice.selectedRole === "pressure-shortcut" ? 0.72 * (1 - ventProgress * 0.78) : 0.1,
+      resolved: choice.selectedRole !== "pressure-shortcut" || ventProgress >= 1
     };
   }
   if (choice?.status === "payoff-active") {
@@ -573,13 +577,47 @@ function launch(state) {
 function grab(state, ledge) {
   state.mode = "reeling";
   state.anchorLedge = ledge;
-  state.reeling = { anchorId: ledge.id, ropeLength: d2(ledge, state.player) + 24 };
+  const ropeLength = d2(ledge, state.player) + 24;
+  state.reeling = { anchorId: ledge.id, ropeLength, initialRopeLength: ropeLength };
   state.probe.visible = false;
   state.rope.visible = true;
   state.stats.latches += 1;
   state.camera.trauma = Math.max(state.camera.trauma ?? 0, n(state.tuning.cameraImpulseLatch, 0.16));
   state.status = `Latched ${ledge.label}. Winch pulling to swing radius.`;
   addEvent(state, "grapple-latched", { targetId: ledge.id, ledgeType: ledge.type });
+}
+
+function updateStormlockVent(state, anchor) {
+  const choice = state.routeChoice;
+  if (choice?.status !== "consequence-active" || choice.selectedRole !== "pressure-shortcut" || !choice.ventRequired || anchor?.id !== choice.postRejoinAnchorId) return;
+  const pulseCount = Math.max(1, Math.floor(n(anchor.metadata?.routeChoiceVentPulseCount, 4)));
+  const initialLength = Math.max(state.constants.ropeLength + 1, n(state.reeling.initialRopeLength, state.reeling.ropeLength));
+  const reelProgress = clamp((initialLength - state.reeling.ropeLength) / Math.max(1, initialLength - state.constants.ropeLength), 0, 1);
+  const startProgress = clamp(n(anchor.metadata?.routeChoiceVentStartProgress, 0.12), 0, 0.9);
+  const ventProgress = clamp((reelProgress - startProgress) / Math.max(0.1, 1 - startProgress), 0, 1);
+  const nextStage = Math.min(pulseCount, Math.floor(ventProgress * pulseCount + 0.0001));
+  choice.ventProgress = ventProgress;
+  if (nextStage <= choice.ventStage) return;
+  const totalRecovery = Math.max(0, Math.min(n(choice.pressureDelta, 0), n(anchor.metadata?.routeChoicePressureRecovery, 100)));
+  const recovered = totalRecovery * nextStage / pulseCount;
+  const pressureRecovery = Math.max(0, recovered - n(choice.ventRecovered, 0));
+  choice.ventStage = nextStage;
+  choice.ventRecovered = recovered;
+  const remaining = Math.max(0, Math.round(n(choice.pressureDelta, 0) - recovered));
+  state.status = String(anchor.metadata?.routeChoiceVentStatus ?? "Stormlock vent pulse {stage}/{count}. Hold the line.")
+    .replace("{stage}", String(nextStage))
+    .replace("{count}", String(pulseCount));
+  state.camera.trauma = Math.max(state.camera.trauma ?? 0, 0.1 + nextStage * 0.025);
+  addEvent(state, "post-rejoin-pressure-vent-pulsed", {
+    targetId: anchor.id,
+    routeChoiceId: choice.id,
+    selectedRole: choice.selectedRole,
+    ventStage: nextStage,
+    ventPulseCount: pulseCount,
+    ventProgress,
+    pressureRecovery,
+    pressureRemaining: remaining
+  });
 }
 
 function lock(state, ledge) {
@@ -661,6 +699,9 @@ function lock(state, ledge) {
     state.routeChoice.status = "consequence-active";
     state.routeChoice.protectedGrapplesRemaining = shortcut ? 0 : 1;
     state.routeChoice.ventRequired = shortcut;
+    state.routeChoice.ventStage = 0;
+    state.routeChoice.ventProgress = 0;
+    state.routeChoice.ventRecovered = 0;
     const postRejoin = ledgeMap(state)[state.routeChoice.postRejoinAnchorId];
     state.status = shortcut
       ? ledge.metadata?.routeChoiceShortcutLandingStatus ?? postRejoin?.metadata?.routeChoiceShortcutStatus ?? "Signal pressure retained. Reach the restore unit to vent."
@@ -698,7 +739,7 @@ function lock(state, ledge) {
         targetId: ledge.id,
         routeChoiceId: state.routeChoice.id,
         selectedRole: role,
-        pressureRecovery: n(ledge.metadata?.routeChoicePressureRecovery, 100)
+        pressureRecovery: Math.max(0, n(ledge.metadata?.routeChoicePressureRecovery, 100) - n(state.routeChoice.ventRecovered, 0))
       });
     } else {
       state.status = payoff?.metadata?.routeChoiceStatus ?? ledge.metadata?.routeChoiceResolvedSafeStatus ?? "Protected grapple confirmed. Stormlock Restore secured.";
@@ -876,6 +917,7 @@ function stepReeling(state, dt) {
   const anchor = state.anchorLedge ?? ledgeMap(state)[state.reeling.anchorId];
   const gap = d2(anchor, state.player) || 0.001;
   state.reeling.ropeLength = Math.max(state.constants.ropeLength, state.reeling.ropeLength - n(state.tuning.reelShortenRate, 2.2) * dt * 60);
+  updateStormlockVent(state, anchor);
   if (gap <= state.constants.ropeLength && state.reeling.ropeLength <= state.constants.ropeLength) return lock(state, anchor);
   if (gap > state.reeling.ropeLength) {
     state.player.vx += (anchor.x - state.player.x) / gap * n(state.tuning.reelPull, 0.72) * dt * 60;

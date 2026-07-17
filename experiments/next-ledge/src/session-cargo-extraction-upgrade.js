@@ -1,6 +1,6 @@
 import * as NexusEngine from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js";
 import { createGenericRouteCargoExtractionKit } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-route-cargo-extraction-kit/index.js";
-import { createNextLedgeSession as createVisualNextLedgeSession } from "./session-visual-upgrade.js?v=signal-carry-window-1";
+import { createNextLedgeSession as createVisualNextLedgeSession } from "./session-visual-upgrade.js?v=stormlock-vent-1";
 import { createNextLedgeRouteCargoDomainKit } from "./route-cargo-fractal-kits.js";
 import { createNextLedgeTraversalReadabilityDomainKit } from "./traversal-readability-kits.js";
 import { createNextLedgeAnchorTimingReadabilityDomainKit } from "./anchor-timing-readability-kits.js";
@@ -118,6 +118,9 @@ export function createNextLedgeSession(options = {}) {
       if (evt.type === "post-rest-route-choice-committed" && evt.selectedRole === "pressure-shortcut") {
         facade.pickupCargo?.("anchor-signal-cargo", Number(evt.cargoBonus ?? 0), { commandId: `cargo:${key}:shortcut-cache`, reason: "signal-shortcut" });
         facade.adjustPressure?.("fall-pressure", Number(evt.pressureDelta ?? 0), { commandId: `cargo:${key}:shortcut-pressure`, reason: "signal-shortcut" });
+      }
+      if (evt.type === "post-rejoin-pressure-vent-pulsed") {
+        facade.recoverPressure?.("fall-pressure", Number(evt.pressureRecovery ?? 0), { commandId: `cargo:${key}:stormlock-vent-pulse-${evt.ventStage}`, reason: "post-rejoin-pressure-vent-pulse" });
       }
       if (evt.type === "post-rejoin-pressure-vented") {
         facade.recoverPressure?.("fall-pressure", Number(evt.pressureRecovery ?? 100), { commandId: `cargo:${key}:stormlock-vent`, reason: "post-rejoin-pressure-vent" });

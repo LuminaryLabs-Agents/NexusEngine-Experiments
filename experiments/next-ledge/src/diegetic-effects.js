@@ -210,6 +210,7 @@ export function createDiegeticEffects({ scene }) {
         else if (evt.type === "signal-pressure-carry-landed") makeSparks(origin, 0xffd65a, 96, 58, 1.8, 1.35);
         else if (evt.type === "post-rest-route-choice-rejoined") makeSparks(origin, 0xffd65a, 52, 36, 1.35, 1.05);
         else if (evt.type === "post-rejoin-protected-grapple-consumed") makeSparks(origin, 0x3dffa3, 72, 46, 1.5, 1.15);
+        else if (evt.type === "post-rejoin-pressure-vent-pulsed") makeSparks(origin, 0xffcf52, 18 + Number(evt.ventStage ?? 1) * 4, 30, 0.85, 0.72);
         else if (evt.type === "post-rejoin-pressure-vented") makeSparks(origin, 0xffb83d, 86, 52, 1.7, 1.3);
         else if (evt.type === "post-stormlock-payoff-opened") makeSparks(origin, evt.selectedRole === "pressure-shortcut" ? 0xffb83d : 0x3dffa3, 72, 48, 1.45, 1.15);
         else if (evt.type === "post-stormlock-payoff-secured") makeSparks(origin, evt.selectedRole === "pressure-shortcut" ? 0xffb83d : 0x3dffa3, 84, 54, 1.55, 1.25);

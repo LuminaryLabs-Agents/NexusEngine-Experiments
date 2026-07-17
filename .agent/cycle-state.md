@@ -1,5 +1,11 @@
 # Cycle State
 
+## 2026-07-16 Stormlock Visible Pressure Vent Refinement
+
+`experiments/next-ledge/` now turns the retained Signal Cut pressure into a four-pulse physical vent while the cable reels into Stormlock Restore. Authored cadence and copy remain in the climb preset, the existing route-choice state derives progress from the existing reel length, and the existing route-cargo pressure facade performs four idempotent recoveries; HUD, beam, consequence line, bounded sparks, camera, and audio present those semantic pulses without a new meter or entity. Human View confirmed the first screen and mid-vent state with Advanced closed; Playwright carried `46%` pressure through Fork Relay, showed the authoritative meter fall to `25%` at pulse `2/4`, reached zero at lock, continued through Cacheline and the `175`-cargo Windglass score, proved real failure/keyboard retry, held `69` DOM nodes / one canvas / `72` descriptors / `236` scene nodes, improved matched FPS from `19.61` to `21.67`, passed all 28 Next Ledge tests, and reported zero console messages.
+
+Exact next playable unit: keep the final zero-pressure Stormlock confirmation visible for one short branch-aware beat before the Cacheline or Slipstream payoff instruction replaces it, using the existing route-choice sequence and no new state owner.
+
 ## 2026-07-16 Signal Cut One-Launch Feel Refinement
 
 `experiments/next-ledge/` now makes the smaller amber Signal Cut a deliberate high-build commitment rather than an unexplained first-shot miss. Authored position, radius, build gate, aim bonus, and lead remain declarative; the existing cable launcher prioritizes the shortcut only after the HUD exposes its amber release window, while neutral/low release still selects mint Shelter Rise. Playwright completed both commitments, carried the shortcut through Fork Relay, Stormlock, Cacheline, Windglass, and original `anchor-11`, proved real failure and keyboard retry, kept diagnostics closed, held `236` scene nodes / `69` DOM nodes / one canvas / `72` descriptors, improved matched FPS from `10.93` to `14.22`, and reported zero console errors or warnings.

@@ -26,18 +26,18 @@
       "id": "next-ledge-grapple",
       "lifecycleStatus": "active-legacy-baseline",
       "score": 99,
-      "lastImprovedAt": "2026-07-16T20:52:25-04:00",
+      "lastImprovedAt": "2026-07-16T21:49:08-04:00",
       "feelScores": {
         "responsiveness": 9,
         "predictability": 9,
         "readability": 9,
-        "impact": 9,
+        "impact": 8,
         "recovery": 8,
-        "delight": 9,
-        "replayDesire": 9,
-        "average": 8.9
+        "delight": 8,
+        "replayDesire": 8,
+        "average": 8.4
       },
-      "nextFeelProblem": "Make the Stormlock vent drain retained pressure visibly during the reel instead of snapping only on lock, using the existing pressure owner and no new meter."
+      "nextFeelProblem": "Keep the final zero-pressure Stormlock confirmation visible for one short branch-aware beat before the Cacheline or Slipstream payoff instruction replaces it, using the existing route-choice sequence and no new state owner."
     },
     {
       "id": "rogue-lite-hellscape-siege",
