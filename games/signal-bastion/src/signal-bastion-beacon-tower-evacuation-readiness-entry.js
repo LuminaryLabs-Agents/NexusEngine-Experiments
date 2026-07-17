@@ -221,20 +221,53 @@ function install(host = globalThis.GameHost) {
   };
 
   if (originalDraw) {
-    host.renderer.draw = (presentation, activeBlueprint) => originalDraw(composePresentation(host, presentation), activeBlueprint);
+    host.renderer.draw = (presentation, activeBlueprint) => originalDraw(
+      host.getDiagnosticsVisible?.() ? composePresentation(host, presentation) : presentation,
+      activeBlueprint
+    );
   }
   return true;
 }
 
 function bootOverlay() {
-  const canvas = createOverlayCanvas();
-  const panel = createPanel();
-  const ctx = canvas.getContext("2d");
-  resize(canvas, ctx);
-  addEventListener("resize", () => resize(canvas, ctx));
+  let canvas = null;
+  let panel = null;
+  let ctx = null;
+
+  function diagnosticsVisible() {
+    return document.documentElement.dataset.signalDiagnostics === "true";
+  }
+
+  function ensureSurface() {
+    if (canvas && panel && ctx) return;
+    canvas = createOverlayCanvas();
+    panel = createPanel();
+    ctx = canvas.getContext("2d");
+    resize(canvas, ctx);
+  }
+
+  function destroySurface() {
+    canvas?.remove();
+    panel?.remove();
+    canvas = null;
+    panel = null;
+    ctx = null;
+  }
+
+  addEventListener("signal-bastion-diagnostics-change", (event) => {
+    if (event.detail?.visible !== true) destroySurface();
+  });
+
+  addEventListener("resize", () => { if (canvas && ctx) resize(canvas, ctx); });
   function frame() {
     const host = globalThis.GameHost;
     install(host);
+    if (!diagnosticsVisible()) {
+      destroySurface();
+      globalThis.setTimeout(frame, 500);
+      return;
+    }
+    ensureSurface();
     ctx.clearRect(0, 0, globalThis.innerWidth, globalThis.innerHeight);
     const readiness = host?.getBeaconTowerEvacuationReadiness?.();
     for (const descriptor of readiness?.rendererHandoff?.descriptors ?? []) drawDescriptor(ctx, descriptor);

@@ -15,7 +15,7 @@ const entry = fs.readFileSync(entryPath, "utf8");
 const kitSource = fs.readFileSync(kitPath, "utf8");
 
 assert.ok(route.includes("beacon-tower-evacuation-readiness-renderer-handoff-pass"), "route advertises beacon pass");
-assert.ok(route.includes("signal-bastion-beacon-tower-evacuation-readiness-entry.js?v=beacon-tower-evacuation-1"), "route loads beacon entry");
+assert.match(route, /signal-bastion-beacon-tower-evacuation-readiness-entry\.js\?v=first-command-refinement-\d+/, "route loads the cache-busted beacon entry");
 assert.ok(entry.includes(CDN), "entry imports NexusEngine main CDN");
 assert.ok(!entry.includes("NexusRealtime@"), "changed entry avoids old NexusRealtime CDN import");
 assert.ok(entry.includes("globalThis.GameHost"), "entry patches GameHost");

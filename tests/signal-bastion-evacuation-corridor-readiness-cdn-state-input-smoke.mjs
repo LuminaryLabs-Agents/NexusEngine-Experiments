@@ -17,8 +17,8 @@ assert.ok(boot.includes("getSignalBastionEvacuationCorridorReadiness"), "boot sh
 assert.ok(boot.includes("signalBastionEvacuationCorridorReadiness"), "presentation domain should expose signalBastionEvacuationCorridorReadiness");
 assert.ok(boot.includes("getEvacuationCorridorReadiness"), "GameHost should expose evacuation corridor readiness state");
 assert.ok(boot.includes("evacuationCorridorDescriptors"), "renderer handoff should count evacuation corridor descriptors");
-assert.ok(html.includes("evacuation-corridor-readiness-1"), "route shell should cache bust evacuation corridor integration");
-assert.ok(manifest.includes("evacuation-corridor-readiness-renderer-handoff-pass"), "manifest should register evacuation corridor cutover");
+assert.match(html, /first-command-refinement-\d+/, "route shell should cache bust the consolidated player-first integration");
+assert.ok(manifest.includes("reconstruction-readiness-renderer-handoff-pass"), "manifest should preserve the latest registered Signal Bastion cutover");
 assert.ok(manifest.includes("signal-bastion-evacuation-corridor-readiness-domain-kit"), "manifest should include evacuation corridor domain kit");
 assert.ok(frontlineKitSmoke.includes("signal-bastion-evacuation-corridor-readiness-kits-smoke.mjs"), "existing Signal Bastion kit smoke should route evacuation corridor kit smoke");
 assert.ok(frontlineCdnSmoke.includes("signal-bastion-evacuation-corridor-readiness-cdn-state-input-smoke.mjs"), "existing Signal Bastion CDN smoke should route evacuation corridor CDN smoke");

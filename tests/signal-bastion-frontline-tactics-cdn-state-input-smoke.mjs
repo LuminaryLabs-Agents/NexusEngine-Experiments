@@ -17,7 +17,7 @@ assert.ok(boot.includes("getSignalBastionFrontlineTactics"), "boot should compos
 assert.ok(boot.includes("signalBastionFrontlineTactics"), "presentation domain should expose signalBastionFrontlineTactics");
 assert.ok(boot.includes("getFrontlineTactics"), "GameHost should expose frontline tactics state");
 assert.ok(boot.includes("frontlineTacticsDescriptors"), "renderer handoff should count frontline tactic descriptors");
-assert.ok(html.includes("evacuation-corridor-readiness-1"), "route shell should cache bust latest evacuation corridor integration");
+assert.match(html, /first-command-refinement-\d+/, "route shell should cache bust the consolidated player-first integration");
 assert.ok(checksSource.includes("tests/signal-bastion-frontline-tactics-domain-kits-smoke.mjs"), "full/deploy checks should include kit smoke");
 assert.ok(checksSource.includes("tests/signal-bastion-frontline-tactics-cdn-state-input-smoke.mjs"), "full/deploy checks should include CDN state smoke");
 

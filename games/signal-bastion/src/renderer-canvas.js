@@ -1,7 +1,23 @@
-export function createSignalBastionCanvasRenderer({ canvas, statStripEl, towerPanelEl, contextPanelEl, errorPanel, errorText }) {
+export function createSignalBastionCanvasRenderer({
+  canvas,
+  statStripEl,
+  towerPanelEl,
+  contextPanelEl,
+  missionObjectiveEl,
+  missionImpactEl,
+  startWaveButton,
+  restartButton,
+  errorPanel,
+  errorText
+}) {
   const ctx = canvas.getContext("2d", { alpha: false });
   const view = { scale: 1, offsetX: 0, offsetY: 0, width: 960, height: 540, yCompression: 0.78 };
   let hover = null;
+  let diagnosticsVisible = false;
+  let statStripKey = "";
+  let towerPanelKey = "";
+  let contextPanelKey = "";
+  let missionKey = "";
 
   function resize() {
     const dpr = Math.min(globalThis.devicePixelRatio || 1, 2);
@@ -260,25 +276,44 @@ export function createSignalBastionCanvasRenderer({ canvas, statStripEl, towerPa
 
   function renderStats(descriptor) {
     if (!statStripEl || !descriptor) return;
+    const nextKey = JSON.stringify(descriptor.fields ?? []);
+    if (nextKey === statStripKey) return;
+    statStripKey = nextKey;
     statStripEl.innerHTML = (descriptor.fields ?? []).map((field) => `<div class="stat"><b>${field.value}</b><span>${field.label}</span></div>`).join("");
   }
 
-  function renderTowerPanel(descriptor) {
+  function towerCard(card, index) {
+    return `<button class="tower-card ${card.selected ? "selected" : ""} ${card.affordable ? "" : "locked"}" data-blueprint-id="${card.id}" title="${card.label}">
+      <i class="tower-icon" style="background:${card.color}"></i>
+      <strong>${index + 1}. ${card.label}</strong>
+      <span>${card.cost} CR · ${card.role}</span>
+    </button>`;
+  }
+
+  function renderTowerPanel(descriptor, presentation) {
     if (!towerPanelEl || !descriptor) return;
-    towerPanelEl.innerHTML = (descriptor.cards ?? []).map((card, index) => `
-      <button class="tower-card ${card.selected ? "selected" : ""} ${card.affordable ? "" : "locked"}" data-blueprint-id="${card.id}" title="${card.label}">
-        <i class="tower-icon" style="background:${card.color}"></i>
-        <strong>${index + 1}. ${card.label}</strong>
-        <span>${card.cost} CR · ${card.role}</span>
-      </button>
-    `).join("");
+    const cards = descriptor.cards ?? [];
+    const starterCount = Math.max(1, Number(presentation.playerGuidance?.starterTowerCount ?? 3));
+    const nextKey = JSON.stringify({ cards, starterCount });
+    if (nextKey === towerPanelKey) return;
+    const advancedWasOpen = towerPanelEl.querySelector(".tower-more")?.open === true;
+    towerPanelKey = nextKey;
+    const starters = cards.slice(0, starterCount);
+    const specialists = cards.slice(starterCount);
+    towerPanelEl.innerHTML = `
+      <div class="tower-guidance"><b>1 · Build the line</b>Starter towers cover damage, splash, and control.</div>
+      ${starters.map(towerCard).join("")}
+      ${specialists.length ? `<details class="tower-more" ${advancedWasOpen ? "open" : ""}><summary>${specialists.length} specialist<br/>towers</summary><div class="tower-more-grid">${specialists.map((card, index) => towerCard(card, index + starterCount)).join("")}</div></details>` : ""}`;
   }
 
   function renderContext(ui) {
     if (!contextPanelEl) return;
     const context = ui.find((item) => item.kind === "ui-selection-context");
     const upgrade = ui.find((item) => item.kind === "ui-upgrade-tree");
-    if (!context?.visible) {
+    const nextKey = JSON.stringify({ context, upgrade });
+    if (nextKey === contextPanelKey) return;
+    contextPanelKey = nextKey;
+    if (!context?.visible || context.selectedKind !== "tower") {
       contextPanelEl.classList.remove("visible");
       contextPanelEl.innerHTML = "";
       return;
@@ -289,10 +324,42 @@ export function createSignalBastionCanvasRenderer({ canvas, statStripEl, towerPa
     contextPanelEl.innerHTML = `<h2>${context.title}</h2><section class="context-grid">${stats}</section>${upgrades}`;
   }
 
+  function renderMission(presentation) {
+    const mission = presentation.playerMission ?? {};
+    const status = mission.status ?? "planning";
+    const waveIndex = Number(mission.waveIndex ?? 0);
+    const structures = Number(mission.structureCount ?? 0);
+    const threats = Number(mission.threatCount ?? 0);
+    let objective = "Place a Bolt Spire on a green build pad.";
+    if (status === "combat") objective = `${threats} threat${threats === 1 ? "" : "s"} on approach — hold the Dawn Core.`;
+    else if (status === "lost") objective = "Core breached. Rebuild the line and answer the signal again.";
+    else if (status === "won") objective = "All signals held. The Dawn Core is secure.";
+    else if (structures > 0 && waveIndex === 0) objective = `Line ready. Start ${mission.nextWaveLabel ?? "the first wave"} when you are set.`;
+    else if (structures > 0) objective = `Reinforce for ${mission.nextWaveLabel ?? "the next wave"}, then call the assault.`;
+    const impact = mission.impact ?? "Choose a starter tower below, then click a green pad.";
+    const nextKey = JSON.stringify({ objective, impact, status, waveIndex });
+    if (nextKey === missionKey) return;
+    missionKey = nextKey;
+    if (missionObjectiveEl) missionObjectiveEl.textContent = objective;
+    if (missionImpactEl) {
+      missionImpactEl.textContent = impact;
+      missionImpactEl.animate?.([
+        { opacity: 0.35, transform: "translateY(3px)" },
+        { opacity: 1, transform: "translateY(0)" }
+      ], { duration: 180, easing: "ease-out" });
+    }
+    if (startWaveButton) {
+      startWaveButton.disabled = ["combat", "lost", "won"].includes(status);
+      startWaveButton.textContent = status === "combat" ? "Wave active" : `Start wave ${waveIndex + 1} · Space`;
+    }
+    if (restartButton) restartButton.hidden = status !== "lost";
+  }
+
   function drawUi(presentation) {
     const ui = presentation.ui ?? [];
+    renderMission(presentation);
     renderStats(ui.find((item) => item.kind === "ui-stat-strip"));
-    renderTowerPanel(ui.find((item) => item.kind === "ui-tower-selection-panel"));
+    renderTowerPanel(ui.find((item) => item.kind === "ui-tower-selection-panel"), presentation);
     renderContext(ui);
   }
 
@@ -311,7 +378,7 @@ export function createSignalBastionCanvasRenderer({ canvas, statStripEl, towerPa
     const safe = presentation?.rawSnapshot ? presentation : { rawSnapshot: presentation ?? {} };
     drawBackdrop();
     drawGround(safe);
-    drawCommandFractal(safe);
+    if (diagnosticsVisible) drawCommandFractal(safe);
     drawRangeRings(safe);
     drawPlacement(safe);
     drawUnits(safe);
@@ -320,5 +387,14 @@ export function createSignalBastionCanvasRenderer({ canvas, statStripEl, towerPa
   }
 
   resize();
-  return { resize, showFatal, screenToWorld, findHit, draw, setHover(hit) { hover = hit; } };
+  return {
+    resize,
+    showFatal,
+    screenToWorld,
+    findHit,
+    draw,
+    getDiagnosticsVisible: () => diagnosticsVisible,
+    setDiagnosticsVisible(visible) { diagnosticsVisible = visible === true; },
+    setHover(hit) { hover = hit; }
+  };
 }

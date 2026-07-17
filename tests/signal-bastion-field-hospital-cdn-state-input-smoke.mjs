@@ -15,7 +15,7 @@ assert.ok(entrySource.includes("createSignalBastionFieldHospitalReadinessDomainK
 assert.ok(entrySource.includes("getSignalBastionFieldHospitalReadiness"), "GameHost should expose Signal Bastion field hospital readiness");
 assert.ok(entrySource.includes("fieldHospitalDescriptors"), "renderer handoff should count field hospital descriptors");
 assert.ok(html.includes("field-hospital-readiness-renderer-handoff-pass"), "route should advertise field hospital readiness pass");
-assert.ok(html.includes("field-hospital-readiness-1"), "route should cache bust field hospital readiness integration");
+assert.match(html, /first-command-refinement-\d+/, "route should cache bust the consolidated player-first integration");
 
 for (const token of [
   "bastion-triage-lantern-queue-kit",

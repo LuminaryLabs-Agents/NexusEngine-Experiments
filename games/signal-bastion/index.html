@@ -7,25 +7,50 @@
   <meta name="signal-bastion-domain-pass" content="field-hospital-readiness-renderer-handoff-pass" />
   <meta name="signal-bastion-supply-pass" content="supply-convoy-readiness-renderer-handoff-pass" />
   <meta name="signal-bastion-beacon-pass" content="beacon-tower-evacuation-readiness-renderer-handoff-pass" />
+  <link rel="icon" href="data:," />
   <title>Signal Bastion · NexusEngine 2.5D Defense</title>
   <style>
     html,body{margin:0;height:100%;overflow:hidden;background:#05080b;color:#ecfbff;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
     #app,#game,#hud{position:fixed;inset:0}
     #game{display:block;width:100vw;height:100vh;background:#05080b;cursor:crosshair}
     #hud{pointer-events:none;z-index:2}
+    .mission-card{pointer-events:auto;position:fixed;top:16px;left:16px;width:min(420px,calc(100vw - 32px));padding:15px 16px 14px;border:1px solid rgba(139,211,255,.24);border-radius:22px;background:linear-gradient(145deg,rgba(6,19,29,.93),rgba(3,8,13,.82));box-shadow:0 24px 70px rgba(0,0,0,.38),inset 0 1px 0 rgba(255,255,255,.08);backdrop-filter:blur(16px)}
+    .mission-kicker{margin:0 0 5px;color:#8bd3ff;font-size:10px;font-weight:900;letter-spacing:.18em;text-transform:uppercase}.mission-card h1{margin:0;color:#fff4b8;font-size:22px;line-height:1;letter-spacing:.02em}.mission-purpose{margin:7px 0 0;color:rgba(236,251,255,.72);font-size:12px;line-height:1.35}.mission-objective{margin:12px 0 0;padding:10px 12px;border-left:3px solid #6bf0b8;border-radius:0 14px 14px 0;background:rgba(107,240,184,.075);color:#ecfbff;font-size:13px;font-weight:850}.mission-impact{min-height:16px;margin:8px 0 0;color:#ffe36d;font-size:11px;font-weight:850}.hero-actions{display:flex;gap:8px;align-items:center;margin-top:11px}.hero-button{appearance:none;border:1px solid rgba(107,240,184,.55);border-radius:999px;background:linear-gradient(180deg,rgba(107,240,184,.22),rgba(107,240,184,.11));color:#f1fff9;padding:9px 14px;font:900 11px/1 Inter,ui-sans-serif,system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;box-shadow:0 8px 22px rgba(0,0,0,.24)}.hero-button:hover{border-color:#6bf0b8;transform:translateY(-1px)}.hero-button:disabled{opacity:.42;cursor:default;transform:none}.hero-button.recovery{border-color:rgba(255,139,123,.7);background:rgba(255,139,123,.16)}.control-hint{color:rgba(236,251,255,.58);font-size:10px;font-weight:750}.mission-advanced{margin-top:10px;border-top:1px solid rgba(255,255,255,.08);padding-top:8px}.mission-advanced summary{width:max-content;color:rgba(236,251,255,.72);font-size:10px;font-weight:850;cursor:pointer}.advanced-body{display:grid;gap:7px;margin-top:8px;color:rgba(236,251,255,.68);font-size:10px;line-height:1.4}.advanced-body label{display:flex;align-items:center;gap:7px;color:#b7f7ff;font-weight:850}.advanced-body input{accent-color:#6bf0b8}
     .stat-strip{position:fixed;top:14px;left:50%;transform:translateX(-50%);display:flex;gap:8px;align-items:center;padding:8px 10px;border:1px solid rgba(139,211,255,.22);border-radius:999px;background:linear-gradient(180deg,rgba(6,16,24,.72),rgba(3,7,11,.52));box-shadow:0 18px 50px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.08);backdrop-filter:blur(14px)}
     .stat{min-width:74px;text-align:center;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.045)}
     .stat b{display:block;color:#ffe36d;font-size:13px;line-height:1}.stat span{display:block;color:rgba(236,251,255,.66);font-size:9px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;margin-top:2px}
-    .tower-panel{pointer-events:auto;position:fixed;left:50%;bottom:18px;transform:translateX(-50%);display:flex;gap:8px;max-width:min(92vw,980px);padding:10px;border:1px solid rgba(139,211,255,.18);border-radius:24px;background:linear-gradient(180deg,rgba(6,16,24,.70),rgba(3,7,11,.56));box-shadow:0 20px 70px rgba(0,0,0,.38),inset 0 1px 0 rgba(255,255,255,.08);backdrop-filter:blur(14px);overflow-x:auto;scrollbar-width:none}.tower-panel::-webkit-scrollbar{display:none}
+    .tower-panel{pointer-events:auto;position:fixed;left:50%;bottom:18px;transform:translateX(-50%);display:flex;gap:8px;align-items:center;max-width:min(92vw,760px);padding:10px;border:1px solid rgba(139,211,255,.18);border-radius:24px;background:linear-gradient(180deg,rgba(6,16,24,.88),rgba(3,7,11,.76));box-shadow:0 20px 70px rgba(0,0,0,.38),inset 0 1px 0 rgba(255,255,255,.08);backdrop-filter:blur(14px)}
     .tower-card{width:72px;min-width:72px;border:1px solid rgba(255,255,255,.12);border-radius:18px;background:rgba(255,255,255,.055);color:#ecfbff;padding:8px 6px;text-align:left;cursor:pointer;transition:transform .14s ease,border-color .14s ease,background .14s ease}.tower-card:hover{transform:translateY(-3px);border-color:rgba(139,211,255,.72)}.tower-card.selected{border-color:#ffe36d;background:rgba(255,227,109,.12);box-shadow:0 0 24px rgba(255,227,109,.18)}.tower-card.locked{opacity:.42}.tower-icon{width:28px;height:28px;border-radius:10px;margin-bottom:5px;box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 8px 22px rgba(0,0,0,.28)}.tower-card strong{display:block;font-size:10px;line-height:1.05;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tower-card span{display:block;font-size:9px;color:rgba(236,251,255,.62);margin-top:3px}
+    .tower-guidance{width:122px;padding:0 4px 0 6px;color:rgba(236,251,255,.66);font-size:9px;font-weight:800;line-height:1.35;text-transform:uppercase;letter-spacing:.07em}.tower-guidance b{display:block;margin-bottom:3px;color:#6bf0b8;font-size:10px}.tower-more{position:relative}.tower-more>summary{list-style:none;width:80px;min-height:52px;display:grid;place-content:center;border:1px solid rgba(139,211,255,.18);border-radius:16px;background:rgba(139,211,255,.07);color:#b7f7ff;text-align:center;font-size:9px;font-weight:850;cursor:pointer}.tower-more>summary::-webkit-details-marker{display:none}.tower-more-grid{position:fixed;left:50%;bottom:104px;transform:translateX(-50%);display:flex;gap:7px;max-width:min(92vw,900px);padding:10px;border:1px solid rgba(139,211,255,.22);border-radius:20px;background:rgba(3,9,14,.94);box-shadow:0 20px 70px rgba(0,0,0,.55);overflow-x:auto}
     .context-panel{pointer-events:auto;position:fixed;top:76px;right:16px;width:min(320px,calc(100vw - 32px));min-height:120px;border:1px solid rgba(139,211,255,.18);border-radius:24px;background:linear-gradient(180deg,rgba(6,16,24,.72),rgba(3,7,11,.56));box-shadow:0 20px 70px rgba(0,0,0,.38),inset 0 1px 0 rgba(255,255,255,.08);backdrop-filter:blur(14px);padding:14px;display:none}.context-panel.visible{display:block}.context-panel h2{font-size:15px;margin:0 0 10px;color:#ffe36d}.context-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.context-grid div{border-radius:14px;background:rgba(255,255,255,.05);padding:8px}.context-grid b{display:block;font-size:13px}.context-grid span{display:block;font-size:9px;color:rgba(236,251,255,.62);letter-spacing:.1em;text-transform:uppercase}.upgrade-list{margin-top:10px;display:grid;gap:7px}.upgrade-node{border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:8px;background:rgba(255,255,255,.045)}.upgrade-node.affordable{border-color:rgba(107,240,184,.38)}.upgrade-node strong{display:block;font-size:11px}.upgrade-node span{font-size:10px;color:rgba(236,251,255,.66)}
     #errorPanel{position:fixed;inset:28px;z-index:5;overflow:auto;padding:22px;border:1px solid #ff6b7d;border-radius:18px;background:#270911e6;color:#ffdce2;box-shadow:0 20px 90px rgba(0,0,0,.45)}#errorPanel[hidden]{display:none}#errorText{white-space:pre-wrap}
+    [hidden]{display:none!important}
+    @media(max-width:760px){.mission-card{top:10px;left:10px;width:calc(100vw - 20px);box-sizing:border-box}.mission-purpose{display:none}.stat-strip{top:auto;bottom:104px}.tower-guidance{display:none}.tower-panel{bottom:10px}.tower-more-grid{bottom:94px}.context-panel{top:210px}}
   </style>
 </head>
 <body>
   <main id="app">
     <canvas id="game" role="application" aria-label="Signal Bastion 2.5D defense canvas with beacon tower evacuation readiness"></canvas>
     <aside id="hud" aria-label="Gameplay HUD">
+      <section id="missionCard" class="mission-card" aria-label="Mission and hero controls">
+        <p class="mission-kicker">Ember Causeway · Hold the signal</p>
+        <h1>Signal Bastion</h1>
+        <p class="mission-purpose">Build a three-tower line, call the assault, and keep the Dawn Core lit.</p>
+        <p id="missionObjective" class="mission-objective" aria-live="polite">Place a Bolt Spire on a green build pad.</p>
+        <p id="missionImpact" class="mission-impact" aria-live="polite">Choose a starter tower below, then click a green pad.</p>
+        <div class="hero-actions">
+          <button id="startWaveButton" class="hero-button" type="button">Start wave · Space</button>
+          <button id="restartButton" class="hero-button recovery" type="button" hidden>Rebuild · R</button>
+          <span class="control-hint">Click tower → pad · select tower → U</span>
+        </div>
+        <details id="advancedPanel" class="mission-advanced">
+          <summary>Advanced controls &amp; diagnostics</summary>
+          <div class="advanced-body">
+            <span>Q / E / Tab cycle towers · 1–9 quick-select · right-click / Esc cancels · Backspace sells.</span>
+            <label><input id="diagnosticsToggle" type="checkbox" /> Show readiness diagnostics</label>
+          </div>
+        </details>
+      </section>
       <section id="statStrip" class="stat-strip" aria-live="polite"></section>
       <section id="towerPanel" class="tower-panel" aria-label="Tower selection"></section>
       <section id="contextPanel" class="context-panel" aria-label="Selection and upgrades"></section>
@@ -35,10 +60,10 @@
       <pre id="errorText"></pre>
     </section>
   </main>
-  <script type="module" src="./src/boot.js?v=evacuation-corridor-readiness-1-reconstruction-readiness-1-field-hospital-readiness-1-supply-convoy-readiness-1-beacon-tower-evacuation-1"></script>
-  <script type="module" src="./src/signal-bastion-reconstruction-readiness-entry.js?v=reconstruction-readiness-1"></script>
-  <script type="module" src="./src/signal-bastion-field-hospital-readiness-entry.js?v=field-hospital-readiness-1"></script>
-  <script type="module" src="./src/signal-bastion-supply-convoy-readiness-entry.js?v=supply-convoy-readiness-1"></script>
-  <script type="module" src="./src/signal-bastion-beacon-tower-evacuation-readiness-entry.js?v=beacon-tower-evacuation-1"></script>
+  <script type="module" src="./src/boot.js?v=first-command-refinement-5"></script>
+  <script type="module" src="./src/signal-bastion-reconstruction-readiness-entry.js?v=first-command-refinement-5"></script>
+  <script type="module" src="./src/signal-bastion-field-hospital-readiness-entry.js?v=first-command-refinement-5"></script>
+  <script type="module" src="./src/signal-bastion-supply-convoy-readiness-entry.js?v=first-command-refinement-5"></script>
+  <script type="module" src="./src/signal-bastion-beacon-tower-evacuation-readiness-entry.js?v=first-command-refinement-5"></script>
 </body>
 </html>

@@ -1,5 +1,11 @@
 # Cycle State
 
+## 2026-07-17 Signal Bastion First-Command Feel Refinement
+
+`games/signal-bastion/` now opens as one readable defense command instead of a diagnostic wall: purpose, objective, three starter towers, and Start Wave are the first-screen heroes; nine specialist towers and readiness diagnostics stay under disclosure. The route pins the current `NexusEngine-ProtoKits` generic-defense stack, whose session DSK now keeps core breach terminal until restart. Playwright physically placed Bolt/Ember/Frost, cleared waves, breached the hard route, rebuilt, and proved Advanced closed/open/closed with zero console errors. Default presentation fell from `138` to `108` DOM nodes, `4` to `1` canvases, and `48` to `24` descriptors; matched active performance improved from `82.946` to `33.315 ms` average frame time (`12.056` to `30.02 FPS`) with zero final long tasks.
+
+Exact next playable unit: after the first clear, present one authored choice between upgrading the starter line and adding a specialist tower, reusing existing economy, session, wave-preview, and descriptor owners without another first-screen control or state owner.
+
 ## 2026-07-17 Hellscape First-Siege Feel Refinement
 
 `games/rogue-lite-hellscape-siege/` now opens with one complete readable defense loop: build the stocked Spike Wall, start Siege 1 at the Ember Core, close on threats and strike, secure or breach, recover starter stock, then harvest and return from a resource realm with progression state intact. A hero HUD owns purpose, controls, objective, core/wave/player status, and impact; five readiness panels remain available only through default-closed Advanced diagnostics. Playwright completed the physical build/start/strike/clear/harvest/return/breach/recovery loop, held one canvas and 50 default DOM nodes, improved the matched active window from `85.45` to `16.34 ms` average frame time (`11.70` to `61.18 FPS`), and reported zero console errors or warnings. Existing Hellscape checks passed; ProtoKits and Core remain unchanged.

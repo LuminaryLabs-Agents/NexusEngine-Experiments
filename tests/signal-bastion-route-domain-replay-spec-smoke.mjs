@@ -85,7 +85,7 @@ for (const method of [
   assert.ok(replayMethods.has(method), `spec should include semantic replay method ${method}`);
 }
 assert.ok(spec.deterministicDigest.fields.includes("render.descriptors"), "spec digest should include renderer-agnostic descriptors");
-assert.ok(spec.remainingGap.includes("host convenience facades") && spec.remainingGap.includes("DSK aliases"), "spec should keep the remaining browser host/local-JS reduction gap explicit after DSK bridge migration");
+assert.ok(spec.remainingGap.includes("presentation bridge hardening") && spec.remainingGap.includes("descriptor based"), "spec should keep the current presentation-only browser shrink gap explicit");
 assert.ok(spec.localJsReductionSignal.some((entry) => entry.includes("session command ProtoKit")), "spec should record the browser host session-command ProtoKit reduction");
 assert.ok(spec.localJsReductionSignal.some((entry) => entry.includes("engine.n.genericDefense.sessionFacade")), "spec should record the browser host namespace reduction");
 

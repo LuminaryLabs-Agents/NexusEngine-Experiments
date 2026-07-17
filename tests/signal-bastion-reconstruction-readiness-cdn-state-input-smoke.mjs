@@ -14,7 +14,7 @@ assert.ok(boot.includes("https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngin
 assert.ok(entrySource.includes("https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js"), "reconstruction entry should import NexusEngine main CDN");
 assert.ok(!entrySource.includes("LuminaryLabs-Dev/NexusRealtime@main"), "changed reconstruction entry should not import old NexusRealtime runtime CDN");
 assert.ok(html.includes("signal-bastion-reconstruction-readiness-entry.js"), "route shell should load reconstruction readiness overlay");
-assert.ok(html.includes("reconstruction-readiness-1"), "route shell should cache bust reconstruction readiness integration");
+assert.match(html, /first-command-refinement-\d+/, "route shell should cache bust the consolidated player-first integration");
 assert.ok(entrySource.includes("createSignalBastionReconstructionReadinessDomainKit"), "entry should import reconstruction readiness domain kit");
 assert.ok(entrySource.includes("getSignalBastionReconstructionReadiness"), "GameHost should expose reconstruction readiness state");
 assert.ok(entrySource.includes("getReconstructionReadinessTree"), "GameHost should expose reconstruction readiness tree");

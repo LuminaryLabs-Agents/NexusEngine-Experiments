@@ -30,6 +30,12 @@ export const signalBastionDefaultPreset = Object.freeze({
   presentation: {
     mapId: map.id,
     mapLabel: map.label,
+    playerGuidance: {
+      purpose: "Build a three-tower line, call the assault, and keep the Dawn Core lit.",
+      starterTowerCount: 3,
+      firstBuildLabel: "Bolt Spire",
+      firstWaveLabel: "First Signal"
+    },
     palette: {
       path: "rgba(118,231,255,.25)",
       core: "rgba(255,227,109,.9)",

@@ -98,9 +98,11 @@ Cutover target: preserve survival controls and wave pacing while aligning rounds
 
 `games/signal-bastion/` is the strongest current strategic-pressure canonical route and the only route-domain lane with executable replay proof.
 
-It composes the ProtoKits `generic-defense-aaa-dsk-bridge` and seven explicit generic-defense DSK aliases instead of the broad compatibility bundle. Migrated seams should prefer `engine.n.genericDefense.sessionFacade` and `engine.n.genericDefense.renderDescriptors`; remaining convenience seams should be removed or justified one at a time without moving browser, DOM, Canvas, frame timing, pointer input, audio, or asset loading into reusable kit logic.
+Current playable slice: read one mission, place the Bolt/Ember/Frost starter line, start and clear waves, breach the core on the hard route, and rebuild. Nine specialist towers and the three readiness surfaces stay under default-closed Advanced diagnostics, leaving one Canvas and one player-facing signal owner by default.
 
-Cutover target: prove a generic defense DSK spine for paths, build slots, vital targets, structures, waves, agents, projectiles, currency, and renderer-only descriptors before promoting smaller mature contracts.
+It composes a pinned `NexusEngine-ProtoKits` `generic-defense-aaa-dsk-bridge` and seven explicit generic-defense DSK aliases instead of the broad compatibility bundle. Migrated seams prefer `engine.n.genericDefense.sessionFacade` and `engine.n.genericDefense.renderDescriptors`; terminal breach/restart stays in the reusable session DSK while browser mission, DOM, Canvas, frame timing, pointer input, audio, and asset loading remain local presentation concerns.
+
+Cutover target: deepen the post-clear upgrade/specialist decision while preserving the generic defense DSK spine for paths, build slots, vital targets, structures, waves, agents, projectiles, currency, terminal recovery, and renderer-only descriptors.
 
 ### Rogue-Lite Hellscape Siege
 

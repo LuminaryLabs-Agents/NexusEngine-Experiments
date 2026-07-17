@@ -38,8 +38,12 @@ assert.equal(resolveSignalBastionPreset("?preset=hard").mode, "hard");
 assert.equal(resolveSignalBastionPreset("?preset=endless").level.waves.length, 60);
 
 const index = readFileSync("games/signal-bastion/index.html", "utf8");
-assert.match(index, /src\/boot\.js\?v=frontline-tactics-readability-1/);
+assert.match(index, /src\/boot\.js\?v=first-command-refinement-\d+/);
 assert.match(index, /NexusEngine 2\.5D Defense/);
+assert.match(index, /missionCard/);
+assert.match(index, /startWaveButton/);
+assert.match(index, /advancedPanel/);
+assert.match(index, /diagnosticsToggle/);
 assert.match(index, /statStrip/);
 assert.match(index, /towerPanel/);
 assert.match(index, /contextPanel/);
@@ -48,6 +52,9 @@ assert.doesNotMatch(index, /Space wave/);
 
 const boot = readFileSync("games/signal-bastion/src/boot.js", "utf8");
 assert.match(boot, /generic-defense-aaa-dsk-bridge/);
+assert.match(boot, /LuminaryLabs-Agents\/NexusEngine-ProtoKits/);
+assert.match(boot, /PROTOKITS_REF/);
+assert.doesNotMatch(boot, /LuminaryLabs-Agents\/NexusRealtime-ProtoKits/);
 assert.match(boot, /generic-defense-session-command-kit/);
 assert.match(boot, /SIGNAL_BASTION_DEFENSE_DSK_BOUNDARY_IDS/);
 assert.match(boot, /createGenericDefenseDskBundle/);
@@ -77,6 +84,8 @@ assert.doesNotMatch(input, /engine\.genericDefense\./);
 
 const renderer = readFileSync("games/signal-bastion/src/renderer-canvas.js", "utf8");
 assert.match(renderer, /draw\(presentation/);
+assert.match(renderer, /getDiagnosticsVisible/);
+assert.match(renderer, /setDiagnosticsVisible/);
 assert.match(renderer, /drawTower/);
 assert.match(renderer, /renderTowerPanel/);
 assert.match(renderer, /renderContext/);

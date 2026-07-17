@@ -30,7 +30,7 @@
     "coreRemoteDefault": "a5882b47bd5a9284550bb3af1f0cd8580c62665e",
     "coreLocalReadOnly": "a5882b47bd5a9284550bb3af1f0cd8580c62665e",
     "protokits": "04d34f049f58ae359cf71d43466c429dac2a6d08",
-    "experiments": "1c163d3de2bcb488ee522751b69dd5d9d944c575",
+    "experiments": "652a02dd64d3e4202f6bfb333a8a560053242dfd",
     "experimentsBaseline": "615a7e1e2170164acef0edebdbe0b88b8c01fd1b"
   },
   "baseline": {
@@ -147,28 +147,28 @@
     "result": "Upgraded Next Ledge so Slipstream Launch and Cacheline High converge at Windglass Relay, banking 134 preserved speed or 175 cargo mastery before generic ascent resumes; production creation counts remain unchanged."
   },
   "lastRefinementUnit": {
-    "packetId": "2026-07-17-hellscape-first-siege-refinement",
-    "scope": "Rogue-Lite Hellscape Siege first-siege hero-feel refinement",
-    "result": "The unscored legacy route now opens with a stocked wall, readable mission and hero controls, physical close-range strikes, bounded first-wave pressure, clear and breach outcomes, starter-cache recovery, and a state-preserving resource-realm return loop."
+    "packetId": "2026-07-17-signal-bastion-first-command-refinement",
+    "scope": "Signal Bastion player-first command and terminal recovery refinement",
+    "result": "The formerly unscored legacy route now opens with one mission owner, three starter towers, a physical wave command, readable combat pressure, terminal core breach, and a visible rebuild action while the readiness stack remains available only through Advanced diagnostics."
   },
   "lastCompletedUnit": {
-    "packetId": "2026-07-17-hellscape-first-siege-refinement",
-    "scope": "Rogue-Lite Hellscape Siege complete first-siege loop",
-    "result": "A player can build the stocked starter wall, start Siege 1, close and strike six threats, secure the core, enter Grove, harvest wood, return with clear and inventory state intact, then breach a later siege and recover a starter cache. Five readiness overlays moved behind one default-closed Advanced owner, while their domain APIs and renderer handoffs remain available.",
-    "validation": "All existing Hellscape test entrypoints, affected JavaScript syntax checks, JSON, and diff checks passed. The repository-wide runner was invoked and stopped only at the starting-commit duplicate drawHexFill declaration in experiments/The Cavalry of Rome/src/hex-gameplay-pass.js; this run did not touch that file. Playwright physically completed build, start, strike, clear, Grove harvest, return, later-wave strike, natural breach, recovery, and Advanced closed/open/closed loops with zero console errors or warnings. Human View passed the first screen, starter wall, strike impact, siege clear, harvest, return, and recovery with diagnostics closed. The matched 40-frame active window improved from 85.45 to 16.34 ms average frame time, 11.70 to 61.18 measured FPS, and 166.60 to 18.20 ms p95; default DOM dropped from 79 to 50, one canvas stayed one, matched active descriptors stayed bounded at 245 to 254, and repeated diagnostics cycles held exactly five panels with zero visible when closed.",
+    "packetId": "2026-07-17-signal-bastion-first-command-refinement",
+    "scope": "Signal Bastion complete first-command defense loop",
+    "result": "A player can read the purpose, place Bolt, Ember, and Frost towers, start and clear waves, observe one authoritative objective/impact path, lose the hard route, and rebuild the complete run. Three readiness surfaces and their 48 diagnostic descriptors are absent from the default player view and restored only by the explicit Advanced toggle.",
+    "validation": "Twenty-two existing Signal Bastion tests passed after excluding the unchanged legacy-package executable smoke that still imports missing nexusrealtime dependencies; affected JavaScript syntax, JSON, and diff hygiene passed. The repository-wide runner was invoked and stopped only at the starting-commit duplicate drawHexFill declaration in experiments/The Cavalry of Rome/src/hex-gameplay-pass.js. Playwright physically completed three-tower placement, two wave commands, clear, hard-route breach, rebuild, and Advanced closed/open/closed loops with zero console errors. Human View passed first screen, line ready, active wave, terminal breach, and rebuild. Matched active performance improved from 82.946 to 33.315 ms average frame time, 12.056 to 30.02 measured FPS, and 87.5 to 35.3 ms p95; default DOM fell 138 to 108, canvases 4 to 1, descriptors 48 to 24, heap 33.452 to 30.283 MB, and long tasks held at zero in the final available signal.",
     "commits": {
       "coreReadOnly": "a5882b47bd5a9284550bb3af1f0cd8580c62665e",
       "protokitsStart": "04d34f049f58ae359cf71d43466c429dac2a6d08",
-      "protokitsProductionUnit": "04d34f049f58ae359cf71d43466c429dac2a6d08",
-      "experimentsStart": "1c163d3de2bcb488ee522751b69dd5d9d944c575",
-      "experimentsProductionUnit": "03c68775b109ec7e1a7ed94b289604329f453305"
+      "protokitsProductionUnit": "bb3d787da372bf001653635d6e57eb7ce54e3c50",
+      "experimentsStart": "652a02dd64d3e4202f6bfb333a8a560053242dfd",
+      "experimentsProductionUnit": "pending-this-commit"
     },
-    "publication": "Experiments production commit 03c68775b109ec7e1a7ed94b289604329f453305 published to resolved default branch main after fetch-before-push verification; this repository commit records the publication receipt. ProtoKits is unchanged and synchronized at 04d34f049f58ae359cf71d43466c429dac2a6d08."
+    "publication": "ProtoKits production commit bb3d787da372bf001653635d6e57eb7ce54e3c50 published to resolved default branch main after fetch-before-push verification; the matching Experiments publication receipt is recorded after the production commit is pushed."
   },
   "exactNextUnit": {
     "phase": "playable-experiment-upgrade",
     "epoch": 0,
-    "scope": "hellscape-post-clear-two-resource-fortification",
-    "goal": "Make the post-clear Grove and Ashes material run preserve a visible two-resource rebuild recipe and one meaningful return-to-core fortification choice without adding a first-screen control or duplicating defense state."
+    "scope": "signal-bastion-second-command-choice",
+    "goal": "After the first clear, present one authored choice between upgrading the starter line and adding a specialist tower, reusing existing economy, session, wave-preview, and descriptor owners without another first-screen control or state owner."
   }
 }

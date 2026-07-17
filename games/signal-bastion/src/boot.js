@@ -1,5 +1,5 @@
 import { resolveSignalBastionPreset } from "../presets/index.js";
-import { createSignalBastionCanvasRenderer } from "./renderer-canvas.js";
+import { createSignalBastionCanvasRenderer } from "./renderer-canvas.js?v=first-command-refinement-5";
 import { createSignalBastionInputHost } from "./input-host.js";
 import { createSignalBastionCommandFractalDomainKit } from "./signal-bastion-command-fractal-domain-kit.js";
 import { createSignalBastionWaveChoreographyDomainKit } from "./signal-bastion-wave-choreography-domain-kit.js";
@@ -7,9 +7,11 @@ import { createSignalBastionFrontlineTacticsDomainKit } from "./signal-bastion-f
 import { createSignalBastionEvacuationCorridorReadinessDomainKit } from "./signal-bastion-evacuation-corridor-readiness-domain-kit.js";
 
 const NEXUS_URL = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js";
-const DEFENSE_KITS_URL = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusRealtime-ProtoKits@main/protokits/generic-defense-aaa-dsk-bridge/index.js";
-const SESSION_COMMAND_KIT_URL = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusRealtime-ProtoKits@main/protokits/generic-defense-session-command-kit/index.js";
-const PRESENTATION_KITS_URL = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusRealtime-ProtoKits@main/protokits/generic-defense-presentation-stack-kit/index.js";
+const PROTOKITS_REF = "bb3d787da372bf001653635d6e57eb7ce54e3c50";
+const PROTOKITS_BASE_URL = `https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@${PROTOKITS_REF}/protokits`;
+const DEFENSE_KITS_URL = `${PROTOKITS_BASE_URL}/generic-defense-aaa-dsk-bridge/index.js`;
+const SESSION_COMMAND_KIT_URL = `${PROTOKITS_BASE_URL}/generic-defense-session-command-kit/index.js`;
+const PRESENTATION_KITS_URL = `${PROTOKITS_BASE_URL}/generic-defense-presentation-stack-kit/index.js`;
 
 const SIGNAL_BASTION_DEFENSE_DSK_BOUNDARY_IDS = Object.freeze([
   "map",
@@ -76,6 +78,20 @@ function getSignalBastionBudgetSnapshot(engine) {
     agents: Object.keys(snapshot.agents?.active ?? {}).length,
     projectiles: Object.keys(snapshot.combat?.projectiles ?? {}).length,
     descriptors: descriptors.length
+  };
+}
+
+function getSignalBastionPlayerMission(presentation) {
+  const snapshot = presentation?.rawSnapshot ?? {};
+  const session = snapshot.session ?? {};
+  const waveIndex = Number(session.waveIndex ?? 0);
+  return {
+    status: session.status ?? "planning",
+    waveIndex,
+    structureCount: Object.keys(snapshot.structures?.structures ?? {}).length,
+    threatCount: Object.keys(snapshot.agents?.active ?? {}).length + (snapshot.agents?.spawnQueue?.length ?? 0),
+    nextWaveLabel: snapshot.level?.waves?.[waveIndex]?.label ?? null,
+    impact: snapshot.render?.hud?.message ?? session.message ?? "Choose a starter tower below, then click a green pad."
   };
 }
 
@@ -192,10 +208,26 @@ export async function bootSignalBastion(documentRef = document) {
   const statStripEl = documentRef.querySelector("#statStrip");
   const towerPanelEl = documentRef.querySelector("#towerPanel");
   const contextPanelEl = documentRef.querySelector("#contextPanel");
+  const missionObjectiveEl = documentRef.querySelector("#missionObjective");
+  const missionImpactEl = documentRef.querySelector("#missionImpact");
+  const startWaveButton = documentRef.querySelector("#startWaveButton");
+  const restartButton = documentRef.querySelector("#restartButton");
+  const diagnosticsToggle = documentRef.querySelector("#diagnosticsToggle");
   const errorPanel = documentRef.querySelector("#errorPanel");
   const errorText = documentRef.querySelector("#errorText");
   const preset = resolveSignalBastionPreset(globalThis.location?.search ?? "");
-  const renderer = createSignalBastionCanvasRenderer({ canvas, statStripEl, towerPanelEl, contextPanelEl, errorPanel, errorText });
+  const renderer = createSignalBastionCanvasRenderer({
+    canvas,
+    statStripEl,
+    towerPanelEl,
+    contextPanelEl,
+    missionObjectiveEl,
+    missionImpactEl,
+    startWaveButton,
+    restartButton,
+    errorPanel,
+    errorText
+  });
 
   try {
     const [NexusEngine, DefenseKits, SessionCommandKits, PresentationKits] = await Promise.all([
@@ -233,9 +265,16 @@ export async function bootSignalBastion(documentRef = document) {
     let running = true;
     let last = performance.now();
 
-    function createPresentationSnapshot() {
+    function createPresentationSnapshot(includeDiagnostics = renderer.getDiagnosticsVisible()) {
       const activeBlueprint = input.getActiveBlueprint();
       const presentation = getSignalBastionPresentation(engine);
+      const playerPresentation = {
+        ...presentation,
+        playerGuidance: preset.presentation?.playerGuidance ?? {},
+        playerMission: getSignalBastionPlayerMission(presentation),
+        diagnosticsVisible: includeDiagnostics
+      };
+      if (!includeDiagnostics) return playerPresentation;
       const commandFractal = getSignalBastionCommandFractal(commandFractalKit, presentation, activeBlueprint, preset);
       const waveChoreography = getSignalBastionWaveChoreography(waveChoreographyKit, presentation, activeBlueprint, preset);
       const frontlineTactics = getSignalBastionFrontlineTactics(frontlineTacticsKit, presentation, activeBlueprint, preset);
@@ -249,7 +288,7 @@ export async function bootSignalBastion(documentRef = document) {
         rendererHandoff
       };
       return {
-        ...presentation,
+        ...playerPresentation,
         commandFractal: composedCommandFractal,
         waveChoreography,
         frontlineTactics,
@@ -281,12 +320,15 @@ export async function bootSignalBastion(documentRef = document) {
       preset,
       getState: () => getSignalBastionSessionFacade(engine)?.getSnapshot?.(),
       getPresentation: () => createPresentationSnapshot(),
-      getCommandFractal: () => createPresentationSnapshot().commandFractal,
-      getWaveChoreography: () => createPresentationSnapshot().waveChoreography,
-      getFrontlineTactics: () => createPresentationSnapshot().frontlineTactics,
-      getEvacuationCorridorReadiness: () => createPresentationSnapshot().evacuationCorridorReadiness,
-      getSignalBastionEvacuationCorridorReadiness: () => createPresentationSnapshot().evacuationCorridorReadiness,
-      getRendererHandoff: () => createPresentationSnapshot().commandFractal?.rendererHandoff,
+      getDiagnosticsPresentation: () => createPresentationSnapshot(true),
+      getCommandFractal: () => createPresentationSnapshot(true).commandFractal,
+      getWaveChoreography: () => createPresentationSnapshot(true).waveChoreography,
+      getFrontlineTactics: () => createPresentationSnapshot(true).frontlineTactics,
+      getEvacuationCorridorReadiness: () => createPresentationSnapshot(true).evacuationCorridorReadiness,
+      getSignalBastionEvacuationCorridorReadiness: () => createPresentationSnapshot(true).evacuationCorridorReadiness,
+      getRendererHandoff: () => createPresentationSnapshot(true).commandFractal?.rendererHandoff,
+      getDiagnosticsVisible: () => renderer.getDiagnosticsVisible(),
+      setDiagnosticsVisible: (visible) => setDiagnosticsVisible(visible),
       getFoundation: () => getSignalBastionFoundationSnapshot(engine),
       getScale: () => getSignalBastionBudgetSnapshot(engine),
       getWavePreview: () => getSignalBastionWavePreview(engine),
@@ -296,6 +338,24 @@ export async function bootSignalBastion(documentRef = document) {
       restart: () => getSignalBastionSessionFacade(engine)?.restart?.({ commandId: `host-restart:${engine.clock.frame}` }),
       stop: () => { running = false; }
     };
+
+    function setDiagnosticsVisible(visible) {
+      const enabled = visible === true;
+      renderer.setDiagnosticsVisible(enabled);
+      documentRef.documentElement.dataset.signalDiagnostics = String(enabled);
+      if (diagnosticsToggle) diagnosticsToggle.checked = enabled;
+      globalThis.dispatchEvent(new CustomEvent("signal-bastion-diagnostics-change", { detail: { visible: enabled } }));
+    }
+
+    diagnosticsToggle?.addEventListener("change", () => setDiagnosticsVisible(diagnosticsToggle.checked));
+    startWaveButton?.addEventListener("click", () => {
+      getSignalBastionSessionFacade(engine)?.startWave?.({ commandId: `hero-wave:${engine.clock.frame}` });
+    });
+    restartButton?.addEventListener("click", () => {
+      getSignalBastionSessionFacade(engine)?.restart?.({ commandId: `hero-restart:${engine.clock.frame}` });
+      input.cancelPlacement();
+    });
+    setDiagnosticsVisible(false);
 
     requestAnimationFrame(frame);
     return globalThis.GameHost;

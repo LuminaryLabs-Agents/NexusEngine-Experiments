@@ -87,7 +87,10 @@ function installSupplyConvoyReadiness(host = globalThis.GameHost) {
   };
 
   if (originalDraw) {
-    host.renderer.draw = (presentation, activeBlueprint) => originalDraw(composeSupplyConvoyPresentation(host, presentation), activeBlueprint);
+    host.renderer.draw = (presentation, activeBlueprint) => originalDraw(
+      host.getDiagnosticsVisible?.() ? composeSupplyConvoyPresentation(host, presentation) : presentation,
+      activeBlueprint
+    );
   }
   return true;
 }

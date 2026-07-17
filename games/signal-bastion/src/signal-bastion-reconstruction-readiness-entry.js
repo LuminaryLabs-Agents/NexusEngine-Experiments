@@ -189,11 +189,35 @@ function composeHandoff(baseHandoff, reconstruction) {
 export async function installSignalBastionReconstructionReadiness() {
   await import(NEXUS_URL);
   const kit = createSignalBastionReconstructionReadinessDomainKit();
-  const canvas = createOverlayCanvas();
-  const panel = createPanel();
-  const ctx = canvas.getContext("2d");
-  resize(canvas, ctx);
-  addEventListener("resize", () => resize(canvas, ctx));
+  let canvas = null;
+  let panel = null;
+  let ctx = null;
+
+  function diagnosticsVisible() {
+    return document.documentElement.dataset.signalDiagnostics === "true";
+  }
+
+  function ensureSurface() {
+    if (canvas && panel && ctx) return;
+    canvas = createOverlayCanvas();
+    panel = createPanel();
+    ctx = canvas.getContext("2d");
+    resize(canvas, ctx);
+  }
+
+  function destroySurface() {
+    canvas?.remove();
+    panel?.remove();
+    canvas = null;
+    panel = null;
+    ctx = null;
+  }
+
+  addEventListener("signal-bastion-diagnostics-change", (event) => {
+    if (event.detail?.visible !== true) destroySurface();
+  });
+
+  addEventListener("resize", () => { if (canvas && ctx) resize(canvas, ctx); });
 
   function readReadiness() {
     const host = getHost();
@@ -214,6 +238,12 @@ export async function installSignalBastionReconstructionReadiness() {
   function frame() {
     const host = getHost();
     patchHost(host);
+    if (!diagnosticsVisible()) {
+      destroySurface();
+      globalThis.setTimeout(frame, 500);
+      return;
+    }
+    ensureSurface();
     const readiness = readReadiness();
     ctx.clearRect(0, 0, globalThis.innerWidth, globalThis.innerHeight);
     if (readiness?.rendererHandoff?.descriptors) {
@@ -224,7 +254,7 @@ export async function installSignalBastionReconstructionReadiness() {
   }
 
   requestAnimationFrame(frame);
-  return { kit, canvas, panel, cacheMarker: RECONSTRUCTION_CACHE_MARKER };
+  return { kit, get canvas() { return canvas; }, get panel() { return panel; }, cacheMarker: RECONSTRUCTION_CACHE_MARKER };
 }
 
 installSignalBastionReconstructionReadiness().catch((error) => {
