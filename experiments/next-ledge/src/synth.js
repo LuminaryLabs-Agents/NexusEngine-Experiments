@@ -72,6 +72,14 @@ export function createCinematicSynth() {
         setTimeout(() => tone(783.99, 0.4, "sine", 0.055, 1046.5), 90);
       }
     }
+    else if (type === "signal-pressure-carry-window-fired") {
+      tone(246.94, 0.28, "sawtooth", 0.07, 123.47);
+      setTimeout(() => tone(987.77, 0.3, "triangle", 0.06, 1480), 70);
+    }
+    else if (type === "signal-pressure-carry-landed") {
+      tone(110, 0.42, "triangle", 0.1, 82.41);
+      [493.88, 740, 987.77].forEach((frequency, index) => setTimeout(() => tone(frequency, 0.38, "sine", 0.065, frequency * 1.18), 80 + index * 68));
+    }
     else if (type === "post-rest-route-choice-rejoined") {
       [392, 523.25, 783.99].forEach((frequency, index) => setTimeout(() => tone(frequency, 0.32, "sine", 0.05, frequency * 1.2), index * 70));
     }

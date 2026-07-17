@@ -534,6 +534,7 @@ export function createThreeRenderer({ canvas }) {
       const convergenceAnchor = id === choice?.convergenceAnchorId;
       const inactiveConvergence = convergenceAnchor && !["convergence-active", "rejoin-active", "resolved"].includes(choice?.status);
       const selected = id === choice?.selectedAnchorId;
+      const carryTarget = choice?.status === "committed" && id === choice.rejoinAnchorId;
       const consequenceTarget = choice?.status === "consequence-active" && id === choice.postRejoinAnchorId;
       const payoffTargetActive = choice?.status === "payoff-active" && id === choice.payoffTargetId;
       const convergenceTargetActive = choice?.status === "convergence-active" && convergenceAnchor;
@@ -541,10 +542,10 @@ export function createThreeRenderer({ canvas }) {
       g.visible = !unselected && !inactivePayoff && !inactiveConvergence;
       const hot = id === snapshot.hoveredId || snapshot.enabledTargetIds?.includes(id) || id === snapshot.aimAssistTargetId || selected || consequenceTarget || payoffTargetActive || convergenceTargetActive || rejoinTargetActive;
       const pulse = 1 + Math.sin(time * 6 + (g.position.y || 0) * 0.01) * 0.045;
-      g.scale.setScalar((rejoinTargetActive ? 1.48 : id === snapshot.hoveredId || id === snapshot.aimAssistTargetId ? 1.3 : hot ? 1.12 : 1) * pulse);
+      g.scale.setScalar((rejoinTargetActive ? 1.48 : carryTarget ? 1.34 : id === snapshot.hoveredId || id === snapshot.aimAssistTargetId ? 1.3 : hot ? 1.12 : 1) * pulse);
       g.userData.core.material = convergenceTargetActive || rejoinTargetActive
         ? m.windglass
-        : consequenceTarget || payoffTargetActive
+        : carryTarget || consequenceTarget || payoffTargetActive
         ? choice.selectedRole === "pressure-shortcut" ? m.shortcutChoice : m.safeChoice
         : matFor(m, g.userData.type, id === snapshot.hoveredId || id === snapshot.aimAssistTargetId, g.userData.choiceRole);
       g.userData.halo.visible = hot || g.userData.type !== "normal" || Boolean(g.userData.choiceRole && choice?.status === "open");

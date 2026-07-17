@@ -3,8 +3,8 @@ import { createGenericAnchorDescriptorKit } from "https://cdn.jsdelivr.net/gh/Lu
 import { createGenericModeProjectedRoute, createProjectedRoute } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-mode-projected-route/index.js";
 import { createGenericRouteProgressKit } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-route-progress-kit/index.js";
 import { createGenericTetherTraversalDomainKits, createGenericTetherTraversalPreset } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-tether-traversal-domain-kits/index.js";
-import { createNextLedgeClimbPreset } from "./climb-preset.js?v=signal-cut-one-launch-1";
-import { adaptProjectedRouteToClimbRoute } from "./climb-anchor-adapter.js?v=signal-cut-one-launch-1";
+import { createNextLedgeClimbPreset } from "./climb-preset.js?v=signal-carry-window-1";
+import { adaptProjectedRouteToClimbRoute } from "./climb-anchor-adapter.js?v=signal-carry-window-1";
 import { createClimbActionAdapter } from "./climb-action-adapter.js";
 
 const clamp = (v, a, b) => Math.max(a, Math.min(b, Number.isFinite(Number(v)) ? Number(v) : a));
@@ -412,19 +412,53 @@ function activeRecoveryWindow(state) {
   return protectedRecoveryWindow(state) ?? genericRejoinRecoveryWindow(state);
 }
 
+function authoredAimProfile(state, target) {
+  const choice = state.routeChoice;
+  if (choice?.status === "committed" && choice.selectedRole === "pressure-shortcut" && target?.id === choice.rejoinAnchorId) {
+    return {
+      aimAssistBonus: n(target.metadata?.routeChoiceShortcutCarryAimAssistBonus, 0),
+      minBuildAngle: n(target.metadata?.routeChoiceShortcutCarryAimAssistMinBuildAngle, 0),
+      minDirectedSpeed: n(target.metadata?.routeChoiceShortcutCarryMinDirectedSpeed, 0),
+      aimAssistLeadX: 0,
+      aimAssistLeadY: 0,
+      kind: "shortcut-pressure-carry"
+    };
+  }
+  return {
+    aimAssistBonus: n(target?.metadata?.routeChoiceAimAssistBonus, 0),
+    minBuildAngle: n(target?.metadata?.routeChoiceAimAssistMinBuildAngle, 0),
+    minDirectedSpeed: 0,
+    aimAssistLeadX: n(target?.metadata?.routeChoiceAimAssistLeadX, 0),
+    aimAssistLeadY: n(target?.metadata?.routeChoiceAimAssistLeadY, 0),
+    kind: "authored-target"
+  };
+}
+
 function authoredAimTuning(state, target) {
   if (!target) return { aimAssistBonus: 0, aimAssistLeadX: 0, aimAssistLeadY: 0, buildWindowActive: false };
-  const minBuildAngle = n(target.metadata?.routeChoiceAimAssistMinBuildAngle, 0);
+  const profile = authoredAimProfile(state, target);
+  const minBuildAngle = profile.minBuildAngle;
   const anchor = state.anchorLedge ?? ledgeMap(state)[state.currentAnchorId];
   const targetDirection = Math.sign(target.x - n(anchor?.x, state.player.x)) || 1;
-  const buildWindowActive = minBuildAngle > 0 && targetDirection * n(state.player?.angle, 0) >= minBuildAngle;
+  const angleReady = minBuildAngle <= 0 || targetDirection * n(state.player?.angle, 0) >= minBuildAngle;
+  const speedReady = profile.minDirectedSpeed <= 0 || targetDirection * n(state.player?.aVel, 0) >= profile.minDirectedSpeed;
+  const buildWindowActive = minBuildAngle > 0 && angleReady && speedReady;
   if (minBuildAngle > 0 && !buildWindowActive) return { aimAssistBonus: 0, aimAssistLeadX: 0, aimAssistLeadY: 0, buildWindowActive };
   return {
-    aimAssistBonus: n(target.metadata?.routeChoiceAimAssistBonus, 0),
-    aimAssistLeadX: n(target.metadata?.routeChoiceAimAssistLeadX, 0),
-    aimAssistLeadY: n(target.metadata?.routeChoiceAimAssistLeadY, 0),
-    buildWindowActive
+    aimAssistBonus: profile.aimAssistBonus,
+    aimAssistLeadX: profile.aimAssistLeadX,
+    aimAssistLeadY: profile.aimAssistLeadY,
+    buildWindowActive,
+    kind: profile.kind
   };
+}
+
+function pressureCarryTargetTuning(state) {
+  const choice = state.routeChoice;
+  if (choice?.status !== "committed" || choice.selectedRole !== "pressure-shortcut") return null;
+  const target = ledgeMap(state)[choice.rejoinAnchorId];
+  if (!target) return null;
+  return { target, ...authoredAimTuning(state, target) };
 }
 
 function payoffTargetTuning(state) {
@@ -512,6 +546,17 @@ function launch(state) {
   state.stats.launches += 1;
   state.status = state.aimAssistTargetId ? "Grapple magnetized to viable anchor." : "Grapple fired. Cable sweep can latch nearby anchors.";
   addEvent(state, "grapple-fired", { x: state.probe.x, y: state.probe.y, targetId: state.aimAssistTargetId });
+  const pressureCarry = pressureCarryTargetTuning(state);
+  if (pressureCarry?.buildWindowActive && state.aimAssistTargetId === pressureCarry.target.id) {
+    state.status = pressureCarry.target.metadata?.routeChoiceShortcutCarryWindowStatus ?? "Amber carry fired through Fork Relay.";
+    addEvent(state, "signal-pressure-carry-window-fired", {
+      targetId: pressureCarry.target.id,
+      routeChoiceId: state.routeChoice.id,
+      selectedRole: state.routeChoice.selectedRole,
+      pressureDelta: state.routeChoice.pressureDelta,
+      aimAssistBonus: pressureCarry.aimAssistBonus
+    });
+  }
   if (launchWindow) {
     state.routeChoice.scoreMetric = launchWindow.scoreMetric;
     state.routeChoice.scoreValue = Math.max(state.routeChoice.scoreValue, Math.round(launchWindow.speedMultiplier * launchWindow.scoreMultiplier));
@@ -612,13 +657,24 @@ function lock(state, ledge) {
     state.status = choiceCommit.status ?? state.status;
     addEvent(state, "post-rest-route-choice-committed", choiceCommit);
   } else if (state.routeChoice?.status === "committed" && ledge.id === state.routeChoice.rejoinAnchorId) {
+    const shortcut = state.routeChoice.selectedRole === "pressure-shortcut";
     state.routeChoice.status = "consequence-active";
-    state.routeChoice.protectedGrapplesRemaining = state.routeChoice.selectedRole === "safe-recovery" ? 1 : 0;
-    state.routeChoice.ventRequired = state.routeChoice.selectedRole === "pressure-shortcut";
+    state.routeChoice.protectedGrapplesRemaining = shortcut ? 0 : 1;
+    state.routeChoice.ventRequired = shortcut;
     const postRejoin = ledgeMap(state)[state.routeChoice.postRejoinAnchorId];
-    state.status = state.routeChoice.selectedRole === "pressure-shortcut"
-      ? postRejoin?.metadata?.routeChoiceShortcutStatus ?? "Signal pressure retained. Reach the restore unit to vent."
+    state.status = shortcut
+      ? ledge.metadata?.routeChoiceShortcutLandingStatus ?? postRejoin?.metadata?.routeChoiceShortcutStatus ?? "Signal pressure retained. Reach the restore unit to vent."
       : postRejoin?.metadata?.routeChoiceSafeStatus ?? "Shelter line banked. One protected grapple is ready.";
+    if (shortcut) {
+      state.camera.trauma = Math.max(state.camera.trauma ?? 0, 0.38);
+      addEvent(state, "signal-pressure-carry-landed", {
+        targetId: ledge.id,
+        routeChoiceId: state.routeChoice.id,
+        selectedRole: state.routeChoice.selectedRole,
+        pressureDelta: state.routeChoice.pressureDelta,
+        ventTargetId: state.routeChoice.postRejoinAnchorId
+      });
+    }
     addEvent(state, "post-rest-route-choice-rejoined", {
       targetId: ledge.id,
       routeChoiceId: state.routeChoice.id,

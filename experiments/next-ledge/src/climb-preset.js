@@ -86,6 +86,11 @@ export function createNextLedgeClimbPreset(options = {}) {
       y: 738,
       radius: 8.8,
       status: "Fork Relay secured. Route choice banked—carry the signal upward.",
+      shortcutCarryAimAssistBonus: 14,
+      shortcutCarryAimAssistMinBuildAngle: 1,
+      shortcutCarryMinDirectedSpeed: 0.06,
+      shortcutCarryWindowStatus: "Amber carry aligned—release and fire through Fork Relay.",
+      shortcutLandingStatus: "Fork Relay locked. 46% pressure carry banked—Stormlock vent is live.",
       tags: ["post-rest-choice", "route-rejoin", "signal-relay"]
     },
     postRejoin: {

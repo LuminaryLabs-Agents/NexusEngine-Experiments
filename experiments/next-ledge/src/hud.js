@@ -19,6 +19,17 @@ function promptFor(snapshot) {
   const shortcutTarget = ledges.find((ledge) => ledge.id === choice?.shortcutAnchorId);
   const shortcutDirection = Math.sign(number(shortcutTarget?.x) - number(choiceRest?.x)) || 1;
   const shortcutHighBuild = snapshot.mode === "swinging" && shortcutDirection * number(snapshot.player?.angle) >= 2;
+  const rejoinTarget = ledges.find((ledge) => ledge.id === choice?.rejoinAnchorId);
+  const currentAnchor = ledges.find((ledge) => ledge.id === snapshot.currentAnchorId);
+  const carryDirection = Math.sign(number(rejoinTarget?.x) - number(currentAnchor?.x)) || 1;
+  const carryMinBuild = number(rejoinTarget?.metadata?.routeChoiceShortcutCarryAimAssistMinBuildAngle);
+  const carryMinSpeed = number(rejoinTarget?.metadata?.routeChoiceShortcutCarryMinDirectedSpeed);
+  const shortcutCarryWindow = choice?.status === "committed"
+    && choice.selectedRole === "pressure-shortcut"
+    && snapshot.mode === "swinging"
+    && carryMinBuild > 0
+    && carryDirection * number(snapshot.player?.angle) >= carryMinBuild
+    && carryDirection * number(snapshot.player?.aVel) >= carryMinSpeed;
   if (transition?.active) {
     if (transition.phase === "broadcast") return { text: "Broadcasting recovered signal…", tone: "success" };
     if (transition.phase === "handshake") return { text: `Sector ${transition.targetSector} handshake · wind reversing`, tone: "success" };
@@ -34,10 +45,12 @@ function promptFor(snapshot) {
   if (choice?.status === "open") return shortcutHighBuild
     ? { text: "AMBER WINDOW — Release high · fire Signal Cut", tone: "ready" }
     : { text: "MINT — Shelter recovery · AMBER — Signal shortcut (+46 pressure)", tone: "ready" };
-  if (choice?.status === "committed") return {
-    text: choice.selectedRole === "pressure-shortcut" ? "AMBER ROUTE — Hold pressure to Fork Relay" : "MINT ROUTE — Recover through Fork Relay",
-    tone: choice.selectedRole === "pressure-shortcut" ? "danger" : "success"
-  };
+  if (choice?.status === "committed") {
+    if (choice.selectedRole === "pressure-shortcut") return shortcutCarryWindow
+      ? { text: "AMBER CARRY WINDOW — Release · fire Fork Relay", tone: "ready" }
+      : { text: `46% PRESSURE — Build ${carryDirection < 0 ? "left" : "right"} for Fork Relay`, tone: "danger" };
+    return { text: "MINT ROUTE — Recover through Fork Relay", tone: "success" };
+  }
   if (choice?.status === "consequence-active") return {
     text: choice.selectedRole === "pressure-shortcut" ? "AMBER PRESSURE — Grapple Stormlock Restore to vent" : "MINT WINDOW — Protected grapple to Stormlock Restore",
     tone: choice.selectedRole === "pressure-shortcut" ? "danger" : "success"
@@ -106,7 +119,7 @@ export function createHud(nodes = {}) {
           ? "Choose mint Shelter Rise for stamina recovery or amber Signal Cut for a faster cache at +46 fall pressure. Both rejoin at Fork Relay."
         : snapshot.routeChoice?.status === "committed"
           ? snapshot.routeChoice.selectedRole === "pressure-shortcut"
-            ? "Hold the amber shortcut under pressure and secure Fork Relay before continuing upward."
+            ? "Keep 46% pressure live, build into the amber Fork Relay window, then release and fire."
             : "Climb the protected mint ascent and secure Fork Relay before continuing upward."
         : snapshot.routeChoice?.status === "consequence-active"
           ? snapshot.routeChoice.selectedRole === "pressure-shortcut"

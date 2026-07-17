@@ -30,7 +30,7 @@
     "coreRemoteDefault": "ebb63803f1e7f6e096abec9e0377a693fd1d8e01",
     "coreLocalReadOnly": "8b57b03904889cdbc71021d3bdb1d4070af5c8d3",
     "protokits": "04d34f049f58ae359cf71d43466c429dac2a6d08",
-    "experiments": "b67e37363ad3d2a6784b7b23d2d11f6207e56618",
+    "experiments": "f0f85148a4e8d499ca85b71cd62cbc4837dadac1",
     "experimentsBaseline": "615a7e1e2170164acef0edebdbe0b88b8c01fd1b"
   },
   "baseline": {
@@ -147,28 +147,28 @@
     "result": "Upgraded Next Ledge so Slipstream Launch and Cacheline High converge at Windglass Relay, banking 134 preserved speed or 175 cargo mastery before generic ascent resumes; production creation counts remain unchanged."
   },
   "lastRefinementUnit": {
-    "packetId": "2026-07-16-next-ledge-signal-cut-one-launch-refinement",
-    "scope": "Next Ledge initial Signal Cut commitment",
-    "result": "Counterwind Rest now exposes one authored amber high-build window that commits the smaller Signal Cut in one launch while neutral or low release preserves Shelter Rise as the safer recovery line."
+    "packetId": "2026-07-16-next-ledge-signal-pressure-carry-refinement",
+    "scope": "Next Ledge Signal Cut pressure carry to Fork Relay",
+    "result": "Signal Cut now requires one readable left-build angle and target-directed speed window before the existing cable launcher grants a shortcut-only Fork Relay assist, then confirms the one-launch landing while preserving retained pressure and the unchanged Shelter Rise path."
   },
   "lastCompletedUnit": {
-    "packetId": "2026-07-16-next-ledge-signal-cut-one-launch-refinement",
-    "scope": "Next Ledge Signal Cut one-launch feel refinement",
-    "result": "The smaller amber Signal Cut now becomes the deterministic priority only after its explicit high-build window, catches in one release/fire cadence, and preserves the full 46-pressure shortcut through Windglass and generic rejoin while low release still favors Shelter Rise.",
-    "validation": "All existing Next Ledge test entrypoints, changed JavaScript syntax, JSON, and diff checks passed. Playwright completed both fork commitments and the full amber consequence/payoff/convergence/rejoin path, exercised real failure and keyboard retry, checked closed/open/closed Advanced disclosure, stable DOM/entity/descriptor counts, and a zero-message console. Human View passed the first screen, open fork, amber window, secured Signal Cut, and resolved rejoin with diagnostics closed. Matched fresh-browser performance improved from 10.93 to 14.22 FPS, p95 improved from 133.40 to 83.30 ms, and no steady-state entity, descriptor, DOM, or canvas growth appeared.",
+    "packetId": "2026-07-16-next-ledge-signal-pressure-carry-refinement",
+    "scope": "Next Ledge Signal Cut pressure-carry feel refinement",
+    "result": "The 46-pressure Signal Cut route now teaches a left build, opens one amber release cue only at the authored angle and directed speed, lands Fork Relay in the baseline 37 ticks with explicit fire and landing feedback, and grants no assist or event to Shelter Rise.",
+    "validation": "All 28 existing Next Ledge test entrypoints, all route JavaScript syntax checks, JSON, and diff checks passed. Playwright completed the safe branch and the full shortcut through Fork Relay, Stormlock, Cacheline, Windglass, and original anchor-11; exercised real failure and keyboard retry; checked closed/open/closed Advanced disclosure; held bounded DOM, canvas, descriptor, and scene counts; and reported zero console messages. Human View rejected a compositor-torn capture, promoted each UI surface above the unpromoted canvas, and passed the recaptured first screen, build cue, amber window, landing, rejoin, and failure states with diagnostics closed. Matched fresh-browser active-play performance held from 28.42 to 28.81 FPS with p95 at 50 ms and no count growth.",
     "commits": {
       "coreReadOnly": "8b57b03904889cdbc71021d3bdb1d4070af5c8d3",
       "protokitsStart": "04d34f049f58ae359cf71d43466c429dac2a6d08",
       "protokitsProductionUnit": "04d34f049f58ae359cf71d43466c429dac2a6d08",
-      "experimentsStart": "b67e37363ad3d2a6784b7b23d2d11f6207e56618",
-      "experimentsProductionUnit": "593b78647715cd089fc1f858a06efe4b2bb3c1a1"
+      "experimentsStart": "f0f85148a4e8d499ca85b71cd62cbc4837dadac1",
+      "experimentsProductionUnit": "pending-production-commit"
     },
-    "publication": "Experiments production commit 593b78647715cd089fc1f858a06efe4b2bb3c1a1 and its receipt commit are published on origin/main after fetch-before-push verification; ProtoKits is unchanged and synchronized at 04d34f049f58ae359cf71d43466c429dac2a6d08."
+    "publication": "Pending production commit and fetch-before-push verification; ProtoKits is unchanged and synchronized at 04d34f049f58ae359cf71d43466c429dac2a6d08."
   },
   "exactNextUnit": {
     "phase": "playable-experiment-upgrade",
     "epoch": 0,
-    "scope": "next-ledge-signal-cut-fork-relay-pressure-carry",
-    "goal": "Give the Signal Cut-to-Fork Relay pressure carry one explicit amber release window and landing confirmation without adding protection or weakening the mint line."
+    "scope": "next-ledge-stormlock-visible-pressure-vent",
+    "goal": "Make the Stormlock vent drain retained pressure visibly during the reel instead of snapping only on lock, using the existing pressure owner and no new meter."
   }
 }

@@ -108,6 +108,7 @@ These are proof targets, not accepted experiment records. Seeds, candidate draw 
 - The Cacheline one-launch refinement retunes authored framing and assist, moves compositor ownership to the UI, and filters inactive collision candidates. It preserves the same fantasy, verb, pressure loop, interaction structure, and eight-feature signature, so creation and diversity counts remain unchanged.
 - The Windglass generic-rejoin refinement derives the preserved original route anchor, adds one bounded recovery phase to existing route-choice state, and reuses the same camera/cue/feedback presentation. It preserves the same fantasy, verb, pressure loop, interaction structure, and eight-feature signature, so creation and diversity counts remain unchanged.
 - The Signal Cut one-launch refinement retunes authored target geometry and makes the existing cable launcher consume a gated branch-aim descriptor. It preserves the same fantasy, verb, pressure loop, interaction structure, and eight-feature signature, so creation and diversity counts remain unchanged.
+- The Signal Cut pressure-carry refinement adds a role-scoped Fork Relay angle/speed descriptor, one existing-launcher assist, and event-driven landing feedback. It preserves the same fantasy, verb, pressure loop, interaction structure, and eight-feature signature, so creation and diversity counts remain unchanged.
 
 ## Diversity Gate
 
@@ -129,4 +130,5 @@ Every accepted experiment must record epoch, lifecycle status, seed, full candid
 - The Next Ledge Cacheline one-launch pass remains an in-place legacy refinement; it composes the same route-choice, cable, camera, cargo, cue, feedback, and renderer features without adding a kit, experiment, route family, or duplicate production signature.
 - The Next Ledge Windglass generic-rejoin pass remains an in-place legacy refinement; it composes the same route-choice, recovery, camera, cue, feedback, and renderer features without adding a kit, experiment, route family, or duplicate production signature.
 - The Next Ledge Signal Cut one-launch pass remains an in-place legacy refinement; it composes the same route-choice, cable, camera, cargo, pressure, cue, feedback, and renderer features without adding a kit, experiment, route family, or duplicate production signature.
+- The Next Ledge Signal Cut pressure-carry pass remains an in-place legacy refinement; it composes the same route-choice, cable, camera, cargo, pressure, cue, feedback, and renderer features without adding a kit, experiment, route family, or duplicate production signature.
 - Diversity claim: contract pressure only; no playable diversity claim yet.
