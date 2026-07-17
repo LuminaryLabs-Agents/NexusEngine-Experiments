@@ -147,28 +147,28 @@
     "result": "Upgraded Next Ledge so Slipstream Launch and Cacheline High converge at Windglass Relay, banking 134 preserved speed or 175 cargo mastery before generic ascent resumes; production creation counts remain unchanged."
   },
   "lastRefinementUnit": {
-    "packetId": "2026-07-16-next-ledge-stormlock-confirmation-beat-refinement",
-    "scope": "Next Ledge Stormlock branch-aware confirmation beat",
-    "result": "Stormlock now holds its secured result for 24 deterministic route frames before the original payoff opens, preserving readable zero-pressure or protected-catch feedback through existing route-choice, HUD, target, beam, and event owners."
+    "packetId": "2026-07-16-next-ledge-stormlock-payoff-line-handoff",
+    "scope": "Next Ledge Stormlock selected-payoff line handoff",
+    "result": "Stormlock now spends the final 12 confirmation frames growing the existing consequence line into the selected existing payoff target while easing that target into the camera composition before input returns."
   },
   "lastCompletedUnit": {
-    "packetId": "2026-07-16-next-ledge-stormlock-confirmation-beat-refinement",
-    "scope": "Next Ledge Stormlock branch-confirmation feel refinement",
-    "result": "Both branch results now remain visible for 24 authored frames at Stormlock before the existing Slipstream or Cacheline payoff event opens, with action input suppressed only during that bounded beat.",
-    "validation": "All 28 existing Next Ledge test entrypoints, affected JavaScript syntax checks, JSON, and diff checks passed. Playwright completed safe and shortcut routes through the exact confirmation boundary into their original 134-speed and 175-cargo score contracts; proved one delayed payoff event, real failure and keyboard retry, closed/open/closed Advanced disclosure, bounded DOM/canvas/descriptor/scene/heap behavior, and zero console messages. Human View passed the first screen plus safe and shortcut confirmations with diagnostics closed. Matched isolated active-play performance improved from 28.76 to 29.29 FPS, p95 held at 51.8 ms, and steady-state counts did not grow.",
+    "packetId": "2026-07-16-next-ledge-stormlock-payoff-line-handoff",
+    "scope": "Next Ledge Stormlock payoff-line handoff feel refinement",
+    "result": "The final 12 confirmation frames now connect Stormlock to the selected Slipstream or Cacheline target with the existing consequence line, target entity, route-choice state, and camera before the original payoff opens.",
+    "validation": "All 28 existing Next Ledge test entrypoints, affected JavaScript syntax checks, JSON, and diff checks passed. Playwright completed the actual safe route through the exact handoff boundary and one original payoff event, preserved the 134-speed Windglass score, proved real failure and keyboard retry, checked Advanced closed/open/closed, held bounded DOM/canvas/descriptor/scene/heap behavior, and reported zero console messages. Human View passed the first screen, final safe line handoff, and opened Slipstream payoff with diagnostics closed. Matched isolated active-play performance changed from 27.56 to 27.22 FPS (-1.23 percent), p95 changed from 50.6 to 51.0 ms, and steady-state counts did not grow.",
     "commits": {
       "coreReadOnly": "70cc2a1590677b872d40a42f7b7bb7e174941eb0",
       "protokitsStart": "04d34f049f58ae359cf71d43466c429dac2a6d08",
       "protokitsProductionUnit": "04d34f049f58ae359cf71d43466c429dac2a6d08",
-      "experimentsStart": "56333afcbb34d1876aaf06bbc5dc6e4a6ab77647",
-      "experimentsProductionUnit": "5170655bafd7e5c2d31b7082c09cae8dfaac62cc"
+      "experimentsStart": "f9657638115325c45780daf157df157c7a47159a",
+      "experimentsProductionUnit": "pending"
     },
-    "publication": "Experiments production and publication-receipt commits published to resolved default branch main after fetch-before-push verification; ProtoKits is unchanged and synchronized at 04d34f049f58ae359cf71d43466c429dac2a6d08."
+    "publication": "Experiments publication pending; ProtoKits is unchanged at 04d34f049f58ae359cf71d43466c429dac2a6d08."
   },
   "exactNextUnit": {
     "phase": "playable-experiment-upgrade",
     "epoch": 0,
-    "scope": "next-ledge-stormlock-payoff-line-handoff",
-    "goal": "Animate the existing Stormlock consequence line into the selected Slipstream or Cacheline target as confirmation ends, so the branch handoff reads before the next swing without adding a line, target, or state owner."
+    "scope": "next-ledge-payoff-grapple-surge",
+    "goal": "Carry the selected mint or amber handoff color through the first payoff grapple fire as one brief cable-and-impact surge, deriving it from existing payoff and grapple feedback without adding a cable, event, effect pool, or state owner."
   }
 }

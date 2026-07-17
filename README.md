@@ -62,6 +62,8 @@ gamehost-standard-kit
 
 Current composition: Nexus Engine owns runtime composition; generic ProtoKits own tether motion, cable launch, traversal vitals/recovery/camera/cues/feedback, route progress, and route-cargo extraction. Browser input, route fiction, tuning, camera presentation, audio, and Three.js stay local. The remaining promotion gap is a route-level deterministic route/cargo/pressure descriptor replay, not playable source consumption.
 
+Stormlock's final `12` confirmation frames now grow the existing consequence line toward the selected Slipstream or Cacheline payoff target. The target scales into view while the existing camera eases toward the pair, so the next objective reads before control returns without adding another line, target, event, state, or DOM owner.
+
 ### Fogline Relay
 
 `experiments/fogline-relay/` is a first-person fog-forest relay experiment. It composes reusable kit surfaces, keeps the Canvas renderer presentation-only, and validates renderer-agnostic visual buckets, fog volumes, volumetric light descriptors, relay scanning, objective flow, and wraith hazards.

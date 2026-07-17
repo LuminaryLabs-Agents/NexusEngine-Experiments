@@ -1,5 +1,11 @@
 # Cycle State
 
+## 2026-07-16 Stormlock Payoff Line Handoff Refinement
+
+`experiments/next-ledge/` now spends the final `12` frames of Stormlock's existing confirmation growing the existing consequence line into the selected Slipstream or Cacheline target. The selected ledge scales into view and the existing camera eases toward the pair before input returns; no line, target, event, DOM node, or route-choice state was added. Playwright drove the safe route through the exact frame boundary and one payoff event, continued to the `134` preserved-speed Windglass score, proved real failure/keyboard retry, checked Advanced closed/open/closed, held `69` DOM nodes / one canvas / `72` descriptors / `236` scene nodes without steady growth, stayed within the performance budget at `27.56` to `27.22` FPS, passed all 28 Next Ledge tests, and reported zero console messages. Human View passed the first screen, final line handoff, and opened Slipstream payoff with diagnostics closed.
+
+Exact next playable unit: carry the selected mint or amber handoff color through the first payoff grapple fire as one brief cable-and-impact surge, deriving it from existing payoff and grapple feedback without adding a cable, event, effect pool, or state owner.
+
 ## 2026-07-16 Stormlock Branch Confirmation Refinement
 
 `experiments/next-ledge/` now holds the secured Stormlock result for `24` deterministic route frames before the existing payoff opens. Descriptor-authored copy distinguishes the zero-pressure Cacheline handoff from the protected Slipstream charge; the existing route-choice phase/frame, Stormlock target/beam, HUD, and payoff event own the beat, with input suppressed only for the bounded confirmation. Playwright completed both branches through their original `134` preserved-speed and `175` cargo-mastery score contracts, verified the exact frame boundary and single payoff event, proved real failure/keyboard retry, checked Advanced closed/open/closed, held `69` DOM nodes / one canvas / `72` descriptors / `236` scene nodes, improved matched FPS from `28.76` to `29.29`, passed all 28 Next Ledge tests, and reported zero console messages. Human View passed the first screen and both branch confirmation states with diagnostics closed.

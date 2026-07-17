@@ -109,6 +109,7 @@ export function createNextLedgeClimbPreset(options = {}) {
       ventStartProgress: 0.12,
       ventStatus: "Stormlock vent pulse {stage}/{count}. Hold the line.",
       confirmationFrames: 24,
+      confirmationHandoffFrames: 12,
       confirmationSafePrompt: "STORMLOCK STABLE — Mint launch charging",
       confirmationShortcutPrompt: "ZERO PRESSURE — Stormlock vent secured",
       confirmationSafeObjective: "Stormlock has secured the shelter protection. Hold one beat while Slipstream charges.",

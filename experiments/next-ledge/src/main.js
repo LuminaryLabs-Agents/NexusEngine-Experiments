@@ -8,12 +8,12 @@ function showFatal(error) {
 
 async function boot() {
   const [sessionModule, rendererModule, inputModule, hudModule, loopModule, synthModule] = await Promise.all([
-    import("./session-cargo-extraction-upgrade.js?v=stormlock-confirmation-1"),
-    import("./renderer-three-fidelity.js?v=stormlock-confirmation-1"),
+    import("./session-cargo-extraction-upgrade.js?v=stormlock-handoff-1"),
+    import("./renderer-three-fidelity.js?v=stormlock-handoff-1"),
     import("./input.js"),
-    import("./hud.js?v=stormlock-confirmation-1"),
+    import("./hud.js?v=stormlock-handoff-1"),
     import("./runtime-loop.js?v=counterwind-crescendo-1"),
-    import("./synth.js?v=stormlock-confirmation-1")
+    import("./synth.js?v=stormlock-handoff-1")
   ]);
 
   const canvas = document.querySelector("#game");

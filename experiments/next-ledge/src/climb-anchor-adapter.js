@@ -43,6 +43,7 @@ function choiceBeatLedge(source, beat, choiceId, defaultStaminaRestore = 45) {
       routeChoiceVentStartProgress: Number(beat.ventStartProgress ?? 0),
       routeChoiceVentStatus: beat.ventStatus ?? null,
       routeChoiceConfirmationFrames: Number(beat.confirmationFrames ?? 0),
+      routeChoiceConfirmationHandoffFrames: Number(beat.confirmationHandoffFrames ?? 0),
       routeChoiceConfirmationSafePrompt: beat.confirmationSafePrompt ?? null,
       routeChoiceConfirmationShortcutPrompt: beat.confirmationShortcutPrompt ?? null,
       routeChoiceConfirmationSafeObjective: beat.confirmationSafeObjective ?? null,

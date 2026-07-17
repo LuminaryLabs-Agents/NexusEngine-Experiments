@@ -68,10 +68,10 @@
         "generic-traversal-feedback-kit",
         "generic-route-cargo-extraction-kit"
       ],
-      "feelAverageBefore": 6.1,
+      "feelAverageBefore": 7.1,
       "feelAverageAfter": 8.9,
-      "validation": "Playwright completed safe and shortcut routes through a deterministic 24-frame Stormlock confirmation, proved input suppression and one payoff event at the exact boundary, preserved 134-speed and 175-cargo Windglass scores, exercised failure and keyboard retry, checked Advanced closed/open/closed, held bounded DOM/canvas/descriptor/scene/heap behavior, passed the matched performance and Human View gates, and reported zero console messages.",
-      "packetId": "2026-07-16-next-ledge-stormlock-confirmation-beat-refinement"
+      "validation": "Playwright completed the safe route through the final 12-frame Stormlock line handoff, proved one payoff event at the exact boundary, preserved the 134-speed Windglass score, exercised failure and keyboard retry, checked Advanced closed/open/closed, held bounded DOM/canvas/descriptor/scene/heap behavior, passed the matched performance and Human View gates, and reported zero console messages. Existing tests guard the selected Slipstream or Cacheline target contract.",
+      "packetId": "2026-07-16-next-ledge-stormlock-payoff-line-handoff"
     }
   ],
   "experiments": []
