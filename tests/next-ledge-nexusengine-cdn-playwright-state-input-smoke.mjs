@@ -69,7 +69,8 @@ assert.match(session, /post-rejoin-protected-grapple-consumed/, "the safe conseq
 assert.match(session, /post-rejoin-pressure-vented/, "the shortcut consequence should publish one semantic pressure vent event");
 assert.match(session, /payoffLaunchWindow/, "the safe payoff should modulate the existing cable launch settings without adding a second launch owner");
 assert.match(session, /payoffTargetTuning/, "both payoff branches should consume authored target-specific aim tuning without a second launch owner");
-assert.match(session, /routeChoicePayoffAimAssistLeadY/, "Cacheline aim compensation should remain authored descriptor data");
+assert.match(session, /routeChoiceAimAssistLeadY/, "route-choice aim compensation should remain authored descriptor data");
+assert.match(session, /routeChoiceAimAssistMinBuildAngle/, "authored shortcut aim assistance should require its advertised build window");
 assert.match(session, /post-stormlock-payoff-opened/, "Stormlock should open one branch-specific payoff through the existing route-choice state");
 assert.match(session, /post-stormlock-payoff-secured/, "the selected payoff anchor should advance the existing route-choice state");
 assert.match(session, /convergence-active/, "the existing route-choice state should own the shared convergence beat");

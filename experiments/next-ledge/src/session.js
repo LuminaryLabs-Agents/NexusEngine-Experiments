@@ -3,8 +3,8 @@ import { createGenericAnchorDescriptorKit } from "https://cdn.jsdelivr.net/gh/Lu
 import { createGenericModeProjectedRoute, createProjectedRoute } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-mode-projected-route/index.js";
 import { createGenericRouteProgressKit } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-route-progress-kit/index.js";
 import { createGenericTetherTraversalDomainKits, createGenericTetherTraversalPreset } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-tether-traversal-domain-kits/index.js";
-import { createNextLedgeClimbPreset } from "./climb-preset.js?v=windglass-rejoin-1";
-import { adaptProjectedRouteToClimbRoute } from "./climb-anchor-adapter.js?v=windglass-rejoin-1";
+import { createNextLedgeClimbPreset } from "./climb-preset.js?v=signal-cut-one-launch-1";
+import { adaptProjectedRouteToClimbRoute } from "./climb-anchor-adapter.js?v=signal-cut-one-launch-1";
 import { createClimbActionAdapter } from "./climb-action-adapter.js";
 
 const clamp = (v, a, b) => Math.max(a, Math.min(b, Number.isFinite(Number(v)) ? Number(v) : a));
@@ -412,6 +412,21 @@ function activeRecoveryWindow(state) {
   return protectedRecoveryWindow(state) ?? genericRejoinRecoveryWindow(state);
 }
 
+function authoredAimTuning(state, target) {
+  if (!target) return { aimAssistBonus: 0, aimAssistLeadX: 0, aimAssistLeadY: 0, buildWindowActive: false };
+  const minBuildAngle = n(target.metadata?.routeChoiceAimAssistMinBuildAngle, 0);
+  const anchor = state.anchorLedge ?? ledgeMap(state)[state.currentAnchorId];
+  const targetDirection = Math.sign(target.x - n(anchor?.x, state.player.x)) || 1;
+  const buildWindowActive = minBuildAngle > 0 && targetDirection * n(state.player?.angle, 0) >= minBuildAngle;
+  if (minBuildAngle > 0 && !buildWindowActive) return { aimAssistBonus: 0, aimAssistLeadX: 0, aimAssistLeadY: 0, buildWindowActive };
+  return {
+    aimAssistBonus: n(target.metadata?.routeChoiceAimAssistBonus, 0),
+    aimAssistLeadX: n(target.metadata?.routeChoiceAimAssistLeadX, 0),
+    aimAssistLeadY: n(target.metadata?.routeChoiceAimAssistLeadY, 0),
+    buildWindowActive
+  };
+}
+
 function payoffTargetTuning(state) {
   const choice = state.routeChoice;
   if (choice?.status !== "payoff-active") return null;
@@ -421,9 +436,7 @@ function payoffTargetTuning(state) {
     selectedRole: choice.selectedRole,
     speedMultiplier: n(target.metadata?.routeChoiceLaunchSpeedMultiplier, 1),
     liftBonus: n(target.metadata?.routeChoiceLaunchLiftBonus, 0),
-    aimAssistBonus: n(target.metadata?.routeChoicePayoffAimAssistBonus, 0),
-    aimAssistLeadX: n(target.metadata?.routeChoicePayoffAimAssistLeadX, 0),
-    aimAssistLeadY: n(target.metadata?.routeChoicePayoffAimAssistLeadY, 0),
+    ...authoredAimTuning(state, target),
     scoreMetric: target.metadata?.routeChoiceScoreMetric ?? "preserved-speed",
     scoreMultiplier: n(target.metadata?.routeChoiceScoreMultiplier, 100)
   } : null;
@@ -443,7 +456,7 @@ function assistedAim(state) {
   const maxDistance = n(cfg.aimAssistDistance, 185);
   const recoveryWindow = activeRecoveryWindow(state);
   const payoffTuning = payoffTargetTuning(state);
-  const assistRadius = n(cfg.aimAssistRadius, 28) + n(recoveryWindow?.aimAssistBonus, 0) + n(payoffTuning?.aimAssistBonus, 0);
+  const assistRadius = n(cfg.aimAssistRadius, 28) + n(recoveryWindow?.aimAssistBonus, 0);
   const strength = clamp(n(cfg.aimAssistStrength, 0.72) + (recoveryWindow ? 0.14 : 0) + (payoffTuning ? 0.1 : 0), 0, 1);
   let best = null;
   for (const id of enabledTargets(state)) {
@@ -452,17 +465,20 @@ function assistedAim(state) {
     const dx = ledge.x - state.player.x;
     const dy = ledge.y - state.player.y;
     const along = dx * state.aim.x + dy * state.aim.y;
-    if (along < 8 || along > maxDistance) continue;
+    const targetAimTuning = authoredAimTuning(state, ledge);
+    const buildWindowPriority = targetAimTuning.buildWindowActive && d2(state.player, ledge) <= maxDistance;
+    if (!buildWindowPriority && (along < 8 || along > maxDistance)) continue;
     const miss = Math.abs(dx * state.aim.y - dy * state.aim.x) / Math.max(1, Math.hypot(state.aim.x, state.aim.y));
-    if (miss <= assistRadius + n(ledge.r, 0)) {
-      const score = miss + along * 0.012;
+    if (buildWindowPriority || miss <= assistRadius + targetAimTuning.aimAssistBonus + n(ledge.r, 0)) {
+      const score = buildWindowPriority ? -1000 + d2(state.player, ledge) * 0.012 : miss + along * 0.012;
       if (!best || score < best.score) best = { ledge, score };
     }
   }
   state.aimAssistTargetId = best?.ledge?.id ?? null;
   if (!best) return state.aim;
-  const targetLeadX = best.ledge.id === payoffTuning?.targetId ? n(payoffTuning.aimAssistLeadX, 0) : 0;
-  const targetLeadY = best.ledge.id === payoffTuning?.targetId ? n(payoffTuning.aimAssistLeadY, 0) : 0;
+  const targetAimTuning = authoredAimTuning(state, best.ledge);
+  const targetLeadX = targetAimTuning.aimAssistLeadX;
+  const targetLeadY = targetAimTuning.aimAssistLeadY;
   const dx = best.ledge.x + targetLeadX - state.player.x;
   const dy = best.ledge.y + targetLeadY - state.player.y;
   const len = Math.hypot(dx, dy) || 1;

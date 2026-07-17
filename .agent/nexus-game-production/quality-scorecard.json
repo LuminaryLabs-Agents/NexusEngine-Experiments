@@ -26,18 +26,18 @@
       "id": "next-ledge-grapple",
       "lifecycleStatus": "active-legacy-baseline",
       "score": 99,
-      "lastImprovedAt": "2026-07-16T19:05:50-04:00",
+      "lastImprovedAt": "2026-07-16T20:08:34-04:00",
       "feelScores": {
         "responsiveness": 9,
         "predictability": 9,
         "readability": 9,
         "impact": 9,
-        "recovery": 9,
+        "recovery": 8,
         "delight": 9,
         "replayDesire": 9,
-        "average": 9.0
+        "average": 8.9
       },
-      "nextFeelProblem": "Retune the initial Signal Cut commitment from Counterwind Rest so the amber shortcut opens with one readable high-build launch without making it as safe as Shelter Rise."
+      "nextFeelProblem": "Give the Signal Cut-to-Fork Relay pressure carry one explicit amber release window and landing confirmation without adding protection or weakening the mint line."
     },
     {
       "id": "rogue-lite-hellscape-siege",

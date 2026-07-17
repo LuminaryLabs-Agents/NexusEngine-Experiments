@@ -1,5 +1,11 @@
 # Cycle State
 
+## 2026-07-16 Signal Cut One-Launch Feel Refinement
+
+`experiments/next-ledge/` now makes the smaller amber Signal Cut a deliberate high-build commitment rather than an unexplained first-shot miss. Authored position, radius, build gate, aim bonus, and lead remain declarative; the existing cable launcher prioritizes the shortcut only after the HUD exposes its amber release window, while neutral/low release still selects mint Shelter Rise. Playwright completed both commitments, carried the shortcut through Fork Relay, Stormlock, Cacheline, Windglass, and original `anchor-11`, proved real failure and keyboard retry, kept diagnostics closed, held `236` scene nodes / `69` DOM nodes / one canvas / `72` descriptors, improved matched FPS from `10.93` to `14.22`, and reported zero console errors or warnings.
+
+Exact next playable unit: give the Signal Cut-to-Fork Relay pressure carry one explicit amber release window and landing confirmation without adding protection or weakening the mint line.
+
 ## 2026-07-16 Windglass Generic Rejoin Feel Refinement
 
 `experiments/next-ledge/` now carries either Windglass score into one explicit, branch-neutral recovery catch at the preserved original `anchor-11`. The authored convergence descriptor supplies fail-floor, aim-assist, camera, and copy tuning; the existing route-choice state owns `rejoin-active` and resolution; the renderer reuses its bounded consequence line and target entity. Human View shows one enlarged cyan destination and high-build hero prompt with diagnostics closed. Playwright completed the mint loop, deliberately missed and recovered with a second grapple, secured `anchor-11`, preserved the `134` score, opened and closed Advanced without entity growth, held 236 scene nodes / 69 DOM nodes / one canvas / 72 descriptors, improved matched FPS from `12.00` to `18.59`, and reported zero console errors or warnings.

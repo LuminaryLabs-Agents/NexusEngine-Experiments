@@ -33,5 +33,6 @@ NexusEngine-Experiments owns playable browser proof, product-specific content an
 - Validate the first screen around hero controls; keep optional or advanced controls under foldouts or dropdowns.
 - When the renderer presents a camera that differs from the simulation snapshot, pointer projection must use the presented camera. Keep the WebGL canvas unpromoted and promote the UI layer above it so scene geometry cannot compositor-overlap hero copy.
 - Authored branch convergence must return through an explicit phase in the existing route-choice state; derive its generic rejoin target from the preserved projected route instead of duplicating a route anchor or state owner.
+- Authored branch aim compensation uses generic route-choice descriptor fields consumed by the existing cable launcher. When swing commitment should select a branch without a new control, gate any target priority behind an explicit authored build angle and mirror that gate in the first-screen HUD cue.
 - Every successful builder run must leave a visibly playable new experiment or a material player-visible upgrade; catalog, schema, documentation, or kit-only work does not satisfy the builder outcome.
 - Do not depend on ChatGPT Online audit agents for this local production pipeline.

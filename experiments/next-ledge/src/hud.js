@@ -14,6 +14,11 @@ function pressureState(snapshot) {
 function promptFor(snapshot) {
   const transition = snapshot.sectorTransition;
   const choice = snapshot.routeChoice;
+  const ledges = snapshot.route?.ledges ?? [];
+  const choiceRest = ledges.find((ledge) => ledge.id === choice?.restAnchorId);
+  const shortcutTarget = ledges.find((ledge) => ledge.id === choice?.shortcutAnchorId);
+  const shortcutDirection = Math.sign(number(shortcutTarget?.x) - number(choiceRest?.x)) || 1;
+  const shortcutHighBuild = snapshot.mode === "swinging" && shortcutDirection * number(snapshot.player?.angle) >= 2;
   if (transition?.active) {
     if (transition.phase === "broadcast") return { text: "Broadcasting recovered signal…", tone: "success" };
     if (transition.phase === "handshake") return { text: `Sector ${transition.targetSector} handshake · wind reversing`, tone: "success" };
@@ -26,7 +31,9 @@ function promptFor(snapshot) {
   if (snapshot.mode === "launched") return { text: "Guide the line · Click to retract", tone: "ready" };
   if (snapshot.mode === "retracting") return { text: "Steer while the line resets", tone: "danger" };
   if (snapshot.mode === "reeling") return { text: "Latch incoming · Click to cut line", tone: "success" };
-  if (choice?.status === "open") return { text: "MINT — Shelter recovery · AMBER — Signal shortcut (+46 pressure)", tone: "ready" };
+  if (choice?.status === "open") return shortcutHighBuild
+    ? { text: "AMBER WINDOW — Release high · fire Signal Cut", tone: "ready" }
+    : { text: "MINT — Shelter recovery · AMBER — Signal shortcut (+46 pressure)", tone: "ready" };
   if (choice?.status === "committed") return {
     text: choice.selectedRole === "pressure-shortcut" ? "AMBER ROUTE — Hold pressure to Fork Relay" : "MINT ROUTE — Recover through Fork Relay",
     tone: choice.selectedRole === "pressure-shortcut" ? "danger" : "success"

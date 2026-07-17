@@ -27,10 +27,10 @@
     }
   },
   "synchronizedStartingCommits": {
-    "coreRemoteDefault": "80146b8947e0877e26b851563bd17f5cdfcbf38a",
+    "coreRemoteDefault": "ebb63803f1e7f6e096abec9e0377a693fd1d8e01",
     "coreLocalReadOnly": "8b57b03904889cdbc71021d3bdb1d4070af5c8d3",
     "protokits": "04d34f049f58ae359cf71d43466c429dac2a6d08",
-    "experiments": "71ddcfcfc5677cd86ff42756863f48b21077e9e2",
+    "experiments": "b67e37363ad3d2a6784b7b23d2d11f6207e56618",
     "experimentsBaseline": "615a7e1e2170164acef0edebdbe0b88b8c01fd1b"
   },
   "baseline": {
@@ -147,28 +147,28 @@
     "result": "Upgraded Next Ledge so Slipstream Launch and Cacheline High converge at Windglass Relay, banking 134 preserved speed or 175 cargo mastery before generic ascent resumes; production creation counts remain unchanged."
   },
   "lastRefinementUnit": {
-    "packetId": "2026-07-16-next-ledge-windglass-rejoin-cue-refinement",
-    "scope": "Next Ledge Windglass branch-neutral generic rejoin",
-    "result": "Windglass now preserves either branch score into one explicit cyan high-build recovery catch at the original anchor-11 before generic ascent resumes."
+    "packetId": "2026-07-16-next-ledge-signal-cut-one-launch-refinement",
+    "scope": "Next Ledge initial Signal Cut commitment",
+    "result": "Counterwind Rest now exposes one authored amber high-build window that commits the smaller Signal Cut in one launch while neutral or low release preserves Shelter Rise as the safer recovery line."
   },
   "lastCompletedUnit": {
-    "packetId": "2026-07-16-next-ledge-windglass-rejoin-cue-refinement",
-    "scope": "Next Ledge Windglass branch-neutral generic rejoin feel refinement",
-    "result": "Windglass now keeps the 134-speed or 175-cargo score live while one readable cyan high-build catch and protected miss-recovery window return the player to original anchor-11.",
-    "validation": "All 28 existing Next Ledge test entrypoints, changed JavaScript syntax, JSON, and diff checks passed. Playwright completed the sector-two mint route, scored 134 speed, deliberately missed and recovered with a second grapple, caught original anchor-11, exercised keyboard retry, checked closed/open/closed Advanced disclosure, stable DOM/entity/descriptor counts, and a zero-message console. Human View passed the first screen, open rejoin, and resolved rejoin with diagnostics closed. Matched fresh-browser performance improved from 12.00 to 18.59 FPS, p95 improved from 100.60 to 66.70 ms, and no steady-state entity, descriptor, DOM, or canvas growth appeared.",
+    "packetId": "2026-07-16-next-ledge-signal-cut-one-launch-refinement",
+    "scope": "Next Ledge Signal Cut one-launch feel refinement",
+    "result": "The smaller amber Signal Cut now becomes the deterministic priority only after its explicit high-build window, catches in one release/fire cadence, and preserves the full 46-pressure shortcut through Windglass and generic rejoin while low release still favors Shelter Rise.",
+    "validation": "All existing Next Ledge test entrypoints, changed JavaScript syntax, JSON, and diff checks passed. Playwright completed both fork commitments and the full amber consequence/payoff/convergence/rejoin path, exercised real failure and keyboard retry, checked closed/open/closed Advanced disclosure, stable DOM/entity/descriptor counts, and a zero-message console. Human View passed the first screen, open fork, amber window, secured Signal Cut, and resolved rejoin with diagnostics closed. Matched fresh-browser performance improved from 10.93 to 14.22 FPS, p95 improved from 133.40 to 83.30 ms, and no steady-state entity, descriptor, DOM, or canvas growth appeared.",
     "commits": {
       "coreReadOnly": "8b57b03904889cdbc71021d3bdb1d4070af5c8d3",
       "protokitsStart": "04d34f049f58ae359cf71d43466c429dac2a6d08",
       "protokitsProductionUnit": "04d34f049f58ae359cf71d43466c429dac2a6d08",
-      "experimentsStart": "71ddcfcfc5677cd86ff42756863f48b21077e9e2",
-      "experimentsProductionUnit": "7895295021aabd058ba15c73fcd5b55a350003f6"
+      "experimentsStart": "b67e37363ad3d2a6784b7b23d2d11f6207e56618",
+      "experimentsProductionUnit": "PENDING_PRODUCTION_COMMIT"
     },
-    "publication": "Experiments production commit 7895295021aabd058ba15c73fcd5b55a350003f6 and its receipt commit are published on origin/main after fetch-before-push verification; ProtoKits is unchanged and synchronized at 04d34f049f58ae359cf71d43466c429dac2a6d08."
+    "publication": "Pending fetch-before-push verification and Experiments production/receipt publication; ProtoKits is unchanged and synchronized at 04d34f049f58ae359cf71d43466c429dac2a6d08."
   },
   "exactNextUnit": {
     "phase": "playable-experiment-upgrade",
     "epoch": 0,
-    "scope": "next-ledge-signal-cut-one-launch-commitment",
-    "goal": "Retune the initial Signal Cut commitment from Counterwind Rest so the amber shortcut opens with one readable high-build launch without making it as safe as Shelter Rise."
+    "scope": "next-ledge-signal-cut-fork-relay-pressure-carry",
+    "goal": "Give the Signal Cut-to-Fork Relay pressure carry one explicit amber release window and landing confirmation without adding protection or weakening the mint line."
   }
 }
