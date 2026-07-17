@@ -5,8 +5,8 @@
 - Starting Experiments commit: `56333afcbb34d1876aaf06bbc5dc6e4a6ab77647`
 - Starting / final ProtoKits commit: `04d34f049f58ae359cf71d43466c429dac2a6d08` (unchanged)
 - Read-only Core commit: `70cc2a1590677b872d40a42f7b7bb7e174941eb0`
-- Production commit: pending publication
-- Publication receipt: pending publication
+- Production commit: `5170655bafd7e5c2d31b7082c09cae8dfaac62cc`
+- Publication receipt: recorded by the follow-up repository commit
 
 ## Intent
 
