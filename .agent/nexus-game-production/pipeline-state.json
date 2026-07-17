@@ -161,9 +161,9 @@
       "protokitsStart": "04d34f049f58ae359cf71d43466c429dac2a6d08",
       "protokitsProductionUnit": "bb3d787da372bf001653635d6e57eb7ce54e3c50",
       "experimentsStart": "652a02dd64d3e4202f6bfb333a8a560053242dfd",
-      "experimentsProductionUnit": "pending-this-commit"
+      "experimentsProductionUnit": "c737a9795fa2d94d18d2e16d3c11655ea5a0857e"
     },
-    "publication": "ProtoKits production commit bb3d787da372bf001653635d6e57eb7ce54e3c50 published to resolved default branch main after fetch-before-push verification; the matching Experiments publication receipt is recorded after the production commit is pushed."
+    "publication": "ProtoKits production commit bb3d787da372bf001653635d6e57eb7ce54e3c50 and Experiments production commit c737a9795fa2d94d18d2e16d3c11655ea5a0857e published to their resolved default branch main after fetch-before-push verification; this repository commit records the publication receipt."
   },
   "exactNextUnit": {
     "phase": "playable-experiment-upgrade",

@@ -7,7 +7,7 @@
 - ProtoKits start: `04d34f049f58ae359cf71d43466c429dac2a6d08`
 - ProtoKits production/final: `bb3d787da372bf001653635d6e57eb7ce54e3c50`
 - Core read-only reference: `a5882b47bd5a9284550bb3af1f0cd8580c62665e`
-- Experiments production commit: pending this commit
+- Experiments production commit: `c737a9795fa2d94d18d2e16d3c11655ea5a0857e`
 - Final receipt commit: reported after publication
 
 ## Result
