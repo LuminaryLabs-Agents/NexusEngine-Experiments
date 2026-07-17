@@ -15,6 +15,22 @@ function payoffGrappleSurge(snapshot, event) {
   };
 }
 
+export function describeFirstSwingReleaseSurge(snapshot) {
+  const events = snapshot.recentEvents ?? [];
+  for (let index = events.length - 1; index >= 0; index -= 1) {
+    const event = events[index];
+    if (event.type !== "released" || !event.releaseCueActive) continue;
+    const age = num(snapshot.frame) - num(event.at);
+    if (age < 0 || age > 10) return null;
+    return {
+      color: Math.max(0, Math.floor(num(event.releaseCueColor, 0xffb83d))),
+      style: event.releaseCueStyle ?? "first-swing-release",
+      strength: clamp(1 - age / 10, 0, 1)
+    };
+  }
+  return null;
+}
+
 function seeded(seed = 1) {
   let s = seed >>> 0;
   return () => {
@@ -210,7 +226,10 @@ export function createDiegeticEffects({ scene }) {
         const ledge = evt.targetId ? snapshot.route?.ledges?.find((candidate) => candidate.id === evt.targetId) : null;
         const origin = ledge ?? (evt.type === "grapple-fired" ? snapshot.probe : snapshot.player);
         const payoffSurge = payoffGrappleSurge(snapshot, evt);
-        if (evt.type === "released") makeSparks(snapshot.player, 0xffb83d, 16, 18, 0.55, 0.8);
+        if (evt.type === "released") {
+          const branchCue = Boolean(evt.releaseCueActive);
+          makeSparks(snapshot.player, branchCue ? num(evt.releaseCueColor, 0xffb83d) : 0xffb83d, branchCue ? 34 : 16, branchCue ? 32 : 18, branchCue ? 0.9 : 0.55, branchCue ? 1.08 : 0.8);
+        }
         else if (evt.type === "grapple-fired") makeSparks(snapshot.probe, payoffSurge?.color ?? 0x00f0ff, Math.round(22 * (payoffSurge?.impactScale ?? 1)), 24 * (payoffSurge?.impactScale ?? 1), 0.65, 0.75 * (payoffSurge?.impactScale ?? 1));
         else if (evt.type === "grapple-latched") makeSparks(origin, payoffSurge?.color ?? 0x00f0ff, Math.round(36 * (payoffSurge?.impactScale ?? 1)), 30 * (payoffSurge?.impactScale ?? 1), 0.85, 1.0 * (payoffSurge?.impactScale ?? 1));
         else if (evt.type === "restored" || evt.type === "rest") makeSparks(origin, 0x3dffa3, 42, 34, 1.1, 1.1);
@@ -247,14 +266,17 @@ export function createDiegeticEffects({ scene }) {
   };
 }
 
-export function updateDiegeticPlayerSignals({ snapshot, playerMaterial, staminaHalo, dangerHalo, modeLight, dangerLight }) {
+export function updateDiegeticPlayerSignals({ snapshot, playerMaterial, staminaHalo, dangerHalo, modeLight, dangerLight, releaseSurge = describeFirstSwingReleaseSurge(snapshot) }) {
   const time = (snapshot.frame ?? 0) / 60;
   const staminaPct = clamp((snapshot.stamina ?? 0) / Math.max(1, snapshot.constants?.maxStamina ?? 100), 0, 1);
   const cargoValue = snapshot.domain?.routeCargoExtraction?.cargo?.resources?.[0]?.value ?? 0;
   const pressureValue = snapshot.domain?.routeCargoExtraction?.pressure?.channels?.[0]?.value ?? 0;
   const readabilityRisk = snapshot.domain?.traversalReadability?.staminaRiskBands?.[0]?.risk ?? 0;
   const timingRisk = snapshot.domain?.anchorTimingReadability?.failFloorProximityWaves?.[0]?.severity ?? 0;
-  playerMaterial.emissiveIntensity = 0.7 + staminaPct * 1.8 + (snapshot.mode === "falling" ? 0.9 : 0) + Math.min(0.7, cargoValue * 0.08) + readabilityRisk * 0.35 + timingRisk * 0.28;
+  const playerColor = releaseSurge?.color ?? 0xffb83d;
+  playerMaterial.color.setHex(playerColor);
+  playerMaterial.emissive.setHex(playerColor);
+  playerMaterial.emissiveIntensity = 0.7 + staminaPct * 1.8 + (snapshot.mode === "falling" ? 0.9 : 0) + Math.min(0.7, cargoValue * 0.08) + readabilityRisk * 0.35 + timingRisk * 0.28 + (releaseSurge?.strength ?? 0) * 1.8;
   staminaHalo.position.set(snapshot.player.x, snapshot.player.y, (snapshot.player.z ?? 1) + 1.5);
   staminaHalo.scale.setScalar(0.62 + staminaPct * 0.78 + Math.sin(time * 6) * 0.025 + Math.min(0.22, cargoValue * 0.025) + readabilityRisk * 0.18 + timingRisk * 0.12);
   staminaHalo.material.opacity = 0.15 + staminaPct * 0.62;
@@ -266,7 +288,8 @@ export function updateDiegeticPlayerSignals({ snapshot, playerMaterial, staminaH
   dangerHalo.scale.setScalar(1.1 + Math.sin(time * 10) * 0.12 + pressureValue / 240 + readabilityRisk * 0.24 + timingRisk * 0.18);
   dangerHalo.rotation.z -= 0.04;
   modeLight.position.set(snapshot.player.x, snapshot.player.y, 24);
-  modeLight.intensity = snapshot.mode === "swinging" ? 1.9 + cargoValue * 0.04 : 2.8 + cargoValue * 0.05;
+  modeLight.color.setHex(playerColor);
+  modeLight.intensity = snapshot.mode === "swinging" ? 1.9 + cargoValue * 0.04 : 2.8 + cargoValue * 0.05 + (releaseSurge?.strength ?? 0) * 2.4;
   dangerLight.position.set(snapshot.player.x, snapshot.player.y - 20, 32);
   dangerLight.intensity = snapshot.mode === "dead" ? 5 : pressureValue > 60 ? 2.8 : readabilityRisk > 0.65 || timingRisk > 0.65 ? 2.4 : staminaPct < 0.2 ? 2.2 : 0;
 }

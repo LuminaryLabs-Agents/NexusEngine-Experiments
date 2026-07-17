@@ -68,6 +68,8 @@ The first payoff grapple now carries that selection through the existing cable, 
 
 The payoff latch now finishes the same branch beat physically. Slipstream applies a mint forward pull and tall squash; Cacheline applies a stronger amber snap and wide compression. Descriptor tuning flows through the existing latch velocity, camera-trauma, player-scale, and synth owners, with the existing `grapple-latched` event age bounding the effect.
 
+The first payoff swing now resolves that recoil into one authored release window. Slipstream exposes a buoyant mint glide band; Cacheline exposes a tighter amber aftershock band. Existing swing angle and angular velocity determine readiness, the existing release event carries the branch impulse, and the existing HUD, spark pool, player light, atmosphere, camera, and synth owners present it without another state, timer, control, event type, entity, or diagnostic surface.
+
 ### Fogline Relay
 
 `experiments/fogline-relay/` is a first-person fog-forest relay experiment. It composes reusable kit surfaces, keeps the Canvas renderer presentation-only, and validates renderer-agnostic visual buckets, fog volumes, volumetric light descriptors, relay scanning, objective flow, and wraith hazards.

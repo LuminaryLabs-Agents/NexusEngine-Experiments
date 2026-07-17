@@ -114,6 +114,7 @@ These are proof targets, not accepted experiment records. Seeds, candidate draw 
 - The Stormlock payoff-line handoff derives a late confirmation subwindow, grows the existing consequence line into the selected existing payoff target, and eases the existing camera toward the pair. It preserves the same fantasy, verb, pressure loop, interaction structure, and eight-feature signature, so creation and diversity counts remain unchanged.
 - The payoff grapple chroma surge derives mint or amber presentation from the existing selected payoff target and grapple events, then reuses the cable, probe, spark pool, and synth. It preserves the same fantasy, verb, pressure loop, interaction structure, and eight-feature signature, so creation and diversity counts remain unchanged.
 - The payoff latch recoil derives branch-specific impulse, camera, squash, and audio from authored payoff descriptors plus the existing latch event age. It preserves the same fantasy, verb, pressure loop, interaction structure, and eight-feature signature, so creation and diversity counts remain unchanged.
+- The first-swing branch release cue derives mint or amber readiness from authored payoff descriptors plus existing route choice, swing angle, and angular velocity, then reuses the original release and presentation owners. It preserves the same fantasy, verb, pressure loop, interaction structure, and eight-feature signature, so creation and diversity counts remain unchanged.
 
 ## Diversity Gate
 
@@ -141,4 +142,5 @@ Every accepted experiment must record epoch, lifecycle status, seed, full candid
 - The Next Ledge Stormlock payoff-line pass remains an in-place legacy refinement; it composes the same route-choice, timing, target, line, camera, cue, feedback, and renderer features without adding a kit, experiment, route family, or duplicate production signature.
 - The Next Ledge payoff grapple chroma pass remains an in-place legacy refinement; it composes the same route-choice, cable, cue, feedback, effects, audio, and renderer features without adding a kit, experiment, route family, or duplicate production signature.
 - The Next Ledge payoff latch recoil pass remains an in-place legacy refinement; it composes the same route-choice, latch, camera, cue, feedback, audio, and player presentation features without adding a kit, experiment, route family, or duplicate production signature.
+- The Next Ledge first-swing branch release pass remains an in-place legacy refinement; it composes the same route-choice, tether, release, camera, cue, feedback, audio, and player presentation features without adding a kit, experiment, route family, or duplicate production signature.
 - Diversity claim: contract pressure only; no playable diversity claim yet.

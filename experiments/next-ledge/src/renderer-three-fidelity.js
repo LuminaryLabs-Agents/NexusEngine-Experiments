@@ -1,5 +1,5 @@
 import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js";
-import { createDiegeticEffects, updateDiegeticPlayerSignals } from "./diegetic-effects.js";
+import { createDiegeticEffects, describeFirstSwingReleaseSurge, updateDiegeticPlayerSignals } from "./diegetic-effects.js?v=first-swing-release-1";
 
 const matFor = (m, type, hover, routeChoiceRole = null) => hover
   ? m.hover
@@ -321,7 +321,7 @@ export function createThreeRenderer({ canvas }) {
     }
   }
 
-  function updateParallax(snapshot, time) {
+  function updateParallax(snapshot, time, releaseSurge) {
     const parallax = snapshot.domain?.parallax;
     if (!parallax) return;
     const key = `${snapshot.levelId}:${snapshot.sector}:${parallax.profileId}:${parallax.layers?.length ?? 0}`;
@@ -338,9 +338,10 @@ export function createThreeRenderer({ canvas }) {
     }
     const styles = snapshot.domain?.renderStyles;
     const danger = snapshot.mode === "falling" || snapshot.mode === "launched" || snapshot.mode === "retracting";
-    scene.fog.color.setHex(danger ? 0x250910 : snapshot.completed ? 0x2a2412 : 0x07111a);
-    scene.fog.density = danger ? 0.0055 : snapshot.completed ? 0.0044 : 0.0036;
-    renderer.setClearColor(snapshot.completed ? 0x130f04 : danger ? 0x080205 : 0x010305, 1);
+    const mintRelease = releaseSurge?.style === "mint-glide-window";
+    scene.fog.color.setHex(releaseSurge ? (mintRelease ? 0x09251b : 0x251407) : danger ? 0x250910 : snapshot.completed ? 0x2a2412 : 0x07111a);
+    scene.fog.density = releaseSurge ? 0.0046 : danger ? 0.0055 : snapshot.completed ? 0.0044 : 0.0036;
+    renderer.setClearColor(releaseSurge ? (mintRelease ? 0x020a07 : 0x0a0502) : snapshot.completed ? 0x130f04 : danger ? 0x080205 : 0x010305, 1);
     parallaxBack.visible = Boolean(styles || parallax.layers?.length);
   }
 
@@ -518,6 +519,7 @@ export function createThreeRenderer({ canvas }) {
     const genericRejoinTarget = snapshot.route?.ledges?.find((ledge) => ledge.id === snapshot.routeChoice?.genericRejoinAnchorId);
     const confirmationHandoff = confirmationHandoffProgress(snapshot, postRejoin);
     const payoffSurge = payoffGrappleSurge(snapshot, payoffTarget);
+    const releaseSurge = describeFirstSwingReleaseSurge(snapshot);
     const payoffCameraZoomBonus = num(payoffTarget?.metadata?.routeChoicePayoffCameraZoomBonus, 0);
     const rejoinCameraZoomBonus = num(convergenceTarget?.metadata?.routeChoiceGenericRejoinCameraZoomBonus, 0);
     const choiceCameraY = snapshot.routeChoice?.status === "rejoin-active" && genericRejoinTarget
@@ -537,7 +539,7 @@ export function createThreeRenderer({ canvas }) {
     presentedCameraZ = presentedCameraZ == null ? targetCameraZ : presentedCameraZ + (targetCameraZ - presentedCameraZ) * 0.08;
     camera.position.set((snapshot.camera?.x ?? 0) + Math.sin(time * 53) * trauma * 8, presentedCameraY + Math.cos(time * 47) * trauma * 6, presentedCameraZ);
     camera.lookAt(0, presentedCameraY, 0);
-    updateParallax(snapshot, time);
+    updateParallax(snapshot, time, releaseSurge);
     updateCounterwindField(snapshot, time);
     const choice = snapshot.routeChoice;
     const currentIndex = (snapshot.route?.ledges ?? []).findIndex((ledge) => ledge.id === snapshot.currentAnchorId);
@@ -632,7 +634,7 @@ export function createThreeRenderer({ canvas }) {
     player.scale.set(snapshot.player.scaleX ?? 1, snapshot.player.scaleY ?? 1, snapshot.player.scaleZ ?? 1);
     player.rotation.x = snapshot.player.rotationX ?? 0;
     player.rotation.y = snapshot.player.rotationY ?? 0;
-    updateDiegeticPlayerSignals({ snapshot, playerMaterial: m.player, staminaHalo, dangerHalo, modeLight, dangerLight });
+    updateDiegeticPlayerSignals({ snapshot, playerMaterial: m.player, staminaHalo, dangerHalo, modeLight, dangerLight, releaseSurge });
 
     probe.visible = Boolean(snapshot.probe?.visible);
     probe.position.set(snapshot.probe?.x ?? 0, snapshot.probe?.y ?? 0, snapshot.probe?.z ?? 1);

@@ -1,3 +1,5 @@
+import { describePayoffFirstSwingReleaseCue } from "./climb-anchor-adapter.js?v=first-swing-release-1";
+
 const pct = (value, max = 100) => `${Math.round(Math.max(0, value) / Math.max(1, max) * 100)}%`;
 const number = (value, fallback = 0) => Number.isFinite(Number(value)) ? Number(value) : fallback;
 
@@ -15,7 +17,7 @@ function confirmationTarget(snapshot) {
   return snapshot.route?.ledges?.find((ledge) => ledge.id === snapshot.routeChoice?.postRejoinAnchorId);
 }
 
-function promptFor(snapshot) {
+function promptFor(snapshot, firstSwingReleaseCue = describePayoffFirstSwingReleaseCue(snapshot)) {
   const transition = snapshot.sectorTransition;
   const choice = snapshot.routeChoice;
   const ledges = snapshot.route?.ledges ?? [];
@@ -74,6 +76,15 @@ function promptFor(snapshot) {
     text: choice.selectedRole === "pressure-shortcut" ? "AMBER HIGH LINE — Commit to Cacheline High" : "MINT OVERCHARGE — Fire for Slipstream Launch",
     tone: choice.selectedRole === "pressure-shortcut" ? "danger" : "success"
   };
+  if (choice?.status === "convergence-active" && firstSwingReleaseCue) return firstSwingReleaseCue.ready
+    ? {
+        text: firstSwingReleaseCue.prompt ?? `${choice.selectedRole === "pressure-shortcut" ? "AMBER AFTERSHOCK" : "MINT GLIDE"} READY — Release`,
+        tone: choice.selectedRole === "pressure-shortcut" ? "amber" : "mint"
+      }
+    : {
+        text: firstSwingReleaseCue.buildPrompt ?? `Build ${firstSwingReleaseCue.directionLabel} into the branch release band`,
+        tone: choice.selectedRole === "pressure-shortcut" ? "amber" : "mint"
+      };
   if (choice?.status === "convergence-active") return {
     text: choice.selectedRole === "pressure-shortcut"
       ? `WINDGLASS RELAY — Bank ${Math.round(number(choice.scoreValue))} cargo mastery`
@@ -115,7 +126,8 @@ export function createHud(nodes = {}) {
       const cargoAmount = number(cargo?.value);
       const cargoMax = Math.max(1, number(cargo?.max, 1));
       const pressurePercent = Math.round(number(pressure?.value) / Math.max(1, number(pressure?.max, 100)) * 100);
-      const prompt = promptFor(snapshot);
+      const firstSwingReleaseCue = describePayoffFirstSwingReleaseCue(snapshot);
+      const prompt = promptFor(snapshot, firstSwingReleaseCue);
       const postRejoinTarget = confirmationTarget(snapshot);
       if (status && statusText !== lastStatus) {
         status.textContent = statusText;
@@ -149,6 +161,8 @@ export function createHud(nodes = {}) {
           ? snapshot.routeChoice.selectedRole === "pressure-shortcut"
             ? "Your banked signal cargo unlocked Cacheline High. Build one rightward arc and fire through the smaller amber catch."
             : "Stormlock converted shelter protection into a faster cable launch. Fire through the mint Slipstream Launch now."
+        : snapshot.routeChoice?.status === "convergence-active" && firstSwingReleaseCue
+          ? firstSwingReleaseCue.objective ?? `Build ${firstSwingReleaseCue.directionLabel} into the branch release cue, then carry the payoff into Windglass Relay.`
         : snapshot.routeChoice?.status === "convergence-active"
           ? snapshot.routeChoice.selectedRole === "pressure-shortcut"
             ? `Cacheline High banked ${Math.round(number(snapshot.routeChoice.scoreValue))} cargo mastery. Carry it into the shared Windglass Relay catch.`

@@ -103,4 +103,6 @@ HUD owns:
   first-screen purpose, hero controls, live resources, and contextual action prompts
 ```
 
+The sector-two payoff's first swing uses descriptor-authored branch release bands. The safe line asks for a mint glide window; the shortcut asks for a tighter amber aftershock. Readiness derives from the existing route choice, payoff anchor, swing angle, and angular velocity, while the original release event and presentation owners carry motion and feedback.
+
 See `PLAN.md` plus the route progress and route-cargo manifests for the remaining deterministic replay promotion gate.

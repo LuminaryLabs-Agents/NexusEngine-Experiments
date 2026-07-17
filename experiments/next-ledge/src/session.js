@@ -3,8 +3,8 @@ import { createGenericAnchorDescriptorKit } from "https://cdn.jsdelivr.net/gh/Lu
 import { createGenericModeProjectedRoute, createProjectedRoute } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-mode-projected-route/index.js";
 import { createGenericRouteProgressKit } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-route-progress-kit/index.js";
 import { createGenericTetherTraversalDomainKits, createGenericTetherTraversalPreset } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-tether-traversal-domain-kits/index.js";
-import { createNextLedgeClimbPreset } from "./climb-preset.js?v=payoff-latch-recoil-1";
-import { adaptProjectedRouteToClimbRoute } from "./climb-anchor-adapter.js?v=payoff-latch-recoil-1";
+import { createNextLedgeClimbPreset } from "./climb-preset.js?v=first-swing-release-1";
+import { adaptProjectedRouteToClimbRoute, describePayoffFirstSwingReleaseCue } from "./climb-anchor-adapter.js?v=first-swing-release-1";
 import { createClimbActionAdapter } from "./climb-action-adapter.js";
 
 const clamp = (v, a, b) => Math.max(a, Math.min(b, Number.isFinite(Number(v)) ? Number(v) : a));
@@ -569,12 +569,28 @@ function assistedAim(state) {
 }
 
 function release(state) {
+  const releaseCue = describePayoffFirstSwingReleaseCue(state);
+  if (releaseCue?.ready) {
+    state.player.vx *= releaseCue.velocityMultiplier;
+    state.player.vy = state.player.vy * releaseCue.velocityMultiplier + releaseCue.liftImpulse;
+    state.camera.trauma = Math.max(state.camera.trauma ?? 0, releaseCue.cameraImpulse);
+  }
   state.mode = "falling";
   state.rope.visible = false;
   state.probe.visible = false;
   state.stats.releases += 1;
-  state.status = state.tuning.fallHint ?? "Tether released. Aim and fire before falling out of frame.";
-  addEvent(state, "released", { x: state.player.x, y: state.player.y });
+  state.status = releaseCue?.ready
+    ? releaseCue.status ?? "Branch release secured. Carry the line into Windglass Relay."
+    : state.tuning.fallHint ?? "Tether released. Aim and fire before falling out of frame.";
+  addEvent(state, "released", {
+    x: state.player.x,
+    y: state.player.y,
+    releaseCueActive: Boolean(releaseCue?.ready),
+    releaseCueStyle: releaseCue?.ready ? releaseCue.style : null,
+    releaseCueColor: releaseCue?.ready ? releaseCue.color : null,
+    releaseVelocityMultiplier: releaseCue?.ready ? releaseCue.velocityMultiplier : 1,
+    releaseLiftImpulse: releaseCue?.ready ? releaseCue.liftImpulse : 0
+  });
 }
 
 function launch(state) {

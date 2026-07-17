@@ -1,5 +1,11 @@
 # Cycle State
 
+## 2026-07-17 First-Swing Branch Release Cue Refinement
+
+`experiments/next-ledge/` now resolves the selected payoff recoil into one branch-authored first-swing timing cue. Slipstream exposes a buoyant mint glide band; Cacheline exposes a faster amber aftershock band. Existing route choice, swing angle/angular velocity, release, HUD, sparks, player light, atmosphere, camera, and synth own the result; no state, timer, control, event type, entity, DOM node, or diagnostic path was added. Playwright completed both actual-input routes through physical release and the original `134 SPEED` / `175 CARGO` Windglass scores, proved real failure/keyboard retry and Advanced closed/open/closed, and repeated the complete safe loop after cleanup. Human View passed the first screen plus mint and amber ready/release frames with diagnostics closed. The matched warm/active metric improved from `91.17` to `47.24 ms` average tick (`10.97` to `21.17` measured FPS), while `69` DOM nodes / one canvas / `76` descriptors / `277` scene nodes stayed bounded and console messages stayed zero.
+
+Exact next playable unit: let Windglass answer the branch release with a short mint float-settle or amber brake-settle on score, using the existing score event, camera, material, and cue owners without another state or control.
+
 ## 2026-07-17 Payoff Latch Recoil Refinement
 
 `experiments/next-ledge/` now finishes the selected payoff grapple with one branch-aware physical latch beat. Slipstream applies a mint forward pull, tall squash, softer camera kick, and rising latch chord; Cacheline applies a stronger amber snap, wide compression, harder kick, and descending chord. Authored descriptors feed the existing latch velocity, camera-trauma, player-scale, `grapple-latched`, and synth owners; no state, event, timer, entity, control, or feedback owner was added. Playwright drove both actual-input sector-two routes to their payoff latches, proved real release/failure/keyboard retry and Advanced closed/open/closed, held `69` DOM nodes / one canvas / `76` descriptors / `277` settled scene nodes, improved the matched warm/active metric from `218.26` to `130.15` ms average tick (`4.58` to `7.68` measured FPS), and reported zero console or page errors. Human View passed the first screen plus mint and amber latch frames with diagnostics closed.

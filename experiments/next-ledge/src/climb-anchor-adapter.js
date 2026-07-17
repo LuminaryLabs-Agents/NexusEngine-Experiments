@@ -19,6 +19,45 @@ function chunksFor(summitY, h = 600) {
   });
 }
 
+const finite = (value, fallback = 0) => Number.isFinite(Number(value)) ? Number(value) : fallback;
+
+export function describePayoffFirstSwingReleaseCue(snapshot = {}) {
+  const choice = snapshot.routeChoice;
+  if (choice?.status !== "convergence-active" || snapshot.currentAnchorId !== choice.payoffTargetId) return null;
+  const ledges = snapshot.route?.ledges ?? [];
+  const payoff = ledges.find((ledge) => ledge.id === choice.payoffTargetId);
+  const convergence = ledges.find((ledge) => ledge.id === choice.convergenceAnchorId);
+  const metadata = payoff?.metadata;
+  const style = metadata?.routeChoiceFirstSwingReleaseStyle;
+  if (!style || !convergence) return null;
+  const direction = Math.sign(finite(convergence.x) - finite(payoff.x)) || 1;
+  const minAngle = Math.max(0, finite(metadata.routeChoiceFirstSwingReleaseMinDirectedAngle));
+  const maxAngle = Math.max(minAngle, finite(metadata.routeChoiceFirstSwingReleaseMaxDirectedAngle, 1.2));
+  const minSpeed = Math.max(0, finite(metadata.routeChoiceFirstSwingReleaseMinDirectedSpeed));
+  const directedAngle = direction * finite(snapshot.player?.angle);
+  const directedSpeed = direction * finite(snapshot.player?.aVel);
+  return {
+    targetId: convergence.id,
+    style,
+    direction,
+    directionLabel: direction < 0 ? "left" : "right",
+    minAngle,
+    maxAngle,
+    minSpeed,
+    directedAngle,
+    directedSpeed,
+    ready: snapshot.mode === "swinging" && directedAngle >= minAngle && directedAngle <= maxAngle && directedSpeed >= minSpeed,
+    velocityMultiplier: Math.max(1, finite(metadata.routeChoiceFirstSwingReleaseVelocityMultiplier, 1)),
+    liftImpulse: Math.max(0, finite(metadata.routeChoiceFirstSwingReleaseLiftImpulse)),
+    cameraImpulse: Math.max(0, Math.min(1, finite(metadata.routeChoiceFirstSwingReleaseCameraImpulse))),
+    color: Math.max(0, Math.floor(finite(metadata.routeChoiceFirstSwingReleaseColor, choice.selectedRole === "pressure-shortcut" ? 0xffb83d : 0x3dffa3))),
+    buildPrompt: metadata.routeChoiceFirstSwingReleaseBuildPrompt,
+    prompt: metadata.routeChoiceFirstSwingReleasePrompt,
+    objective: metadata.routeChoiceFirstSwingReleaseObjective,
+    status: metadata.routeChoiceFirstSwingReleaseStatus
+  };
+}
+
 function choiceBeatLedge(source, beat, choiceId, defaultStaminaRestore = 45) {
   const type = beat.type ?? source.type;
   return {
@@ -61,6 +100,18 @@ function choiceBeatLedge(source, beat, choiceId, defaultStaminaRestore = 45) {
       routeChoicePayoffLatchRecoilCameraImpulse: Number(beat.latchRecoilCameraImpulse ?? 0),
       routeChoicePayoffLatchRecoilSquashX: Number(beat.latchRecoilSquashX ?? 1),
       routeChoicePayoffLatchRecoilSquashY: Number(beat.latchRecoilSquashY ?? 1),
+      routeChoiceFirstSwingReleaseStyle: beat.firstSwingReleaseStyle ?? null,
+      routeChoiceFirstSwingReleaseMinDirectedAngle: Number(beat.firstSwingReleaseMinDirectedAngle ?? 0),
+      routeChoiceFirstSwingReleaseMaxDirectedAngle: Number(beat.firstSwingReleaseMaxDirectedAngle ?? 0),
+      routeChoiceFirstSwingReleaseMinDirectedSpeed: Number(beat.firstSwingReleaseMinDirectedSpeed ?? 0),
+      routeChoiceFirstSwingReleaseVelocityMultiplier: Number(beat.firstSwingReleaseVelocityMultiplier ?? 1),
+      routeChoiceFirstSwingReleaseLiftImpulse: Number(beat.firstSwingReleaseLiftImpulse ?? 0),
+      routeChoiceFirstSwingReleaseCameraImpulse: Number(beat.firstSwingReleaseCameraImpulse ?? 0),
+      routeChoiceFirstSwingReleaseColor: Number(beat.firstSwingReleaseColor ?? 0),
+      routeChoiceFirstSwingReleaseBuildPrompt: beat.firstSwingReleaseBuildPrompt ?? null,
+      routeChoiceFirstSwingReleasePrompt: beat.firstSwingReleasePrompt ?? null,
+      routeChoiceFirstSwingReleaseObjective: beat.firstSwingReleaseObjective ?? null,
+      routeChoiceFirstSwingReleaseStatus: beat.firstSwingReleaseStatus ?? null,
       routeChoiceAimAssistBonus: Number(beat.aimAssistBonus ?? 0),
       routeChoiceAimAssistMinBuildAngle: Number(beat.aimAssistMinBuildAngle ?? 0),
       routeChoiceAimAssistLeadX: Number(beat.aimAssistLeadX ?? 0),

@@ -39,6 +39,15 @@ export function createCinematicSynth() {
       else if (payoffRole === "safe-recovery") { tone(523.25, 0.28, "sine", 0.1, 783.99); tone(130.81, 0.32, "triangle", 0.12, 261.63); }
       else { tone(1200, 0.25, "sine", 0.18, 250); tone(80, 0.3, "triangle", 0.18); }
     }
+    else if (type === "released" && event.releaseCueActive) {
+      if (event.releaseCueStyle === "amber-aftershock") {
+        tone(98, 0.34, "sawtooth", 0.13, 49);
+        setTimeout(() => tone(987.77, 0.16, "triangle", 0.08, 493.88), 42);
+      } else {
+        tone(392, 0.42, "sine", 0.075, 783.99);
+        setTimeout(() => tone(1046.5, 0.3, "triangle", 0.055, 1567.98), 58);
+      }
+    }
     else if (type === "released" || type === "wall-bounce") tone(110, 0.15, "triangle", 0.16, 45);
     else if (type === "restored") tone(440, 0.5, "sine", 0.08, 880);
     else if (type === "failed") tone(150, 1.0, "sawtooth", 0.22, 30);
