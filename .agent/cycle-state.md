@@ -1,5 +1,11 @@
 # Cycle State
 
+## 2026-07-17 Windglass Branch Settle Refinement
+
+`experiments/next-ledge/` now preserves branch identity through the Windglass score: a `24`-frame mint float banks `134 SPEED`, while a `16`-frame amber brake banks `175 CARGO`. Authored payoff descriptors extend the existing score event and reuse tether motion, camera, materials, player scale, sparks, HUD, and synth. Both physical routes, original `anchor-11` rejoin, failure/retry, Advanced disclosure, steady counts, matched performance, Human View, all 28 Next Ledge tests, and a zero-message console passed. ProtoKits and Core remain unchanged.
+
+Exact next playable unit: add one branch-neutral high-build release-ready cue from Windglass into original `anchor-11`, reusing existing swing readiness and release owners.
+
 ## 2026-07-17 First-Swing Branch Release Cue Refinement
 
 `experiments/next-ledge/` now resolves the selected payoff recoil into one branch-authored first-swing timing cue. Slipstream exposes a buoyant mint glide band; Cacheline exposes a faster amber aftershock band. Existing route choice, swing angle/angular velocity, release, HUD, sparks, player light, atmosphere, camera, and synth own the result; no state, timer, control, event type, entity, DOM node, or diagnostic path was added. Playwright completed both actual-input routes through physical release and the original `134 SPEED` / `175 CARGO` Windglass scores, proved real failure/keyboard retry and Advanced closed/open/closed, and repeated the complete safe loop after cleanup. Human View passed the first screen plus mint and amber ready/release frames with diagnostics closed. The matched warm/active metric improved from `91.17` to `47.24 ms` average tick (`10.97` to `21.17` measured FPS), while `69` DOM nodes / one canvas / `76` descriptors / `277` scene nodes stayed bounded and console messages stayed zero.

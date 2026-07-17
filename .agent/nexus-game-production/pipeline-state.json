@@ -30,7 +30,7 @@
     "coreRemoteDefault": "70cc2a1590677b872d40a42f7b7bb7e174941eb0",
     "coreLocalReadOnly": "70cc2a1590677b872d40a42f7b7bb7e174941eb0",
     "protokits": "04d34f049f58ae359cf71d43466c429dac2a6d08",
-    "experiments": "1d8f821e8bcb208a00ea74289fd115b9fd5c9632",
+    "experiments": "e7920f97ed923ad3975a58416f49a70881d0de24",
     "experimentsBaseline": "615a7e1e2170164acef0edebdbe0b88b8c01fd1b"
   },
   "baseline": {
@@ -147,28 +147,28 @@
     "result": "Upgraded Next Ledge so Slipstream Launch and Cacheline High converge at Windglass Relay, banking 134 preserved speed or 175 cargo mastery before generic ascent resumes; production creation counts remain unchanged."
   },
   "lastRefinementUnit": {
-    "packetId": "2026-07-17-next-ledge-first-swing-release-cue",
-    "scope": "Next Ledge first-swing branch release cue",
-    "result": "Slipstream now exposes a buoyant mint glide window while Cacheline exposes a faster amber aftershock window through descriptor-authored tuning and existing swing, release, HUD, effect, light, atmosphere, camera, and synth owners."
+    "packetId": "2026-07-17-next-ledge-windglass-branch-settle-refinement",
+    "scope": "Next Ledge Windglass branch score settle",
+    "result": "Windglass now banks the safe line through a buoyant mint float and the shortcut through a compressed amber brake using descriptor-authored tuning and existing score, tether, camera, material, player-scale, spark, HUD, and synth owners."
   },
   "lastCompletedUnit": {
-    "packetId": "2026-07-17-next-ledge-first-swing-release-cue",
-    "scope": "Next Ledge first-swing branch release feel refinement",
-    "result": "The selected payoff recoil now resolves into one actionable branch cue: a mint glide for Slipstream or amber aftershock for Cacheline, using existing state and presentation owners without a new state, timer, control, event type, entity, or feedback owner.",
-    "validation": "All 28 existing Next Ledge test entrypoints, affected JavaScript syntax checks, JSON, and diff checks passed. Playwright completed actual-input safe and shortcut routes through physical release and the original 134-speed / 175-cargo Windglass scores, repeated the complete safe loop after cleanup, proved failure, keyboard retry, and Advanced closed/open/closed, held 69 DOM nodes, one canvas, 76 descriptors, and 277 scene nodes, and reported zero console or page errors. Human View passed the first screen plus final mint and amber ready/release frames with diagnostics closed. The matched 60-tick warm-up plus 180-tick active performance window improved from 91.17 to 47.24 ms average tick, 10.97 to 21.17 measured FPS, and 132.50 to 65.10 ms p95; steady-state counts stayed bounded.",
+    "packetId": "2026-07-17-next-ledge-windglass-branch-settle-refinement",
+    "scope": "Next Ledge Windglass branch score feel refinement",
+    "result": "The shared Windglass score now answers Slipstream with a 24-frame mint float and Cacheline with a 16-frame amber brake before restoring the protected cyan rejoin, without a new state, timer, control, event type, material, entity, effect pool, or feedback owner.",
+    "validation": "All 28 existing Next Ledge test entrypoints, affected JavaScript syntax checks, JSON, and diff checks passed. Playwright completed actual-input safe and shortcut routes through 134-speed and 175-cargo Windglass scores, repeated the complete safe loop after cleanup, secured the original anchor-11 rejoin, proved real failure, keyboard retry, and Advanced closed/open/closed, held 69 DOM nodes, one canvas, 76 active-sector descriptors, and 277 settled scene nodes, and reported zero console or page errors. Human View passed the first screen plus final mint and amber settle frames with diagnostics closed, including a compositor-clean failure state. The final matched 60-tick warm-up plus 180-tick fixed active window improved from 86.81 to 61.40 ms average tick, 11.52 to 16.29 simulated FPS, and 129.80 to 98.70 ms p95; counts stayed bounded and heap settled to 21.73 MB after the growth window.",
     "commits": {
       "coreReadOnly": "70cc2a1590677b872d40a42f7b7bb7e174941eb0",
       "protokitsStart": "04d34f049f58ae359cf71d43466c429dac2a6d08",
       "protokitsProductionUnit": "04d34f049f58ae359cf71d43466c429dac2a6d08",
-      "experimentsStart": "1d8f821e8bcb208a00ea74289fd115b9fd5c9632",
-      "experimentsProductionUnit": "f6a218dced8331835faa499c2cee393ceeb05d52"
+      "experimentsStart": "e7920f97ed923ad3975a58416f49a70881d0de24",
+      "experimentsProductionUnit": "pending-production-commit"
     },
-    "publication": "Experiments production and publication-receipt commits published to resolved default branch main after fetch-before-push verification; ProtoKits is unchanged and synchronized at 04d34f049f58ae359cf71d43466c429dac2a6d08."
+    "publication": "Pending production and publication-receipt commits; ProtoKits is unchanged and synchronized at 04d34f049f58ae359cf71d43466c429dac2a6d08."
   },
   "exactNextUnit": {
     "phase": "playable-experiment-upgrade",
     "epoch": 0,
-    "scope": "next-ledge-windglass-branch-settle-cue",
-    "goal": "Let Windglass answer the branch release with a short mint float-settle or amber brake-settle on score, using the existing score event, camera, material, and cue owners without another state or control."
+    "scope": "next-ledge-windglass-rejoin-release-ready-cue",
+    "goal": "Add one branch-neutral high-build release-ready cue from Windglass into original anchor-11, reusing existing swing readiness and release owners so the score settle flows into recovery without another state or control."
   }
 }

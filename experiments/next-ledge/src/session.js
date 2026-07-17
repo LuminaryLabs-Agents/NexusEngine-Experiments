@@ -3,8 +3,8 @@ import { createGenericAnchorDescriptorKit } from "https://cdn.jsdelivr.net/gh/Lu
 import { createGenericModeProjectedRoute, createProjectedRoute } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-mode-projected-route/index.js";
 import { createGenericRouteProgressKit } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-route-progress-kit/index.js";
 import { createGenericTetherTraversalDomainKits, createGenericTetherTraversalPreset } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-tether-traversal-domain-kits/index.js";
-import { createNextLedgeClimbPreset } from "./climb-preset.js?v=first-swing-release-1";
-import { adaptProjectedRouteToClimbRoute, describePayoffFirstSwingReleaseCue } from "./climb-anchor-adapter.js?v=first-swing-release-1";
+import { createNextLedgeClimbPreset } from "./climb-preset.js?v=windglass-settle-1";
+import { adaptProjectedRouteToClimbRoute, describePayoffFirstSwingReleaseCue } from "./climb-anchor-adapter.js?v=windglass-settle-1";
 import { createClimbActionAdapter } from "./climb-action-adapter.js";
 
 const clamp = (v, a, b) => Math.max(a, Math.min(b, Number.isFinite(Number(v)) ? Number(v) : a));
@@ -264,6 +264,25 @@ function createInitialState(options = {}, status = "SYS_STATUS: ACTIVE") {
 
 function ledgeMap(state) {
   return Object.fromEntries((state.route?.ledges ?? []).map((ledge) => [ledge.id, ledge]));
+}
+
+function windglassScoreSettle(state) {
+  const payoff = ledgeMap(state)[state.routeChoice?.payoffTargetId];
+  const metadata = payoff?.metadata;
+  const style = metadata?.routeChoiceWindglassSettleStyle;
+  if (!style) return null;
+  return {
+    style,
+    frames: Math.max(1, Math.floor(n(metadata.routeChoiceWindglassSettleFrames, 1))),
+    color: Math.max(0, Math.floor(n(metadata.routeChoiceWindglassSettleColor, 0xe4fbff))),
+    angularVelocityMultiplier: clamp(n(metadata.routeChoiceWindglassSettleAngularVelocityMultiplier, 1), 0, 1),
+    cameraImpulse: clamp(n(metadata.routeChoiceWindglassSettleCameraImpulse, 0.24), 0, 1),
+    scaleX: clamp(n(metadata.routeChoiceWindglassSettleScaleX, 1), 0.5, 1.5),
+    scaleY: clamp(n(metadata.routeChoiceWindglassSettleScaleY, 1), 0.5, 1.5),
+    prompt: metadata.routeChoiceWindglassSettlePrompt,
+    objective: metadata.routeChoiceWindglassSettleObjective,
+    status: metadata.routeChoiceWindglassSettleStatus
+  };
 }
 
 function openingWindStage(state) {
@@ -880,20 +899,29 @@ function lock(state, ledge) {
   } else if (state.routeChoice?.status === "convergence-active" && ledge.id === state.routeChoice.convergenceAnchorId) {
     const shortcut = state.routeChoice.selectedRole === "pressure-shortcut";
     const scoreValue = Math.max(0, Math.round(n(state.routeChoice.scoreValue)));
+    const settle = windglassScoreSettle(state);
     state.routeChoice.status = "rejoin-active";
     state.routeChoice.convergenceScore = {
       metric: state.routeChoice.scoreMetric,
       value: scoreValue,
       selectedRole: state.routeChoice.selectedRole
     };
-    state.camera.trauma = Math.max(state.camera.trauma ?? 0, 0.38);
-    state.status = scoreCopy(shortcut ? ledge.metadata?.routeChoiceRejoinShortcutStatus : ledge.metadata?.routeChoiceRejoinSafeStatus, scoreValue);
+    state.player.aVel *= settle?.angularVelocityMultiplier ?? 1;
+    state.camera.trauma = Math.max(state.camera.trauma ?? 0, settle?.cameraImpulse ?? 0.38);
+    state.status = scoreCopy(settle?.status ?? (shortcut ? ledge.metadata?.routeChoiceRejoinShortcutStatus : ledge.metadata?.routeChoiceRejoinSafeStatus), scoreValue);
     addEvent(state, "windglass-relay-scored", {
       targetId: ledge.id,
       routeChoiceId: state.routeChoice.id,
       selectedRole: state.routeChoice.selectedRole,
       scoreMetric: state.routeChoice.scoreMetric,
-      scoreValue
+      scoreValue,
+      settleStyle: settle?.style,
+      settleFrames: settle?.frames,
+      settleColor: settle?.color,
+      settleScaleX: settle?.scaleX,
+      settleScaleY: settle?.scaleY,
+      settlePrompt: settle?.prompt,
+      settleObjective: settle?.objective
     });
     addEvent(state, "windglass-rejoin-opened", {
       targetId: state.routeChoice.genericRejoinAnchorId,

@@ -1,4 +1,4 @@
-import { describePayoffFirstSwingReleaseCue } from "./climb-anchor-adapter.js?v=first-swing-release-1";
+import { describePayoffFirstSwingReleaseCue, describeWindglassScoreSettle } from "./climb-anchor-adapter.js?v=windglass-settle-1";
 
 const pct = (value, max = 100) => `${Math.round(Math.max(0, value) / Math.max(1, max) * 100)}%`;
 const number = (value, fallback = 0) => Number.isFinite(Number(value)) ? Number(value) : fallback;
@@ -17,7 +17,7 @@ function confirmationTarget(snapshot) {
   return snapshot.route?.ledges?.find((ledge) => ledge.id === snapshot.routeChoice?.postRejoinAnchorId);
 }
 
-function promptFor(snapshot, firstSwingReleaseCue = describePayoffFirstSwingReleaseCue(snapshot)) {
+function promptFor(snapshot, firstSwingReleaseCue = describePayoffFirstSwingReleaseCue(snapshot), windglassSettle = describeWindglassScoreSettle(snapshot)) {
   const transition = snapshot.sectorTransition;
   const choice = snapshot.routeChoice;
   const ledges = snapshot.route?.ledges ?? [];
@@ -91,6 +91,10 @@ function promptFor(snapshot, firstSwingReleaseCue = describePayoffFirstSwingRele
       : `WINDGLASS RELAY — Preserve ${Math.round(number(choice.scoreValue))} speed`,
     tone: "success"
   };
+  if (choice?.status === "rejoin-active" && windglassSettle) return {
+    text: windglassSettle.prompt ?? "WINDGLASS SETTLE — Score banked · recover high",
+    tone: choice.selectedRole === "pressure-shortcut" ? "amber" : "mint"
+  };
   if (choice?.status === "rejoin-active") return {
     text: "REJOIN WINDOW — Build high · Fire for cyan ascent anchor",
     tone: "success"
@@ -127,7 +131,8 @@ export function createHud(nodes = {}) {
       const cargoMax = Math.max(1, number(cargo?.max, 1));
       const pressurePercent = Math.round(number(pressure?.value) / Math.max(1, number(pressure?.max, 100)) * 100);
       const firstSwingReleaseCue = describePayoffFirstSwingReleaseCue(snapshot);
-      const prompt = promptFor(snapshot, firstSwingReleaseCue);
+      const windglassSettle = describeWindglassScoreSettle(snapshot);
+      const prompt = promptFor(snapshot, firstSwingReleaseCue, windglassSettle);
       const postRejoinTarget = confirmationTarget(snapshot);
       if (status && statusText !== lastStatus) {
         status.textContent = statusText;
@@ -167,6 +172,8 @@ export function createHud(nodes = {}) {
           ? snapshot.routeChoice.selectedRole === "pressure-shortcut"
             ? `Cacheline High banked ${Math.round(number(snapshot.routeChoice.scoreValue))} cargo mastery. Carry it into the shared Windglass Relay catch.`
             : `Slipstream Launch preserved ${Math.round(number(snapshot.routeChoice.scoreValue))} speed. Carry it into the shared Windglass Relay catch.`
+        : snapshot.routeChoice?.status === "rejoin-active" && windglassSettle
+          ? windglassSettle.objective ?? "Windglass is holding the branch score for one beat. Recover high into the protected cyan rejoin."
         : snapshot.routeChoice?.status === "rejoin-active"
           ? `Windglass banked ${Math.round(number(snapshot.routeChoice.scoreValue))} ${snapshot.routeChoice.scoreMetric === "cargo-mastery" ? "cargo mastery" : "speed"}. Build above the relay and fire for the bright cyan ascent anchor; this catch has a protected recovery window.`
         : snapshot.completed

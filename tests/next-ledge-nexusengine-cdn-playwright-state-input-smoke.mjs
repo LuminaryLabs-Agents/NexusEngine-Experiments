@@ -74,6 +74,8 @@ assert.match(climbAdapter, /routeChoicePayoffLatchRecoilSquashX/, "route adapter
 assert.match(climbAdapter, /describePayoffFirstSwingReleaseCue/, "one descriptor consumer should derive the branch release window for session and HUD");
 assert.match(climbAdapter, /routeChoiceFirstSwingReleaseMinDirectedAngle/, "route adapter should preserve the authored branch release angle");
 assert.match(climbAdapter, /routeChoiceFirstSwingReleaseVelocityMultiplier/, "route adapter should preserve the authored branch release motion tuning");
+assert.match(climbAdapter, /routeChoiceWindglassSettleStyle/, "route adapter should preserve authored Windglass branch settle tuning");
+assert.match(climbAdapter, /describeWindglassScoreSettle/, "presentation should derive the bounded settle from the existing score event");
 assert.match(session, /routeChoice: createInitialRouteChoice/, "session should own one deterministic route-choice state");
 assert.match(session, /route-choice-skipped/, "unselected branch should reconcile through the existing route-progress ledger");
 assert.match(session, /protectedRecoveryWindow/, "the safe consequence should extend the existing recovery window rather than add a second recovery owner");
@@ -97,6 +99,7 @@ assert.match(session, /post-stormlock-payoff-opened/, "Stormlock should open one
 assert.match(session, /post-stormlock-payoff-secured/, "the selected payoff anchor should advance the existing route-choice state");
 assert.match(session, /convergence-active/, "the existing route-choice state should own the shared convergence beat");
 assert.match(session, /windglass-relay-scored/, "Windglass Relay should publish one semantic branch score event");
+assert.match(session, /state\.player\.aVel \*= settle\?\.angularVelocityMultiplier/, "Windglass should resolve mint float and amber brake through the existing motion owner");
 assert.match(session, /windglass-rejoin-opened/, "Windglass Relay should publish one semantic generic-rejoin event");
 assert.match(session, /windglass-rejoin-secured/, "the original generic anchor should publish one semantic rejoin confirmation");
 assert.match(session, /convergenceScore/, "the branch score should remain inside the existing route-choice state");

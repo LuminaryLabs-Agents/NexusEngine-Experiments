@@ -36,11 +36,13 @@ export function describePayoffFirstSwingReleaseCue(snapshot = {}) {
   const minSpeed = Math.max(0, finite(metadata.routeChoiceFirstSwingReleaseMinDirectedSpeed));
   const directedAngle = direction * finite(snapshot.player?.angle);
   const directedSpeed = direction * finite(snapshot.player?.aVel);
+  const directionLabel = direction < 0 ? "left" : "right";
+  const directionalCopy = (value) => typeof value === "string" ? value.replaceAll("{direction}", directionLabel) : value;
   return {
     targetId: convergence.id,
     style,
     direction,
-    directionLabel: direction < 0 ? "left" : "right",
+    directionLabel,
     minAngle,
     maxAngle,
     minSpeed,
@@ -51,11 +53,33 @@ export function describePayoffFirstSwingReleaseCue(snapshot = {}) {
     liftImpulse: Math.max(0, finite(metadata.routeChoiceFirstSwingReleaseLiftImpulse)),
     cameraImpulse: Math.max(0, Math.min(1, finite(metadata.routeChoiceFirstSwingReleaseCameraImpulse))),
     color: Math.max(0, Math.floor(finite(metadata.routeChoiceFirstSwingReleaseColor, choice.selectedRole === "pressure-shortcut" ? 0xffb83d : 0x3dffa3))),
-    buildPrompt: metadata.routeChoiceFirstSwingReleaseBuildPrompt,
-    prompt: metadata.routeChoiceFirstSwingReleasePrompt,
-    objective: metadata.routeChoiceFirstSwingReleaseObjective,
-    status: metadata.routeChoiceFirstSwingReleaseStatus
+    buildPrompt: directionalCopy(metadata.routeChoiceFirstSwingReleaseBuildPrompt),
+    prompt: directionalCopy(metadata.routeChoiceFirstSwingReleasePrompt),
+    objective: directionalCopy(metadata.routeChoiceFirstSwingReleaseObjective),
+    status: directionalCopy(metadata.routeChoiceFirstSwingReleaseStatus)
   };
+}
+
+export function describeWindglassScoreSettle(snapshot = {}) {
+  if (snapshot.routeChoice?.status !== "rejoin-active") return null;
+  const events = snapshot.recentEvents ?? [];
+  for (let index = events.length - 1; index >= 0; index -= 1) {
+    const event = events[index];
+    if (event.type !== "windglass-relay-scored" || !event.settleStyle) continue;
+    const frames = Math.max(1, Math.floor(finite(event.settleFrames, 1)));
+    const age = finite(snapshot.frame) - finite(event.at);
+    if (age < 0 || age > frames) return null;
+    return {
+      style: event.settleStyle,
+      color: Math.max(0, Math.floor(finite(event.settleColor, 0xe4fbff))),
+      strength: Math.max(0, Math.min(1, 1 - age / frames)),
+      scaleX: Math.max(0.5, finite(event.settleScaleX, 1)),
+      scaleY: Math.max(0.5, finite(event.settleScaleY, 1)),
+      prompt: event.settlePrompt,
+      objective: event.settleObjective
+    };
+  }
+  return null;
 }
 
 function choiceBeatLedge(source, beat, choiceId, defaultStaminaRestore = 45) {
@@ -112,6 +136,16 @@ function choiceBeatLedge(source, beat, choiceId, defaultStaminaRestore = 45) {
       routeChoiceFirstSwingReleasePrompt: beat.firstSwingReleasePrompt ?? null,
       routeChoiceFirstSwingReleaseObjective: beat.firstSwingReleaseObjective ?? null,
       routeChoiceFirstSwingReleaseStatus: beat.firstSwingReleaseStatus ?? null,
+      routeChoiceWindglassSettleStyle: beat.windglassSettleStyle ?? null,
+      routeChoiceWindglassSettleFrames: Number(beat.windglassSettleFrames ?? 0),
+      routeChoiceWindglassSettleColor: Number(beat.windglassSettleColor ?? 0),
+      routeChoiceWindglassSettleAngularVelocityMultiplier: Number(beat.windglassSettleAngularVelocityMultiplier ?? 1),
+      routeChoiceWindglassSettleCameraImpulse: Number(beat.windglassSettleCameraImpulse ?? 0),
+      routeChoiceWindglassSettleScaleX: Number(beat.windglassSettleScaleX ?? 1),
+      routeChoiceWindglassSettleScaleY: Number(beat.windglassSettleScaleY ?? 1),
+      routeChoiceWindglassSettlePrompt: beat.windglassSettlePrompt ?? null,
+      routeChoiceWindglassSettleObjective: beat.windglassSettleObjective ?? null,
+      routeChoiceWindglassSettleStatus: beat.windglassSettleStatus ?? null,
       routeChoiceAimAssistBonus: Number(beat.aimAssistBonus ?? 0),
       routeChoiceAimAssistMinBuildAngle: Number(beat.aimAssistMinBuildAngle ?? 0),
       routeChoiceAimAssistLeadX: Number(beat.aimAssistLeadX ?? 0),

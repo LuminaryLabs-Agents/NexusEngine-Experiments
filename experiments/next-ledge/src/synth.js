@@ -129,7 +129,13 @@ export function createCinematicSynth() {
       setTimeout(() => tone(event.selectedRole === "pressure-shortcut" ? 440 : 523.25, 0.38, "sine", 0.055, 1046.5), 90);
     }
     else if (type === "windglass-relay-scored") {
-      [659.25, 987.77, 1318.5, 1975.53].forEach((frequency, index) => setTimeout(() => tone(frequency, 0.46, index % 2 ? "triangle" : "sine", 0.065, frequency * 1.16), index * 68));
+      if (event.settleStyle === "amber-brake-settle") {
+        tone(164.81, 0.38, "sawtooth", 0.12, 55);
+        setTimeout(() => tone(987.77, 0.14, "triangle", 0.075, 493.88), 48);
+        setTimeout(() => tone(659.25, 0.24, "sine", 0.06, 880), 118);
+      } else {
+        [523.25, 783.99, 1174.66, 1760].forEach((frequency, index) => setTimeout(() => tone(frequency, 0.5, index % 2 ? "triangle" : "sine", 0.058, frequency * 1.28), index * 74));
+      }
     }
     else if (type === "windglass-rejoin-secured") {
       tone(659.25, 0.08, "triangle", 0.045, 987.77);

@@ -20,6 +20,8 @@ Stormlock now pays that choice off immediately. Shelter Rise converts its protec
 
 Both rewards now converge at the shared Windglass Relay before generic ascent resumes. The safe line banks a visible `134` preserved-speed score; the shortcut banks `175` cargo mastery. Windglass then opens one branch-neutral rejoin phase: the camera frames the live player against a larger cyan original `anchor-11`, the hero prompt calls for a high build, and the existing recovery path grants extra fail-floor and aim-assist room for a missed first shot. Securing that preserved projected-route anchor resolves the same route-choice state. The renderer reuses the bounded consequence line and target entity, while HUD, audio, and effects consume the same semantic events without adding a control, DOM entity, or second state owner.
 
+Windglass now answers the branch at score time instead of immediately washing both lines back to cyan. Slipstream preserves a `24`-frame mint float with softer angular settling; Cacheline lands as a `16`-frame amber brake with a firmer camera snap and compressed motion. The selected payoff descriptor authors the tuning and direction-aware release copy. The existing score event carries it through the existing tether, camera, material, player-scale, spark, HUD, and synth owners; no new state, timer, control, event type, material, entity, or effect pool is introduced.
+
 The amber shortcut now vents its retained pressure visibly during the physical Stormlock reel. Four descriptor-authored pulses route recovery through the existing route-cargo pressure facade, while the authoritative pressure meter, one pulse-stage status, the existing consequence line and beam, bounded sparks, camera response, and audio expose progress before lock. No second pressure value, meter, entity, or control is introduced.
 
 Stormlock lock now holds one branch-aware confirmation for `24` deterministic route frames before the next payoff opens. The shortcut keeps its explicit zero-pressure result on screen while Cacheline accepts the banked cargo; the safe route confirms its protected catch while Slipstream charges. Authored timing and copy stay in the route descriptor, and the existing route-choice phase, frame counter, target, beam, HUD, and payoff event remain the only owners.
@@ -104,5 +106,7 @@ HUD owns:
 ```
 
 The sector-two payoff's first swing uses descriptor-authored branch release bands. The safe line asks for a mint glide window; the shortcut asks for a tighter amber aftershock. Readiness derives from the existing route choice, payoff anchor, swing angle, and angular velocity, while the original release event and presentation owners carry motion and feedback.
+
+The Windglass score uses descriptor-authored branch settle tuning. Presentation derives the bounded mint float or amber brake from the existing score-event age and restores the shared rejoin materials once that beat expires.
 
 See `PLAN.md` plus the route progress and route-cargo manifests for the remaining deterministic replay promotion gate.

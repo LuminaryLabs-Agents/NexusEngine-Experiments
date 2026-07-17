@@ -26,18 +26,18 @@
       "id": "next-ledge-grapple",
       "lifecycleStatus": "active-legacy-baseline",
       "score": 99,
-      "lastImprovedAt": "2026-07-17T03:08:05-04:00",
+      "lastImprovedAt": "2026-07-17T04:31:04-04:00",
       "feelScores": {
         "responsiveness": 9,
         "predictability": 9,
         "readability": 9,
-        "impact": 9,
-        "recovery": 8,
+        "impact": 10,
+        "recovery": 9,
         "delight": 9,
         "replayDesire": 9,
-        "average": 8.9
+        "average": 9.1
       },
-      "nextFeelProblem": "Let Windglass answer the branch release with a short mint float-settle or amber brake-settle on score, using the existing score event, camera, material, and cue owners without another state or control."
+      "nextFeelProblem": "Add one branch-neutral high-build release-ready cue from Windglass into original anchor-11, reusing existing swing readiness and release owners so the score settle flows into recovery without another state or control."
     },
     {
       "id": "rogue-lite-hellscape-siege",

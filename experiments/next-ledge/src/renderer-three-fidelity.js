@@ -1,5 +1,6 @@
 import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js";
-import { createDiegeticEffects, describeFirstSwingReleaseSurge, updateDiegeticPlayerSignals } from "./diegetic-effects.js?v=first-swing-release-1";
+import { createDiegeticEffects, describeFirstSwingReleaseSurge, updateDiegeticPlayerSignals } from "./diegetic-effects.js?v=windglass-settle-1";
+import { describeWindglassScoreSettle } from "./climb-anchor-adapter.js?v=windglass-settle-1";
 
 const matFor = (m, type, hover, routeChoiceRole = null) => hover
   ? m.hover
@@ -236,6 +237,7 @@ export function createThreeRenderer({ canvas }) {
   let presentedCameraZ = null;
   let lastEffectTime = performance.now() / 1000;
   let payoffSurgeApplied = false;
+  let windglassSettleApplied = false;
   const ledgeMap = new Map();
   const parallaxGroups = new Map();
 
@@ -520,6 +522,7 @@ export function createThreeRenderer({ canvas }) {
     const confirmationHandoff = confirmationHandoffProgress(snapshot, postRejoin);
     const payoffSurge = payoffGrappleSurge(snapshot, payoffTarget);
     const releaseSurge = describeFirstSwingReleaseSurge(snapshot);
+    const windglassSettle = describeWindglassScoreSettle(snapshot);
     const payoffCameraZoomBonus = num(payoffTarget?.metadata?.routeChoicePayoffCameraZoomBonus, 0);
     const rejoinCameraZoomBonus = num(convergenceTarget?.metadata?.routeChoiceGenericRejoinCameraZoomBonus, 0);
     const choiceCameraY = snapshot.routeChoice?.status === "rejoin-active" && genericRejoinTarget
@@ -564,7 +567,7 @@ export function createThreeRenderer({ canvas }) {
         ? [anchor(choice.postRejoinAnchorId), anchor(choice.payoffTargetId)]
         : [anchor(choice.rejoinAnchorId), anchor(choice.postRejoinAnchorId)];
       setLine(consequenceLine, points.filter(Boolean).map(({ x, y }) => ({ x, y, z: 24 })));
-      consequenceLine.material.color.setHex(choice.status === "rejoin-active" ? 0x77e8ff : choice.selectedRole === "pressure-shortcut" ? 0xffb83d : 0x3dffa3);
+      consequenceLine.material.color.setHex(windglassSettle?.color ?? (choice.status === "rejoin-active" ? 0x77e8ff : choice.selectedRole === "pressure-shortcut" ? 0xffb83d : 0x3dffa3));
       const ventProgress = choice.status === "consequence-active" && choice.selectedRole === "pressure-shortcut" ? clamp01(num(choice.ventProgress, 0)) : 0;
       consequenceLine.material.opacity = choice.status === "confirmation-active"
         ? 0.34 + confirmationHandoff * 0.5 + (0.5 + 0.5 * Math.sin(time * 9)) * 0.08
@@ -609,7 +612,11 @@ export function createThreeRenderer({ canvas }) {
         beam.visible = ["consequence-active", "confirmation-active", "resolved"].includes(choice?.status);
         beam.material.color.setHex(choice?.selectedRole === "pressure-shortcut" ? 0xffb83d : 0x3dffa3);
       }
-      if (windglassBeam) beam.visible = ["convergence-active", "rejoin-active", "resolved"].includes(choice?.status);
+      if (windglassBeam) {
+        beam.visible = ["convergence-active", "rejoin-active", "resolved"].includes(choice?.status);
+        if (windglassSettle) beam.material.color.setHex(windglassSettle.color);
+        else if (windglassSettleApplied) beam.material.color.setHex(0x3dffa3);
+      }
       beam.material.opacity = beam.userData.type === "summit"
         ? (snapshot.completed ? 0.58 : 0.14) + Math.sin(time * (snapshot.completed ? 5.2 : 2.2)) * (snapshot.completed ? 0.16 : 0.04)
         : windglassBeam ? 0.46 + Math.sin(time * 8.5) * 0.18
@@ -631,10 +638,27 @@ export function createThreeRenderer({ canvas }) {
     }
 
     player.position.set(snapshot.player.x, snapshot.player.y, snapshot.player.z ?? 1);
-    player.scale.set(snapshot.player.scaleX ?? 1, snapshot.player.scaleY ?? 1, snapshot.player.scaleZ ?? 1);
+    if (windglassSettle) {
+      player.scale.set(
+        (snapshot.player.scaleX ?? 1) * (1 + (windglassSettle.scaleX - 1) * windglassSettle.strength),
+        (snapshot.player.scaleY ?? 1) * (1 + (windglassSettle.scaleY - 1) * windglassSettle.strength),
+        snapshot.player.scaleZ ?? 1
+      );
+    } else player.scale.set(snapshot.player.scaleX ?? 1, snapshot.player.scaleY ?? 1, snapshot.player.scaleZ ?? 1);
     player.rotation.x = snapshot.player.rotationX ?? 0;
     player.rotation.y = snapshot.player.rotationY ?? 0;
-    updateDiegeticPlayerSignals({ snapshot, playerMaterial: m.player, staminaHalo, dangerHalo, modeLight, dangerLight, releaseSurge });
+    if (windglassSettle) {
+      m.windglass.color.setHex(windglassSettle.color);
+      m.windglass.emissive.setHex(windglassSettle.color);
+      m.windglass.emissiveIntensity = 3.8 + windglassSettle.strength * 2.5;
+      windglassSettleApplied = true;
+    } else if (windglassSettleApplied) {
+      m.windglass.color.setHex(0xe4fbff);
+      m.windglass.emissive.setHex(0x77e8ff);
+      m.windglass.emissiveIntensity = 3.8;
+      windglassSettleApplied = false;
+    }
+    updateDiegeticPlayerSignals({ snapshot, playerMaterial: m.player, staminaHalo, dangerHalo, modeLight, dangerLight, releaseSurge, windglassSettle });
 
     probe.visible = Boolean(snapshot.probe?.visible);
     probe.position.set(snapshot.probe?.x ?? 0, snapshot.probe?.y ?? 0, snapshot.probe?.z ?? 1);
