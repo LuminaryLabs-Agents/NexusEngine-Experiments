@@ -11,6 +11,10 @@ function pressureState(snapshot) {
   return state?.channelsById?.["fall-pressure"] ?? state?.channels?.find?.((item) => item.id === "fall-pressure") ?? null;
 }
 
+function confirmationTarget(snapshot) {
+  return snapshot.route?.ledges?.find((ledge) => ledge.id === snapshot.routeChoice?.postRejoinAnchorId);
+}
+
 function promptFor(snapshot) {
   const transition = snapshot.sectorTransition;
   const choice = snapshot.routeChoice;
@@ -20,6 +24,7 @@ function promptFor(snapshot) {
   const shortcutDirection = Math.sign(number(shortcutTarget?.x) - number(choiceRest?.x)) || 1;
   const shortcutHighBuild = snapshot.mode === "swinging" && shortcutDirection * number(snapshot.player?.angle) >= 2;
   const rejoinTarget = ledges.find((ledge) => ledge.id === choice?.rejoinAnchorId);
+  const postRejoinTarget = confirmationTarget(snapshot);
   const currentAnchor = ledges.find((ledge) => ledge.id === snapshot.currentAnchorId);
   const carryDirection = Math.sign(number(rejoinTarget?.x) - number(currentAnchor?.x)) || 1;
   const carryMinBuild = number(rejoinTarget?.metadata?.routeChoiceShortcutCarryAimAssistMinBuildAngle);
@@ -58,6 +63,12 @@ function promptFor(snapshot) {
   if (choice?.status === "consequence-active") return {
     text: choice.selectedRole === "pressure-shortcut" ? "AMBER PRESSURE — Grapple Stormlock Restore to vent" : "MINT WINDOW — Protected grapple to Stormlock Restore",
     tone: choice.selectedRole === "pressure-shortcut" ? "danger" : "success"
+  };
+  if (choice?.status === "confirmation-active") return {
+    text: choice.selectedRole === "pressure-shortcut"
+      ? postRejoinTarget?.metadata?.routeChoiceConfirmationShortcutPrompt ?? "ZERO PRESSURE — Stormlock vent secured"
+      : postRejoinTarget?.metadata?.routeChoiceConfirmationSafePrompt ?? "STORMLOCK STABLE — Mint launch charging",
+    tone: "success"
   };
   if (choice?.status === "payoff-active") return {
     text: choice.selectedRole === "pressure-shortcut" ? "AMBER HIGH LINE — Commit to Cacheline High" : "MINT OVERCHARGE — Fire for Slipstream Launch",
@@ -105,6 +116,7 @@ export function createHud(nodes = {}) {
       const cargoMax = Math.max(1, number(cargo?.max, 1));
       const pressurePercent = Math.round(number(pressure?.value) / Math.max(1, number(pressure?.max, 100)) * 100);
       const prompt = promptFor(snapshot);
+      const postRejoinTarget = confirmationTarget(snapshot);
       if (status && statusText !== lastStatus) {
         status.textContent = statusText;
         lastStatus = statusText;
@@ -129,6 +141,10 @@ export function createHud(nodes = {}) {
           ? snapshot.routeChoice.selectedRole === "pressure-shortcut"
             ? "Retained pressure is still live. Grapple the amber-marked Stormlock Restore to deliberately vent it."
             : "Shelter Rise earned one protected grapple window. Use it now to secure Stormlock Restore."
+        : snapshot.routeChoice?.status === "confirmation-active"
+          ? snapshot.routeChoice.selectedRole === "pressure-shortcut"
+            ? postRejoinTarget?.metadata?.routeChoiceConfirmationShortcutObjective ?? "Fall pressure is zero. Hold one beat while Cacheline accepts the banked signal cargo."
+            : postRejoinTarget?.metadata?.routeChoiceConfirmationSafeObjective ?? "Stormlock has secured the shelter protection. Hold one beat while Slipstream charges."
         : snapshot.routeChoice?.status === "payoff-active"
           ? snapshot.routeChoice.selectedRole === "pressure-shortcut"
             ? "Your banked signal cargo unlocked Cacheline High. Build one rightward arc and fire through the smaller amber catch."

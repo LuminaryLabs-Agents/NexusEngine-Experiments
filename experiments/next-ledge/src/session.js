@@ -3,8 +3,8 @@ import { createGenericAnchorDescriptorKit } from "https://cdn.jsdelivr.net/gh/Lu
 import { createGenericModeProjectedRoute, createProjectedRoute } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-mode-projected-route/index.js";
 import { createGenericRouteProgressKit } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-route-progress-kit/index.js";
 import { createGenericTetherTraversalDomainKits, createGenericTetherTraversalPreset } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-tether-traversal-domain-kits/index.js";
-import { createNextLedgeClimbPreset } from "./climb-preset.js?v=stormlock-vent-1";
-import { adaptProjectedRouteToClimbRoute } from "./climb-anchor-adapter.js?v=stormlock-vent-1";
+import { createNextLedgeClimbPreset } from "./climb-preset.js?v=stormlock-confirmation-1";
+import { adaptProjectedRouteToClimbRoute } from "./climb-anchor-adapter.js?v=stormlock-confirmation-1";
 import { createClimbActionAdapter } from "./climb-action-adapter.js";
 
 const clamp = (v, a, b) => Math.max(a, Math.min(b, Number.isFinite(Number(v)) ? Number(v) : a));
@@ -117,7 +117,8 @@ function createInitialRouteChoice(route) {
     ventRequired: false,
     ventStage: 0,
     ventProgress: 0,
-    ventRecovered: 0
+    ventRecovered: 0,
+    confirmationEndsAtFrame: null
   };
 }
 
@@ -287,6 +288,13 @@ function openingWindStage(state) {
       resolved: choice.selectedRole !== "pressure-shortcut" || ventProgress >= 1
     };
   }
+  if (choice?.status === "confirmation-active") {
+    return {
+      phase: choice.selectedRole === "pressure-shortcut" ? "stormlock-zero-confirmed" : "stormlock-protection-confirmed",
+      intensity: choice.selectedRole === "pressure-shortcut" ? 0.12 : 0.06,
+      resolved: true
+    };
+  }
   if (choice?.status === "payoff-active") {
     return {
       phase: choice.selectedRole === "pressure-shortcut" ? "cacheline-high" : "slipstream-launch",
@@ -358,6 +366,7 @@ function enabledTargets(state) {
       if (choice.status === "committed" && state.currentAnchorId !== choice.rejoinAnchorId) return ledge.id === choice.rejoinAnchorId;
       if (choice.status === "committed" && ledge.id === choice.unselectedAnchorId) return false;
       if (choice.status === "consequence-active") return ledge.id === choice.postRejoinAnchorId;
+      if (choice.status === "confirmation-active") return false;
       if (choice.status === "payoff-active") return ledge.id === choice.payoffTargetId;
       if (choice.status === "convergence-active") return ledge.id === choice.convergenceAnchorId;
       if (choice.status === "rejoin-active") return ledge.id === choice.genericRejoinAnchorId;
@@ -620,6 +629,32 @@ function updateStormlockVent(state, anchor) {
   });
 }
 
+function openPostStormlockPayoff(state) {
+  const choice = state.routeChoice;
+  if (choice?.status !== "confirmation-active") return;
+  const payoff = ledgeMap(state)[choice.payoffTargetId];
+  choice.status = "payoff-active";
+  choice.confirmationEndsAtFrame = null;
+  state.status = payoff?.metadata?.routeChoiceStatus ?? (choice.selectedRole === "pressure-shortcut"
+    ? "Signal cache committed. Load right, then release through Cacheline High."
+    : "Shelter protection converted. Fire through Slipstream Launch.");
+  addEvent(state, "post-stormlock-payoff-opened", {
+    targetId: choice.payoffTargetId,
+    routeChoiceId: choice.id,
+    selectedRole: choice.selectedRole,
+    cargoRequired: n(payoff?.metadata?.routeChoiceCargoRequired, 0),
+    speedMultiplier: n(payoff?.metadata?.routeChoiceLaunchSpeedMultiplier, 1),
+    liftBonus: n(payoff?.metadata?.routeChoiceLaunchLiftBonus, 0),
+    gustIntensity: n(payoff?.metadata?.routeChoiceGustIntensity, 0)
+  });
+}
+
+function updateStormlockConfirmation(state) {
+  const choice = state.routeChoice;
+  if (choice?.status !== "confirmation-active") return;
+  if (state.frame >= n(choice.confirmationEndsAtFrame, state.frame)) openPostStormlockPayoff(state);
+}
+
 function lock(state, ledge) {
   state.currentAnchorId = ledge.id;
   state.lastLedgeId = ledge.id;
@@ -726,15 +761,15 @@ function lock(state, ledge) {
     });
   } else if (state.routeChoice?.status === "consequence-active" && ledge.id === state.routeChoice.postRejoinAnchorId) {
     const role = state.routeChoice.selectedRole;
-    state.routeChoice.status = "payoff-active";
+    state.routeChoice.status = "confirmation-active";
     state.routeChoice.protectedGrapplesRemaining = 0;
     state.routeChoice.ventRequired = false;
     state.routeChoice.payoffTargetId = role === "pressure-shortcut"
       ? state.routeChoice.payoffShortcutAnchorId
       : state.routeChoice.payoffSafeAnchorId;
-    const payoff = ledgeMap(state)[state.routeChoice.payoffTargetId];
+    state.routeChoice.confirmationEndsAtFrame = state.frame + Math.max(1, Math.floor(n(ledge.metadata?.routeChoiceConfirmationFrames, 24)));
     if (role === "pressure-shortcut") {
-      state.status = payoff?.metadata?.routeChoiceStatus ?? ledge.metadata?.routeChoiceResolvedShortcutStatus ?? "Retained pressure vented. Stormlock Restore secured.";
+      state.status = ledge.metadata?.routeChoiceResolvedShortcutStatus ?? "Stormlock vent secured. Retained signal pressure released.";
       addEvent(state, "post-rejoin-pressure-vented", {
         targetId: ledge.id,
         routeChoiceId: state.routeChoice.id,
@@ -742,21 +777,19 @@ function lock(state, ledge) {
         pressureRecovery: Math.max(0, n(ledge.metadata?.routeChoicePressureRecovery, 100) - n(state.routeChoice.ventRecovered, 0))
       });
     } else {
-      state.status = payoff?.metadata?.routeChoiceStatus ?? ledge.metadata?.routeChoiceResolvedSafeStatus ?? "Protected grapple confirmed. Stormlock Restore secured.";
+      state.status = ledge.metadata?.routeChoiceResolvedSafeStatus ?? "Protected catch confirmed. Stormlock Restore is stable.";
       addEvent(state, "post-rejoin-protected-grapple-consumed", {
         targetId: ledge.id,
         routeChoiceId: state.routeChoice.id,
         selectedRole: role
       });
     }
-    addEvent(state, "post-stormlock-payoff-opened", {
-      targetId: state.routeChoice.payoffTargetId,
+    addEvent(state, "stormlock-confirmation-started", {
+      targetId: ledge.id,
       routeChoiceId: state.routeChoice.id,
       selectedRole: role,
-      cargoRequired: n(payoff?.metadata?.routeChoiceCargoRequired, 0),
-      speedMultiplier: n(payoff?.metadata?.routeChoiceLaunchSpeedMultiplier, 1),
-      liftBonus: n(payoff?.metadata?.routeChoiceLaunchLiftBonus, 0),
-      gustIntensity: n(payoff?.metadata?.routeChoiceGustIntensity, 0)
+      confirmationFrames: Math.max(1, Math.floor(n(ledge.metadata?.routeChoiceConfirmationFrames, 24))),
+      pressureRemaining: 0
     });
   } else if (state.routeChoice?.status === "payoff-active" && ledge.id === state.routeChoice.payoffTargetId) {
     const convergence = ledgeMap(state)[state.routeChoice.convergenceAnchorId];
@@ -842,6 +875,7 @@ function fail(state, reason) {
 
 function command(state) {
   if (["dead", "won"].includes(state.mode)) return;
+  if (state.routeChoice?.status === "confirmation-active") return;
   if (state.mode === "swinging" || state.mode === "reeling") release(state);
   else if (state.mode === "falling") launch(state);
   else if (state.mode === "launched") { state.mode = "retracting"; state.status = "Grapple retracting."; }
@@ -959,6 +993,7 @@ function updateDerived(state) {
 function stepState(state, dt) {
   if (!state.paused && !["dead", "won"].includes(state.mode)) {
     state.frame += 1;
+    updateStormlockConfirmation(state);
     state.wind.offset += (0.045 + n(state.wind.intensity, 0) * 0.035) * dt * 60;
     if (!["swinging", "falling", "retracting"].includes(state.mode)) state.input.axis = 0;
     if (state.mode === "swinging") stepSwing(state, dt);

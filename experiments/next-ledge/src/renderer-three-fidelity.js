@@ -351,7 +351,7 @@ export function createThreeRenderer({ canvas }) {
     const ledges = snapshot.route?.ledges ?? [];
     const currentIndex = Math.max(0, ledges.findIndex((ledge) => ledge.id === snapshot.currentAnchorId));
     const choice = snapshot.routeChoice;
-    const shortcutActive = ["committed", "consequence-active", "payoff-active", "convergence-active"].includes(choice?.status) && choice.selectedRole === "pressure-shortcut";
+    const shortcutActive = ["committed", "consequence-active", "confirmation-active", "payoff-active", "convergence-active"].includes(choice?.status) && choice.selectedRole === "pressure-shortcut";
     const visible = Boolean(opening && (snapshot.sectorTransition?.phase === "opening" || currentIndex <= num(opening.endIndex, 4) || choice?.status === "open" || shortcutActive));
     counterwindField.visible = visible;
     if (!visible) return;
@@ -475,7 +475,7 @@ export function createThreeRenderer({ canvas }) {
     const trauma = clamp01(snapshot.camera?.trauma ?? 0);
     const summit = snapshot.route?.ledges?.find((ledge) => ledge.type === "summit");
     const openingReveal = snapshot.sectorTransition?.phase === "opening";
-    const choiceFraming = ["open", "consequence-active", "payoff-active", "convergence-active", "rejoin-active"].includes(snapshot.routeChoice?.status);
+    const choiceFraming = ["open", "consequence-active", "confirmation-active", "payoff-active", "convergence-active", "rejoin-active"].includes(snapshot.routeChoice?.status);
     const choiceRest = snapshot.route?.ledges?.find((ledge) => ledge.id === snapshot.routeChoice?.restAnchorId);
     const choiceRejoin = snapshot.route?.ledges?.find((ledge) => ledge.id === snapshot.routeChoice?.rejoinAnchorId);
     const postRejoin = snapshot.route?.ledges?.find((ledge) => ledge.id === snapshot.routeChoice?.postRejoinAnchorId);
@@ -490,6 +490,8 @@ export function createThreeRenderer({ canvas }) {
       ? (payoffTarget.y + convergenceTarget.y) * 0.5
       : snapshot.routeChoice?.status === "payoff-active" && payoffTarget
       ? (num(snapshot.player?.y, postRejoin?.y) + payoffTarget.y) * 0.5
+      : snapshot.routeChoice?.status === "confirmation-active" && postRejoin
+      ? postRejoin.y
       : snapshot.routeChoice?.status === "consequence-active" && choiceRejoin && postRejoin
       ? (choiceRejoin.y + postRejoin.y) * 0.5
       : choiceRest && choiceRejoin ? (choiceRest.y + choiceRejoin.y) * 0.5 : snapshot.camera?.y ?? 0;
@@ -529,7 +531,7 @@ export function createThreeRenderer({ canvas }) {
 
     const staminaPct = Math.max(0, Math.min(1, (snapshot.stamina ?? 0) / Math.max(1, snapshot.constants?.maxStamina ?? 100)));
     for (const [id, g] of ledgeMap) {
-      const unselected = ["committed", "consequence-active", "payoff-active", "convergence-active", "rejoin-active", "resolved"].includes(choice?.status) && id === choice.unselectedAnchorId;
+      const unselected = ["committed", "consequence-active", "confirmation-active", "payoff-active", "convergence-active", "rejoin-active", "resolved"].includes(choice?.status) && id === choice.unselectedAnchorId;
       const payoffAnchor = [choice?.payoffSafeAnchorId, choice?.payoffShortcutAnchorId].includes(id);
       const inactivePayoff = payoffAnchor && !(["payoff-active", "convergence-active", "rejoin-active", "resolved"].includes(choice?.status) && id === choice?.payoffTargetId);
       const convergenceAnchor = id === choice?.convergenceAnchorId;
@@ -537,16 +539,17 @@ export function createThreeRenderer({ canvas }) {
       const selected = id === choice?.selectedAnchorId;
       const carryTarget = choice?.status === "committed" && id === choice.rejoinAnchorId;
       const consequenceTarget = choice?.status === "consequence-active" && id === choice.postRejoinAnchorId;
+      const confirmationTarget = choice?.status === "confirmation-active" && id === choice.postRejoinAnchorId;
       const payoffTargetActive = choice?.status === "payoff-active" && id === choice.payoffTargetId;
       const convergenceTargetActive = choice?.status === "convergence-active" && convergenceAnchor;
       const rejoinTargetActive = choice?.status === "rejoin-active" && id === choice.genericRejoinAnchorId;
       g.visible = !unselected && !inactivePayoff && !inactiveConvergence;
-      const hot = id === snapshot.hoveredId || snapshot.enabledTargetIds?.includes(id) || id === snapshot.aimAssistTargetId || selected || consequenceTarget || payoffTargetActive || convergenceTargetActive || rejoinTargetActive;
+      const hot = id === snapshot.hoveredId || snapshot.enabledTargetIds?.includes(id) || id === snapshot.aimAssistTargetId || selected || consequenceTarget || confirmationTarget || payoffTargetActive || convergenceTargetActive || rejoinTargetActive;
       const pulse = 1 + Math.sin(time * 6 + (g.position.y || 0) * 0.01) * 0.045;
-      g.scale.setScalar((rejoinTargetActive ? 1.48 : carryTarget ? 1.34 : id === snapshot.hoveredId || id === snapshot.aimAssistTargetId ? 1.3 : hot ? 1.12 : 1) * pulse);
+      g.scale.setScalar((rejoinTargetActive ? 1.48 : carryTarget ? 1.34 : confirmationTarget ? 1.24 : id === snapshot.hoveredId || id === snapshot.aimAssistTargetId ? 1.3 : hot ? 1.12 : 1) * pulse);
       g.userData.core.material = convergenceTargetActive || rejoinTargetActive
         ? m.windglass
-        : carryTarget || consequenceTarget || payoffTargetActive
+        : carryTarget || consequenceTarget || confirmationTarget || payoffTargetActive
         ? choice.selectedRole === "pressure-shortcut" ? m.shortcutChoice : m.safeChoice
         : matFor(m, g.userData.type, id === snapshot.hoveredId || id === snapshot.aimAssistTargetId, g.userData.choiceRole);
       g.userData.halo.visible = hot || g.userData.type !== "normal" || Boolean(g.userData.choiceRole && choice?.status === "open");
@@ -554,18 +557,18 @@ export function createThreeRenderer({ canvas }) {
       g.userData.halo.rotation.z += 0.012;
     }
     for (const beam of beacons.children) {
-      beam.visible = !(["committed", "consequence-active", "payoff-active", "convergence-active", "rejoin-active", "resolved"].includes(choice?.status) && beam.userData.id === choice.unselectedAnchorId);
+      beam.visible = !(["committed", "consequence-active", "confirmation-active", "payoff-active", "convergence-active", "rejoin-active", "resolved"].includes(choice?.status) && beam.userData.id === choice.unselectedAnchorId);
       const consequenceBeam = beam.userData.id === choice?.postRejoinAnchorId;
       const windglassBeam = beam.userData.id === choice?.convergenceAnchorId;
       if (consequenceBeam) {
-        beam.visible = ["consequence-active", "resolved"].includes(choice?.status);
+        beam.visible = ["consequence-active", "confirmation-active", "resolved"].includes(choice?.status);
         beam.material.color.setHex(choice?.selectedRole === "pressure-shortcut" ? 0xffb83d : 0x3dffa3);
       }
       if (windglassBeam) beam.visible = ["convergence-active", "rejoin-active", "resolved"].includes(choice?.status);
       beam.material.opacity = beam.userData.type === "summit"
         ? (snapshot.completed ? 0.58 : 0.14) + Math.sin(time * (snapshot.completed ? 5.2 : 2.2)) * (snapshot.completed ? 0.16 : 0.04)
         : windglassBeam ? 0.46 + Math.sin(time * 8.5) * 0.18
-        : consequenceBeam ? 0.38 + Math.sin(time * 6.5) * 0.14 + clamp01(num(choice?.ventProgress, 0)) * 0.28 : 0.18 + Math.sin(time * 4.5 + beam.userData.sourceY) * 0.1;
+        : consequenceBeam ? (choice?.status === "confirmation-active" ? 0.82 : 0.38 + Math.sin(time * 6.5) * 0.14 + clamp01(num(choice?.ventProgress, 0)) * 0.28) : 0.18 + Math.sin(time * 4.5 + beam.userData.sourceY) * 0.1;
       beam.rotation.y += beam.userData.type === "summit" ? 0.003 : 0.009;
     }
     summitCelebration.visible = Boolean(summit && (snapshot.completed || ["broadcast", "handshake"].includes(snapshot.sectorTransition?.phase)));

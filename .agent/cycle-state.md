@@ -1,5 +1,11 @@
 # Cycle State
 
+## 2026-07-16 Stormlock Branch Confirmation Refinement
+
+`experiments/next-ledge/` now holds the secured Stormlock result for `24` deterministic route frames before the existing payoff opens. Descriptor-authored copy distinguishes the zero-pressure Cacheline handoff from the protected Slipstream charge; the existing route-choice phase/frame, Stormlock target/beam, HUD, and payoff event own the beat, with input suppressed only for the bounded confirmation. Playwright completed both branches through their original `134` preserved-speed and `175` cargo-mastery score contracts, verified the exact frame boundary and single payoff event, proved real failure/keyboard retry, checked Advanced closed/open/closed, held `69` DOM nodes / one canvas / `72` descriptors / `236` scene nodes, improved matched FPS from `28.76` to `29.29`, passed all 28 Next Ledge tests, and reported zero console messages. Human View passed the first screen and both branch confirmation states with diagnostics closed.
+
+Exact next playable unit: animate the existing Stormlock consequence line into the selected Slipstream or Cacheline target as confirmation ends, so the branch handoff reads before the next swing without adding a line, target, or state owner.
+
 ## 2026-07-16 Stormlock Visible Pressure Vent Refinement
 
 `experiments/next-ledge/` now turns the retained Signal Cut pressure into a four-pulse physical vent while the cable reels into Stormlock Restore. Authored cadence and copy remain in the climb preset, the existing route-choice state derives progress from the existing reel length, and the existing route-cargo pressure facade performs four idempotent recoveries; HUD, beam, consequence line, bounded sparks, camera, and audio present those semantic pulses without a new meter or entity. Human View confirmed the first screen and mid-vent state with Advanced closed; Playwright carried `46%` pressure through Fork Relay, showed the authoritative meter fall to `25%` at pulse `2/4`, reached zero at lock, continued through Cacheline and the `175`-cargo Windglass score, proved real failure/keyboard retry, held `69` DOM nodes / one canvas / `72` descriptors / `236` scene nodes, improved matched FPS from `19.61` to `21.67`, passed all 28 Next Ledge tests, and reported zero console messages.

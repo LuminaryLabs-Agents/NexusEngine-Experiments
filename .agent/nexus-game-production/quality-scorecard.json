@@ -26,18 +26,18 @@
       "id": "next-ledge-grapple",
       "lifecycleStatus": "active-legacy-baseline",
       "score": 99,
-      "lastImprovedAt": "2026-07-16T21:49:08-04:00",
+      "lastImprovedAt": "2026-07-16T22:30:53-04:00",
       "feelScores": {
         "responsiveness": 9,
         "predictability": 9,
         "readability": 9,
-        "impact": 8,
+        "impact": 9,
         "recovery": 8,
-        "delight": 8,
-        "replayDesire": 8,
-        "average": 8.4
+        "delight": 9,
+        "replayDesire": 9,
+        "average": 8.9
       },
-      "nextFeelProblem": "Keep the final zero-pressure Stormlock confirmation visible for one short branch-aware beat before the Cacheline or Slipstream payoff instruction replaces it, using the existing route-choice sequence and no new state owner."
+      "nextFeelProblem": "Animate the existing Stormlock consequence line into the selected Slipstream or Cacheline target as confirmation ends, so the branch handoff reads before the next swing without adding a line, target, or state owner."
     },
     {
       "id": "rogue-lite-hellscape-siege",

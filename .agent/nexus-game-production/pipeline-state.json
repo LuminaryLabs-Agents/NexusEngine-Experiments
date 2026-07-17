@@ -30,7 +30,7 @@
     "coreRemoteDefault": "70cc2a1590677b872d40a42f7b7bb7e174941eb0",
     "coreLocalReadOnly": "70cc2a1590677b872d40a42f7b7bb7e174941eb0",
     "protokits": "04d34f049f58ae359cf71d43466c429dac2a6d08",
-    "experiments": "98fb9ae0cb72d7eb817f79a7b055cb15dd0747fb",
+    "experiments": "56333afcbb34d1876aaf06bbc5dc6e4a6ab77647",
     "experimentsBaseline": "615a7e1e2170164acef0edebdbe0b88b8c01fd1b"
   },
   "baseline": {
@@ -147,28 +147,28 @@
     "result": "Upgraded Next Ledge so Slipstream Launch and Cacheline High converge at Windglass Relay, banking 134 preserved speed or 175 cargo mastery before generic ascent resumes; production creation counts remain unchanged."
   },
   "lastRefinementUnit": {
-    "packetId": "2026-07-16-next-ledge-stormlock-visible-pressure-vent-refinement",
-    "scope": "Next Ledge Stormlock visible retained-pressure vent",
-    "result": "Stormlock now converts the retained Signal Cut pressure into four visible reel-time pulses through the existing pressure facade, with one authoritative meter and reused HUD, renderer, camera, audio, and bounded effect owners."
+    "packetId": "2026-07-16-next-ledge-stormlock-confirmation-beat-refinement",
+    "scope": "Next Ledge Stormlock branch-aware confirmation beat",
+    "result": "Stormlock now holds its secured result for 24 deterministic route frames before the original payoff opens, preserving readable zero-pressure or protected-catch feedback through existing route-choice, HUD, target, beam, and event owners."
   },
   "lastCompletedUnit": {
-    "packetId": "2026-07-16-next-ledge-stormlock-visible-pressure-vent-refinement",
-    "scope": "Next Ledge Stormlock visible-pressure-vent feel refinement",
-    "result": "The retained Signal Cut pressure now drains through four authored reel-time pulses before Stormlock lock, keeping the existing route-cargo pressure facade authoritative while the meter, pulse-stage copy, consequence line, beam, sparks, camera, and audio expose progress.",
-    "validation": "All 28 existing Next Ledge test entrypoints, all route JavaScript syntax checks, JSON, and diff checks passed. Playwright completed the shortcut through Fork Relay, four Stormlock pulses, Cacheline, and the 175-cargo Windglass score; exercised real failure and keyboard retry; checked closed/open/closed Advanced disclosure; held bounded DOM, canvas, descriptor, scene, and heap behavior; and reported zero console messages. Human View passed the first screen, Stormlock demand, mid-vent pulse, and secured state with diagnostics closed. Matched fresh-browser active-play performance improved from 19.61 to 21.67 FPS, p95 held near 67 ms, and no count growth appeared.",
+    "packetId": "2026-07-16-next-ledge-stormlock-confirmation-beat-refinement",
+    "scope": "Next Ledge Stormlock branch-confirmation feel refinement",
+    "result": "Both branch results now remain visible for 24 authored frames at Stormlock before the existing Slipstream or Cacheline payoff event opens, with action input suppressed only during that bounded beat.",
+    "validation": "All 28 existing Next Ledge test entrypoints, affected JavaScript syntax checks, JSON, and diff checks passed. Playwright completed safe and shortcut routes through the exact confirmation boundary into their original 134-speed and 175-cargo score contracts; proved one delayed payoff event, real failure and keyboard retry, closed/open/closed Advanced disclosure, bounded DOM/canvas/descriptor/scene/heap behavior, and zero console messages. Human View passed the first screen plus safe and shortcut confirmations with diagnostics closed. Matched isolated active-play performance improved from 28.76 to 29.29 FPS, p95 held at 51.8 ms, and steady-state counts did not grow.",
     "commits": {
       "coreReadOnly": "70cc2a1590677b872d40a42f7b7bb7e174941eb0",
       "protokitsStart": "04d34f049f58ae359cf71d43466c429dac2a6d08",
       "protokitsProductionUnit": "04d34f049f58ae359cf71d43466c429dac2a6d08",
-      "experimentsStart": "98fb9ae0cb72d7eb817f79a7b055cb15dd0747fb",
-      "experimentsProductionUnit": "e2fc4ed27fc76d0e74e3720b884be1449faf7076"
+      "experimentsStart": "56333afcbb34d1876aaf06bbc5dc6e4a6ab77647",
+      "experimentsProductionUnit": "pending-publication"
     },
-    "publication": "Experiments production and publication-receipt commits published to resolved default branch main after fetch-before-push verification; ProtoKits is unchanged and synchronized at 04d34f049f58ae359cf71d43466c429dac2a6d08."
+    "publication": "Pending production commit and fetch-before-push publication; ProtoKits is unchanged and synchronized at 04d34f049f58ae359cf71d43466c429dac2a6d08."
   },
   "exactNextUnit": {
     "phase": "playable-experiment-upgrade",
     "epoch": 0,
-    "scope": "next-ledge-stormlock-zero-pressure-confirmation",
-    "goal": "Keep the final zero-pressure Stormlock confirmation visible for one short branch-aware beat before the Cacheline or Slipstream payoff instruction replaces it, using the existing route-choice sequence and no new state owner."
+    "scope": "next-ledge-stormlock-payoff-line-handoff",
+    "goal": "Animate the existing Stormlock consequence line into the selected Slipstream or Cacheline target as confirmation ends, so the branch handoff reads before the next swing without adding a line, target, or state owner."
   }
 }

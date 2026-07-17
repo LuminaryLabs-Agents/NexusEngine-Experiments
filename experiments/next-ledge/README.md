@@ -22,6 +22,8 @@ Both rewards now converge at the shared Windglass Relay before generic ascent re
 
 The amber shortcut now vents its retained pressure visibly during the physical Stormlock reel. Four descriptor-authored pulses route recovery through the existing route-cargo pressure facade, while the authoritative pressure meter, one pulse-stage status, the existing consequence line and beam, bounded sparks, camera response, and audio expose progress before lock. No second pressure value, meter, entity, or control is introduced.
 
+Stormlock lock now holds one branch-aware confirmation for `24` deterministic route frames before the next payoff opens. The shortcut keeps its explicit zero-pressure result on screen while Cacheline accepts the banked cargo; the safe route confirms its protected catch while Slipstream charges. Authored timing and copy stay in the route descriptor, and the existing route-choice phase, frame counter, target, beam, HUD, and payoff event remain the only owners.
+
 The playable route composes real reusable features from NexusEngine-ProtoKits:
 
 ```txt
