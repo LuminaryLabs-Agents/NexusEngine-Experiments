@@ -42,8 +42,19 @@
     {
       "id": "rogue-lite-hellscape-siege",
       "lifecycleStatus": "active-legacy-baseline",
-      "score": null,
-      "lastImprovedAt": null
+      "score": 86,
+      "lastImprovedAt": "2026-07-17T07:21:41-04:00",
+      "feelScores": {
+        "responsiveness": 9,
+        "predictability": 9,
+        "readability": 9,
+        "impact": 9,
+        "recovery": 8,
+        "delight": 8,
+        "replayDesire": 8,
+        "average": 8.6
+      },
+      "nextFeelProblem": "Make the post-clear Grove and Ashes material run preserve a visible two-resource rebuild recipe and one meaningful return-to-core fortification choice."
     },
     {
       "id": "signal-bastion",

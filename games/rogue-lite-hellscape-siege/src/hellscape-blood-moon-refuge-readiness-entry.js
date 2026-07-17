@@ -3,6 +3,7 @@ import {
   createHellscapeBloodMoonRefugeReadinessDomainKit,
   HELLSCAPE_BLOOD_MOON_REFUGE_READINESS_DOMAIN_TREE
 } from './hellscape-blood-moon-refuge-readiness-domain-kit.js';
+import { isHellscapeDiagnosticsEnabled, syncHellscapeDiagnosticPanel } from './advanced-diagnostics.js';
 
 const NEXUS_ENGINE_MAIN_CDN = 'https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js';
 const domainKit = createHellscapeBloodMoonRefugeReadinessDomainKit();
@@ -10,6 +11,7 @@ const runtimeSurface = Object.freeze({ source: NEXUS_ENGINE_MAIN_CDN, loaded: Bo
 let latestReadiness = null;
 let overlay = null;
 let patched = false;
+let lastOverlayAt = -Infinity;
 
 function stableNumber(value, fallback = 0) {
   const number = Number(value);
@@ -93,6 +95,7 @@ function ensureOverlay() {
 
 function renderOverlay(readiness) {
   const panel = ensureOverlay();
+  if (!syncHellscapeDiagnosticPanel(panel)) return;
   const count = readiness?.rendererHandoff?.counts?.total ?? 0;
   const ledger = readiness?.dawnRefugeLedgers?.[0] ?? {};
   panel.innerHTML = `
@@ -139,10 +142,11 @@ function patchGameHost(host) {
 
 function tick() {
   const host = window.GameHost;
-  if (patchGameHost(host)) {
-    const readiness = host.getBloodMoonRefugeReadiness();
-    renderOverlay(readiness);
-  } else if (host?.getBloodMoonRefugeReadiness) {
+  patchGameHost(host);
+  syncHellscapeDiagnosticPanel(overlay);
+  const now = performance.now();
+  if (isHellscapeDiagnosticsEnabled() && host?.getBloodMoonRefugeReadiness && now - lastOverlayAt >= 750) {
+    lastOverlayAt = now;
     renderOverlay(host.getBloodMoonRefugeReadiness());
   }
   requestAnimationFrame(tick);

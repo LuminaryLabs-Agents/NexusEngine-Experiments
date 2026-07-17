@@ -14,34 +14,38 @@ This folder is the only gallery-facing route. The earlier `rogue-lite-hellscape-
 
 ## Current implementation
 
-The base route now owns the kit-shaped high-fidelity implementation that added:
+The base route now opens with one readable first-siege loop:
 
 ```txt
-local runtime-style kits
-realm/portal loop
-inventory and cargo-like resources
-harvest and pickup loop
-build blueprints
-wave/core defense
-FX descriptors consumed by the renderer
-renderer-only presentation
-GameHost debug hooks
+build the stocked Spike Wall
+start Siege 1 at the Ember Core
+close on threats and strike them
+clear or breach, then recover
+enter a resource realm, harvest, and return
 ```
+
+The loop composes local input, avatar, inventory, realm, harvest/pickup, build,
+wave/defense, FX, and renderer-handoff features. The first screen owns only the
+purpose, live objective/status, and four hero controls. Readiness panels and
+blueprint selection remain under the Advanced disclosure and are off by default.
 
 ## Controls
 
 ```txt
 WASD / Arrow Keys: Move
-Mouse / Space: Harvest, attack, or primary action
-E / Enter: Interact
-B: Build selected blueprint
-Q / C: Cycle build blueprint
-1 / 2 / 3: Select build blueprint
+B: Build the selected blueprint
+E / Enter: Start a siege, enter a realm, or return to base
+Mouse / Space: Strike during a siege or harvest in a resource realm
+Advanced: Q / C cycle and 1 / 2 / 3 select blueprints; readiness diagnostics
 ```
 
 ## Domain-kit cutover target
 
-Next pass should replace the local temporary kits with shared ProtoKits from `NexusRealtime-ProtoKits`:
+The next shared cutover should move deterministic first-siege combat and recovery
+behind the smallest generic defense DSK API without moving browser input, authored
+content/tuning, HUD, Canvas, or readiness diagnostics out of this route.
+
+Historical candidate kits remain migration reference only:
 
 ```txt
 action-input-kit

@@ -30,7 +30,7 @@
     "coreRemoteDefault": "a5882b47bd5a9284550bb3af1f0cd8580c62665e",
     "coreLocalReadOnly": "a5882b47bd5a9284550bb3af1f0cd8580c62665e",
     "protokits": "04d34f049f58ae359cf71d43466c429dac2a6d08",
-    "experiments": "9e183248ce5e8c75fb78c7f7ce562d34a4d81a67",
+    "experiments": "1c163d3de2bcb488ee522751b69dd5d9d944c575",
     "experimentsBaseline": "615a7e1e2170164acef0edebdbe0b88b8c01fd1b"
   },
   "baseline": {
@@ -147,28 +147,28 @@
     "result": "Upgraded Next Ledge so Slipstream Launch and Cacheline High converge at Windglass Relay, banking 134 preserved speed or 175 cargo mastery before generic ascent resumes; production creation counts remain unchanged."
   },
   "lastRefinementUnit": {
-    "packetId": "2026-07-17-next-ledge-windglass-rejoin-release-cue",
-    "scope": "Next Ledge Windglass branch-neutral rejoin release cue",
-    "result": "Windglass now turns either settled branch score into one cyan high-build release, with authored upward lift and lateral damping carrying physical input reliably into original anchor-11 through existing release and feedback owners."
+    "packetId": "2026-07-17-hellscape-first-siege-refinement",
+    "scope": "Rogue-Lite Hellscape Siege first-siege hero-feel refinement",
+    "result": "The unscored legacy route now opens with a stocked wall, readable mission and hero controls, physical close-range strikes, bounded first-wave pressure, clear and breach outcomes, starter-cache recovery, and a state-preserving resource-realm return loop."
   },
   "lastCompletedUnit": {
-    "packetId": "2026-07-17-next-ledge-windglass-rejoin-release-cue",
-    "scope": "Next Ledge Windglass-to-anchor-11 hero release refinement",
-    "result": "Both the 134-speed safe line and 175-cargo shortcut now resolve their Windglass settle into one readable cyan release-ready cue, authored upward launch, bounded lateral damping, physical re-grapple, and secured original anchor-11 without a new state, timer, control, event type, material, entity, effect pool, or feedback owner.",
-    "validation": "All 28 existing Next Ledge test entrypoints, affected JavaScript syntax checks, JSON, and diff checks passed. Playwright physically completed safe and shortcut routes through their scores, cyan release, and original anchor-11, proved real failure, keyboard retry, and Advanced closed/open/closed, held 69 DOM nodes, one canvas, 76 active-sector descriptors, 32 ledges, and 277 settled scene nodes, and reported zero console or page errors. Human View passed the first screen, both cyan-ready and release frames, both secured frames, failure, and recovery with diagnostics closed. The matched 60-tick warm-up plus 180-tick active window changed from 61.40 to 66.18 ms average tick, 16.29 to 15.11 simulated FPS, and 98.70 to 84.80 ms p95; the primary metric remained inside the 10 percent budget, counts stayed bounded through 360 further active ticks, and heap stabilized near 26.35 MB.",
+    "packetId": "2026-07-17-hellscape-first-siege-refinement",
+    "scope": "Rogue-Lite Hellscape Siege complete first-siege loop",
+    "result": "A player can build the stocked starter wall, start Siege 1, close and strike six threats, secure the core, enter Grove, harvest wood, return with clear and inventory state intact, then breach a later siege and recover a starter cache. Five readiness overlays moved behind one default-closed Advanced owner, while their domain APIs and renderer handoffs remain available.",
+    "validation": "All existing Hellscape test entrypoints, affected JavaScript syntax checks, JSON, and diff checks passed. The repository-wide runner was invoked and stopped only at the starting-commit duplicate drawHexFill declaration in experiments/The Cavalry of Rome/src/hex-gameplay-pass.js; this run did not touch that file. Playwright physically completed build, start, strike, clear, Grove harvest, return, later-wave strike, natural breach, recovery, and Advanced closed/open/closed loops with zero console errors or warnings. Human View passed the first screen, starter wall, strike impact, siege clear, harvest, return, and recovery with diagnostics closed. The matched 40-frame active window improved from 85.45 to 16.34 ms average frame time, 11.70 to 61.18 measured FPS, and 166.60 to 18.20 ms p95; default DOM dropped from 79 to 50, one canvas stayed one, matched active descriptors stayed bounded at 245 to 254, and repeated diagnostics cycles held exactly five panels with zero visible when closed.",
     "commits": {
       "coreReadOnly": "a5882b47bd5a9284550bb3af1f0cd8580c62665e",
       "protokitsStart": "04d34f049f58ae359cf71d43466c429dac2a6d08",
       "protokitsProductionUnit": "04d34f049f58ae359cf71d43466c429dac2a6d08",
-      "experimentsStart": "9e183248ce5e8c75fb78c7f7ce562d34a4d81a67",
-      "experimentsProductionUnit": "daa38593d31d5c4b76e2bbe9f904541d7a3ef9c8"
+      "experimentsStart": "1c163d3de2bcb488ee522751b69dd5d9d944c575",
+      "experimentsProductionUnit": "recorded-by-publication-receipt"
     },
-    "publication": "Experiments production commit daa38593d31d5c4b76e2bbe9f904541d7a3ef9c8 published to resolved default branch main after fetch-before-push verification; publication receipt is recorded in the following repository commit. ProtoKits is unchanged and synchronized at 04d34f049f58ae359cf71d43466c429dac2a6d08."
+    "publication": "Experiments production commit is recorded by the publication receipt after fetch-before-push verification. ProtoKits is unchanged and synchronized at 04d34f049f58ae359cf71d43466c429dac2a6d08."
   },
   "exactNextUnit": {
     "phase": "playable-experiment-upgrade",
     "epoch": 0,
-    "scope": "next-ledge-anchor-11-rejoin-secured-rebound",
-    "goal": "Let original anchor-11 answer the secured cyan release with one short score-preserving rebound and confirmation beat, reusing windglass-rejoin-secured, tether, camera, player-scale, spark, and synth owners without another state or control."
+    "scope": "hellscape-post-clear-two-resource-fortification",
+    "goal": "Make the post-clear Grove and Ashes material run preserve a visible two-resource rebuild recipe and one meaningful return-to-core fortification choice without adding a first-screen control or duplicating defense state."
   }
 }

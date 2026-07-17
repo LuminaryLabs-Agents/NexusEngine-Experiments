@@ -1,5 +1,11 @@
 # Cycle State
 
+## 2026-07-17 Hellscape First-Siege Feel Refinement
+
+`games/rogue-lite-hellscape-siege/` now opens with one complete readable defense loop: build the stocked Spike Wall, start Siege 1 at the Ember Core, close on threats and strike, secure or breach, recover starter stock, then harvest and return from a resource realm with progression state intact. A hero HUD owns purpose, controls, objective, core/wave/player status, and impact; five readiness panels remain available only through default-closed Advanced diagnostics. Playwright completed the physical build/start/strike/clear/harvest/return/breach/recovery loop, held one canvas and 50 default DOM nodes, improved the matched active window from `85.45` to `16.34 ms` average frame time (`11.70` to `61.18 FPS`), and reported zero console errors or warnings. Existing Hellscape checks passed; ProtoKits and Core remain unchanged.
+
+Exact next playable unit: make the post-clear Grove and Ashes material run preserve a visible two-resource rebuild recipe and one meaningful return-to-core fortification choice without a new first-screen control or duplicate defense state.
+
 ## 2026-07-17 Windglass Cyan Rejoin Release Refinement
 
 `experiments/next-ledge/` now turns either Windglass branch settle into one readable cyan high-build release. The shared descriptor consumer reuses existing swing angle/angular velocity, release, camera, recovery, HUD, sparks, player light, atmosphere, and synth owners; authored `0.42x` lateral damping keeps both the `134 SPEED` mint line and `175 CARGO` amber line on the original `anchor-11` catch. Playwright physically completed both routes, caught the original anchor, proved real failure/keyboard retry and Advanced closed/open/closed, held `69` DOM nodes / one canvas / `76` descriptors / `277` settled scene nodes through the growth window, stayed inside the `10%` primary performance budget, passed all 28 Next Ledge tests, and reported zero console or page errors. Human View passed cyan ready/release, secured rejoin, failure, and recovery frames with diagnostics closed. ProtoKits and Core remain unchanged.

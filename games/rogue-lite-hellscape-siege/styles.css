@@ -1,1 +1,246 @@
-html,body{margin:0;height:100%;overflow:hidden;background:#060202;color:#eaf6ff;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;user-select:none}#app,#game{position:fixed;inset:0}#game{display:block;width:100vw;height:100vh;cursor:none;background:#060202}#errorPanel{position:fixed;left:16px;right:16px;bottom:16px;z-index:10;border:1px solid rgba(255,80,80,.65);border-radius:16px;padding:16px;background:rgba(60,4,4,.94);color:#fff;white-space:pre-wrap;box-shadow:0 18px 80px rgba(0,0,0,.45)}#errorPanel[hidden]{display:none}
+:root {
+  color-scheme: dark;
+  --ember: #ff6b35;
+  --cyan: #38dff8;
+  --ink: rgba(13, 4, 6, 0.86);
+  --line: rgba(255, 133, 92, 0.34);
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: #060202;
+  color: #fff5ed;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  user-select: none;
+}
+
+#app,
+#game {
+  position: fixed;
+  inset: 0;
+}
+
+#app {
+  isolation: isolate;
+}
+
+#game {
+  z-index: 0;
+  display: block;
+  width: 100vw;
+  height: 100vh;
+  cursor: crosshair;
+  background: #060202;
+}
+
+.hero-hud {
+  position: fixed;
+  inset: 16px 16px auto 16px;
+  z-index: 4;
+  display: grid;
+  grid-template-columns: minmax(270px, 1fr) auto;
+  gap: 12px 18px;
+  pointer-events: none;
+}
+
+.hero-hud__mission,
+.hero-hud__status,
+.hero-hud__actions {
+  border: 1px solid var(--line);
+  background: linear-gradient(135deg, rgba(31, 7, 8, 0.94), rgba(12, 4, 7, 0.78));
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.32);
+}
+
+.hero-hud__mission {
+  width: min(520px, calc(100vw - 32px));
+  border-radius: 14px;
+  padding: 12px 14px;
+}
+
+.hero-hud__eyebrow {
+  display: block;
+  margin-bottom: 3px;
+  color: #ffb090;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.18em;
+}
+
+.hero-hud__mission strong {
+  font-size: clamp(18px, 2.2vw, 28px);
+  letter-spacing: -0.04em;
+}
+
+.hero-hud__mission p {
+  margin: 4px 0 0;
+  color: #ffd9c8;
+  font-size: 13px;
+}
+
+.hero-hud__status {
+  display: flex;
+  align-items: center;
+  align-self: start;
+  gap: 10px;
+  border-radius: 999px;
+  padding: 9px 12px;
+  color: #ffe4d7;
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: 0.06em;
+}
+
+.hero-hud__status span + span {
+  border-left: 1px solid rgba(255, 255, 255, 0.14);
+  padding-left: 10px;
+}
+
+.hero-hud__actions {
+  grid-column: 1 / -1;
+  justify-self: center;
+  display: flex;
+  gap: 8px;
+  border-radius: 999px;
+  padding: 7px;
+}
+
+.hero-hud__actions span {
+  border-radius: 999px;
+  padding: 7px 10px;
+  color: rgba(255, 235, 225, 0.7);
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: 0.05em;
+  transition: 140ms ease;
+}
+
+.hero-hud__actions span[data-active='true'] {
+  background: rgba(255, 107, 53, 0.16);
+  color: #fff8f2;
+  box-shadow: inset 0 0 0 1px rgba(255, 132, 85, 0.38);
+}
+
+kbd {
+  display: inline-grid;
+  min-width: 18px;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 5px;
+  padding: 2px 4px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  font: inherit;
+}
+
+.impact-toast {
+  position: fixed;
+  left: 50%;
+  top: 52%;
+  translate: -50% -50%;
+  color: #fff;
+  font-size: clamp(18px, 3vw, 42px);
+  font-weight: 950;
+  letter-spacing: -0.05em;
+  opacity: 0;
+  text-shadow: 0 0 24px var(--ember);
+  transition: opacity 120ms ease, transform 120ms ease;
+}
+
+.impact-toast[data-visible='true'] {
+  opacity: 1;
+  transform: scale(1.04);
+}
+
+.advanced-panel {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 6;
+  width: min(340px, calc(100vw - 32px));
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  background: rgba(10, 4, 7, 0.9);
+  color: rgba(255, 240, 232, 0.78);
+  font-size: 11px;
+}
+
+.advanced-panel summary {
+  cursor: pointer;
+  padding: 9px 12px;
+  color: #fff4ed;
+  font-weight: 800;
+}
+
+.advanced-panel__body {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 10px 12px;
+}
+
+.advanced-panel__body label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #fff;
+}
+
+.advanced-panel__body p {
+  margin: 10px 0 0;
+  line-height: 1.6;
+}
+
+#bloodMoonRefugeReadinessPanel,
+#emberWellPurificationReadinessPanel,
+#obsidianSeedVaultReadinessPanel,
+#harvesterCovenantReadinessPanel,
+#hellscape-soul-lantern-quarantine-panel {
+  display: none !important;
+}
+
+body.hellscape-diagnostics-open #bloodMoonRefugeReadinessPanel,
+body.hellscape-diagnostics-open #emberWellPurificationReadinessPanel,
+body.hellscape-diagnostics-open #obsidianSeedVaultReadinessPanel,
+body.hellscape-diagnostics-open #harvesterCovenantReadinessPanel,
+body.hellscape-diagnostics-open #hellscape-soul-lantern-quarantine-panel {
+  display: block !important;
+}
+
+#errorPanel {
+  position: fixed;
+  left: 16px;
+  right: 16px;
+  bottom: 16px;
+  z-index: 10;
+  border: 1px solid rgba(255, 80, 80, 0.65);
+  border-radius: 16px;
+  padding: 16px;
+  background: rgba(60, 4, 4, 0.94);
+  color: #fff;
+  white-space: pre-wrap;
+  box-shadow: 0 18px 80px rgba(0, 0, 0, 0.45);
+}
+
+#errorPanel[hidden] {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  .hero-hud {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-hud__status {
+    justify-self: start;
+  }
+
+  .hero-hud__actions {
+    justify-self: stretch;
+    overflow-x: auto;
+  }
+
+  .hero-hud__actions span {
+    white-space: nowrap;
+  }
+}

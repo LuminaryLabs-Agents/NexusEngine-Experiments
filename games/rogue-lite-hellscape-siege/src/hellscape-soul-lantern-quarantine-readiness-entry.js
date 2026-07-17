@@ -1,5 +1,6 @@
 import * as NexusEngineRuntime from 'https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js';
 import { createHellscapeSoulLanternQuarantineReadinessDomainKit } from './hellscape-soul-lantern-quarantine-readiness-domain-kit.js';
+import { isHellscapeDiagnosticsEnabled, syncHellscapeDiagnosticPanel } from './advanced-diagnostics.js';
 
 const NEXUS_ENGINE_CDN = 'https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js';
 const PASS_ID = 'soul-lantern-quarantine-readiness-renderer-handoff-pass';
@@ -58,6 +59,7 @@ function ensurePanel() {
 
 function renderPanel(readiness) {
   const panel = ensurePanel();
+  if (!syncHellscapeDiagnosticPanel(panel)) return;
   const counts = readiness.rendererHandoff.counts;
   const missing = readiness.missing.length ? readiness.missing.map((item) => `<b>${escapeHtml(item)}</b>`).join('') : '<b>dusk quarantine lit</b>';
   panel.innerHTML = `
@@ -95,8 +97,13 @@ function install() {
   };
   document.body?.setAttribute('data-soul-lantern-quarantine-pass', PASS_ID);
   document.querySelector('#app')?.setAttribute('data-soul-lantern-quarantine-pass', PASS_ID);
-  renderPanel(domainKit.describe(stateForDomain()));
-  globalThis.setInterval(() => renderPanel(domainKit.describe(stateForDomain())), 750);
+  globalThis.setInterval(() => {
+    const panel = document.getElementById(PANEL_ID);
+    syncHellscapeDiagnosticPanel(panel);
+    if (!isHellscapeDiagnosticsEnabled()) return;
+    injectStyles();
+    renderPanel(domainKit.describe(stateForDomain()));
+  }, 750);
 }
 
 install();

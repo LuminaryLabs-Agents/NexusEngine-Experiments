@@ -19,6 +19,8 @@ import { createHellscapeInfernalContractReadinessDomainKit } from './hellscape-i
 import { createHellscapeAshCaravanReadinessDomainKit } from './hellscape-ash-caravan-readiness-domain-kit.js';
 import { createHellscapeSanctuaryForgeReadinessDomainKit } from './hellscape-sanctuary-forge-readiness-domain-kit.js';
 import { createCanvasRenderer } from './renderer/canvas-renderer.js';
+import { hellscapeDiagnostics } from './advanced-diagnostics.js';
+import { createFirstSiegeHud } from './first-siege-hud.js';
 
 const NEXUS_ENGINE_RUNTIME = Object.freeze({
   source: 'https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js',
@@ -36,6 +38,8 @@ const ashCaravanReadinessDomain = createHellscapeAshCaravanReadinessDomainKit();
 const sanctuaryForgeReadinessDomain = createHellscapeSanctuaryForgeReadinessDomainKit();
 const down = new Set();
 const pressed = new Set();
+let domainCache = null;
+let domainCacheAt = -Infinity;
 
 function showError(error) {
   errorPanel.hidden = false;
@@ -83,6 +87,7 @@ const engine = createRealtimeGame({
     createHellscapeSiegeKit()
   ]
 });
+const hud = createFirstSiegeHud({ diagnostics: hellscapeDiagnostics });
 
 function selectedBuild() {
   if (take('1', 'digit1')) return 0;
@@ -218,6 +223,36 @@ function composeRendererHandoff(visualFractal, expeditionReadability, siegecraft
   };
 }
 
+function describedDomains(state, force = false) {
+  const elapsed = engine.world.clock.elapsed;
+  const interval = hellscapeDiagnostics.enabled ? 0.1 : 0.25;
+  if (!force && domainCache && elapsed - domainCacheAt < interval) return domainCache;
+  const visualFractal = describeVisualFractal(state);
+  const expeditionReadability = describeExpeditionReadability(state);
+  const siegecraftReadiness = describeSiegecraftReadiness(state);
+  const infernalContractReadiness = describeInfernalContractReadiness(state);
+  const ashCaravanReadiness = describeAshCaravanReadiness(state);
+  const sanctuaryForgeReadiness = describeSanctuaryForgeReadiness(state);
+  domainCache = {
+    visualFractal,
+    expeditionReadability,
+    siegecraftReadiness,
+    infernalContractReadiness,
+    ashCaravanReadiness,
+    sanctuaryForgeReadiness,
+    rendererHandoff: composeRendererHandoff(
+      visualFractal,
+      expeditionReadability,
+      siegecraftReadiness,
+      infernalContractReadiness,
+      ashCaravanReadiness,
+      sanctuaryForgeReadiness
+    )
+  };
+  domainCacheAt = elapsed;
+  return domainCache;
+}
+
 function snapshot() {
   const state = engine.getState();
   state.clock = engine.world.clock;
@@ -225,20 +260,10 @@ function snapshot() {
     source: NEXUS_ENGINE_RUNTIME.source,
     loaded: Boolean(NEXUS_ENGINE_RUNTIME.module)
   };
-  state.visualFractal = describeVisualFractal(state);
-  state.expeditionReadability = describeExpeditionReadability(state);
-  state.siegecraftReadiness = describeSiegecraftReadiness(state);
-  state.infernalContractReadiness = describeInfernalContractReadiness(state);
-  state.ashCaravanReadiness = describeAshCaravanReadiness(state);
-  state.sanctuaryForgeReadiness = describeSanctuaryForgeReadiness(state);
-  state.rendererHandoff = composeRendererHandoff(
-    state.visualFractal,
-    state.expeditionReadability,
-    state.siegecraftReadiness,
-    state.infernalContractReadiness,
-    state.ashCaravanReadiness,
-    state.sanctuaryForgeReadiness
-  );
+  state.diagnostics = { enabled: hellscapeDiagnostics.enabled };
+  state.buildCatalog = config.builds;
+  state.selectedBuild = config.builds[state.build?.selected ?? 0] ?? config.builds[0];
+  Object.assign(state, describedDomains(state));
   state.domain = {
     ...(state.domain ?? {}),
     hellscapeSiegeFractal: state.visualFractal,
@@ -257,7 +282,9 @@ function frame(now) {
     frame.last = now;
     flushInput();
     engine.tick(dt);
-    renderer.draw(snapshot());
+    const state = snapshot();
+    hud.update(state);
+    renderer.draw(state);
     requestAnimationFrame(frame);
   } catch (error) {
     showError(error);
@@ -317,6 +344,8 @@ window.GameHost = {
     );
   },
   startWave: () => engine.waves.start(),
+  strike: () => engine.waves.strike(),
+  setDiagnostics: enabled => hellscapeDiagnostics.setEnabled(enabled),
   add: (id, n = 10) => engine.inventory.add(id, n),
   selectBuild: (index = 0) => engine.build.select(index),
   placeBuild: () => engine.build.place()

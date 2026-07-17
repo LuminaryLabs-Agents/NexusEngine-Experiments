@@ -54,18 +54,20 @@ function health(ctx, entity, radius, color) {
   ctx.restore();
 }
 
-function drawHellscapeFractal(ctx, visualFractal) {
+function drawHellscapeFractal(ctx, visualFractal, detailed = false) {
   const descriptors = visualFractal?.rendererHandoff?.descriptors ?? {};
   const pressure = descriptors.realmPressure;
   if (pressure) {
-    for (const pressureRing of pressure.rings || []) {
+    const pressureRings = detailed ? pressure.rings || [] : (pressure.rings || []).slice(0, 1);
+    for (const pressureRing of pressureRings) {
       ring(ctx, pressure.center, pressureRing.radius, pressure.color, pressureRing.alpha, 1.2 + pressure.pressure * 1.8);
     }
   }
 
   const defense = descriptors.coreDefense;
   if (defense) {
-    for (const coreRing of defense.coreRings || []) {
+    const coreRings = detailed ? defense.coreRings || [] : (defense.coreRings || []).slice(0, 2);
+    for (const coreRing of coreRings) {
       ring(ctx, defense.core, coreRing.radius, coreRing.color, coreRing.alpha, 1.1);
     }
     for (const coverage of defense.coverage || []) {
@@ -87,7 +89,7 @@ function drawHellscapeFractal(ctx, visualFractal) {
 
   for (const beacon of descriptors.portalBeacons || []) {
     ring(ctx, beacon.center, beacon.interactionRadius, beacon.color, 0.2 + beacon.risk * 0.18, 1.6);
-    ring(ctx, beacon.center, beacon.interactionRadius + 18 + beacon.risk * 12, beacon.color, 0.08 + beacon.risk * 0.12, 1);
+    if (detailed) ring(ctx, beacon.center, beacon.interactionRadius + 18 + beacon.risk * 12, beacon.color, 0.08 + beacon.risk * 0.12, 1);
   }
 
   const affordance = descriptors.buildAffordances;
@@ -299,11 +301,15 @@ export function createCanvasRenderer(canvas) {
     const width = globalThis.innerWidth || 960;
     const height = globalThis.innerHeight || 540;
     const cam = state.camera || { x: 0, y: 0 };
+    const detailed = Boolean(state.diagnostics?.enabled);
+    const shake = Number(cam.shake) || 0;
+    const shakeX = Math.sin((state.clock?.elapsed || 0) * 73) * shake;
+    const shakeY = Math.cos((state.clock?.elapsed || 0) * 61) * shake * 0.7;
     ctx.clearRect(0, 0, width, height);
     ctx.fillStyle = state.realm?.id === 'lobby' ? '#120404' : '#06111a';
     ctx.fillRect(0, 0, width, height);
     ctx.save();
-    ctx.translate(width / 2 - cam.x, height / 2 - cam.y);
+    ctx.translate(width / 2 - cam.x + shakeX, height / 2 - cam.y + shakeY);
     ctx.strokeStyle = state.wave?.active ? 'rgba(255,51,0,.32)' : 'rgba(87,199,255,.18)';
     ctx.lineWidth = 1.2;
     for (let r = 160; r < 1160; r += 160) {
@@ -311,16 +317,22 @@ export function createCanvasRenderer(canvas) {
       ctx.arc(0, 0, r, 0, TAU);
       ctx.stroke();
     }
-    drawHellscapeFractal(ctx, state.visualFractal);
-    drawHellscapeExpedition(ctx, state.expeditionReadability);
-    drawHellscapeSiegecraft(ctx, state.siegecraftReadiness);
-    drawHellscapeInfernalContract(ctx, state.infernalContractReadiness);
-    drawHellscapeAshCaravan(ctx, state.ashCaravanReadiness);
-    drawHellscapeSanctuaryForge(ctx, state.sanctuaryForgeReadiness);
+    drawHellscapeFractal(ctx, state.visualFractal, detailed);
+    if (detailed) {
+      drawHellscapeExpedition(ctx, state.expeditionReadability);
+      drawHellscapeSiegecraft(ctx, state.siegecraftReadiness);
+      drawHellscapeInfernalContract(ctx, state.infernalContractReadiness);
+      drawHellscapeAshCaravan(ctx, state.ashCaravanReadiness);
+      drawHellscapeSanctuaryForge(ctx, state.sanctuaryForgeReadiness);
+    }
     if (state.realm?.id === 'lobby') {
       const coreColor = state.wave?.active ? '#ff3300' : '#38bdf8';
       circle(ctx, state.core.x, state.core.y, 46, coreColor, 0.72);
       health(ctx, state.core, 58, coreColor);
+      ctx.fillStyle = coreColor;
+      ctx.font = '900 11px ui-monospace, monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(state.wave?.active ? 'EMBER CORE · HOLD' : 'EMBER CORE · E', state.core.x, state.core.y - 70);
       for (const portal of state.portals || []) {
         circle(ctx, portal.x, portal.y, 30, portal.color, 0.42);
         ctx.fillStyle = portal.color;
@@ -344,21 +356,35 @@ export function createCanvasRenderer(canvas) {
       circle(ctx, structure.x, structure.y, 24, color, 0.64);
       health(ctx, structure, 36, color);
     }
+    if (state.realm?.id === 'lobby' && !state.wave?.active && state.selectedBuild && (!(state.structures?.length) || (state.build?.ghostAlpha ?? 0) > 0)) {
+      const ghost = { x: state.player.x, y: state.player.y + 58 };
+      const canAfford = Object.entries(state.selectedBuild.cost || {}).every(([id, amount]) => (state.inventory?.items?.[id] || 0) >= amount);
+      ring(ctx, ghost, 28 + Math.sin((state.clock?.elapsed || 0) * 4) * 3, state.selectedBuild.color, canAfford ? 0.62 : 0.16, canAfford ? 2.4 : 1.2);
+      ctx.fillStyle = canAfford ? state.selectedBuild.color : 'rgba(255,255,255,.38)';
+      ctx.font = '900 11px ui-monospace, monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(canAfford ? 'B · BUILD' : 'MATERIALS NEEDED', ghost.x, ghost.y + 48);
+    }
     for (const enemy of state.enemies || []) {
-      const color = enemy.type === 'brute' ? '#f97316' : '#ef4444';
+      const color = enemy.hurt > 0 ? '#67e8f9' : enemy.type === 'brute' ? '#f97316' : '#ef4444';
       circle(ctx, enemy.x, enemy.y, enemy.size || 18, color, 0.72);
       health(ctx, enemy, (enemy.size || 18) + 12, color);
     }
     circle(ctx, state.player.x, state.player.y, 18, state.player.hurt > 0 ? '#ff553c' : '#00f5ff', 0.9);
     health(ctx, state.player, 34, state.player.hurt > 0 ? '#ff553c' : '#00f5ff');
+    if (state.wave?.active) ring(ctx, state.player, 132, '#67e8f9', 0.1 + (state.combat?.impact || 0) * 0.55, 1.2 + (state.combat?.impact || 0) * 4);
     for (const drop of state.drops || []) circle(ctx, drop.x, drop.y, 7, drop.color || '#ffffff', 0.9);
     for (const beam of state.fx?.beams || []) {
-      ctx.strokeStyle = 'rgba(0,255,255,.75)';
+      ctx.strokeStyle = rgba(beam.color || '#00ffff', 0.82);
       ctx.lineWidth = 3;
       ctx.beginPath();
       ctx.moveTo(beam.x1, beam.y1);
       ctx.lineTo(beam.x2, beam.y2);
       ctx.stroke();
+    }
+    for (const flash of state.fx?.flashes || []) {
+      const progress = clamp(flash.life / Math.max(flash.max || flash.life || 1, 0.001), 0, 1);
+      ring(ctx, flash, 26 + (1 - progress) * 74, flash.color || '#ffffff', progress * 0.48, 2 + progress * 4);
     }
     for (const particle of state.fx?.particles || []) {
       ctx.fillStyle = particle.color || '#ffffff';

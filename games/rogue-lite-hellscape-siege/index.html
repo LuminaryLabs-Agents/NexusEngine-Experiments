@@ -4,18 +4,45 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Rogue-Lite Hellscape Siege</title>
+  <link rel="icon" href="data:," />
   <link rel="stylesheet" href="./styles.css" />
 </head>
-<body data-hellscape-pass="ash-caravan-readiness-renderer-handoff-pass sanctuary-forge-readiness-renderer-handoff-pass blood-moon-refuge-readiness-renderer-handoff-pass ember-well-purification-readiness-renderer-handoff-pass obsidian-seed-vault-readiness-renderer-handoff-pass harvester-covenant-readiness-renderer-handoff-pass soul-lantern-quarantine-readiness-renderer-handoff-pass">
+<body data-hellscape-pass="infernal-contract-readiness-renderer-handoff-pass ash-caravan-readiness-renderer-handoff-pass sanctuary-forge-readiness-renderer-handoff-pass blood-moon-refuge-readiness-renderer-handoff-pass ember-well-purification-readiness-renderer-handoff-pass obsidian-seed-vault-readiness-renderer-handoff-pass harvester-covenant-readiness-renderer-handoff-pass soul-lantern-quarantine-readiness-renderer-handoff-pass">
   <main id="app">
-    <canvas id="game" aria-label="Rogue-Lite Hellscape Siege game canvas with ember well purification, obsidian seed vault, harvester covenant, and soul lantern quarantine readiness descriptors"></canvas>
+    <canvas id="game" aria-label="Rogue-Lite Hellscape Siege: build a defense, start the siege, and strike incoming demons"></canvas>
+    <section id="heroHud" class="hero-hud" aria-label="First siege objectives">
+      <div class="hero-hud__mission">
+        <span class="hero-hud__eyebrow">FIRST SIEGE</span>
+        <strong>Hold the Ember Core</strong>
+        <p id="heroObjective" aria-live="polite">Build your starter Spike Wall.</p>
+      </div>
+      <div class="hero-hud__status" aria-label="Player and siege status">
+        <span id="coreStatus">CORE 300</span>
+        <span id="waveStatus">WAVE READY</span>
+        <span id="playerStatus">WARDEN 100</span>
+      </div>
+      <div class="hero-hud__actions" aria-label="Hero controls">
+        <span><kbd>WASD</kbd> MOVE</span>
+        <span id="buildAction"><kbd>B</kbd> BUILD WALL</span>
+        <span id="interactAction"><kbd>E</kbd> START AT CORE</span>
+        <span id="primaryAction"><kbd>SPACE</kbd> <b id="primaryActionLabel">STRIKE</b></span>
+      </div>
+      <div id="impactToast" class="impact-toast" aria-live="polite"></div>
+    </section>
+    <details id="advancedPanel" class="advanced-panel">
+      <summary>Advanced</summary>
+      <div class="advanced-panel__body">
+        <label><input id="diagnosticsToggle" type="checkbox" /> Show readiness diagnostics</label>
+        <p><kbd>Q</kbd>/<kbd>C</kbd> cycle blueprint · <kbd>1</kbd>/<kbd>2</kbd>/<kbd>3</kbd> select · mouse also strikes or harvests.</p>
+      </div>
+    </details>
     <section id="errorPanel" hidden></section>
   </main>
   <script type="module">
     import { attachNexusRealtimePageLoader } from "../../experiments/_shared/nexus-realtime-page-loader.js";
-    attachNexusRealtimePageLoader({ title: "Hellscape Soul Lantern Quarantine Readiness", loadingLabel: "Loading soul lantern quarantine readiness" });
+    attachNexusRealtimePageLoader({ title: "Rogue-Lite Hellscape Siege", loadingLabel: "Lighting the Ember Core" });
   </script>
-  <script type="module" src="./src/main.js?v=infernal-contract-readiness-1-ash-caravan-readiness-1-sanctuary-forge-readiness-1-blood-moon-refuge-readiness-1"></script>
+  <script type="module" src="./src/main.js?v=siegecraft-readiness-1-infernal-contract-readiness-1-ash-caravan-readiness-1-sanctuary-forge-readiness-1-blood-moon-refuge-readiness-1-first-siege-1"></script>
   <script type="module" src="./src/hellscape-blood-moon-refuge-readiness-entry.js?v=blood-moon-refuge-readiness-1"></script>
   <script type="module" src="./src/hellscape-ember-well-purification-readiness-entry.js?v=ember-well-purification-readiness-1"></script>
   <script type="module" src="./src/hellscape-obsidian-seed-vault-readiness-entry.js?v=obsidian-seed-vault-readiness-1"></script>
