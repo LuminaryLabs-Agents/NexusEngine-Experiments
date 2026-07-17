@@ -141,8 +141,9 @@ export function createCinematicSynth() {
       }
     }
     else if (type === "windglass-rejoin-secured") {
-      tone(659.25, 0.08, "triangle", 0.045, 987.77);
-      setTimeout(() => tone(987.77, 0.15, "sine", 0.042, 1318.5), 72);
+      tone(261.63, 0.18, "triangle", 0.08, 523.25);
+      setTimeout(() => tone(659.25, 0.2, "triangle", 0.065, 987.77), 52);
+      setTimeout(() => tone(1318.5, 0.24, "sine", 0.055, 1760), 118);
     }
   }
 

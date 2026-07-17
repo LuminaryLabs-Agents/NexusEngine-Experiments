@@ -1,5 +1,11 @@
 # Cycle State
 
+## 2026-07-17 Next Ledge Score-Preserving Rebound
+
+`experiments/next-ledge/` now lets original `anchor-11` answer the shared cyan shot with one bounded score-preserving rebound. The safe line keeps `134 SPEED`; the shortcut keeps `175 CARGO`. One descriptor extends the existing `windglass-rejoin-secured` event and reuses tether, camera, target material, player scale, HUD, spark, and synth owners without another state, timer, event type, control, entity, material, or effect pool. Playwright physically completed both routes, failure/keyboard recovery, and Advanced closed/open/closed; Human View passed both secured-score frames with diagnostics closed. All 28 Next Ledge tests and zero-error console/page checks passed. Matched performance stayed within budget at `119.861 → 125.121 ms` average (`+4.39%`) with `69` DOM nodes / one canvas / `76` descriptors / `277` settled scene nodes unchanged.
+
+Exact next playable unit: turn the `anchor-11` rebound into one score-aware first-swing release toward `anchor-12`, reusing existing score, release, tether, camera, HUD, spark, and synth owners without another state or control.
+
 ## 2026-07-17 Signal Bastion First-Command Feel Refinement
 
 `games/signal-bastion/` now opens as one readable defense command instead of a diagnostic wall: purpose, objective, three starter towers, and Start Wave are the first-screen heroes; nine specialist towers and readiness diagnostics stay under disclosure. The route pins the current `NexusEngine-ProtoKits` generic-defense stack, whose session DSK now keeps core breach terminal until restart. Playwright physically placed Bolt/Ember/Frost, cleared waves, breached the hard route, rebuilt, and proved Advanced closed/open/closed with zero console errors. Default presentation fell from `138` to `108` DOM nodes, `4` to `1` canvases, and `48` to `24` descriptors; matched active performance improved from `82.946` to `33.315 ms` average frame time (`12.056` to `30.02 FPS`) with zero final long tasks.

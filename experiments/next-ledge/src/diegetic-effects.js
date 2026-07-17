@@ -250,6 +250,7 @@ export function createDiegeticEffects({ scene }) {
           const brake = evt.settleStyle === "amber-brake-settle";
           makeSparks(origin, num(evt.settleColor, 0xe4fbff), brake ? 124 : 104, brake ? 48 : 68, brake ? 1.45 : 2.05, brake ? 1.65 : 1.28);
         }
+        else if (evt.type === "windglass-rejoin-secured" && evt.reboundStyle) makeSparks(origin, num(evt.reboundColor, 0x77e8ff), 118, 62, 1.72, 1.4);
       }
       if (seen.size > 96) {
         const keep = Array.from(seen).slice(-48);
@@ -269,17 +270,17 @@ export function createDiegeticEffects({ scene }) {
   };
 }
 
-export function updateDiegeticPlayerSignals({ snapshot, playerMaterial, staminaHalo, dangerHalo, modeLight, dangerLight, releaseSurge = describeReleaseCueSurge(snapshot), windglassSettle = null }) {
+export function updateDiegeticPlayerSignals({ snapshot, playerMaterial, staminaHalo, dangerHalo, modeLight, dangerLight, releaseSurge = describeReleaseCueSurge(snapshot), windglassSettle = null, windglassRebound = null }) {
   const time = (snapshot.frame ?? 0) / 60;
   const staminaPct = clamp((snapshot.stamina ?? 0) / Math.max(1, snapshot.constants?.maxStamina ?? 100), 0, 1);
   const cargoValue = snapshot.domain?.routeCargoExtraction?.cargo?.resources?.[0]?.value ?? 0;
   const pressureValue = snapshot.domain?.routeCargoExtraction?.pressure?.channels?.[0]?.value ?? 0;
   const readabilityRisk = snapshot.domain?.traversalReadability?.staminaRiskBands?.[0]?.risk ?? 0;
   const timingRisk = snapshot.domain?.anchorTimingReadability?.failFloorProximityWaves?.[0]?.severity ?? 0;
-  const playerColor = releaseSurge?.color ?? windglassSettle?.color ?? 0xffb83d;
+  const playerColor = releaseSurge?.color ?? windglassSettle?.color ?? windglassRebound?.color ?? 0xffb83d;
   playerMaterial.color.setHex(playerColor);
   playerMaterial.emissive.setHex(playerColor);
-  playerMaterial.emissiveIntensity = 0.7 + staminaPct * 1.8 + (snapshot.mode === "falling" ? 0.9 : 0) + Math.min(0.7, cargoValue * 0.08) + readabilityRisk * 0.35 + timingRisk * 0.28 + (releaseSurge?.strength ?? 0) * 1.8 + (windglassSettle?.strength ?? 0) * 1.55;
+  playerMaterial.emissiveIntensity = 0.7 + staminaPct * 1.8 + (snapshot.mode === "falling" ? 0.9 : 0) + Math.min(0.7, cargoValue * 0.08) + readabilityRisk * 0.35 + timingRisk * 0.28 + (releaseSurge?.strength ?? 0) * 1.8 + (windglassSettle?.strength ?? 0) * 1.55 + (windglassRebound?.strength ?? 0) * 1.7;
   staminaHalo.position.set(snapshot.player.x, snapshot.player.y, (snapshot.player.z ?? 1) + 1.5);
   staminaHalo.scale.setScalar(0.62 + staminaPct * 0.78 + Math.sin(time * 6) * 0.025 + Math.min(0.22, cargoValue * 0.025) + readabilityRisk * 0.18 + timingRisk * 0.12);
   staminaHalo.material.opacity = 0.15 + staminaPct * 0.62;
@@ -292,7 +293,7 @@ export function updateDiegeticPlayerSignals({ snapshot, playerMaterial, staminaH
   dangerHalo.rotation.z -= 0.04;
   modeLight.position.set(snapshot.player.x, snapshot.player.y, 24);
   modeLight.color.setHex(playerColor);
-  modeLight.intensity = snapshot.mode === "swinging" ? 1.9 + cargoValue * 0.04 + (windglassSettle?.strength ?? 0) * 2.2 : 2.8 + cargoValue * 0.05 + (releaseSurge?.strength ?? 0) * 2.4;
+  modeLight.intensity = snapshot.mode === "swinging" ? 1.9 + cargoValue * 0.04 + (windglassSettle?.strength ?? 0) * 2.2 + (windglassRebound?.strength ?? 0) * 2.6 : 2.8 + cargoValue * 0.05 + (releaseSurge?.strength ?? 0) * 2.4;
   dangerLight.position.set(snapshot.player.x, snapshot.player.y - 20, 32);
   dangerLight.intensity = snapshot.mode === "dead" ? 5 : pressureValue > 60 ? 2.8 : readabilityRisk > 0.65 || timingRisk > 0.65 ? 2.4 : staminaPct < 0.2 ? 2.2 : 0;
 }

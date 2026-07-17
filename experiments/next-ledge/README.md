@@ -24,6 +24,8 @@ Windglass now answers the branch at score time instead of immediately washing bo
 
 When that settle ends, both scores now feed one branch-neutral cyan release window. Build high until the shared cue flashes, release for an authored upward snap with bounded lateral damping, then fire into original `anchor-11`. The same direction/speed descriptor consumer handles payoff and rejoin readiness; the original release command, `released` event, protected recovery window, camera, HUD, sparks, player light, atmosphere, and synth present the result. No release state, timer, control, event type, entity, material, effect pool, or diagnostic surface is added.
 
+Original `anchor-11` now answers that shot with one short cyan score rebound. The route descriptor authors the bounded impulse, velocity retention, camera kick, color, scale, and copy; the existing `windglass-rejoin-secured` event carries the preserved `134 SPEED` or `175 CARGO` score through the existing tether, player-scale, anchor material, HUD, spark, and synth owners. One shared event-age descriptor drives the beat, so no rebound state, timer, event type, control, entity, material, or effect pool is added.
+
 The amber shortcut now vents its retained pressure visibly during the physical Stormlock reel. Four descriptor-authored pulses route recovery through the existing route-cargo pressure facade, while the authoritative pressure meter, one pulse-stage status, the existing consequence line and beam, bounded sparks, camera response, and audio expose progress before lock. No second pressure value, meter, entity, or control is introduced.
 
 Stormlock lock now holds one branch-aware confirmation for `24` deterministic route frames before the next payoff opens. The shortcut keeps its explicit zero-pressure result on screen while Cacheline accepts the banked cargo; the safe route confirms its protected catch while Slipstream charges. Authored timing and copy stay in the route descriptor, and the existing route-choice phase, frame counter, target, beam, HUD, and payoff event remain the only owners.
@@ -112,5 +114,7 @@ The sector-two payoff's first swing uses descriptor-authored branch release band
 The Windglass score uses descriptor-authored branch settle tuning. Presentation derives the bounded mint float or amber brake from the existing score-event age and restores the shared rejoin materials once that beat expires.
 
 The Windglass-to-`anchor-11` release uses descriptor-authored convergence tuning. The existing release command consumes its vertical response and lateral damping, and the existing released event plus presentation owners expose the cue without another state or control.
+
+The secured `anchor-11` rebound also remains descriptor-authored convergence tuning. The existing secured event carries the score and bounded presentation values; one event-age descriptor drives scale and feedback before generic ascent resumes.
 
 See `PLAN.md` plus the route progress and route-cargo manifests for the remaining deterministic replay promotion gate.

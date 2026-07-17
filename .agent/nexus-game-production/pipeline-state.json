@@ -29,8 +29,8 @@
   "synchronizedStartingCommits": {
     "coreRemoteDefault": "a5882b47bd5a9284550bb3af1f0cd8580c62665e",
     "coreLocalReadOnly": "a5882b47bd5a9284550bb3af1f0cd8580c62665e",
-    "protokits": "04d34f049f58ae359cf71d43466c429dac2a6d08",
-    "experiments": "652a02dd64d3e4202f6bfb333a8a560053242dfd",
+    "protokits": "bb3d787da372bf001653635d6e57eb7ce54e3c50",
+    "experiments": "10e1c998ce0582238dcb236093e727a05b63b2b5",
     "experimentsBaseline": "615a7e1e2170164acef0edebdbe0b88b8c01fd1b"
   },
   "baseline": {
@@ -142,9 +142,9 @@
     "result": "Accepted 10 genuinely new natural-language kit contracts after six additional duplicate, catalog-overlap, or blurred-scope rejections; no implementation was created."
   },
   "lastCreationUnit": {
-    "packetId": "2026-07-16-next-ledge-windglass-relay-convergence",
+    "packetId": "2026-07-17-next-ledge-score-preserving-rebound",
     "scope": "legacy-active-experiment-player-visible-upgrade",
-    "result": "Upgraded Next Ledge so Slipstream Launch and Cacheline High converge at Windglass Relay, banking 134 preserved speed or 175 cargo mastery before generic ascent resumes; production creation counts remain unchanged."
+    "result": "Upgraded Next Ledge so original anchor-11 answers the shared cyan release with one bounded score-preserving rebound, keeping 134 SPEED or 175 CARGO visible through existing tether, camera, target-material, player-scale, HUD, spark, and synth owners; production creation counts remain unchanged."
   },
   "lastRefinementUnit": {
     "packetId": "2026-07-17-signal-bastion-first-command-refinement",
@@ -152,23 +152,23 @@
     "result": "The formerly unscored legacy route now opens with one mission owner, three starter towers, a physical wave command, readable combat pressure, terminal core breach, and a visible rebuild action while the readiness stack remains available only through Advanced diagnostics."
   },
   "lastCompletedUnit": {
-    "packetId": "2026-07-17-signal-bastion-first-command-refinement",
-    "scope": "Signal Bastion complete first-command defense loop",
-    "result": "A player can read the purpose, place Bolt, Ember, and Frost towers, start and clear waves, observe one authoritative objective/impact path, lose the hard route, and rebuild the complete run. Three readiness surfaces and their 48 diagnostic descriptors are absent from the default player view and restored only by the explicit Advanced toggle.",
-    "validation": "Twenty-two existing Signal Bastion tests passed after excluding the unchanged legacy-package executable smoke that still imports missing nexusrealtime dependencies; affected JavaScript syntax, JSON, and diff hygiene passed. The repository-wide runner was invoked and stopped only at the starting-commit duplicate drawHexFill declaration in experiments/The Cavalry of Rome/src/hex-gameplay-pass.js. Playwright physically completed three-tower placement, two wave commands, clear, hard-route breach, rebuild, and Advanced closed/open/closed loops with zero console errors. Human View passed first screen, line ready, active wave, terminal breach, and rebuild. Matched active performance improved from 82.946 to 33.315 ms average frame time, 12.056 to 30.02 measured FPS, and 87.5 to 35.3 ms p95; default DOM fell 138 to 108, canvases 4 to 1, descriptors 48 to 24, heap 33.452 to 30.283 MB, and long tasks held at zero in the final available signal.",
+    "packetId": "2026-07-17-next-ledge-score-preserving-rebound",
+    "scope": "Next Ledge score-preserving anchor-11 rebound",
+    "result": "Both safe and shortcut routes now carry their authored Windglass score through the original anchor-11 catch and one short cyan rebound. One secured-event descriptor drives score copy, player stretch, anchor response, camera, sparks, and synth before generic ascent resumes.",
+    "validation": "All 28 existing Next Ledge test entrypoints, affected JavaScript syntax, JSON parsing, and diff hygiene passed. Playwright physically completed both routes through 134 SPEED and 175 CARGO cyan release/catch/rebound results, real failure and keyboard recovery, and Advanced closed/open/closed with zero console or page errors. Human View passed first screen, both secured-score frames, failure, and recovery with diagnostics closed. The matched starting-commit and upgraded-build performance comparison measured 119.861 to 125.121 ms average frame time (+4.39%), 8.343 to 7.992 measured FPS, and 152.900 to 166.300 ms p95 (+8.76%) under the same observed host contention; 69 DOM nodes, one canvas, 76 descriptors, 32 ledges, and 277 settled scene nodes remained identical and bounded.",
     "commits": {
       "coreReadOnly": "a5882b47bd5a9284550bb3af1f0cd8580c62665e",
-      "protokitsStart": "04d34f049f58ae359cf71d43466c429dac2a6d08",
+      "protokitsStart": "bb3d787da372bf001653635d6e57eb7ce54e3c50",
       "protokitsProductionUnit": "bb3d787da372bf001653635d6e57eb7ce54e3c50",
-      "experimentsStart": "652a02dd64d3e4202f6bfb333a8a560053242dfd",
-      "experimentsProductionUnit": "c737a9795fa2d94d18d2e16d3c11655ea5a0857e"
+      "experimentsStart": "10e1c998ce0582238dcb236093e727a05b63b2b5",
+      "experimentsProductionUnit": "pending"
     },
-    "publication": "ProtoKits production commit bb3d787da372bf001653635d6e57eb7ce54e3c50 and Experiments production commit c737a9795fa2d94d18d2e16d3c11655ea5a0857e published to their resolved default branch main after fetch-before-push verification; this repository commit records the publication receipt."
+    "publication": "Validation complete; Experiments production publication is pending. ProtoKits is unchanged and synchronized at bb3d787da372bf001653635d6e57eb7ce54e3c50."
   },
   "exactNextUnit": {
     "phase": "playable-experiment-upgrade",
     "epoch": 0,
-    "scope": "signal-bastion-second-command-choice",
-    "goal": "After the first clear, present one authored choice between upgrading the starter line and adding a specialist tower, reusing existing economy, session, wave-preview, and descriptor owners without another first-screen control or state owner."
+    "scope": "next-ledge-anchor-11-to-anchor-12-score-release",
+    "goal": "Turn the anchor-11 rebound into one score-aware first-swing release toward anchor-12, reusing the existing route-choice score, release, tether, camera, HUD, spark, and synth owners without another state or control."
   }
 }

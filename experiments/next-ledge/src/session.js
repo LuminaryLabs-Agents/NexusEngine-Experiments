@@ -3,8 +3,8 @@ import { createGenericAnchorDescriptorKit } from "https://cdn.jsdelivr.net/gh/Lu
 import { createGenericModeProjectedRoute, createProjectedRoute } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-mode-projected-route/index.js";
 import { createGenericRouteProgressKit } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-route-progress-kit/index.js";
 import { createGenericTetherTraversalDomainKits, createGenericTetherTraversalPreset } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-tether-traversal-domain-kits/index.js";
-import { createNextLedgeClimbPreset } from "./climb-preset.js?v=windglass-rejoin-release-1";
-import { adaptProjectedRouteToClimbRoute, describeActiveSwingReleaseCue } from "./climb-anchor-adapter.js?v=windglass-rejoin-release-1";
+import { createNextLedgeClimbPreset } from "./climb-preset.js?v=windglass-score-rebound-1";
+import { adaptProjectedRouteToClimbRoute, describeActiveSwingReleaseCue, describeWindglassRejoinRebound } from "./climb-anchor-adapter.js?v=windglass-score-rebound-1";
 import { createClimbActionAdapter } from "./climb-action-adapter.js";
 
 const clamp = (v, a, b) => Math.max(a, Math.min(b, Number.isFinite(Number(v)) ? Number(v) : a));
@@ -12,6 +12,9 @@ const n = (v, f = 0) => Number.isFinite(Number(v)) ? Number(v) : f;
 const d2 = (a, b) => Math.hypot(n(a.x) - n(b.x), n(a.y) - n(b.y));
 const copy = (v) => typeof structuredClone === "function" ? structuredClone(v) : JSON.parse(JSON.stringify(v));
 const scoreCopy = (template, score) => String(template ?? "Windglass Relay scored {score}.").replace("{score}", String(Math.max(0, Math.round(n(score)))));
+const reboundCopy = (template, score, metric) => String(template ?? "Anchor-11 rebound confirmed. {score} {metric} held.")
+  .replaceAll("{score}", String(Math.max(0, Math.round(n(score)))))
+  .replaceAll("{metric}", metric === "cargo-mastery" ? "CARGO" : "SPEED");
 
 const PLAYER_UPGRADE_PRESET = Object.freeze({
   routePacing: { summitPerSectorY: 760, sampleSpacingY: 118, minAnchors: 16, jitterX: 158, jitterY: 34, restEvery: 4, maxEdgeDistance: 202 },
@@ -545,6 +548,29 @@ function activePayoffLatchRecoil(state) {
   return { ...recoil, strength: clamp(1 - age / recoil.frames, 0, 1) };
 }
 
+function windglassRejoinRebound(state, convergence, target) {
+  const metadata = convergence?.metadata;
+  const style = metadata?.routeChoiceGenericRejoinReboundStyle;
+  if (!style || !target) return null;
+  const ledges = state.route?.ledges ?? [];
+  const targetIndex = ledges.findIndex((ledge) => ledge.id === target.id);
+  const next = ledges[targetIndex + 1];
+  return {
+    style,
+    frames: Math.max(1, Math.floor(n(metadata.routeChoiceGenericRejoinReboundFrames, 1))),
+    direction: Math.sign(n(next?.x, target.x) - n(target.x)) || 1,
+    angularImpulse: Math.max(0, n(metadata.routeChoiceGenericRejoinReboundAngularImpulse, 0)),
+    velocityRetention: clamp(n(metadata.routeChoiceGenericRejoinReboundVelocityRetention, 0), 0, 1),
+    cameraImpulse: clamp(n(metadata.routeChoiceGenericRejoinReboundCameraImpulse, 0.24), 0, 1),
+    color: Math.max(0, Math.floor(n(metadata.routeChoiceGenericRejoinReboundColor, 0x77e8ff))),
+    scaleX: clamp(n(metadata.routeChoiceGenericRejoinReboundScaleX, 1), 0.35, 2),
+    scaleY: clamp(n(metadata.routeChoiceGenericRejoinReboundScaleY, 1), 0.35, 2),
+    prompt: metadata.routeChoiceGenericRejoinReboundPrompt,
+    objective: metadata.routeChoiceGenericRejoinReboundObjective,
+    status: metadata.routeChoiceGenericRejoinReboundStatus
+  };
+}
+
 function setRope(state, a, b, slack = 8) {
   state.rope = { ...state.rope, start: { x: a.x, y: a.y, z: 1 }, end: { x: b.x, y: b.y, z: 1 }, nodes: ropeNodes(a, b, state.constants.ropeNodeCount, state.wind.strength * n(state.wind.direction, 1) * n(state.tuning.windCoupling, 14), slack), targetLength: d2(a, b) + slack };
 }
@@ -933,15 +959,36 @@ function lock(state, ledge) {
     });
   } else if (state.routeChoice?.status === "rejoin-active" && ledge.id === state.routeChoice.genericRejoinAnchorId) {
     const convergence = ledgeMap(state)[state.routeChoice.convergenceAnchorId];
+    const rebound = windglassRejoinRebound(state, convergence, ledge);
     state.routeChoice.status = "resolved";
-    state.camera.trauma = Math.max(state.camera.trauma ?? 0, 0.24);
-    state.status = convergence?.metadata?.routeChoiceRejoinResolvedStatus ?? "Windglass rejoin confirmed. Generic ascent is stable.";
+    if (rebound) {
+      state.player.aVel = clamp(
+        state.player.aVel * rebound.velocityRetention + rebound.direction * rebound.angularImpulse,
+        -n(state.tuning.maxAngularSpeed, 0.15),
+        n(state.tuning.maxAngularSpeed, 0.15)
+      );
+    }
+    state.camera.trauma = Math.max(state.camera.trauma ?? 0, rebound?.cameraImpulse ?? 0.24);
+    state.status = reboundCopy(
+      rebound?.status ?? convergence?.metadata?.routeChoiceRejoinResolvedStatus ?? "Windglass rejoin confirmed. Generic ascent is stable.",
+      state.routeChoice.scoreValue,
+      state.routeChoice.scoreMetric
+    );
     addEvent(state, "windglass-rejoin-secured", {
       targetId: ledge.id,
       routeChoiceId: state.routeChoice.id,
       selectedRole: state.routeChoice.selectedRole,
       scoreMetric: state.routeChoice.scoreMetric,
-      scoreValue: state.routeChoice.scoreValue
+      scoreValue: state.routeChoice.scoreValue,
+      reboundStyle: rebound?.style ?? null,
+      reboundFrames: rebound?.frames ?? 0,
+      reboundColor: rebound?.color ?? null,
+      reboundScaleX: rebound?.scaleX ?? 1,
+      reboundScaleY: rebound?.scaleY ?? 1,
+      reboundPrompt: rebound?.prompt ?? null,
+      reboundObjective: rebound?.objective ?? null,
+      reboundStatus: rebound?.status ?? null,
+      reboundAngularImpulse: rebound?.angularImpulse ?? 0
     });
   }
 }
@@ -1054,11 +1101,16 @@ function stepReeling(state, dt) {
 
 function updateDerived(state) {
   const latchRecoil = activePayoffLatchRecoil(state);
+  const rejoinRebound = describeWindglassRejoinRebound(state);
   state.player.scaleX = clamp(1 + Math.abs(state.player.vx) * 0.038, 0.35, 2);
   state.player.scaleY = clamp(1 + Math.abs(state.player.vy) * 0.038, 0.35, 2);
   if (latchRecoil) {
     state.player.scaleX = clamp(state.player.scaleX * (1 + (latchRecoil.squashX - 1) * latchRecoil.strength), 0.35, 2);
     state.player.scaleY = clamp(state.player.scaleY * (1 + (latchRecoil.squashY - 1) * latchRecoil.strength), 0.35, 2);
+  }
+  if (rejoinRebound) {
+    state.player.scaleX = clamp(state.player.scaleX * (1 + (rejoinRebound.scaleX - 1) * rejoinRebound.strength), 0.35, 2);
+    state.player.scaleY = clamp(state.player.scaleY * (1 + (rejoinRebound.scaleY - 1) * rejoinRebound.strength), 0.35, 2);
   }
   state.player.rotationX += 0.035;
   state.player.rotationY += state.player.vx * 0.04;

@@ -29,6 +29,18 @@ function activeWindglassSettle(snapshot = {}) {
     if (event.type !== "windglass-relay-scored" || !event.settleStyle) continue;
     const frames = Math.max(1, Math.floor(finite(event.settleFrames, 1)));
     const age = finite(snapshot.frame) - finite(event.at);
+    return age >= 0 && age < frames ? { event, frames, age } : null;
+  }
+  return null;
+}
+
+function activeWindglassRejoinRebound(snapshot = {}) {
+  const events = snapshot.recentEvents ?? [];
+  for (let index = events.length - 1; index >= 0; index -= 1) {
+    const event = events[index];
+    if (event.type !== "windglass-rejoin-secured" || !event.reboundStyle) continue;
+    const frames = Math.max(1, Math.floor(finite(event.reboundFrames, 1)));
+    const age = finite(snapshot.frame) - finite(event.at);
     return age >= 0 && age <= frames ? { event, frames, age } : null;
   }
   return null;
@@ -99,6 +111,29 @@ export function describeWindglassScoreSettle(snapshot = {}) {
     scaleY: Math.max(0.5, finite(event.settleScaleY, 1)),
     prompt: event.settlePrompt,
     objective: event.settleObjective
+  };
+}
+
+export function describeWindglassRejoinRebound(snapshot = {}) {
+  const active = activeWindglassRejoinRebound(snapshot);
+  if (!active) return null;
+  const { event, frames, age } = active;
+  const metric = event.scoreMetric === "cargo-mastery" ? "CARGO" : "SPEED";
+  const score = Math.max(0, Math.round(finite(event.scoreValue)));
+  const copy = (value) => typeof value === "string"
+    ? value.replaceAll("{score}", String(score)).replaceAll("{metric}", metric)
+    : value;
+  return {
+    style: event.reboundStyle,
+    color: Math.max(0, Math.floor(finite(event.reboundColor, 0x77e8ff))),
+    strength: Math.max(0, Math.min(1, 1 - age / frames)),
+    scaleX: Math.max(0.35, Math.min(2, finite(event.reboundScaleX, 1))),
+    scaleY: Math.max(0.35, Math.min(2, finite(event.reboundScaleY, 1))),
+    prompt: copy(event.reboundPrompt),
+    objective: copy(event.reboundObjective),
+    status: copy(event.reboundStatus),
+    score,
+    metric
   };
 }
 
@@ -196,6 +231,17 @@ function choiceBeatLedge(source, beat, choiceId, defaultStaminaRestore = 45) {
       routeChoiceGenericRejoinReleasePrompt: beat.rejoinReleasePrompt ?? null,
       routeChoiceGenericRejoinReleaseObjective: beat.rejoinReleaseObjective ?? null,
       routeChoiceGenericRejoinReleaseStatus: beat.rejoinReleaseStatus ?? null,
+      routeChoiceGenericRejoinReboundStyle: beat.rejoinReboundStyle ?? null,
+      routeChoiceGenericRejoinReboundFrames: Number(beat.rejoinReboundFrames ?? 0),
+      routeChoiceGenericRejoinReboundAngularImpulse: Number(beat.rejoinReboundAngularImpulse ?? 0),
+      routeChoiceGenericRejoinReboundVelocityRetention: Number(beat.rejoinReboundVelocityRetention ?? 0),
+      routeChoiceGenericRejoinReboundCameraImpulse: Number(beat.rejoinReboundCameraImpulse ?? 0),
+      routeChoiceGenericRejoinReboundColor: Number(beat.rejoinReboundColor ?? 0),
+      routeChoiceGenericRejoinReboundScaleX: Number(beat.rejoinReboundScaleX ?? 1),
+      routeChoiceGenericRejoinReboundScaleY: Number(beat.rejoinReboundScaleY ?? 1),
+      routeChoiceGenericRejoinReboundPrompt: beat.rejoinReboundPrompt ?? null,
+      routeChoiceGenericRejoinReboundObjective: beat.rejoinReboundObjective ?? null,
+      routeChoiceGenericRejoinReboundStatus: beat.rejoinReboundStatus ?? null,
       routeChoiceStatus: beat.status ?? null,
       routeChoiceResolvedStatus: beat.resolvedStatus ?? null,
       routeChoiceSafeStatus: beat.safeStatus ?? null,

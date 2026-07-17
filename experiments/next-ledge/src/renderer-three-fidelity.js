@@ -1,6 +1,6 @@
 import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js";
-import { createDiegeticEffects, describeReleaseCueSurge, updateDiegeticPlayerSignals } from "./diegetic-effects.js?v=windglass-rejoin-release-1";
-import { describeWindglassScoreSettle } from "./climb-anchor-adapter.js?v=windglass-rejoin-release-1";
+import { createDiegeticEffects, describeReleaseCueSurge, updateDiegeticPlayerSignals } from "./diegetic-effects.js?v=windglass-score-rebound-1";
+import { describeWindglassRejoinRebound, describeWindglassScoreSettle } from "./climb-anchor-adapter.js?v=windglass-score-rebound-1";
 
 const matFor = (m, type, hover, routeChoiceRole = null) => hover
   ? m.hover
@@ -516,20 +516,25 @@ export function createThreeRenderer({ canvas }) {
     const trauma = clamp01(snapshot.camera?.trauma ?? 0);
     const summit = snapshot.route?.ledges?.find((ledge) => ledge.type === "summit");
     const openingReveal = snapshot.sectorTransition?.phase === "opening";
-    const choiceFraming = ["open", "consequence-active", "confirmation-active", "payoff-active", "convergence-active", "rejoin-active"].includes(snapshot.routeChoice?.status);
+    const windglassRebound = describeWindglassRejoinRebound(snapshot);
+    const choiceFraming = ["open", "consequence-active", "confirmation-active", "payoff-active", "convergence-active", "rejoin-active"].includes(snapshot.routeChoice?.status) || Boolean(windglassRebound);
     const choiceRest = snapshot.route?.ledges?.find((ledge) => ledge.id === snapshot.routeChoice?.restAnchorId);
     const choiceRejoin = snapshot.route?.ledges?.find((ledge) => ledge.id === snapshot.routeChoice?.rejoinAnchorId);
     const postRejoin = snapshot.route?.ledges?.find((ledge) => ledge.id === snapshot.routeChoice?.postRejoinAnchorId);
     const payoffTarget = snapshot.route?.ledges?.find((ledge) => ledge.id === snapshot.routeChoice?.payoffTargetId);
     const convergenceTarget = snapshot.route?.ledges?.find((ledge) => ledge.id === snapshot.routeChoice?.convergenceAnchorId);
     const genericRejoinTarget = snapshot.route?.ledges?.find((ledge) => ledge.id === snapshot.routeChoice?.genericRejoinAnchorId);
+    const genericRejoinIndex = snapshot.route?.ledges?.findIndex((ledge) => ledge.id === snapshot.routeChoice?.genericRejoinAnchorId) ?? -1;
+    const reboundNextTarget = genericRejoinIndex >= 0 ? snapshot.route?.ledges?.[genericRejoinIndex + 1] : null;
     const confirmationHandoff = confirmationHandoffProgress(snapshot, postRejoin);
     const payoffSurge = payoffGrappleSurge(snapshot, payoffTarget);
     const releaseSurge = describeReleaseCueSurge(snapshot);
     const windglassSettle = describeWindglassScoreSettle(snapshot);
     const payoffCameraZoomBonus = num(payoffTarget?.metadata?.routeChoicePayoffCameraZoomBonus, 0);
     const rejoinCameraZoomBonus = num(convergenceTarget?.metadata?.routeChoiceGenericRejoinCameraZoomBonus, 0);
-    const choiceCameraY = snapshot.routeChoice?.status === "rejoin-active" && genericRejoinTarget
+    const choiceCameraY = windglassRebound && genericRejoinTarget
+      ? (genericRejoinTarget.y + num(reboundNextTarget?.y, genericRejoinTarget.y + 110)) * 0.5
+      : snapshot.routeChoice?.status === "rejoin-active" && genericRejoinTarget
       ? (num(snapshot.player?.y, convergenceTarget?.y) + genericRejoinTarget.y) * 0.5
       : snapshot.routeChoice?.status === "convergence-active" && payoffTarget && convergenceTarget
       ? (payoffTarget.y + convergenceTarget.y) * 0.5
@@ -541,7 +546,7 @@ export function createThreeRenderer({ canvas }) {
       ? (choiceRejoin.y + postRejoin.y) * 0.5
       : choiceRest && choiceRejoin ? (choiceRest.y + choiceRejoin.y) * 0.5 : snapshot.camera?.y ?? 0;
     const targetCameraY = openingReveal ? 242 : choiceFraming ? choiceCameraY : snapshot.completed && summit ? summit.y - 42 : snapshot.camera?.y ?? 0;
-    const targetCameraZ = openingReveal ? 500 : choiceFraming ? 340 + (snapshot.routeChoice?.status === "payoff-active" ? payoffCameraZoomBonus : snapshot.routeChoice?.status === "confirmation-active" ? payoffCameraZoomBonus * confirmationHandoff : snapshot.routeChoice?.status === "rejoin-active" ? rejoinCameraZoomBonus : 0) : snapshot.completed ? Math.max(272, snapshot.camera?.z ?? 210) : snapshot.camera?.z ?? 210;
+    const targetCameraZ = openingReveal ? 500 : choiceFraming ? 340 + (snapshot.routeChoice?.status === "payoff-active" ? payoffCameraZoomBonus : snapshot.routeChoice?.status === "confirmation-active" ? payoffCameraZoomBonus * confirmationHandoff : snapshot.routeChoice?.status === "rejoin-active" ? rejoinCameraZoomBonus : windglassRebound ? 32 : 0) : snapshot.completed ? Math.max(272, snapshot.camera?.z ?? 210) : snapshot.camera?.z ?? 210;
     presentedCameraY = presentedCameraY == null ? targetCameraY : presentedCameraY + (targetCameraY - presentedCameraY) * (snapshot.completed ? 0.065 : 0.24);
     presentedCameraZ = presentedCameraZ == null ? targetCameraZ : presentedCameraZ + (targetCameraZ - presentedCameraZ) * 0.08;
     camera.position.set((snapshot.camera?.x ?? 0) + Math.sin(time * 53) * trauma * 8, presentedCameraY + Math.cos(time * 47) * trauma * 6, presentedCameraZ);
@@ -593,11 +598,12 @@ export function createThreeRenderer({ canvas }) {
       const payoffTargetActive = choice?.status === "payoff-active" && id === choice.payoffTargetId;
       const convergenceTargetActive = choice?.status === "convergence-active" && convergenceAnchor;
       const rejoinTargetActive = choice?.status === "rejoin-active" && id === choice.genericRejoinAnchorId;
+      const rejoinReboundTarget = Boolean(windglassRebound) && id === choice?.genericRejoinAnchorId;
       g.visible = !unselected && !inactivePayoff && !inactiveConvergence;
-      const hot = id === snapshot.hoveredId || snapshot.enabledTargetIds?.includes(id) || id === snapshot.aimAssistTargetId || selected || consequenceTarget || confirmationTarget || payoffTargetPreview || payoffTargetActive || convergenceTargetActive || rejoinTargetActive;
+      const hot = id === snapshot.hoveredId || snapshot.enabledTargetIds?.includes(id) || id === snapshot.aimAssistTargetId || selected || consequenceTarget || confirmationTarget || payoffTargetPreview || payoffTargetActive || convergenceTargetActive || rejoinTargetActive || rejoinReboundTarget;
       const pulse = 1 + Math.sin(time * 6 + (g.position.y || 0) * 0.01) * 0.045;
-      g.scale.setScalar((rejoinTargetActive ? 1.48 : carryTarget ? 1.34 : confirmationTarget ? 1.24 : payoffTargetPreview ? 0.28 + confirmationHandoff * 0.84 : id === snapshot.hoveredId || id === snapshot.aimAssistTargetId ? 1.3 : hot ? 1.12 : 1) * pulse);
-      g.userData.core.material = convergenceTargetActive || rejoinTargetActive
+      g.scale.setScalar((rejoinReboundTarget ? 1.34 + windglassRebound.strength * 0.32 : rejoinTargetActive ? 1.48 : carryTarget ? 1.34 : confirmationTarget ? 1.24 : payoffTargetPreview ? 0.28 + confirmationHandoff * 0.84 : id === snapshot.hoveredId || id === snapshot.aimAssistTargetId ? 1.3 : hot ? 1.12 : 1) * pulse);
+      g.userData.core.material = convergenceTargetActive || rejoinTargetActive || rejoinReboundTarget
         ? m.windglass
         : carryTarget || consequenceTarget || confirmationTarget || payoffTargetPreview || payoffTargetActive
         ? choice.selectedRole === "pressure-shortcut" ? m.shortcutChoice : m.safeChoice
@@ -662,7 +668,7 @@ export function createThreeRenderer({ canvas }) {
       m.windglass.emissiveIntensity = 3.8;
       windglassSettleApplied = false;
     }
-    updateDiegeticPlayerSignals({ snapshot, playerMaterial: m.player, staminaHalo, dangerHalo, modeLight, dangerLight, releaseSurge, windglassSettle });
+    updateDiegeticPlayerSignals({ snapshot, playerMaterial: m.player, staminaHalo, dangerHalo, modeLight, dangerLight, releaseSurge, windglassSettle, windglassRebound });
 
     probe.visible = Boolean(snapshot.probe?.visible);
     probe.position.set(snapshot.probe?.x ?? 0, snapshot.probe?.y ?? 0, snapshot.probe?.z ?? 1);
