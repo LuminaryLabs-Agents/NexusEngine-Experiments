@@ -6,6 +6,7 @@
 - Experiment: `experiments/next-ledge/`
 - Result target: material player-visible refinement; no new experiment or production count
 - Experiments start: `8452f5d6a6e3617d66e57a2011e7ddc122a2d5e2`
+- Experiments production commit: `dbc2ea76626ba5713efca7c17534664263b594ed`
 - ProtoKits start: `04d34f049f58ae359cf71d43466c429dac2a6d08`
 - Core reference: `70cc2a1590677b872d40a42f7b7bb7e174941eb0` read-only
 
@@ -70,7 +71,7 @@
 
 ## Publication
 
-- Production commit: pending.
-- Receipt commit: pending.
+- Production commit: `dbc2ea76626ba5713efca7c17534664263b594ed`.
+- Publication receipt: recorded by the commit containing this final durable-state section.
 - ProtoKits: unchanged at `04d34f049f58ae359cf71d43466c429dac2a6d08`.
 - Exact next playable improvement: give the payoff latch one branch-aware recoil beat—mint forward pull or amber snap—using the existing `grapple-latched`, camera-trauma, and player-squash owners without new state or events.

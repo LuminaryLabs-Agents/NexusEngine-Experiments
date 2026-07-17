@@ -70,8 +70,8 @@
       ],
       "feelAverageBefore": 7.1,
       "feelAverageAfter": 8.9,
-      "validation": "Playwright completed the safe route through the final 12-frame Stormlock line handoff, proved one payoff event at the exact boundary, preserved the 134-speed Windglass score, exercised failure and keyboard retry, checked Advanced closed/open/closed, held bounded DOM/canvas/descriptor/scene/heap behavior, passed the matched performance and Human View gates, and reported zero console messages. Existing tests guard the selected Slipstream or Cacheline target contract.",
-      "packetId": "2026-07-16-next-ledge-stormlock-payoff-line-handoff"
+      "validation": "Playwright completed actual-input safe and shortcut routes through Stormlock, proved four shortcut pressure-vent pulses, latch-hit Slipstream and Cacheline, preserved 134-speed and 175-cargo Windglass scoring, held bounded DOM/canvas/descriptor/scene/heap behavior, passed the matched performance and Human View gates, and reported zero console messages. Existing tests guard descriptor-authored payoff surge ownership.",
+      "packetId": "2026-07-17-next-ledge-payoff-grapple-chroma-surge"
     }
   ],
   "experiments": []

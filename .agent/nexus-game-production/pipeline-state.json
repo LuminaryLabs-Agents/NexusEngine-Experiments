@@ -147,28 +147,28 @@
     "result": "Upgraded Next Ledge so Slipstream Launch and Cacheline High converge at Windglass Relay, banking 134 preserved speed or 175 cargo mastery before generic ascent resumes; production creation counts remain unchanged."
   },
   "lastRefinementUnit": {
-    "packetId": "2026-07-16-next-ledge-stormlock-payoff-line-handoff",
-    "scope": "Next Ledge Stormlock selected-payoff line handoff",
-    "result": "Stormlock now spends the final 12 confirmation frames growing the existing consequence line into the selected existing payoff target while easing that target into the camera composition before input returns."
+    "packetId": "2026-07-17-next-ledge-payoff-grapple-chroma-surge",
+    "scope": "Next Ledge payoff grapple chroma surge",
+    "result": "The first selected payoff grapple now carries mint recovery or amber mastery through the existing cable, probe, spark pool, and fire cue for one bounded descriptor-authored surge."
   },
   "lastCompletedUnit": {
-    "packetId": "2026-07-16-next-ledge-stormlock-payoff-line-handoff",
-    "scope": "Next Ledge Stormlock payoff-line handoff feel refinement",
-    "result": "The final 12 confirmation frames now connect Stormlock to the selected Slipstream or Cacheline target with the existing consequence line, target entity, route-choice state, and camera before the original payoff opens.",
-    "validation": "All 28 existing Next Ledge test entrypoints, affected JavaScript syntax checks, JSON, and diff checks passed. Playwright completed the actual safe route through the exact handoff boundary and one original payoff event, preserved the 134-speed Windglass score, proved real failure and keyboard retry, checked Advanced closed/open/closed, held bounded DOM/canvas/descriptor/scene/heap behavior, and reported zero console messages. Human View passed the first screen, final safe line handoff, and opened Slipstream payoff with diagnostics closed. Matched isolated active-play performance changed from 27.56 to 27.22 FPS (-1.23 percent), p95 changed from 50.6 to 51.0 ms, and steady-state counts did not grow.",
+    "packetId": "2026-07-17-next-ledge-payoff-grapple-chroma-surge",
+    "scope": "Next Ledge payoff grapple chroma-surge feel refinement",
+    "result": "Slipstream and Cacheline now carry their selected mint or amber branch energy through the existing payoff grapple cable, probe, spark impact, and fire cue without another presentation or state owner.",
+    "validation": "All 28 existing Next Ledge test entrypoints, affected JavaScript syntax checks, JSON, and diff checks passed. Playwright completed actual-input safe and shortcut routes through Stormlock, proved four shortcut pressure-vent pulses, latch-hit both payoff targets, preserved 134-speed and 175-cargo Windglass scoring, held bounded DOM/canvas/descriptor/scene/heap behavior, and reported zero console messages. Human View passed the first screen and mint payoff impact with diagnostics closed. Matched 60-tick warm-up plus 180-tick active performance improved from 58.48 to 52.80 ms average tick, p95 improved from 77.2 to 73.8 ms, settled scene nodes stayed at 277, and five follow-up samples showed no steady growth.",
     "commits": {
       "coreReadOnly": "70cc2a1590677b872d40a42f7b7bb7e174941eb0",
       "protokitsStart": "04d34f049f58ae359cf71d43466c429dac2a6d08",
       "protokitsProductionUnit": "04d34f049f58ae359cf71d43466c429dac2a6d08",
-      "experimentsStart": "f9657638115325c45780daf157df157c7a47159a",
-      "experimentsProductionUnit": "069e7de6a1979c1569f8ce066c7242a6e8817475"
+      "experimentsStart": "8452f5d6a6e3617d66e57a2011e7ddc122a2d5e2",
+      "experimentsProductionUnit": "dbc2ea76626ba5713efca7c17534664263b594ed"
     },
     "publication": "Experiments production and publication-receipt commits published to resolved default branch main after fetch-before-push verification; ProtoKits is unchanged and synchronized at 04d34f049f58ae359cf71d43466c429dac2a6d08."
   },
   "exactNextUnit": {
     "phase": "playable-experiment-upgrade",
     "epoch": 0,
-    "scope": "next-ledge-payoff-grapple-surge",
-    "goal": "Carry the selected mint or amber handoff color through the first payoff grapple fire as one brief cable-and-impact surge, deriving it from existing payoff and grapple feedback without adding a cable, event, effect pool, or state owner."
+    "scope": "next-ledge-payoff-latch-recoil",
+    "goal": "Give the payoff latch one branch-aware recoil beat—mint forward pull or amber snap—using the existing grapple-latched, camera-trauma, and player-squash owners without new state or events."
   }
 }
