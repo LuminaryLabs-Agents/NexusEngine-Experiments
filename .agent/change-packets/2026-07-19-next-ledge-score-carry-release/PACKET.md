@@ -3,7 +3,7 @@
 Packet ID: `2026-07-19-next-ledge-score-carry-release`
 Automation: `nexus-engine-game-production-builder`
 Date: 2026-07-19
-Status: validated; production publication pending
+Status: validated and published; publication receipt pending
 
 ## Intent
 
@@ -126,8 +126,8 @@ The primary runtime metric is inside the `10%` budget. Draw calls, geometry-depe
 - Experiments start: `1b9108958f02b29db7bb97f4a8ff0edb0351cc41`
 - ProtoKits start/final: `194d37714d7c23984970e09015b5dd4bffbbab7b`
 - Core read-only reference: `a5882b47bd5a9284550bb3af1f0cd8580c62665e`
-- Experiments production commit: pending
-- Experiments publication receipt: pending
+- Experiments production commit: `45b1f007e4df39855e59592c810fc29ff3f11f47`, published to resolved default branch `main`
+- Experiments publication receipt: this follow-up repository commit
 
 ## Exact Next Playable Unit
 
