@@ -73,6 +73,14 @@ export const signalBastionTowers = Object.freeze({
   anchor: { id: "anchor", label: "Anchor Coil", cost: 102, upgradeCost: 78, maxLevel: 4, range: 136, damage: 27, fireRate: 1.0, projectileSpeed: 340, slow: { amount: 0.25, duration: 1.1 }, color: "#91a8ff", role: "elite-control" }
 });
 
+export const signalBastionSecondCommand = Object.freeze({
+  unlockAfterWave: 1,
+  upgradeBlueprintId: "bolt",
+  specialistBlueprintId: "volt",
+  upgradePurpose: "focused impact",
+  specialistPurpose: "rapid crossfire"
+});
+
 export const signalBastionEnemies = Object.freeze({
   runner: { id: "runner", label: "Runner", maxHealth: 58, speed: 58, reward: 6, coreDamage: 1, radius: 9, color: "#84f0a4" },
   skitter: { id: "skitter", label: "Skitter", maxHealth: 34, speed: 90, reward: 4, coreDamage: 1, radius: 7, color: "#d7ff8a" },

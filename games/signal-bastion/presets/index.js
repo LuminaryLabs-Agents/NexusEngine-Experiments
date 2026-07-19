@@ -1,4 +1,4 @@
-import signalBastionDefaultPreset from "./default.js";
+import signalBastionDefaultPreset from "./default.js?v=second-command-refinement-1";
 import signalBastionHardPreset from "./hard.js";
 import signalBastionEndlessPreset from "./endless.js";
 import signalBastionDebugPreset from "./debug.js";

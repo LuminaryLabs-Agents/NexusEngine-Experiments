@@ -1,5 +1,5 @@
-import { resolveSignalBastionPreset } from "../presets/index.js";
-import { createSignalBastionCanvasRenderer } from "./renderer-canvas.js?v=first-command-refinement-5";
+import { resolveSignalBastionPreset } from "../presets/index.js?v=second-command-refinement-1";
+import { createSignalBastionCanvasRenderer } from "./renderer-canvas.js?v=first-command-refinement-6";
 import { createSignalBastionInputHost } from "./input-host.js";
 import { createSignalBastionCommandFractalDomainKit } from "./signal-bastion-command-fractal-domain-kit.js";
 import { createSignalBastionWaveChoreographyDomainKit } from "./signal-bastion-wave-choreography-domain-kit.js";
@@ -7,7 +7,7 @@ import { createSignalBastionFrontlineTacticsDomainKit } from "./signal-bastion-f
 import { createSignalBastionEvacuationCorridorReadinessDomainKit } from "./signal-bastion-evacuation-corridor-readiness-domain-kit.js";
 
 const NEXUS_URL = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js";
-const PROTOKITS_REF = "bb3d787da372bf001653635d6e57eb7ce54e3c50";
+const PROTOKITS_REF = "5986b69b047d622ea2efe58d12876033f3de2291";
 const PROTOKITS_BASE_URL = `https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@${PROTOKITS_REF}/protokits`;
 const DEFENSE_KITS_URL = `${PROTOKITS_BASE_URL}/generic-defense-aaa-dsk-bridge/index.js`;
 const SESSION_COMMAND_KIT_URL = `${PROTOKITS_BASE_URL}/generic-defense-session-command-kit/index.js`;
@@ -81,17 +81,80 @@ function getSignalBastionBudgetSnapshot(engine) {
   };
 }
 
-function getSignalBastionPlayerMission(presentation) {
+function describeSignalBastionWave(wave, archetypes = {}) {
+  if (!wave?.groups?.length) return "unknown pressure";
+  return wave.groups.map((group) => {
+    const count = Number(group.count ?? 0);
+    const label = archetypes[group.archetype]?.label ?? group.archetype ?? "threat";
+    return `${count} ${label}${count === 1 ? "" : "s"}`;
+  }).join(" + ");
+}
+
+function getSignalBastionSecondCommand(snapshot, playerGuidance = {}) {
+  const authored = playerGuidance.secondCommand;
+  if (!authored) return null;
+  const session = snapshot.session ?? {};
+  const waveIndex = Number(session.waveIndex ?? 0);
+  const unlockAfterWave = Number(authored.unlockAfterWave ?? 1);
+  if (session.status !== "planning" || waveIndex !== unlockAfterWave) return null;
+
+  const structures = Object.values(snapshot.structures?.structures ?? {});
+  const blueprints = snapshot.structures?.blueprints ?? snapshot.level?.blueprints ?? {};
+  const upgradeBlueprint = blueprints[authored.upgradeBlueprintId] ?? {};
+  const specialistBlueprint = blueprints[authored.specialistBlueprintId] ?? {};
+  const upgradeStructure = structures.find((structure) => structure.blueprintId === authored.upgradeBlueprintId) ?? null;
+  const specialistStructure = structures.find((structure) => structure.blueprintId === authored.specialistBlueprintId) ?? null;
+  const currency = Number(snapshot.economy?.currency ?? 0);
+  const upgradeCost = Math.ceil(Number(upgradeBlueprint.upgradeCost ?? Number(upgradeBlueprint.cost ?? 0) * 0.75) * Number(upgradeStructure?.level ?? 1));
+  const chosen = Number(upgradeStructure?.level ?? 1) > 1 ? "upgrade" : specialistStructure ? "specialist" : null;
+  const nextWave = snapshot.level?.waves?.[waveIndex] ?? null;
+
+  return {
+    id: "signal-bastion-second-command",
+    active: chosen === null,
+    chosen,
+    currency,
+    nextWaveLabel: nextWave?.label ?? "the next wave",
+    nextWaveThreat: describeSignalBastionWave(nextWave, snapshot.level?.archetypes),
+    upgrade: {
+      structureId: upgradeStructure?.id ?? null,
+      blueprintId: authored.upgradeBlueprintId,
+      label: upgradeBlueprint.label ?? "starter tower",
+      level: Number(upgradeStructure?.level ?? 1),
+      cost: upgradeCost,
+      affordable: Boolean(upgradeStructure) && currency >= upgradeCost,
+      purpose: authored.upgradePurpose ?? "focused impact"
+    },
+    specialist: {
+      blueprintId: authored.specialistBlueprintId,
+      label: specialistBlueprint.label ?? "specialist tower",
+      cost: Number(specialistBlueprint.cost ?? 0),
+      affordable: currency >= Number(specialistBlueprint.cost ?? 0),
+      purpose: authored.specialistPurpose ?? "specialized coverage"
+    }
+  };
+}
+
+function getSignalBastionPlayerMission(presentation, playerGuidance) {
   const snapshot = presentation?.rawSnapshot ?? {};
   const session = snapshot.session ?? {};
   const waveIndex = Number(session.waveIndex ?? 0);
+  const secondCommand = getSignalBastionSecondCommand(snapshot, playerGuidance);
+  let impact = snapshot.render?.hud?.message ?? session.message ?? "Choose a starter tower below, then click a green pad.";
+  if (secondCommand?.active) {
+    impact = `${secondCommand.currency} CR banked · select ${secondCommand.upgrade.label} → U for ${secondCommand.upgrade.purpose}, or place ${secondCommand.specialist.label} for ${secondCommand.specialist.purpose}.`;
+  } else if (secondCommand?.chosen) {
+    const choice = secondCommand[secondCommand.chosen];
+    impact = `Command set: ${choice.label}${secondCommand.chosen === "upgrade" ? ` L${choice.level}` : ""} · ${secondCommand.currency} CR remain.`;
+  }
   return {
     status: session.status ?? "planning",
     waveIndex,
     structureCount: Object.keys(snapshot.structures?.structures ?? {}).length,
     threatCount: Object.keys(snapshot.agents?.active ?? {}).length + (snapshot.agents?.spawnQueue?.length ?? 0),
     nextWaveLabel: snapshot.level?.waves?.[waveIndex]?.label ?? null,
-    impact: snapshot.render?.hud?.message ?? session.message ?? "Choose a starter tower below, then click a green pad."
+    secondCommand,
+    impact
   };
 }
 
@@ -268,10 +331,11 @@ export async function bootSignalBastion(documentRef = document) {
     function createPresentationSnapshot(includeDiagnostics = renderer.getDiagnosticsVisible()) {
       const activeBlueprint = input.getActiveBlueprint();
       const presentation = getSignalBastionPresentation(engine);
+      const playerGuidance = preset.presentation?.playerGuidance ?? {};
       const playerPresentation = {
         ...presentation,
-        playerGuidance: preset.presentation?.playerGuidance ?? {},
-        playerMission: getSignalBastionPlayerMission(presentation),
+        playerGuidance,
+        playerMission: getSignalBastionPlayerMission(presentation, playerGuidance),
         diagnosticsVisible: includeDiagnostics
       };
       if (!includeDiagnostics) return playerPresentation;

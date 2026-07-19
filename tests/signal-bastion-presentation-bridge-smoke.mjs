@@ -78,6 +78,7 @@ assert.match(renderer, /const ui = presentation\.ui \?\? \[\]/, "renderer UI sho
 assert.match(renderer, /renderStats\(ui\.find/, "stat strip should render descriptor entries");
 assert.match(renderer, /renderTowerPanel\(ui\.find/, "tower panel should render descriptor entries");
 assert.match(renderer, /renderContext\(ui\)/, "context panel should render descriptor entries");
+assert.match(renderer, /presentation\.playerMission\?\.secondCommand/, "second-command rendering should consume the local player-mission descriptor");
 
 const findHit = section(renderer, "function findHit", "function draw");
 const rendererOutsideFindHit = renderer.replace(findHit, "");

@@ -217,6 +217,22 @@ export function createSignalBastionCanvasRenderer({
     }
   }
 
+  function drawSecondCommand(presentation) {
+    const command = presentation.playerMission?.secondCommand;
+    if (!command?.active || !command.upgrade?.structureId) return;
+    const tower = (presentation.units ?? []).find((unit) => unit.entityType === "tower" && unit.id === command.upgrade.structureId);
+    if (!tower) return;
+    ellipse(
+      { x: tower.x, y: tower.y, z: 0 },
+      33,
+      18,
+      "rgba(255,227,109,.035)",
+      "rgba(255,227,109,.88)",
+      2,
+      16
+    );
+  }
+
   function drawVfx(presentation) {
     for (const vfx of presentation.vfx ?? []) {
       const p = worldToScreen(vfx);
@@ -282,8 +298,8 @@ export function createSignalBastionCanvasRenderer({
     statStripEl.innerHTML = (descriptor.fields ?? []).map((field) => `<div class="stat"><b>${field.value}</b><span>${field.label}</span></div>`).join("");
   }
 
-  function towerCard(card, index) {
-    return `<button class="tower-card ${card.selected ? "selected" : ""} ${card.affordable ? "" : "locked"}" data-blueprint-id="${card.id}" title="${card.label}">
+  function towerCard(card, index, extraClass = "") {
+    return `<button class="tower-card ${extraClass} ${card.selected ? "selected" : ""} ${card.affordable ? "" : "locked"}" data-blueprint-id="${card.id}" title="${card.label}">
       <i class="tower-icon" style="background:${card.color}"></i>
       <strong>${index + 1}. ${card.label}</strong>
       <span>${card.cost} CR · ${card.role}</span>
@@ -294,16 +310,28 @@ export function createSignalBastionCanvasRenderer({
     if (!towerPanelEl || !descriptor) return;
     const cards = descriptor.cards ?? [];
     const starterCount = Math.max(1, Number(presentation.playerGuidance?.starterTowerCount ?? 3));
-    const nextKey = JSON.stringify({ cards, starterCount });
+    const secondCommand = presentation.playerMission?.secondCommand ?? null;
+    const nextKey = JSON.stringify({ cards, starterCount, secondCommand });
     if (nextKey === towerPanelKey) return;
     const advancedWasOpen = towerPanelEl.querySelector(".tower-more")?.open === true;
     towerPanelKey = nextKey;
     const starters = cards.slice(0, starterCount);
-    const specialists = cards.slice(starterCount);
+    const promotedSpecialist = secondCommand
+      ? cards.find((card) => card.id === secondCommand.specialist?.blueprintId) ?? null
+      : null;
+    const specialists = cards.slice(starterCount).filter((card) => card !== promotedSpecialist);
+    let guidance = "<b>1 · Build the line</b>Starter towers cover damage, splash, and control.";
+    if (secondCommand?.active) {
+      guidance = `<b>2 · Choose command</b>${secondCommand.upgrade.label} → U, or place ${secondCommand.specialist.label}.`;
+    } else if (secondCommand?.chosen) {
+      const chosen = secondCommand[secondCommand.chosen];
+      guidance = `<b>Command set</b>${chosen.label} ready for ${secondCommand.nextWaveLabel}.`;
+    }
     towerPanelEl.innerHTML = `
-      <div class="tower-guidance"><b>1 · Build the line</b>Starter towers cover damage, splash, and control.</div>
-      ${starters.map(towerCard).join("")}
-      ${specialists.length ? `<details class="tower-more" ${advancedWasOpen ? "open" : ""}><summary>${specialists.length} specialist<br/>towers</summary><div class="tower-more-grid">${specialists.map((card, index) => towerCard(card, index + starterCount)).join("")}</div></details>` : ""}`;
+      <div class="tower-guidance">${guidance}</div>
+      ${starters.map((card) => towerCard(card, cards.indexOf(card))).join("")}
+      ${promotedSpecialist ? towerCard(promotedSpecialist, cards.indexOf(promotedSpecialist), "second-command") : ""}
+      ${specialists.length ? `<details class="tower-more" ${advancedWasOpen ? "open" : ""}><summary>${specialists.length} specialist<br/>towers</summary><div class="tower-more-grid">${specialists.map((card) => towerCard(card, cards.indexOf(card))).join("")}</div></details>` : ""}`;
   }
 
   function renderContext(ui) {
@@ -330,10 +358,13 @@ export function createSignalBastionCanvasRenderer({
     const waveIndex = Number(mission.waveIndex ?? 0);
     const structures = Number(mission.structureCount ?? 0);
     const threats = Number(mission.threatCount ?? 0);
+    const secondCommand = mission.secondCommand;
     let objective = "Place a Bolt Spire on a green build pad.";
     if (status === "combat") objective = `${threats} threat${threats === 1 ? "" : "s"} on approach — hold the Dawn Core.`;
     else if (status === "lost") objective = "Core breached. Rebuild the line and answer the signal again.";
     else if (status === "won") objective = "All signals held. The Dawn Core is secure.";
+    else if (secondCommand?.active) objective = `${secondCommand.nextWaveLabel}: ${secondCommand.nextWaveThreat}. Upgrade ${secondCommand.upgrade.label} (${secondCommand.upgrade.cost} CR) or add ${secondCommand.specialist.label} (${secondCommand.specialist.cost} CR).`;
+    else if (secondCommand?.chosen) objective = `Command confirmed. Start ${secondCommand.nextWaveLabel} when ready.`;
     else if (structures > 0 && waveIndex === 0) objective = `Line ready. Start ${mission.nextWaveLabel ?? "the first wave"} when you are set.`;
     else if (structures > 0) objective = `Reinforce for ${mission.nextWaveLabel ?? "the next wave"}, then call the assault.`;
     const impact = mission.impact ?? "Choose a starter tower below, then click a green pad.";
@@ -381,6 +412,7 @@ export function createSignalBastionCanvasRenderer({
     if (diagnosticsVisible) drawCommandFractal(safe);
     drawRangeRings(safe);
     drawPlacement(safe);
+    drawSecondCommand(safe);
     drawUnits(safe);
     drawVfx(safe);
     drawUi(safe);

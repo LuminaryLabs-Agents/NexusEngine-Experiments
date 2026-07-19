@@ -1,11 +1,12 @@
 import {
   signalBastionMaps,
   signalBastionTowers,
+  signalBastionSecondCommand,
   signalBastionEnemies,
   signalBastionWaves,
   signalBastionRewards,
   signalBastionCampaign
-} from "./content.js";
+} from "./content.js?v=second-command-refinement-1";
 
 const map = signalBastionMaps.emberCauseway;
 
@@ -34,7 +35,8 @@ export const signalBastionDefaultPreset = Object.freeze({
       purpose: "Build a three-tower line, call the assault, and keep the Dawn Core lit.",
       starterTowerCount: 3,
       firstBuildLabel: "Bolt Spire",
-      firstWaveLabel: "First Signal"
+      firstWaveLabel: "First Signal",
+      secondCommand: signalBastionSecondCommand
     },
     palette: {
       path: "rgba(118,231,255,.25)",
