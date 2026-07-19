@@ -23,7 +23,7 @@ export const config={
   },
   builds:[
     {id:'wall',name:'SPIKE WALL',cost:{wood:5,obsidian:3},hp:180,range:0,color:'#94a3b8'},
-    {id:'turret',name:'SENTRY',cost:{wood:2,crystal:5,energy:3},hp:100,range:310,color:'#38bdf8'},
+    {id:'turret',name:'SENTRY',cost:{crystal:5,energy:3},hp:100,range:310,color:'#38bdf8'},
     {id:'pylon',name:'REGEN',cost:{spore:6,sulfur:3,energy:2},hp:100,range:160,color:'#10b981'}
   ],
   firstSiege:{
@@ -38,6 +38,14 @@ export const config={
       damageScale:.65,
       guardPercent:35,
       color:'#f59e0b'
+    },
+    postFortificationSentry:{
+      id:'crystal-sentry-choice',
+      buildId:'turret',
+      name:'CRYSTAL SENTRY',
+      routeRealmId:'crystal',
+      unlockAfterClears:2,
+      placementOffset:{x:145,y:40}
     }
   }
 };
@@ -72,6 +80,8 @@ export function createHarvestAndPickupKit(){function addDrop(w,x,y,item,color){w
 
 export function createBuildKit(){
   const recipe=config.firstSiege.postClearFortification;
+  const sentryRecipe=config.firstSiege.postFortificationSentry;
+  const sentryIndex=config.builds.findIndex(blueprint=>blueprint.id===sentryRecipe.buildId);
 
   function describeFortification(w){
     const items=w.get('inventory').items;
@@ -96,6 +106,43 @@ export function createBuildKit(){
       damageScale:recipe.damageScale,
       guardPercent:recipe.guardPercent,
       color:recipe.color
+    };
+  }
+
+  function describeSentryChoice(w){
+    const items=w.get('inventory').items;
+    const structures=w.get('structures');
+    const blueprint=config.builds[sentryIndex];
+    const wall=structures.find(structure=>structure.kind==='wall'&&structure.fortificationId===recipe.id&&structure.hp>0);
+    const sentry=structures.find(structure=>structure.kind===sentryRecipe.buildId&&structure.sentryChoiceId===sentryRecipe.id);
+    const survivedSiege=(w.get('combat')?.clears??0)>=sentryRecipe.unlockAfterClears;
+    const unlocked=Boolean(wall)&&survivedSiege;
+    const core=w.get('core');
+    const missing=Object.fromEntries(Object.entries(blueprint.cost)
+      .map(([id,amount])=>[id,Math.max(0,amount-(items[id]||0))])
+      .filter(([,amount])=>amount>0));
+    return{
+      id:sentryRecipe.id,
+      buildId:sentryRecipe.buildId,
+      buildIndex:sentryIndex,
+      name:sentryRecipe.name,
+      routeRealmId:sentryRecipe.routeRealmId,
+      unlockAfterClears:sentryRecipe.unlockAfterClears,
+      cost:{...blueprint.cost},
+      materials:Object.fromEntries(Object.keys(blueprint.cost).map(id=>[id,items[id]||0])),
+      missing,
+      survivedSiege,
+      unlocked,
+      eligible:unlocked&&!sentry,
+      ready:unlocked&&!sentry&&!Object.keys(missing).length,
+      selected:w.get('build').selected===sentryIndex,
+      completed:Boolean(sentry),
+      sentryId:sentry?.id??null,
+      wallId:wall?.id??null,
+      placement:{x:core.x+sentryRecipe.placementOffset.x,y:core.y+sentryRecipe.placementOffset.y},
+      hp:blueprint.hp,
+      range:blueprint.range,
+      color:blueprint.color
     };
   }
 
@@ -129,9 +176,10 @@ export function createBuildKit(){
     init(w){w.set('build',{selected:0,last:'starter wall ready',ghostAlpha:1});w.set('structures',[]);},
     install(e,w){e.build={
       select:index=>{const b=w.get('build');b.selected=clamp(index,0,config.builds.length-1);b.last=config.builds[b.selected].name;b.ghostAlpha=1;},
-      place:()=>{const b=w.get('build'),bp=config.builds[b.selected],p=w.get('player'),realm=w.get('realm');if(realm.id!=='lobby'){b.last='lobby only';w.emit('fx.flash',{x:p.x,y:p.y,color:'#ff553c'});return false;}if(!e.inventory.spend(bp.cost)){b.last='missing materials';w.emit('fx.shake',{amount:5});w.emit('fx.flash',{x:p.x,y:p.y,color:'#ff553c'});return false;}w.get('structures').push({id:`structure-${w.get('structures').length+1}`,kind:bp.id,name:bp.name,x:p.x,y:p.y+58,hp:bp.hp,maxHp:bp.hp,range:bp.range,cd:0,color:bp.color});b.last=`built ${bp.name}`;b.ghostAlpha=1;w.emit('structure.built',{kind:bp.id});burst(w,p.x,p.y+50,bp.color,38);return true;},
+      place:()=>{const b=w.get('build'),bp=config.builds[b.selected],p=w.get('player'),realm=w.get('realm'),sentryChoice=describeSentryChoice(w);if(realm.id!=='lobby'){b.last='lobby only';w.emit('fx.flash',{x:p.x,y:p.y,color:'#ff553c'});return false;}if(bp.id===sentryRecipe.buildId&&!sentryChoice.unlocked){b.last='Emberplate must survive Siege 2';w.emit('fx.shake',{amount:5});w.emit('fx.flash',{x:p.x,y:p.y,color:'#ff553c'});return false;}if(bp.id===sentryRecipe.buildId&&sentryChoice.completed){b.last='Crystal Sentry already deployed';return false;}if(!e.inventory.spend(bp.cost)){b.last=bp.id===sentryRecipe.buildId?'Crystal Sentry recipe incomplete':'missing materials';w.emit('fx.shake',{amount:5});w.emit('fx.flash',{x:p.x,y:p.y,color:'#ff553c'});return false;}const placement=bp.id===sentryRecipe.buildId?sentryChoice.placement:{x:p.x,y:p.y+58};w.get('structures').push({id:`structure-${w.get('structures').length+1}`,kind:bp.id,name:bp.name,x:placement.x,y:placement.y,hp:bp.hp,maxHp:bp.hp,range:bp.range,cd:0,color:bp.color,...(bp.id===sentryRecipe.buildId?{sentryChoiceId:sentryRecipe.id}:{})});b.last=`built ${bp.id===sentryRecipe.buildId?sentryRecipe.name:bp.name}`;b.ghostAlpha=1;w.emit('structure.built',{kind:bp.id});burst(w,placement.x,placement.y,bp.color,bp.id===sentryRecipe.buildId?58:38);return true;},
       fortify:()=>fortify(w,e),
       getFortificationState:()=>describeFortification(w),
+      getSentryChoiceState:()=>describeSentryChoice(w),
       getState:()=>w.get('build')
     };},
     systems:[(w,e)=>{const input=w.get('input'),b=w.get('build');if(input.select!==null&&input.select!==undefined)e.build.select(input.select);if(input.cycle)e.build.select((b.selected+input.cycle+config.builds.length)%config.builds.length);if(input.build){const fortification=e.build.getFortificationState();if(fortification.eligible)e.build.fortify();else e.build.place();}b.ghostAlpha=Math.max(0,(b.ghostAlpha??0)-w.clock.delta*.7);}]
@@ -181,8 +229,8 @@ export function createWaveAndDefenseKit(){
       for(const s of w.get('structures')){s.cd-=dt;if(s.kind==='turret'&&s.cd<=0){let t=null,b=s.range;for(const en of w.get('enemies')){const d=dist(s,en);if(d<b){b=d;t=en;}}if(t){s.cd=.68;t.hp-=16;w.emit('fx.beam',{x1:s.x,y1:s.y-28,x2:t.x,y2:t.y});if(t.hp<=0){w.get('enemies').splice(w.get('enemies').indexOf(t),1);burst(w,t.x,t.y,'#f97316',16);}}}if(s.kind==='pylon'&&s.cd<=0){s.cd=1.8;for(const t of targets)if(dist(s,t)<160)t.hp=Math.min(t.maxHp,t.hp+12);burst(w,s.x,s.y,'#10b981',14);}}
       w.set('structures',w.get('structures').filter(s=>s.hp>0));
       w.set('enemies',w.get('enemies').filter(en=>en.hp>0));
-      if(core.hp<=0||p.hp<=0){e.inventory.clear();core.hp=core.maxHp;p.hp=p.maxHp;p.hurt=0;wave.active=false;wave.queue=[];w.set('enemies',[]);combat.failures++;combat.lastImpact='CORE REKINDLED';combat.impact=.8;realm.prompt='CORE FAILURE. STARTER CACHE RESTORED. REBUILD AND RETRY.';w.emit('fx.shake',{amount:15});w.emit('fx.flash',{x:core.x,y:core.y,color:'#ff553c',life:.5});}
-      if(wave.active&&!wave.queue.length&&!w.get('enemies').length){wave.active=false;combat.clears++;combat.lastImpact=`SIEGE ${wave.n} SECURED`;combat.impact=1;realm.prompt=`WAVE ${wave.n} CLEARED. GATHER AND REBUILD.`;for(let i=0;i<4;i++)w.get('drops').push({x:rand(-40,40),y:rand(-40,40),item:'energy',color:'#e9d5ff',vx:rand(-50,50),vy:rand(-100,-40),life:.4});}
+      if(core.hp<=0||p.hp<=0){e.inventory.clear();core.hp=core.maxHp;p.hp=p.maxHp;p.hurt=0;wave.active=false;wave.queue=[];w.set('enemies',[]);if(!w.get('structures').some(structure=>structure.kind==='wall'))e.build.select(0);combat.failures++;combat.lastImpact='CORE REKINDLED';combat.impact=.8;realm.prompt='CORE FAILURE. STARTER CACHE RESTORED. REBUILD AND RETRY.';w.emit('fx.shake',{amount:15});w.emit('fx.flash',{x:core.x,y:core.y,color:'#ff553c',life:.5});}
+      if(wave.active&&!wave.queue.length&&!w.get('enemies').length){wave.active=false;combat.clears++;combat.lastImpact=`SIEGE ${wave.n} SECURED`;combat.impact=1;realm.prompt=`WAVE ${wave.n} CLEARED. GATHER AND REBUILD.`;const sentryChoice=e.build.getSentryChoiceState();if(sentryChoice.unlocked&&!sentryChoice.completed)e.build.select(sentryChoice.buildIndex);for(let i=0;i<4;i++)w.get('drops').push({x:rand(-40,40),y:rand(-40,40),item:'energy',color:'#e9d5ff',vx:rand(-50,50),vy:rand(-100,-40),life:.4});}
     }]
   };
 }

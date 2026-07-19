@@ -5,6 +5,16 @@ import './hellscape-sanctuary-forge-readiness-cdn-state-input-smoke.mjs';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { createHellscapeSiegeFractalDomainKit } from '../games/rogue-lite-hellscape-siege/src/hellscape-siege-fractal-domain-kit.js';
+import { createRealtimeGame } from '../games/rogue-lite-hellscape-siege/src/protokits/runtime.js';
+import {
+  config,
+  createAvatarKit,
+  createBuildKit,
+  createInputKit,
+  createInventoryKit,
+  createRealmKit,
+  createWaveAndDefenseKit
+} from '../games/rogue-lite-hellscape-siege/src/protokits/hellscape-kits.js';
 
 const mainPath = 'games/rogue-lite-hellscape-siege/src/main.js';
 const rendererPath = 'games/rogue-lite-hellscape-siege/src/renderer/canvas-renderer.js';
@@ -24,18 +34,68 @@ assert.ok(mainSource.includes('createHellscapeSiegeFractalDomainKit'), 'main rou
 assert.ok(mainSource.includes('visualFractal'), 'main route should expose visualFractal state');
 assert.ok(mainSource.includes('getRendererHandoff'), 'GameHost should expose renderer handoff');
 assert.ok(mainSource.includes('getFortificationState'), 'snapshot should expose the build-owned post-clear fortification descriptor');
-assert.ok(mainSource.includes("hellscape-kits.js?v=first-siege-4"), 'main route should cache-bust the changed deterministic kit dependency');
-assert.ok(mainSource.includes("canvas-renderer.js?v=first-siege-4"), 'main route should cache-bust the changed renderer dependency');
-assert.ok(mainSource.includes("first-siege-hud.js?v=first-siege-4"), 'main route should cache-bust the changed HUD dependency');
+assert.ok(mainSource.includes('getSentryChoiceState'), 'snapshot should expose the build-owned Crystal Sentry descriptor');
+assert.ok(mainSource.includes("hellscape-kits.js?v=first-siege-5"), 'main route should cache-bust the changed deterministic kit dependency');
+assert.ok(mainSource.includes("canvas-renderer.js?v=first-siege-5"), 'main route should cache-bust the changed renderer dependency');
+assert.ok(mainSource.includes("first-siege-hud.js?v=first-siege-5"), 'main route should cache-bust the changed HUD dependency');
 assert.ok(rendererSource.includes('drawHellscapeFractal'), 'renderer should consume hellscape descriptor handoff');
 assert.ok(rendererSource.includes('rendererHandoff?.descriptors'), 'renderer should read descriptors rather than recompute domain truth');
 assert.ok(rendererSource.includes('B · FORGE EMBERPLATE'), 'renderer should present one post-clear fortification owner on the surviving wall');
+assert.ok(rendererSource.includes('B · DEPLOY SENTRY'), 'renderer should present the ready Crystal Sentry through the existing build ghost');
 assert.ok(indexSource.includes('./src/main.js'), 'route shell should boot the changed runtime');
-assert.ok(indexSource.includes('first-siege-5'), 'route shell should cache-bust the integrated fortification refinement');
+assert.ok(indexSource.includes('first-siege-6'), 'route shell should cache-bust the integrated Crystal Sentry refinement');
 assert.ok(kitSource.includes('renderer consumes descriptors only'), 'kit should declare renderer descriptor-only handoff');
 assert.ok(localKitSource.includes('postClearFortification'), 'local authored tuning should declare the post-clear Emberplate recipe');
+assert.ok(localKitSource.includes('postFortificationSentry'), 'local authored tuning should declare the Crystal Sentry progression choice');
 assert.ok(localKitSource.includes("realm.prompt.startsWith('CORE FAILURE')"), 'wave start should retry a breached siege instead of skipping its number');
 assert.ok(localKitSource.includes('REBUILD BEFORE RETRYING SIEGE'), 'destroyed defenses should block retry until the starter cache rebuild is placed');
+
+const sentryBlueprint = config.builds.find(blueprint => blueprint.id === 'turret');
+assert.deepEqual(sentryBlueprint.cost, { crystal: 5, energy: 3 }, 'Crystal alone should fund the Sentry recipe');
+
+const progressionEngine = createRealtimeGame({
+  kits: [
+    createInputKit(),
+    createAvatarKit(),
+    createInventoryKit(),
+    createRealmKit(),
+    createBuildKit(),
+    createWaveAndDefenseKit()
+  ]
+});
+progressionEngine.world.get('inventory').items = { ...progressionEngine.world.get('inventory').items, crystal: 5, energy: 3 };
+progressionEngine.world.get('structures').push({
+  id: 'structure-1',
+  kind: 'wall',
+  name: 'EMBERPLATE WALL',
+  x: 0,
+  y: 238,
+  hp: 280,
+  maxHp: 300,
+  damageScale: 0.65,
+  fortificationId: 'emberplate-wall',
+  color: '#f59e0b',
+  cd: 0
+});
+progressionEngine.world.get('combat').clears = 1;
+assert.equal(progressionEngine.build.getSentryChoiceState().unlocked, false, 'Emberplate should survive one more siege before the Sentry unlocks');
+progressionEngine.world.get('wave').n = 2;
+progressionEngine.world.get('wave').active = true;
+progressionEngine.tick(1 / 60);
+const readySentry = progressionEngine.build.getSentryChoiceState();
+assert.equal(readySentry.unlocked, true, 'clearing Siege 2 with Emberplate should unlock the Sentry');
+assert.equal(readySentry.ready, true, 'Crystal materials should make the Sentry ready');
+assert.equal(progressionEngine.build.getState().selected, readySentry.buildIndex, 'the existing build owner should select the Sentry after the clear');
+assert.equal(progressionEngine.build.place(), true, 'the existing build action should deploy the ready Sentry');
+assert.equal(progressionEngine.build.getSentryChoiceState().completed, true, 'the build-owned descriptor should record one deployed Sentry');
+assert.equal(progressionEngine.world.get('structures').filter(structure => structure.kind === 'turret').length, 1, 'the progression choice should deploy exactly one Sentry');
+const deployedSentry = progressionEngine.world.get('structures').find(structure => structure.kind === 'turret');
+assert.deepEqual({ x: deployedSentry.x, y: deployedSentry.y }, readySentry.placement, 'the Sentry should use its authored core-side anchor');
+assert.notDeepEqual({ x: deployedSentry.x, y: deployedSentry.y }, { x: 0, y: 238 }, 'the Sentry must not stack on the Emberplate wall');
+progressionEngine.world.set('structures', []);
+progressionEngine.world.get('core').hp = 0;
+progressionEngine.tick(1 / 60);
+assert.equal(progressionEngine.build.getState().selected, 0, 'a breached core without a surviving wall should restore the starter wall as the recovery action');
 
 function stateCase(index) {
   const move = [

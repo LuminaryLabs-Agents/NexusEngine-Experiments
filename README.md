@@ -110,7 +110,7 @@ Cutover target: deepen the post-clear upgrade/specialist decision while preservi
 
 `games/rogue-lite-hellscape-siege/` is the canonical base route for the high-fidelity rogue-lite base-defense game. The old `games/rogue-lite-hellscape-siege-v2/` route has been folded into this base route and removed from the arcade.
 
-Current playable slice: a stocked first wall, readable first-screen mission, physical siege start, close-range Warden strike, wave clear/breach recovery, and resource-realm harvest/return loop. The five readiness overlays are closed by default under Advanced.
+Current playable slice: a stocked first wall, readable first-screen mission, physical siege start, close-range Warden strike, wave clear/breach recovery, Grove/Ashes Emberplate fortification, and one Crystal-funded core-side Sentry choice. The five readiness overlays are closed by default under Advanced.
 
 Cutover target: preserve realm portals, inventory, harvesting, pickups, build blueprints, wave/core defense, FX, and renderer-only presentation while moving deterministic combat/recovery behind the smallest shared generic-defense DSK API.
 

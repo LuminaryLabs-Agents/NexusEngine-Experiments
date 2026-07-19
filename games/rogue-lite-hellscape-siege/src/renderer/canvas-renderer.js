@@ -339,6 +339,13 @@ export function createCanvasRenderer(canvas) {
         ctx.font = 'bold 10px ui-monospace, monospace';
         ctx.textAlign = 'center';
         ctx.fillText(portal.label, portal.x, portal.y - 48);
+        if (portal.id === state.sentryChoice?.routeRealmId && state.sentryChoice?.eligible && !state.sentryChoice?.ready) {
+          const choice = state.sentryChoice;
+          const pulse = 48 + Math.sin((state.clock?.elapsed || 0) * 5) * 5;
+          ring(ctx, portal, pulse, choice.color, 0.62, 3);
+          ctx.fillStyle = choice.color;
+          ctx.fillText(`${choice.name} · ${Math.min(choice.materials.crystal || 0, choice.cost.crystal)}/${choice.cost.crystal} CRYSTAL · ${Math.min(choice.materials.energy || 0, choice.cost.energy)}/${choice.cost.energy} ENERGY`, portal.x, portal.y + 62);
+        }
       }
     } else {
       circle(ctx, 0, -350, 30, '#00f5ff', 0.55);
@@ -355,6 +362,13 @@ export function createCanvasRenderer(canvas) {
       const color = structure.color || (structure.kind === 'pylon' ? '#10b981' : structure.kind === 'turret' ? '#38bdf8' : '#94a3b8');
       circle(ctx, structure.x, structure.y, 24, color, 0.64);
       health(ctx, structure, 36, color);
+      if (structure.sentryChoiceId === state.sentryChoice?.id) {
+        ring(ctx, structure, 44 + Math.sin((state.clock?.elapsed || 0) * 4) * 3, color, 0.5, 2.8);
+        ctx.fillStyle = color;
+        ctx.font = '900 11px ui-monospace, monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText(`SENTRY ONLINE · ${structure.range} RANGE`, structure.x, structure.y + 58);
+      }
     }
     const fortification = state.fortification;
     const fortificationWall = (state.structures || []).find(structure => structure.kind === 'wall');
@@ -374,14 +388,15 @@ export function createCanvasRenderer(canvas) {
       ctx.textAlign = 'center';
       ctx.fillText(`EMBERPLATE · ${fortification.guardPercent}% GUARD`, fortificationWall.x, fortificationWall.y + 58);
     }
-    if (state.realm?.id === 'lobby' && !state.wave?.active && state.selectedBuild && (!(state.structures?.length) || (state.build?.ghostAlpha ?? 0) > 0)) {
-      const ghost = { x: state.player.x, y: state.player.y + 58 };
+    if (state.realm?.id === 'lobby' && !state.wave?.active && state.selectedBuild && (!(state.structures?.length) || (state.build?.ghostAlpha ?? 0) > 0 || state.sentryChoice?.ready)) {
+      const sentryReady = state.sentryChoice?.ready && state.selectedBuild.id === state.sentryChoice.buildId;
+      const ghost = sentryReady ? state.sentryChoice.placement : { x: state.player.x, y: state.player.y + 58 };
       const canAfford = Object.entries(state.selectedBuild.cost || {}).every(([id, amount]) => (state.inventory?.items?.[id] || 0) >= amount);
       ring(ctx, ghost, 28 + Math.sin((state.clock?.elapsed || 0) * 4) * 3, state.selectedBuild.color, canAfford ? 0.62 : 0.16, canAfford ? 2.4 : 1.2);
       ctx.fillStyle = canAfford ? state.selectedBuild.color : 'rgba(255,255,255,.38)';
       ctx.font = '900 11px ui-monospace, monospace';
       ctx.textAlign = 'center';
-      ctx.fillText(canAfford ? 'B · BUILD' : 'MATERIALS NEEDED', ghost.x, ghost.y + 48);
+      ctx.fillText(canAfford ? (sentryReady ? 'B · DEPLOY SENTRY' : 'B · BUILD') : 'MATERIALS NEEDED', ghost.x, ghost.y + 48);
     }
     for (const enemy of state.enemies || []) {
       const color = enemy.hurt > 0 ? '#67e8f9' : enemy.type === 'brute' ? '#f97316' : '#ef4444';

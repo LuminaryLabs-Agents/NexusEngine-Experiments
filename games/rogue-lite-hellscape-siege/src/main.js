@@ -11,16 +11,16 @@ import {
   createWaveAndDefenseKit,
   createFxKit,
   createHellscapeSiegeKit
-} from './protokits/hellscape-kits.js?v=first-siege-4';
+} from './protokits/hellscape-kits.js?v=first-siege-5';
 import { createHellscapeSiegeFractalDomainKit } from './hellscape-siege-fractal-domain-kit.js';
 import { createHellscapeExpeditionReadabilityDomainKit } from './hellscape-expedition-readability-domain-kit.js';
 import { createHellscapeSiegecraftReadinessDomainKit } from './hellscape-siegecraft-readiness-domain-kit.js';
 import { createHellscapeInfernalContractReadinessDomainKit } from './hellscape-infernal-contract-readiness-domain-kit.js';
 import { createHellscapeAshCaravanReadinessDomainKit } from './hellscape-ash-caravan-readiness-domain-kit.js';
 import { createHellscapeSanctuaryForgeReadinessDomainKit } from './hellscape-sanctuary-forge-readiness-domain-kit.js';
-import { createCanvasRenderer } from './renderer/canvas-renderer.js?v=first-siege-4';
+import { createCanvasRenderer } from './renderer/canvas-renderer.js?v=first-siege-5';
 import { hellscapeDiagnostics } from './advanced-diagnostics.js';
-import { createFirstSiegeHud } from './first-siege-hud.js?v=first-siege-4';
+import { createFirstSiegeHud } from './first-siege-hud.js?v=first-siege-5';
 
 const NEXUS_ENGINE_RUNTIME = Object.freeze({
   source: 'https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js',
@@ -264,6 +264,7 @@ function snapshot() {
   state.buildCatalog = config.builds;
   state.selectedBuild = config.builds[state.build?.selected ?? 0] ?? config.builds[0];
   state.fortification = engine.build.getFortificationState();
+  state.sentryChoice = engine.build.getSentryChoiceState();
   Object.assign(state, describedDomains(state));
   state.domain = {
     ...(state.domain ?? {}),
@@ -333,6 +334,7 @@ window.GameHost = {
   getSanctuaryForgeReadiness: () => describeSanctuaryForgeReadiness(engine.getState()),
   getHellscapeSanctuaryForgeReadiness: () => describeSanctuaryForgeReadiness(engine.getState()),
   getSanctuaryForgeReadinessTree: () => sanctuaryForgeReadinessDomain.tree,
+  getSentryChoiceState: () => engine.build.getSentryChoiceState(),
   getRendererHandoff: () => {
     const state = engine.getState();
     return composeRendererHandoff(

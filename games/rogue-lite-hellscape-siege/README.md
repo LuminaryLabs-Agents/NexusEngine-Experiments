@@ -22,6 +22,7 @@ start Siege 1 at the Ember Core
 close on threats and strike them
 clear, harvest Grove wood and Ashes obsidian
 return and forge the surviving wall into Emberplate
+clear Siege 2 with Emberplate, harvest Crystal, and deploy one Sentry
 retry the same siege after a breach
 ```
 
@@ -34,7 +35,7 @@ blueprint selection remain under the Advanced disclosure and are off by default.
 
 ```txt
 WASD / Arrow Keys: Move
-B: Build the starter wall; forge Emberplate when its recipe is ready
+B: Build the starter wall; forge Emberplate; deploy the Crystal Sentry
 E / Enter: Start/retry a siege, enter a realm, or return to base
 Mouse / Space: Strike during a siege or harvest in a resource realm
 Advanced: Q / C cycle and 1 / 2 / 3 select blueprints; readiness diagnostics
@@ -45,6 +46,12 @@ After Siege 1, the first-screen objective carries one authoritative recipe:
 with both materials turns the existing `B` control into `FORGE WALL`; the same
 Spike Wall becomes a 300 HP Emberplate wall with 35% damage guard. No second
 wall, control, defense owner, or default diagnostic surface is created.
+
+When Emberplate survives Siege 2, the existing build owner selects one Crystal
+Sentry choice. Its `5 crystal + 3 energy` recipe is fully funded in the Crystal
+realm, and the existing `B` control deploys exactly one Sentry. The HUD, Crystal
+portal, build ghost, and finished Sentry consume one derived choice descriptor;
+no second progression state, control, or diagnostic surface is created.
 
 ## Domain-kit cutover target
 

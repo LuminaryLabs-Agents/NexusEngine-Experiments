@@ -147,9 +147,9 @@
     "result": "Upgraded Next Ledge so original anchor-11 carries 134 SPEED through a lifted mint release or 175 CARGO through a faster amber drive into original anchor-12 using existing release, tether, target, camera, HUD, effects, and synth owners; production creation counts remain unchanged."
   },
   "lastRefinementUnit": {
-    "packetId": "2026-07-19-hellscape-return-fortification-choice",
-    "scope": "Hellscape post-clear two-resource Emberplate choice",
-    "result": "Siege 1 now carries into a visible 5 wood plus 3 obsidian recipe that upgrades the surviving Spike Wall in place to 300 HP with 35 percent guard, while destroyed defenses require starter-cache rebuilding before the same siege number can retry."
+    "packetId": "2026-07-19-hellscape-crystal-sentry-choice",
+    "scope": "Hellscape post-Emberplate Crystal Sentry choice",
+    "result": "A surviving Emberplate wall through Siege 2 now unlocks one readable 5 crystal plus 3 energy specialist recipe; the existing build action deploys exactly one core-side Sentry, and wall-less failure restores the starter-wall recovery action."
   },
   "lastCompletedUnit": {
     "packetId": "2026-07-19-next-ledge-score-carry-release",

@@ -6,10 +6,19 @@ function text(element, value) {
 function phaseFor(state) {
   if (state.realm?.id !== 'lobby') return 'harvest';
   if (state.wave?.active) return 'defend';
+  if (state.sentryChoice?.eligible) return 'sentry';
   if (state.fortification?.eligible) return 'fortify';
   if ((state.wave?.n ?? 0) > 0 && state.realm?.prompt?.startsWith('WAVE')) return 'recover';
   if (!(state.structures?.length > 0)) return 'build';
   return 'start';
+}
+
+function sentryProgress(state) {
+  const choice = state.sentryChoice;
+  if (!choice) return '';
+  const crystal = choice.materials?.crystal ?? 0;
+  const energy = choice.materials?.energy ?? 0;
+  return `${Math.min(crystal, choice.cost.crystal)}/${choice.cost.crystal} crystal · ${Math.min(energy, choice.cost.energy)}/${choice.cost.energy} energy`;
 }
 
 function recipeProgress(state) {
@@ -22,7 +31,9 @@ function recipeProgress(state) {
 
 function objectiveFor(state, phase) {
   const fortification = state.fortification;
+  const sentryChoice = state.sentryChoice;
   const recipe = recipeProgress(state);
+  const sentryRecipe = sentryProgress(state);
   if (state.realm?.prompt?.startsWith('CORE FAILURE')) {
     const wall = state.structures?.find(structure => structure.fortificationId === fortification?.id);
     if (fortification?.completed && wall) return `Core rekindled. Emberplate survived at ${Math.ceil(wall.hp)}/${wall.maxHp} HP—press E at the core to retry Siege ${state.wave.n}.`;
@@ -30,6 +41,7 @@ function objectiveFor(state, phase) {
   }
   if (phase === 'harvest') {
     const action = state.context?.text || 'Harvest, then return to the cyan Base beacon and press E.';
+    if (sentryChoice?.eligible) return `${action} Crystal Sentry: ${sentryRecipe}.`;
     return fortification?.eligible ? `${action} Emberplate: ${recipe}.` : action;
   }
   if (phase === 'defend') {
@@ -44,8 +56,13 @@ function objectiveFor(state, phase) {
     const route = needsWood && needsObsidian ? 'Enter Grove and Ashes.' : needsWood ? 'Enter Grove for wood.' : 'Enter Ashes for obsidian.';
     return `Forge Emberplate: ${recipe}. ${route}`;
   }
+  if (phase === 'sentry') {
+    if (sentryChoice.ready) return `Crystal Sentry ready: ${sentryRecipe}. Press B to deploy it beside the Ember Core.`;
+    return `Emberplate survived Siege ${state.wave.n}. Crystal Sentry: ${sentryRecipe}. Enter Crystal for crystal and energy.`;
+  }
   if (phase === 'recover') return `Siege ${state.wave.n} secured. Enter Grove for wood or Ashes for obsidian, then return to fortify.`;
   if (phase === 'build') return 'Build your free starter Spike Wall now. It is already selected.';
+  if (sentryChoice?.completed) return `Crystal Sentry online · ${sentryChoice.range} range. Press E at the core for Siege ${state.wave.n + 1}.`;
   if (fortification?.completed) return `Emberplate Wall ${state.structures?.find(item => item.fortificationId)?.maxHp ?? 300} HP · ${fortification.guardPercent}% guard. Press E at the core for Siege ${state.wave.n + 1}.`;
   if ((state.wave?.n ?? 0) > 0) return `Siege ${state.wave.n} cleared. Gather or fortify, then press E at the core.`;
   return 'Move to the blue Ember Core and press E to begin Siege 1.';
@@ -81,11 +98,11 @@ export function createFirstSiegeHud({ diagnostics }) {
       text(waveStatus, state.wave?.active
         ? `WAVE ${waveNumber} · ${active} ACTIVE · ${incoming} INCOMING`
         : (waveNumber ? `WAVE ${waveNumber} ${cleared ? 'SECURED' : 'BREACHED'}` : 'WAVE READY'));
-      buildAction?.setAttribute('data-active', String(phase === 'build' || (phase === 'fortify' && state.fortification?.ready)));
-      interactAction?.setAttribute('data-active', String(phase === 'start'));
+      buildAction?.setAttribute('data-active', String(phase === 'build' || (phase === 'fortify' && state.fortification?.ready) || (phase === 'sentry' && state.sentryChoice?.ready)));
+      interactAction?.setAttribute('data-active', String(phase === 'start' || (phase === 'sentry' && !state.sentryChoice?.ready)));
       primaryAction?.setAttribute('data-active', String(phase === 'defend' || phase === 'harvest'));
-      text(buildActionLabel, phase === 'fortify' ? (state.fortification?.ready ? 'FORGE WALL' : 'RECIPE') : (state.fortification?.completed ? 'WALL FORGED' : 'BUILD WALL'));
-      text(interactActionLabel, phase === 'harvest' ? 'RETURN AT BASE' : (phase === 'fortify' ? 'ENTER REALM' : 'START AT CORE'));
+      text(buildActionLabel, phase === 'sentry' ? (state.sentryChoice?.ready ? 'DEPLOY SENTRY' : 'SENTRY RECIPE') : (phase === 'fortify' ? (state.fortification?.ready ? 'FORGE WALL' : 'RECIPE') : (state.sentryChoice?.completed ? 'SENTRY ONLINE' : (state.fortification?.completed ? 'WALL FORGED' : 'BUILD WALL'))));
+      text(interactActionLabel, phase === 'harvest' ? 'RETURN AT BASE' : (phase === 'sentry' ? 'ENTER CRYSTAL' : (phase === 'fortify' ? 'ENTER REALM' : 'START AT CORE')));
       text(primaryActionLabel, phase === 'harvest' ? 'HARVEST' : 'STRIKE');
       text(impactToast, combat.lastImpact ?? '');
       impactToast?.setAttribute('data-visible', String((combat.impact ?? 0) > 0));
