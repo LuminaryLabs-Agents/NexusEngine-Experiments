@@ -42,19 +42,19 @@
     {
       "id": "rogue-lite-hellscape-siege",
       "lifecycleStatus": "active-legacy-baseline",
-      "score": 86,
-      "lastImprovedAt": "2026-07-17T07:21:41-04:00",
+      "score": 91,
+      "lastImprovedAt": "2026-07-19T06:56:42-04:00",
       "feelScores": {
         "responsiveness": 9,
         "predictability": 9,
-        "readability": 9,
+        "readability": 10,
         "impact": 9,
-        "recovery": 8,
-        "delight": 8,
-        "replayDesire": 8,
-        "average": 8.6
+        "recovery": 9,
+        "delight": 9,
+        "replayDesire": 9,
+        "average": 9.1
       },
-      "nextFeelProblem": "Make the post-clear Grove and Ashes material run preserve a visible two-resource rebuild recipe and one meaningful return-to-core fortification choice."
+      "nextFeelProblem": "After Emberplate survives a siege, make the Crystal route fund one readable Sentry choice through the existing blueprint, inventory, structure, and hero-control owners."
     },
     {
       "id": "signal-bastion",

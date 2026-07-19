@@ -29,7 +29,16 @@ export const config={
   firstSiege:{
     starterStock:{wood:5,obsidian:3},
     strike:{range:132,damage:48,cooldown:.32,color:'#67e8f9'},
-    firstWave:{crawlers:5,brutes:1,spawnCadence:1.25}
+    firstWave:{crawlers:5,brutes:1,spawnCadence:1.25},
+    postClearFortification:{
+      id:'emberplate-wall',
+      name:'EMBERPLATE WALL',
+      cost:{wood:5,obsidian:3},
+      maxHpBonus:120,
+      damageScale:.65,
+      guardPercent:35,
+      color:'#f59e0b'
+    }
   }
 };
 
@@ -61,7 +70,73 @@ export function createRealmKit(){function enter(w,id){const table=config.resourc
 
 export function createHarvestAndPickupKit(){function addDrop(w,x,y,item,color){w.get('drops').push({x,y,item,color,vx:rand(-60,60),vy:rand(-120,-40),life:.42});}return{systems:[(w,e)=>{const p=w.get('player'),input=w.get('input'),dt=w.clock.delta;let target=null,best=88;for(const r of w.get('resources')){const d=dist(p,r);if(d<best){best=d;target=r;}}if(input.primary&&target){target.hp-=56*dt;w.set('context',{text:`HARVEST ${target.kind.toUpperCase()}`,target});w.emit('fx.burst',{x:target.x,y:target.y,color:target.color,count:1});if(target.hp<=0){w.get('resources').splice(w.get('resources').indexOf(target),1);for(let i=0;i<3;i++)addDrop(w,target.x,target.y,target.item,target.color);burst(w,target.x,target.y,target.color,22);}}else w.set('context',{text:'',target:null});for(const d of [...w.get('drops')]){d.life-=dt;d.vy+=520*dt;d.x+=d.vx*dt;d.y+=d.vy*dt;if(d.life<0){const a=angle(d,p),dd=dist(d,p);d.x+=Math.cos(a)*540*dt;d.y+=Math.sin(a)*540*dt;if(dd<24){w.get('drops').splice(w.get('drops').indexOf(d),1);e.inventory.add(d.item,1);burst(w,d.x,d.y,d.color,8);}}}} ]};}
 
-export function createBuildKit(){return{init(w){w.set('build',{selected:0,last:'starter wall ready',ghostAlpha:1});w.set('structures',[]);},install(e,w){e.build={select:index=>{const b=w.get('build');b.selected=clamp(index,0,config.builds.length-1);b.last=config.builds[b.selected].name;b.ghostAlpha=1;},place:()=>{const b=w.get('build'),bp=config.builds[b.selected],p=w.get('player'),realm=w.get('realm');if(realm.id!=='lobby'){b.last='lobby only';w.emit('fx.flash',{x:p.x,y:p.y,color:'#ff553c'});return false;}if(!e.inventory.spend(bp.cost)){b.last='missing materials';w.emit('fx.shake',{amount:5});w.emit('fx.flash',{x:p.x,y:p.y,color:'#ff553c'});return false;}w.get('structures').push({kind:bp.id,name:bp.name,x:p.x,y:p.y+58,hp:bp.hp,maxHp:bp.hp,range:bp.range,cd:0,color:bp.color});b.last=`built ${bp.name}`;b.ghostAlpha=1;w.emit('structure.built',{kind:bp.id});burst(w,p.x,p.y+50,bp.color,38);return true;},getState:()=>w.get('build')};},systems:[(w,e)=>{const input=w.get('input'),b=w.get('build');if(input.select!==null&&input.select!==undefined)e.build.select(input.select);if(input.cycle)e.build.select((b.selected+input.cycle+config.builds.length)%config.builds.length);if(input.build)e.build.place();b.ghostAlpha=Math.max(0,(b.ghostAlpha??0)-w.clock.delta*.7);} ]};}
+export function createBuildKit(){
+  const recipe=config.firstSiege.postClearFortification;
+
+  function describeFortification(w){
+    const items=w.get('inventory').items;
+    const wall=w.get('structures').find(structure=>structure.kind==='wall');
+    const missing=Object.fromEntries(Object.entries(recipe.cost)
+      .map(([id,amount])=>[id,Math.max(0,amount-(items[id]||0))])
+      .filter(([,amount])=>amount>0));
+    const completed=wall?.fortificationId===recipe.id;
+    const unlocked=(w.get('combat')?.clears??0)>0;
+    return{
+      id:recipe.id,
+      name:recipe.name,
+      cost:{...recipe.cost},
+      materials:Object.fromEntries(Object.keys(recipe.cost).map(id=>[id,items[id]||0])),
+      missing,
+      unlocked,
+      eligible:unlocked&&Boolean(wall)&&!completed,
+      ready:unlocked&&Boolean(wall)&&!completed&&!Object.keys(missing).length,
+      completed,
+      wallId:wall?.id??null,
+      maxHpBonus:recipe.maxHpBonus,
+      damageScale:recipe.damageScale,
+      guardPercent:recipe.guardPercent,
+      color:recipe.color
+    };
+  }
+
+  function fortify(w,e){
+    const state=describeFortification(w);
+    const build=w.get('build');
+    const wall=w.get('structures').find(structure=>structure.kind==='wall');
+    if(!state.eligible||!wall){build.last='clear a siege with a wall first';return false;}
+    if(!e.inventory.spend(recipe.cost)){
+      build.last='emberplate recipe incomplete';
+      w.emit('fx.shake',{amount:5});
+      w.emit('fx.flash',{x:wall.x,y:wall.y,color:'#ff553c'});
+      return false;
+    }
+    wall.name=recipe.name;
+    wall.maxHp+=recipe.maxHpBonus;
+    wall.hp=wall.maxHp;
+    wall.damageScale=recipe.damageScale;
+    wall.fortificationId=recipe.id;
+    wall.color=recipe.color;
+    build.last=`forged ${recipe.name}`;
+    build.ghostAlpha=0;
+    w.emit('structure.fortified',{kind:wall.kind,fortificationId:recipe.id,maxHp:wall.maxHp});
+    w.emit('fx.shake',{amount:8});
+    w.emit('fx.flash',{x:wall.x,y:wall.y,color:recipe.color,life:.46});
+    burst(w,wall.x,wall.y,recipe.color,64);
+    return true;
+  }
+
+  return{
+    init(w){w.set('build',{selected:0,last:'starter wall ready',ghostAlpha:1});w.set('structures',[]);},
+    install(e,w){e.build={
+      select:index=>{const b=w.get('build');b.selected=clamp(index,0,config.builds.length-1);b.last=config.builds[b.selected].name;b.ghostAlpha=1;},
+      place:()=>{const b=w.get('build'),bp=config.builds[b.selected],p=w.get('player'),realm=w.get('realm');if(realm.id!=='lobby'){b.last='lobby only';w.emit('fx.flash',{x:p.x,y:p.y,color:'#ff553c'});return false;}if(!e.inventory.spend(bp.cost)){b.last='missing materials';w.emit('fx.shake',{amount:5});w.emit('fx.flash',{x:p.x,y:p.y,color:'#ff553c'});return false;}w.get('structures').push({id:`structure-${w.get('structures').length+1}`,kind:bp.id,name:bp.name,x:p.x,y:p.y+58,hp:bp.hp,maxHp:bp.hp,range:bp.range,cd:0,color:bp.color});b.last=`built ${bp.name}`;b.ghostAlpha=1;w.emit('structure.built',{kind:bp.id});burst(w,p.x,p.y+50,bp.color,38);return true;},
+      fortify:()=>fortify(w,e),
+      getFortificationState:()=>describeFortification(w),
+      getState:()=>w.get('build')
+    };},
+    systems:[(w,e)=>{const input=w.get('input'),b=w.get('build');if(input.select!==null&&input.select!==undefined)e.build.select(input.select);if(input.cycle)e.build.select((b.selected+input.cycle+config.builds.length)%config.builds.length);if(input.build){const fortification=e.build.getFortificationState();if(fortification.eligible)e.build.fortify();else e.build.place();}b.ghostAlpha=Math.max(0,(b.ghostAlpha??0)-w.clock.delta*.7);}]
+  };
+}
 
 export function createWaveAndDefenseKit(){
   const strikeTuning=config.firstSiege.strike;
@@ -89,7 +164,7 @@ export function createWaveAndDefenseKit(){
   return{
     init(w){w.set('wave',{n:0,active:false,queue:[],timer:0});w.set('combat',{cooldown:0,hits:0,kills:0,clears:0,failures:0,impact:0,lastImpact:'',target:null});},
     install(e,w){e.waves={
-      start:()=>{const wave=w.get('wave'),realm=w.get('realm');if(wave.active||realm.id!=='lobby')return false;if(wave.n===0&&!w.get('structures').length){realm.prompt='BUILD YOUR STARTER WALL BEFORE THE FIRST SIEGE.';return false;}wave.n++;wave.active=true;wave.queue=[];const first=config.firstSiege.firstWave;const crawlerCount=wave.n===1?first.crawlers:4+wave.n*3;const bruteCount=wave.n===1?first.brutes:Math.floor(wave.n*1.5);for(let i=0;i<crawlerCount;i++)wave.queue.push('crawler');for(let i=0;i<bruteCount;i++)wave.queue.push('brute');wave.queue.sort(()=>Math.random()-.5);realm.prompt=`SIEGE WAVE ${wave.n}: DEFEND THE CORE.`;w.emit('wave.started',{n:wave.n});burst(w,0,-60,'#ff3300',80);return true;},
+      start:()=>{const wave=w.get('wave'),realm=w.get('realm');if(wave.active||realm.id!=='lobby')return false;const retrying=realm.prompt.startsWith('CORE FAILURE');if(!w.get('structures').length){realm.prompt=retrying?`CORE FAILURE. STARTER CACHE RESTORED. REBUILD BEFORE RETRYING SIEGE ${wave.n}.`:'BUILD YOUR STARTER WALL BEFORE THE FIRST SIEGE.';return false;}if(!retrying)wave.n++;wave.active=true;wave.queue=[];const first=config.firstSiege.firstWave;const crawlerCount=wave.n===1?first.crawlers:4+wave.n*3;const bruteCount=wave.n===1?first.brutes:Math.floor(wave.n*1.5);for(let i=0;i<crawlerCount;i++)wave.queue.push('crawler');for(let i=0;i<bruteCount;i++)wave.queue.push('brute');wave.queue.sort(()=>Math.random()-.5);realm.prompt=`SIEGE WAVE ${wave.n}: DEFEND THE CORE.`;w.emit('wave.started',{n:wave.n,retrying});burst(w,0,-60,'#ff3300',80);return true;},
       strike:()=>strike(w),
       getState:()=>w.get('wave')
     };},
@@ -102,7 +177,7 @@ export function createWaveAndDefenseKit(){
       if(wave.active&&wave.queue.length){wave.timer+=dt;const cadence=wave.n===1?config.firstSiege.firstWave.spawnCadence:Math.max(.55,2.2-wave.n*.12);if(wave.timer>cadence){wave.timer=0;spawn(w,wave.queue.pop());}}
       if(input.primary&&wave.active)strike(w);
       const targets=[p,core,...w.get('structures').filter(s=>s.hp>0)];
-      for(const enemy of [...w.get('enemies')]){enemy.cd-=dt;enemy.hurt=Math.max(0,(enemy.hurt??0)-dt*5);if(enemy.hp<=0)continue;let target=targets[0],best=1e9;for(const t of targets){const d=dist(enemy,t);if(d<best){best=d;target=t;}}const a=angle(enemy,target);if(best>36){enemy.x+=Math.cos(a)*enemy.speed*dt;enemy.y+=Math.sin(a)*enemy.speed*dt;}else if(enemy.cd<=0){enemy.cd=enemy.type==='brute'?2.2:1;target.hp-=enemy.dmg;if(target===p)p.hurt=1;w.emit('fx.shake',{amount:4});burst(w,target.x,target.y,'#ef4444',6);}}
+      for(const enemy of [...w.get('enemies')]){enemy.cd-=dt;enemy.hurt=Math.max(0,(enemy.hurt??0)-dt*5);if(enemy.hp<=0)continue;let target=targets[0],best=1e9;for(const t of targets){const d=dist(enemy,t);if(d<best){best=d;target=t;}}const a=angle(enemy,target);if(best>36){enemy.x+=Math.cos(a)*enemy.speed*dt;enemy.y+=Math.sin(a)*enemy.speed*dt;}else if(enemy.cd<=0){enemy.cd=enemy.type==='brute'?2.2:1;target.hp-=enemy.dmg*(target.damageScale??1);if(target===p)p.hurt=1;w.emit('fx.shake',{amount:4});burst(w,target.x,target.y,'#ef4444',6);}}
       for(const s of w.get('structures')){s.cd-=dt;if(s.kind==='turret'&&s.cd<=0){let t=null,b=s.range;for(const en of w.get('enemies')){const d=dist(s,en);if(d<b){b=d;t=en;}}if(t){s.cd=.68;t.hp-=16;w.emit('fx.beam',{x1:s.x,y1:s.y-28,x2:t.x,y2:t.y});if(t.hp<=0){w.get('enemies').splice(w.get('enemies').indexOf(t),1);burst(w,t.x,t.y,'#f97316',16);}}}if(s.kind==='pylon'&&s.cd<=0){s.cd=1.8;for(const t of targets)if(dist(s,t)<160)t.hp=Math.min(t.maxHp,t.hp+12);burst(w,s.x,s.y,'#10b981',14);}}
       w.set('structures',w.get('structures').filter(s=>s.hp>0));
       w.set('enemies',w.get('enemies').filter(en=>en.hp>0));

@@ -6,21 +6,47 @@ function text(element, value) {
 function phaseFor(state) {
   if (state.realm?.id !== 'lobby') return 'harvest';
   if (state.wave?.active) return 'defend';
+  if (state.fortification?.eligible) return 'fortify';
   if ((state.wave?.n ?? 0) > 0 && state.realm?.prompt?.startsWith('WAVE')) return 'recover';
   if (!(state.structures?.length > 0)) return 'build';
   return 'start';
 }
 
+function recipeProgress(state) {
+  const fortification = state.fortification;
+  if (!fortification) return '';
+  const wood = fortification.materials?.wood ?? 0;
+  const obsidian = fortification.materials?.obsidian ?? 0;
+  return `${Math.min(wood, fortification.cost.wood)}/${fortification.cost.wood} wood · ${Math.min(obsidian, fortification.cost.obsidian)}/${fortification.cost.obsidian} obsidian`;
+}
+
 function objectiveFor(state, phase) {
-  if (state.realm?.prompt?.startsWith('CORE FAILURE')) return 'Core breached. Starter stock restored—rebuild and retry.';
-  if (phase === 'harvest') return state.context?.text || 'Harvest materials, then return to the cyan Base beacon and press E.';
+  const fortification = state.fortification;
+  const recipe = recipeProgress(state);
+  if (state.realm?.prompt?.startsWith('CORE FAILURE')) {
+    const wall = state.structures?.find(structure => structure.fortificationId === fortification?.id);
+    if (fortification?.completed && wall) return `Core rekindled. Emberplate survived at ${Math.ceil(wall.hp)}/${wall.maxHp} HP—press E at the core to retry Siege ${state.wave.n}.`;
+    return `Core breached. Starter stock restored—rebuild and retry Siege ${state.wave.n}.`;
+  }
+  if (phase === 'harvest') {
+    const action = state.context?.text || 'Harvest, then return to the cyan Base beacon and press E.';
+    return fortification?.eligible ? `${action} Emberplate: ${recipe}.` : action;
+  }
   if (phase === 'defend') {
     const active = state.enemies?.length ?? 0;
     const incoming = state.wave?.queue?.length ?? 0;
     return active ? `Close on ${active} red threat${active === 1 ? '' : 's'} and hold Space to strike. ${incoming} incoming.` : 'Hold the Ember Core. The next threat is entering the siege ring.';
   }
+  if (phase === 'fortify') {
+    if (fortification.ready) return `Emberplate ready: ${recipe}. Press B to forge the surviving Spike Wall.`;
+    const needsWood = (fortification.missing?.wood ?? 0) > 0;
+    const needsObsidian = (fortification.missing?.obsidian ?? 0) > 0;
+    const route = needsWood && needsObsidian ? 'Enter Grove and Ashes.' : needsWood ? 'Enter Grove for wood.' : 'Enter Ashes for obsidian.';
+    return `Forge Emberplate: ${recipe}. ${route}`;
+  }
   if (phase === 'recover') return `Siege ${state.wave.n} secured. Enter Grove for wood or Ashes for obsidian, then return to fortify.`;
   if (phase === 'build') return 'Build your free starter Spike Wall now. It is already selected.';
+  if (fortification?.completed) return `Emberplate Wall ${state.structures?.find(item => item.fortificationId)?.maxHp ?? 300} HP · ${fortification.guardPercent}% guard. Press E at the core for Siege ${state.wave.n + 1}.`;
   if ((state.wave?.n ?? 0) > 0) return `Siege ${state.wave.n} cleared. Gather or fortify, then press E at the core.`;
   return 'Move to the blue Ember Core and press E to begin Siege 1.';
 }
@@ -31,7 +57,9 @@ export function createFirstSiegeHud({ diagnostics }) {
   const waveStatus = document.querySelector('#waveStatus');
   const playerStatus = document.querySelector('#playerStatus');
   const buildAction = document.querySelector('#buildAction');
+  const buildActionLabel = document.querySelector('#buildActionLabel');
   const interactAction = document.querySelector('#interactAction');
+  const interactActionLabel = document.querySelector('#interactActionLabel');
   const primaryAction = document.querySelector('#primaryAction');
   const primaryActionLabel = document.querySelector('#primaryActionLabel');
   const impactToast = document.querySelector('#impactToast');
@@ -53,9 +81,11 @@ export function createFirstSiegeHud({ diagnostics }) {
       text(waveStatus, state.wave?.active
         ? `WAVE ${waveNumber} · ${active} ACTIVE · ${incoming} INCOMING`
         : (waveNumber ? `WAVE ${waveNumber} ${cleared ? 'SECURED' : 'BREACHED'}` : 'WAVE READY'));
-      buildAction?.setAttribute('data-active', String(phase === 'build'));
+      buildAction?.setAttribute('data-active', String(phase === 'build' || (phase === 'fortify' && state.fortification?.ready)));
       interactAction?.setAttribute('data-active', String(phase === 'start'));
       primaryAction?.setAttribute('data-active', String(phase === 'defend' || phase === 'harvest'));
+      text(buildActionLabel, phase === 'fortify' ? (state.fortification?.ready ? 'FORGE WALL' : 'RECIPE') : (state.fortification?.completed ? 'WALL FORGED' : 'BUILD WALL'));
+      text(interactActionLabel, phase === 'harvest' ? 'RETURN AT BASE' : (phase === 'fortify' ? 'ENTER REALM' : 'START AT CORE'));
       text(primaryActionLabel, phase === 'harvest' ? 'HARVEST' : 'STRIKE');
       text(impactToast, combat.lastImpact ?? '');
       impactToast?.setAttribute('data-visible', String((combat.impact ?? 0) > 0));

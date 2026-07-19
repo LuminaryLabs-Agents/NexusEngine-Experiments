@@ -10,21 +10,32 @@ const mainPath = 'games/rogue-lite-hellscape-siege/src/main.js';
 const rendererPath = 'games/rogue-lite-hellscape-siege/src/renderer/canvas-renderer.js';
 const indexPath = 'games/rogue-lite-hellscape-siege/index.html';
 const kitPath = 'games/rogue-lite-hellscape-siege/src/hellscape-siege-fractal-domain-kit.js';
+const localKitPath = 'games/rogue-lite-hellscape-siege/src/protokits/hellscape-kits.js';
 
 const mainSource = readFileSync(mainPath, 'utf8');
 const rendererSource = readFileSync(rendererPath, 'utf8');
 const indexSource = readFileSync(indexPath, 'utf8');
 const kitSource = readFileSync(kitPath, 'utf8');
+const localKitSource = readFileSync(localKitPath, 'utf8');
 
 assert.ok(mainSource.includes('https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js'), 'changed runtime should import NexusEngine main CDN');
 assert.equal(mainSource.includes('LuminaryLabs-Dev/NexusRealtime@main'), false, 'changed runtime should not import old NexusRealtime main CDN');
 assert.ok(mainSource.includes('createHellscapeSiegeFractalDomainKit'), 'main route should install the hellscape fractal domain');
 assert.ok(mainSource.includes('visualFractal'), 'main route should expose visualFractal state');
 assert.ok(mainSource.includes('getRendererHandoff'), 'GameHost should expose renderer handoff');
+assert.ok(mainSource.includes('getFortificationState'), 'snapshot should expose the build-owned post-clear fortification descriptor');
+assert.ok(mainSource.includes("hellscape-kits.js?v=first-siege-4"), 'main route should cache-bust the changed deterministic kit dependency');
+assert.ok(mainSource.includes("canvas-renderer.js?v=first-siege-4"), 'main route should cache-bust the changed renderer dependency');
+assert.ok(mainSource.includes("first-siege-hud.js?v=first-siege-4"), 'main route should cache-bust the changed HUD dependency');
 assert.ok(rendererSource.includes('drawHellscapeFractal'), 'renderer should consume hellscape descriptor handoff');
 assert.ok(rendererSource.includes('rendererHandoff?.descriptors'), 'renderer should read descriptors rather than recompute domain truth');
+assert.ok(rendererSource.includes('B · FORGE EMBERPLATE'), 'renderer should present one post-clear fortification owner on the surviving wall');
 assert.ok(indexSource.includes('./src/main.js'), 'route shell should boot the changed runtime');
+assert.ok(indexSource.includes('first-siege-5'), 'route shell should cache-bust the integrated fortification refinement');
 assert.ok(kitSource.includes('renderer consumes descriptors only'), 'kit should declare renderer descriptor-only handoff');
+assert.ok(localKitSource.includes('postClearFortification'), 'local authored tuning should declare the post-clear Emberplate recipe');
+assert.ok(localKitSource.includes("realm.prompt.startsWith('CORE FAILURE')"), 'wave start should retry a breached siege instead of skipping its number');
+assert.ok(localKitSource.includes('REBUILD BEFORE RETRYING SIEGE'), 'destroyed defenses should block retry until the starter cache rebuild is placed');
 
 function stateCase(index) {
   const move = [

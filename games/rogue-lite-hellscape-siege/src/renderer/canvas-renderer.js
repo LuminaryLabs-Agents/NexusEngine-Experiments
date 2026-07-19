@@ -356,6 +356,24 @@ export function createCanvasRenderer(canvas) {
       circle(ctx, structure.x, structure.y, 24, color, 0.64);
       health(ctx, structure, 36, color);
     }
+    const fortification = state.fortification;
+    const fortificationWall = (state.structures || []).find(structure => structure.kind === 'wall');
+    if (fortificationWall && fortification?.eligible) {
+      const pulse = 42 + Math.sin((state.clock?.elapsed || 0) * 5) * 4;
+      ring(ctx, fortificationWall, pulse, fortification.color, fortification.ready ? 0.7 : 0.24, fortification.ready ? 3.2 : 1.6);
+      ctx.fillStyle = fortification.ready ? fortification.color : 'rgba(255,224,190,.72)';
+      ctx.font = '900 11px ui-monospace, monospace';
+      ctx.textAlign = 'center';
+      const materials = fortification.materials || {};
+      ctx.fillText(fortification.ready ? 'B · FORGE EMBERPLATE' : `${Math.min(materials.wood || 0, fortification.cost.wood)}/${fortification.cost.wood} WOOD · ${Math.min(materials.obsidian || 0, fortification.cost.obsidian)}/${fortification.cost.obsidian} OBSIDIAN`, fortificationWall.x, fortificationWall.y + 58);
+    }
+    if (fortificationWall && fortification?.completed) {
+      ring(ctx, fortificationWall, 48, fortification.color, 0.58, 3.4);
+      ctx.fillStyle = fortification.color;
+      ctx.font = '900 11px ui-monospace, monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(`EMBERPLATE · ${fortification.guardPercent}% GUARD`, fortificationWall.x, fortificationWall.y + 58);
+    }
     if (state.realm?.id === 'lobby' && !state.wave?.active && state.selectedBuild && (!(state.structures?.length) || (state.build?.ghostAlpha ?? 0) > 0)) {
       const ghost = { x: state.player.x, y: state.player.y + 58 };
       const canAfford = Object.entries(state.selectedBuild.cost || {}).every(([id, amount]) => (state.inventory?.items?.[id] || 0) >= amount);

@@ -11,16 +11,16 @@ import {
   createWaveAndDefenseKit,
   createFxKit,
   createHellscapeSiegeKit
-} from './protokits/hellscape-kits.js';
+} from './protokits/hellscape-kits.js?v=first-siege-4';
 import { createHellscapeSiegeFractalDomainKit } from './hellscape-siege-fractal-domain-kit.js';
 import { createHellscapeExpeditionReadabilityDomainKit } from './hellscape-expedition-readability-domain-kit.js';
 import { createHellscapeSiegecraftReadinessDomainKit } from './hellscape-siegecraft-readiness-domain-kit.js';
 import { createHellscapeInfernalContractReadinessDomainKit } from './hellscape-infernal-contract-readiness-domain-kit.js';
 import { createHellscapeAshCaravanReadinessDomainKit } from './hellscape-ash-caravan-readiness-domain-kit.js';
 import { createHellscapeSanctuaryForgeReadinessDomainKit } from './hellscape-sanctuary-forge-readiness-domain-kit.js';
-import { createCanvasRenderer } from './renderer/canvas-renderer.js';
+import { createCanvasRenderer } from './renderer/canvas-renderer.js?v=first-siege-4';
 import { hellscapeDiagnostics } from './advanced-diagnostics.js';
-import { createFirstSiegeHud } from './first-siege-hud.js';
+import { createFirstSiegeHud } from './first-siege-hud.js?v=first-siege-4';
 
 const NEXUS_ENGINE_RUNTIME = Object.freeze({
   source: 'https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js',
@@ -263,6 +263,7 @@ function snapshot() {
   state.diagnostics = { enabled: hellscapeDiagnostics.enabled };
   state.buildCatalog = config.builds;
   state.selectedBuild = config.builds[state.build?.selected ?? 0] ?? config.builds[0];
+  state.fortification = engine.build.getFortificationState();
   Object.assign(state, describedDomains(state));
   state.domain = {
     ...(state.domain ?? {}),

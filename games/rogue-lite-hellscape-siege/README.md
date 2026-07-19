@@ -20,8 +20,9 @@ The base route now opens with one readable first-siege loop:
 build the stocked Spike Wall
 start Siege 1 at the Ember Core
 close on threats and strike them
-clear or breach, then recover
-enter a resource realm, harvest, and return
+clear, harvest Grove wood and Ashes obsidian
+return and forge the surviving wall into Emberplate
+retry the same siege after a breach
 ```
 
 The loop composes local input, avatar, inventory, realm, harvest/pickup, build,
@@ -33,11 +34,17 @@ blueprint selection remain under the Advanced disclosure and are off by default.
 
 ```txt
 WASD / Arrow Keys: Move
-B: Build the selected blueprint
-E / Enter: Start a siege, enter a realm, or return to base
+B: Build the starter wall; forge Emberplate when its recipe is ready
+E / Enter: Start/retry a siege, enter a realm, or return to base
 Mouse / Space: Strike during a siege or harvest in a resource realm
 Advanced: Q / C cycle and 1 / 2 / 3 select blueprints; readiness diagnostics
 ```
+
+After Siege 1, the first-screen objective carries one authoritative recipe:
+`5 wood + 3 obsidian`. Grove and Ashes update that progress in place. Returning
+with both materials turns the existing `B` control into `FORGE WALL`; the same
+Spike Wall becomes a 300 HP Emberplate wall with 35% damage guard. No second
+wall, control, defense owner, or default diagnostic surface is created.
 
 ## Domain-kit cutover target
 

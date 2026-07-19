@@ -1,5 +1,11 @@
 # Cycle State
 
+## 2026-07-19 Hellscape Return-Fortification Choice
+
+`games/rogue-lite-hellscape-siege/` now carries the first clear into one explicit two-realm fortification loop. The existing build owner declares a `5 wood + 3 obsidian` Emberplate recipe, the hero objective narrows Grove/Ashes guidance as materials arrive, and `B` upgrades the surviving Spike Wall in place to `300 HP` with `35%` damage guard. A breached siege retries the same wave number; when the defense is destroyed, the restored starter cache must rebuild before retry. Playwright physically cleared Siege 1, harvested both realms, forged Emberplate, proved pressure/failure/rebuild/retry, and checked Advanced closed/open/closed with zero console errors. The matched active metric held `16.663 -> 16.661 ms` average frame time, `60.014 -> 60.020 FPS`, and `18.3 -> 17.6 ms` p95; one canvas remained bounded and no long tasks appeared.
+
+Exact next playable unit: after Emberplate survives a siege, make the Crystal route fund one readable Sentry choice through the existing blueprint, inventory, structure, and hero-control owners.
+
 ## 2026-07-17 Next Ledge Score-Preserving Rebound
 
 `experiments/next-ledge/` now lets original `anchor-11` answer the shared cyan shot with one bounded score-preserving rebound. The safe line keeps `134 SPEED`; the shortcut keeps `175 CARGO`. One descriptor extends the existing `windglass-rejoin-secured` event and reuses tether, camera, target material, player scale, HUD, spark, and synth owners without another state, timer, event type, control, entity, material, or effect pool. Playwright physically completed both routes, failure/keyboard recovery, and Advanced closed/open/closed; Human View passed both secured-score frames with diagnostics closed. All 28 Next Ledge tests and zero-error console/page checks passed. Matched performance stayed within budget at `119.861 → 125.121 ms` average (`+4.39%`) with `69` DOM nodes / one canvas / `76` descriptors / `277` settled scene nodes unchanged.
