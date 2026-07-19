@@ -152,18 +152,18 @@
     "result": "Siege 1 now carries into a visible 5 wood plus 3 obsidian recipe that upgrades the surviving Spike Wall in place to 300 HP with 35 percent guard, while destroyed defenses require starter-cache rebuilding before the same siege number can retry."
   },
   "lastCompletedUnit": {
-    "packetId": "2026-07-17-next-ledge-score-preserving-rebound",
-    "scope": "Next Ledge score-preserving anchor-11 rebound",
-    "result": "Both safe and shortcut routes now carry their authored Windglass score through the original anchor-11 catch and one short cyan rebound. One secured-event descriptor drives score copy, player stretch, anchor response, camera, sparks, and synth before generic ascent resumes.",
-    "validation": "All 28 existing Next Ledge test entrypoints, affected JavaScript syntax, JSON parsing, and diff hygiene passed. Playwright physically completed both routes through 134 SPEED and 175 CARGO cyan release/catch/rebound results, real failure and keyboard recovery, and Advanced closed/open/closed with zero console or page errors. Human View passed first screen, both secured-score frames, failure, and recovery with diagnostics closed. The matched starting-commit and upgraded-build performance comparison measured 119.861 to 125.121 ms average frame time (+4.39%), 8.343 to 7.992 measured FPS, and 152.900 to 166.300 ms p95 (+8.76%) under the same observed host contention; 69 DOM nodes, one canvas, 76 descriptors, 32 ledges, and 277 settled scene nodes remained identical and bounded.",
+    "packetId": "2026-07-19-hellscape-return-fortification-choice",
+    "scope": "Hellscape post-clear Grove/Ashes Emberplate choice",
+    "result": "The first clear now exposes one 5 wood plus 3 obsidian recipe, narrows realm guidance as materials arrive, and upgrades the surviving Spike Wall in place to 300 HP with 35 percent guard. Breaches retry the same siege number and destroyed defenses require starter-cache rebuilding before restart.",
+    "validation": "All 22 existing Hellscape test entrypoints, affected JavaScript syntax, JSON parsing, and diff hygiene passed. Playwright physically cleared Siege 1, harvested Grove and Ashes, forged Emberplate, proved guarded pressure, natural breach, destroyed-defense rebuild, same-number retry, and Advanced closed/open/closed with zero console messages. Human View passed the first screen, recipe progression, forge-ready wall, completed Emberplate, and recovery frames with diagnostics closed. Matched performance measured 16.663 to 16.661 ms average frame time, 60.014 to 60.020 FPS, and 18.3 to 17.6 ms p95; one canvas stayed constant, no long tasks appeared, and three post-failure checkpoints held bounded counts.",
     "commits": {
       "coreReadOnly": "a5882b47bd5a9284550bb3af1f0cd8580c62665e",
-      "protokitsStart": "bb3d787da372bf001653635d6e57eb7ce54e3c50",
-      "protokitsProductionUnit": "bb3d787da372bf001653635d6e57eb7ce54e3c50",
-      "experimentsStart": "10e1c998ce0582238dcb236093e727a05b63b2b5",
-      "experimentsProductionUnit": "951f105aad815320e5a02781e567899319f87a75"
+      "protokitsStart": "194d37714d7c23984970e09015b5dd4bffbbab7b",
+      "protokitsProductionUnit": "194d37714d7c23984970e09015b5dd4bffbbab7b",
+      "experimentsStart": "e1606c3f9215fd6360470935ab78fa53adea6a74",
+      "experimentsProductionUnit": "cfee398f3ba9e6e75ea52a1729d03f86afca5633"
     },
-    "publication": "Experiments production commit 951f105aad815320e5a02781e567899319f87a75 published to resolved default branch main after fetch-before-push verification; this repository commit records the publication receipt. ProtoKits remained unchanged and synchronized at bb3d787da372bf001653635d6e57eb7ce54e3c50."
+    "publication": "Experiments production commit cfee398f3ba9e6e75ea52a1729d03f86afca5633 published to resolved default branch main after fetch-before-push verification; this repository commit records the publication receipt. ProtoKits remained unchanged and synchronized at 194d37714d7c23984970e09015b5dd4bffbbab7b."
   },
   "exactNextUnit": {
     "phase": "playable-experiment-upgrade",

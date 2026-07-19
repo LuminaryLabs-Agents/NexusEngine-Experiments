@@ -6,7 +6,7 @@
 - Starting Experiments commit: `e1606c3f9215fd6360470935ab78fa53adea6a74`
 - Starting/final ProtoKits commit: `194d37714d7c23984970e09015b5dd4bffbbab7b`
 - Core read-only reference: `a5882b47bd5a9284550bb3af1f0cd8580c62665e`
-- Experiments production commit: pending run-owned commit
+- Experiments production commit: `cfee398f3ba9e6e75ea52a1729d03f86afca5633`
 - Final receipt commit: reported after publication
 
 ## Result
