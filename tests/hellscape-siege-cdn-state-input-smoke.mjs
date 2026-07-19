@@ -35,18 +35,21 @@ assert.ok(mainSource.includes('visualFractal'), 'main route should expose visual
 assert.ok(mainSource.includes('getRendererHandoff'), 'GameHost should expose renderer handoff');
 assert.ok(mainSource.includes('getFortificationState'), 'snapshot should expose the build-owned post-clear fortification descriptor');
 assert.ok(mainSource.includes('getSentryChoiceState'), 'snapshot should expose the build-owned Crystal Sentry descriptor');
-assert.ok(mainSource.includes("hellscape-kits.js?v=first-siege-5"), 'main route should cache-bust the changed deterministic kit dependency');
-assert.ok(mainSource.includes("canvas-renderer.js?v=first-siege-5"), 'main route should cache-bust the changed renderer dependency');
-assert.ok(mainSource.includes("first-siege-hud.js?v=first-siege-5"), 'main route should cache-bust the changed HUD dependency');
+assert.ok(mainSource.includes("hellscape-kits.js?v=first-siege-6"), 'main route should cache-bust the changed deterministic kit dependency');
+assert.ok(mainSource.includes("canvas-renderer.js?v=first-siege-6"), 'main route should cache-bust the changed renderer dependency');
+assert.ok(mainSource.includes("first-siege-hud.js?v=first-siege-6"), 'main route should cache-bust the changed HUD dependency');
 assert.ok(rendererSource.includes('drawHellscapeFractal'), 'renderer should consume hellscape descriptor handoff');
 assert.ok(rendererSource.includes('rendererHandoff?.descriptors'), 'renderer should read descriptors rather than recompute domain truth');
 assert.ok(rendererSource.includes('B · FORGE EMBERPLATE'), 'renderer should present one post-clear fortification owner on the surviving wall');
 assert.ok(rendererSource.includes('B · DEPLOY SENTRY'), 'renderer should present the ready Crystal Sentry through the existing build ghost');
+assert.ok(rendererSource.includes('B · OVERCHARGE'), 'renderer should present Crystal overflow on the existing Sentry owner');
+assert.ok(readFileSync('games/rogue-lite-hellscape-siege/src/first-siege-hud.js', 'utf8').includes('REBUILD WALL'), 'the hero HUD should restore the basic wall action after a successful wall loss');
 assert.ok(indexSource.includes('./src/main.js'), 'route shell should boot the changed runtime');
-assert.ok(indexSource.includes('first-siege-6'), 'route shell should cache-bust the integrated Crystal Sentry refinement');
+assert.ok(indexSource.includes('first-siege-7'), 'route shell should cache-bust the integrated Crystal overcharge refinement');
 assert.ok(kitSource.includes('renderer consumes descriptors only'), 'kit should declare renderer descriptor-only handoff');
 assert.ok(localKitSource.includes('postClearFortification'), 'local authored tuning should declare the post-clear Emberplate recipe');
 assert.ok(localKitSource.includes('postFortificationSentry'), 'local authored tuning should declare the Crystal Sentry progression choice');
+assert.ok(localKitSource.includes('postSentryOvercharge'), 'local authored tuning should declare the bounded Crystal overflow spend');
 assert.ok(localKitSource.includes("realm.prompt.startsWith('CORE FAILURE')"), 'wave start should retry a breached siege instead of skipping its number');
 assert.ok(localKitSource.includes('REBUILD BEFORE RETRYING SIEGE'), 'destroyed defenses should block retry until the starter cache rebuild is placed');
 
@@ -63,7 +66,7 @@ const progressionEngine = createRealtimeGame({
     createWaveAndDefenseKit()
   ]
 });
-progressionEngine.world.get('inventory').items = { ...progressionEngine.world.get('inventory').items, crystal: 5, energy: 3 };
+progressionEngine.world.get('inventory').items = { ...progressionEngine.world.get('inventory').items, crystal: 6, energy: 3 };
 progressionEngine.world.get('structures').push({
   id: 'structure-1',
   kind: 'wall',
@@ -92,6 +95,46 @@ assert.equal(progressionEngine.world.get('structures').filter(structure => struc
 const deployedSentry = progressionEngine.world.get('structures').find(structure => structure.kind === 'turret');
 assert.deepEqual({ x: deployedSentry.x, y: deployedSentry.y }, readySentry.placement, 'the Sentry should use its authored core-side anchor');
 assert.notDeepEqual({ x: deployedSentry.x, y: deployedSentry.y }, { x: 0, y: 238 }, 'the Sentry must not stack on the Emberplate wall');
+const readyOvercharge = progressionEngine.build.getSentryChoiceState().overcharge;
+assert.equal(progressionEngine.world.get('inventory').items.crystal, 1, 'deploying the Sentry should preserve one overflow Crystal');
+assert.equal(readyOvercharge.ready, true, 'the overflow Crystal should arm one bounded pre-Siege 3 choice');
+assert.deepEqual(readyOvercharge.cost, { crystal: 1 }, 'the overcharge should spend only the guaranteed overflow shard');
+assert.equal(progressionEngine.build.overcharge(), true, 'the existing build owner should overcharge the deployed Sentry in place');
+const armedOvercharge = progressionEngine.build.getSentryChoiceState().overcharge;
+assert.equal(armedOvercharge.completed, true, 'the Sentry descriptor should record the armed surge');
+assert.equal(armedOvercharge.remainingShots, armedOvercharge.shots, 'arming should load exactly the authored bounded shot count');
+assert.equal(progressionEngine.world.get('inventory').items.crystal, 0, 'arming should spend the one overflow Crystal exactly once');
+progressionEngine.world.get('wave').n = armedOvercharge.targetWave;
+progressionEngine.world.get('wave').active = true;
+progressionEngine.world.set('enemies', [{
+  type: 'crawler',
+  x: deployedSentry.x + 40,
+  y: deployedSentry.y,
+  hp: 42,
+  maxHp: 42,
+  speed: 0,
+  dmg: 0,
+  cd: 0,
+  hurt: 0,
+  size: 17
+}]);
+progressionEngine.tick(1 / 60);
+assert.equal(progressionEngine.world.get('enemies')[0].hp, 12, 'the first Siege 3 surge shot should apply authored heavy damage');
+assert.equal(deployedSentry.cd, armedOvercharge.cooldown, 'the surge shot should use the authored fast cooldown');
+assert.equal(progressionEngine.build.getSentryChoiceState().overcharge.remainingShots, armedOvercharge.shots - 1, 'each surge shot should consume exactly one bounded charge');
+progressionEngine.tick(0);
+assert.equal(progressionEngine.world.allEvents().find(event => event.type === 'fx.beam')?.color, armedOvercharge.color, 'the existing beam event should visibly carry the Crystal surge color');
+progressionEngine.world.set('structures', [deployedSentry]);
+progressionEngine.world.set('enemies', []);
+progressionEngine.world.get('wave').queue = [];
+progressionEngine.world.get('wave').active = true;
+progressionEngine.tick(1 / 60);
+assert.equal(progressionEngine.world.get('combat').clears, 3, 'the overcharged defense should preserve the normal Siege 3 clear owner');
+assert.equal(progressionEngine.build.getState().selected, 0, 'a secured siege without a surviving wall should restore the basic wall action');
+Object.assign(progressionEngine.world.get('inventory').items, { wood: 5, obsidian: 3 });
+assert.equal(progressionEngine.build.place(), true, 'the restored basic action should rebuild a wall beside the surviving Sentry');
+const rebuiltIds = progressionEngine.world.get('structures').map(structure => structure.id);
+assert.equal(new Set(rebuiltIds).size, rebuiltIds.length, 'post-clear rebuilds should preserve unique structure identifiers');
 progressionEngine.world.set('structures', []);
 progressionEngine.world.get('core').hp = 0;
 progressionEngine.tick(1 / 60);

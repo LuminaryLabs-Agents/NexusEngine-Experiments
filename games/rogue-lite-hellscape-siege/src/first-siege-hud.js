@@ -6,8 +6,10 @@ function text(element, value) {
 function phaseFor(state) {
   if (state.realm?.id !== 'lobby') return 'harvest';
   if (state.wave?.active) return 'defend';
+  if (state.sentryChoice?.overcharge?.eligible) return 'overcharge';
   if (state.sentryChoice?.eligible) return 'sentry';
   if (state.fortification?.eligible) return 'fortify';
+  if ((state.wave?.n ?? 0) > 0 && (state.combat?.clears ?? 0) >= state.wave.n && !state.structures?.some(structure => structure.kind === 'wall')) return 'rebuild';
   if ((state.wave?.n ?? 0) > 0 && state.realm?.prompt?.startsWith('WAVE')) return 'recover';
   if (!(state.structures?.length > 0)) return 'build';
   return 'start';
@@ -60,8 +62,20 @@ function objectiveFor(state, phase) {
     if (sentryChoice.ready) return `Crystal Sentry ready: ${sentryRecipe}. Press B to deploy it beside the Ember Core.`;
     return `Emberplate survived Siege ${state.wave.n}. Crystal Sentry: ${sentryRecipe}. Enter Crystal for crystal and energy.`;
   }
+  if (phase === 'overcharge') {
+    const surge = sentryChoice.overcharge;
+    if (surge.ready) return `Crystal overflow banked: ${surge.materials.crystal}/${surge.cost.crystal} crystal. Press B to arm ${surge.shots} fast, heavy Sentry shots for Siege ${surge.targetWave}.`;
+    return `Crystal Surge needs ${surge.cost.crystal} crystal before Siege ${surge.targetWave}.`;
+  }
+  if (phase === 'rebuild') {
+    const canRebuild = !Object.keys(fortification?.missing ?? {}).length;
+    return canRebuild
+      ? `Siege ${state.wave.n} secured, but Emberplate fell. Starter wall ready: ${recipe}. Press B to rebuild.`
+      : `Siege ${state.wave.n} secured, but Emberplate fell. Rebuild stock: ${recipe}. Enter Grove and Ashes.`;
+  }
   if (phase === 'recover') return `Siege ${state.wave.n} secured. Enter Grove for wood or Ashes for obsidian, then return to fortify.`;
   if (phase === 'build') return 'Build your free starter Spike Wall now. It is already selected.';
+  if (sentryChoice?.overcharge?.completed && sentryChoice.overcharge.remainingShots > 0) return `Crystal Surge armed · ${sentryChoice.overcharge.remainingShots} heavy shots. Press E at the core for Siege ${sentryChoice.overcharge.targetWave}.`;
   if (sentryChoice?.completed) return `Crystal Sentry online · ${sentryChoice.range} range. Press E at the core for Siege ${state.wave.n + 1}.`;
   if (fortification?.completed) return `Emberplate Wall ${state.structures?.find(item => item.fortificationId)?.maxHp ?? 300} HP · ${fortification.guardPercent}% guard. Press E at the core for Siege ${state.wave.n + 1}.`;
   if ((state.wave?.n ?? 0) > 0) return `Siege ${state.wave.n} cleared. Gather or fortify, then press E at the core.`;
@@ -98,11 +112,11 @@ export function createFirstSiegeHud({ diagnostics }) {
       text(waveStatus, state.wave?.active
         ? `WAVE ${waveNumber} · ${active} ACTIVE · ${incoming} INCOMING`
         : (waveNumber ? `WAVE ${waveNumber} ${cleared ? 'SECURED' : 'BREACHED'}` : 'WAVE READY'));
-      buildAction?.setAttribute('data-active', String(phase === 'build' || (phase === 'fortify' && state.fortification?.ready) || (phase === 'sentry' && state.sentryChoice?.ready)));
+      buildAction?.setAttribute('data-active', String(phase === 'build' || (phase === 'rebuild' && !Object.keys(state.fortification?.missing ?? {}).length) || (phase === 'fortify' && state.fortification?.ready) || (phase === 'sentry' && state.sentryChoice?.ready) || (phase === 'overcharge' && state.sentryChoice?.overcharge?.ready)));
       interactAction?.setAttribute('data-active', String(phase === 'start' || (phase === 'sentry' && !state.sentryChoice?.ready)));
       primaryAction?.setAttribute('data-active', String(phase === 'defend' || phase === 'harvest'));
-      text(buildActionLabel, phase === 'sentry' ? (state.sentryChoice?.ready ? 'DEPLOY SENTRY' : 'SENTRY RECIPE') : (phase === 'fortify' ? (state.fortification?.ready ? 'FORGE WALL' : 'RECIPE') : (state.sentryChoice?.completed ? 'SENTRY ONLINE' : (state.fortification?.completed ? 'WALL FORGED' : 'BUILD WALL'))));
-      text(interactActionLabel, phase === 'harvest' ? 'RETURN AT BASE' : (phase === 'sentry' ? 'ENTER CRYSTAL' : (phase === 'fortify' ? 'ENTER REALM' : 'START AT CORE')));
+      text(buildActionLabel, phase === 'rebuild' ? (!Object.keys(state.fortification?.missing ?? {}).length ? 'REBUILD WALL' : 'REBUILD STOCK') : (phase === 'overcharge' ? (state.sentryChoice?.overcharge?.ready ? 'OVERCHARGE' : 'SHARD NEEDED') : (phase === 'sentry' ? (state.sentryChoice?.ready ? 'DEPLOY SENTRY' : 'SENTRY RECIPE') : (phase === 'fortify' ? (state.fortification?.ready ? 'FORGE WALL' : 'RECIPE') : (state.sentryChoice?.overcharge?.remainingShots > 0 ? 'SURGE ARMED' : (state.sentryChoice?.completed ? 'SENTRY ONLINE' : (state.fortification?.completed ? 'WALL FORGED' : 'BUILD WALL')))))));
+      text(interactActionLabel, phase === 'harvest' ? 'RETURN AT BASE' : (phase === 'sentry' ? 'ENTER CRYSTAL' : (phase === 'fortify' || phase === 'rebuild' ? 'ENTER REALM' : 'START AT CORE')));
       text(primaryActionLabel, phase === 'harvest' ? 'HARVEST' : 'STRIKE');
       text(impactToast, combat.lastImpact ?? '');
       impactToast?.setAttribute('data-visible', String((combat.impact ?? 0) > 0));

@@ -363,11 +363,22 @@ export function createCanvasRenderer(canvas) {
       circle(ctx, structure.x, structure.y, 24, color, 0.64);
       health(ctx, structure, 36, color);
       if (structure.sentryChoiceId === state.sentryChoice?.id) {
+        const surge = state.sentryChoice.overcharge;
+        const surgeVisible = surge?.ready || surge?.remainingShots > 0;
         ring(ctx, structure, 44 + Math.sin((state.clock?.elapsed || 0) * 4) * 3, color, 0.5, 2.8);
-        ctx.fillStyle = color;
+        if (surgeVisible) {
+          const surgePulse = 52 + Math.sin((state.clock?.elapsed || 0) * (surge.active ? 10 : 6)) * 5;
+          ring(ctx, structure, surgePulse, surge.color, surge.active ? 0.85 : 0.64, surge.active ? 5 : 3.5);
+        }
+        ctx.fillStyle = surgeVisible ? surge.color : color;
         ctx.font = '900 11px ui-monospace, monospace';
         ctx.textAlign = 'center';
-        ctx.fillText(`SENTRY ONLINE · ${structure.range} RANGE`, structure.x, structure.y + 58);
+        const sentryLabel = surge?.ready
+          ? `B · OVERCHARGE · ${surge.cost.crystal} CRYSTAL`
+          : (surge?.remainingShots > 0
+            ? `${surge.active ? 'CRYSTAL SURGE' : 'SURGE ARMED'} · ${surge.remainingShots}/${surge.shots} SHOTS`
+            : (surge?.completed ? 'SENTRY ONLINE · SURGE SPENT' : `SENTRY ONLINE · ${structure.range} RANGE`));
+        ctx.fillText(sentryLabel, structure.x, structure.y + 58);
       }
     }
     const fortification = state.fortification;
@@ -388,7 +399,8 @@ export function createCanvasRenderer(canvas) {
       ctx.textAlign = 'center';
       ctx.fillText(`EMBERPLATE · ${fortification.guardPercent}% GUARD`, fortificationWall.x, fortificationWall.y + 58);
     }
-    if (state.realm?.id === 'lobby' && !state.wave?.active && state.selectedBuild && (!(state.structures?.length) || (state.build?.ghostAlpha ?? 0) > 0 || state.sentryChoice?.ready)) {
+    const suppressSpentSentryGhost = state.sentryChoice?.completed && state.selectedBuild?.id === state.sentryChoice?.buildId;
+    if (state.realm?.id === 'lobby' && !state.wave?.active && state.selectedBuild && (!(state.structures?.length) || state.sentryChoice?.ready || ((state.build?.ghostAlpha ?? 0) > 0 && !suppressSpentSentryGhost))) {
       const sentryReady = state.sentryChoice?.ready && state.selectedBuild.id === state.sentryChoice.buildId;
       const ghost = sentryReady ? state.sentryChoice.placement : { x: state.player.x, y: state.player.y + 58 };
       const canAfford = Object.entries(state.selectedBuild.cost || {}).every(([id, amount]) => (state.inventory?.items?.[id] || 0) >= amount);

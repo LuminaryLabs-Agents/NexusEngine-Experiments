@@ -42,19 +42,19 @@
     {
       "id": "rogue-lite-hellscape-siege",
       "lifecycleStatus": "active-legacy-baseline",
-      "score": 94,
-      "lastImprovedAt": "2026-07-19T09:54:16-04:00",
+      "score": 96,
+      "lastImprovedAt": "2026-07-19T11:07:58-04:00",
       "feelScores": {
         "responsiveness": 9,
         "predictability": 9,
         "readability": 10,
         "impact": 10,
-        "recovery": 9,
+        "recovery": 10,
         "delight": 10,
         "replayDesire": 9,
-        "average": 9.4
+        "average": 9.6
       },
-      "nextFeelProblem": "Let Crystal overflow after the first Sentry fund one bounded in-place overcharge for Siege 3 through the existing inventory, build, turret cooldown, wave, HUD, and Canvas owners without another control, state owner, or visible diagnostic layer."
+      "nextFeelProblem": "Turn Siege 3's existing post-clear energy drops into one readable repair choice for the surviving Sentry or rebuilt wall through existing inventory, build, structure, HUD, and Canvas owners without another control or state owner."
     },
     {
       "id": "signal-bastion",

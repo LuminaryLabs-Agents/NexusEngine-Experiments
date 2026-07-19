@@ -23,6 +23,7 @@ close on threats and strike them
 clear, harvest Grove wood and Ashes obsidian
 return and forge the surviving wall into Emberplate
 clear Siege 2 with Emberplate, harvest Crystal, and deploy one Sentry
+spend the overflow Crystal to arm six fast, heavy Sentry shots for Siege 3
 retry the same siege after a breach
 ```
 
@@ -52,6 +53,13 @@ Sentry choice. Its `5 crystal + 3 energy` recipe is fully funded in the Crystal
 realm, and the existing `B` control deploys exactly one Sentry. The HUD, Crystal
 portal, build ghost, and finished Sentry consume one derived choice descriptor;
 no second progression state, control, or diagnostic surface is created.
+
+The guaranteed one-Crystal overflow then turns the same `B` control into one
+in-place Crystal Surge: six `30`-damage shots at a `0.3s` cooldown for Siege 3,
+then the Sentry returns to its normal cadence. The existing Sentry descriptor,
+turret cooldown, beam/flash/shake FX, HUD, and Canvas own the finite beat. If
+Emberplate falls during a successful clear, the basic action returns to wall
+rebuild stock without requiring Advanced blueprint selection.
 
 ## Domain-kit cutover target
 
