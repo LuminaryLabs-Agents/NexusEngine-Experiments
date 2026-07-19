@@ -1,6 +1,6 @@
 # Hellscape Crystal Overflow Overcharge
 
-Status: validated playable production unit; publication pending
+Status: validated playable production unit; published
 Packet ID: `2026-07-19-hellscape-crystal-overcharge`
 Experiment-game: `games/rogue-lite-hellscape-siege/`
 Run type: bounded legacy-game feel refinement; no production-count claim
@@ -91,9 +91,9 @@ Playwright used real keyboard input for build, movement, siege start/retry, comb
 ## Publication
 
 - Starting commits: Core read-only `a5882b47bd5a9284550bb3af1f0cd8580c62665e`; ProtoKits `194d37714d7c23984970e09015b5dd4bffbbab7b`; Experiments `9e516580bd9e0827ae4b8c90a64c7f9e75b8d19e`.
-- Experiments production commit: pending.
-- Experiments receipt/final commit: pending.
+- Experiments production commit: `45118178c248224f3b9a7d90e0612bcbee0d2f7d`.
+- Experiments receipt/final commit: this publication-receipt commit.
 - ProtoKits: unchanged at `194d37714d7c23984970e09015b5dd4bffbbab7b`; synchronized before publication.
-- Push: pending final fetch-before-push verification and publication.
+- Push: production commit published to resolved default branch `main` after fetch-before-push verification; this receipt update follows.
 
 Exact next playable improvement: refine Signal Bastion's older `8.6` feel baseline with one readable post-clear second-command choice between upgrading the starter line and adding a specialist tower, reusing its economy, session, wave-preview, descriptor, HUD, and Canvas owners without another first-screen control or state owner.
