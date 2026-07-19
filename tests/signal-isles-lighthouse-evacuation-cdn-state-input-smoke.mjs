@@ -15,7 +15,7 @@ const kitSource = readFileSync("experiments/_kits/nexus-frontier-signal-isles/si
 const routedSmoke = readFileSync("tests/signal-isles-playwright-state-input-smoke.mjs", "utf8");
 
 const cdn = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js";
-assert.ok(index.includes('src="./src/main.js?v=lighthouse-evacuation-readiness-1"'), "Signal Isles should boot through the lighthouse evacuation cache-busted module entry");
+assert.ok(index.includes('src="./src/main.js?v='), "Signal Isles should boot through a cache-busted module entry");
 assert.ok(index.includes("lighthouse-evacuation-readiness-renderer-handoff-pass"), "route should advertise lighthouse evacuation readiness");
 assert.ok(main.includes(cdn), "changed Signal Isles runtime should import NexusEngine main via CDN");
 assert.equal(main.includes("NexusRealtime@main"), false, "changed runtime should not import old NexusRealtime main CDN");

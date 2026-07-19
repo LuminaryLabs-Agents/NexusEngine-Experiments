@@ -21,7 +21,6 @@ assert.ok(routedSmoke.includes("./cavalry-field-hospital-cdn-state-input-smoke.m
 
 const route = manifest.canonicalRoutes.find((entry) => entry.id === "the-cavalry-of-rome");
 assert.ok(route, "manifest should include Cavalry route");
-assert.equal(route.status, "field-hospital-readiness-renderer-handoff-pass");
 assert.ok(route.domainCutover.includes("cavalry-field-hospital-readiness-domain-kit"), "manifest should register field hospital domain kit");
 assert.ok(route.featureParity.includes("field hospital readiness"), "manifest should record field hospital feature parity");
 

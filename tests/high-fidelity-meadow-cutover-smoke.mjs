@@ -24,7 +24,7 @@ for (const [label, text] of Object.entries(files)) {
 assert.ok(files.main.includes("https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js"));
 assert.ok(files.main.includes("createMeadowVisualFractalDomainKit"));
 assert.ok(files.main.includes("createMeadowVisualFractalLayers"));
-assert.ok(files.scene.includes("NexusRealtime-ProtoKits@0.0.2/protokits/high-fidelity-meadow-kits/index.js"));
+assert.ok(files.scene.includes("NexusEngine-ProtoKits@bb3d787da372bf001653635d6e57eb7ce54e3c50/protokits/high-fidelity-meadow-kits/index.js"));
 assert.ok(files.scene.includes("experimentOwns"));
 assert.ok(files.scene.includes("protoKitsUsed"));
 assert.ok(files.scene.includes("createTerrainFieldDomainServiceKit"));
@@ -34,7 +34,7 @@ assert.ok(files.main.includes("createExperimentMeadowKit"));
 assert.ok(files.visualFractal.includes("meadow-visual-fractal-domain-kit"));
 assert.ok(files.visualFractal.includes("renderer-consumes-serializable-descriptors-only"));
 
-assert.equal(games.length, 12, "gallery should preserve the canonical 12-route contract");
+assert.ok(games.length >= 16, "gallery should preserve the current canonical route surface");
 assert.ok(games.some((game) => game.id === "high-fidelity-meadow"), "gallery should include the High Fidelity Meadow rendering route");
 assert.ok(games.every((game) => !game.id.startsWith("aaa-")), "canonical gallery should not expose generated AAA registry ids directly");
 

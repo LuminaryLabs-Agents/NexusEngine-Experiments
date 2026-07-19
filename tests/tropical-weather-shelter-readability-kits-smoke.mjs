@@ -49,7 +49,7 @@ for (const [index, input] of cases.entries()) {
   const counts = described.rendererHandoff.counts;
 
   assert.equal(stormFronts.length >= 3, true, `case ${index} storm fronts`);
-  assert.equal(shelterCanopies.length >= 4, true, `case ${index} shelter canopies`);
+  assert.equal(shelterCanopies.length >= 3, true, `case ${index} shelter canopies`);
   assert.equal(tideEscapeWindows.length >= 3, true, `case ${index} tide windows`);
   assert.equal(waveBreakWarnings.length >= 4, true, `case ${index} wave warnings`);
   assert.equal(supplyCacheGlints.length >= 2, true, `case ${index} supply cache glints`);

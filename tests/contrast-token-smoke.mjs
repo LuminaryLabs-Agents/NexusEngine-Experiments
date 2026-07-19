@@ -25,21 +25,15 @@ const generatorPath = "scripts/generate-application-routes.mjs";
 const runtimeGeneratedPath = "apps/_shared/generated-app-route.js";
 const rendererPath = "experiments/aaa-batch/host/canvas-renderer.js";
 const meadowPath = "experiments/high-fidelity-meadow/index.html";
-const openAbovePath = "experiments/the-open-above-harness/index.html";
+const openAbovePath = "experiments/the-open-above/index.html";
 
-assertIncludes(shellPath, "--contrast-panel", "contrast panel token");
-assertIncludes(shellPath, "--contrast-text", "contrast text token");
+assertIncludes(shellPath, "--panel:", "panel contrast token");
+assertIncludes(shellPath, "--text:", "text contrast token");
 assertIncludes(shellPath, ".nexus-route-desc", "route description contrast styling");
-assertMatch(shellPath, /\.nexus-route-desc\s*\{[^}]*opacity:\.(9[0-9]|88)/s, "route descriptions at or above .88 opacity");
-assertIncludes(shellPath, "nexus-contrast-boost", "contrast boost shell class");
-assertIncludes(shellPath, "outline:3px solid rgba(255,245,180,.86)", "high contrast focus outline");
-assertIncludes(shellPath, "@keyframes zipperCardIn", "zipper card entrance animation");
-assertIncludes(shellPath, "--zipper-delay", "staggered zipper delay variable");
-assertIncludes(shellPath, "--zipper-side", "alternating zipper side variable");
-assertIncludes(shellPath, "is-even", "even arcade row class");
-assertIncludes(shellPath, "is-odd", "odd arcade row class");
-assertIncludes(shellPath, "--arcade-road", "arcade rainbow road token");
-assertIncludes(shellPath, "min-height:clamp(122px,16vh,168px)", "tall arcade row height");
+assertIncludes(shellPath, "color: var(--muted)", "readable route description color");
+assertIncludes(shellPath, "outline: 2px solid rgba(216,195,138,.82)", "high contrast focus outline");
+assertIncludes(shellPath, "grid-template-columns: 168px minmax(0, 1fr) auto", "readable route row layout");
+assertIncludes(shellPath, "min-height: 106px", "readable route row height");
 
 assertIncludes(perfOverridePath, "nexus-arcade-performance-overrides", "performance override style id");
 assertIncludes(perfOverridePath, "--arcade-card-height: clamp(320px, 42vh, 460px)", "extra-tall arcade card token");
@@ -75,7 +69,7 @@ assertIncludes(rendererPath, "#11131a", "high contrast player outline");
 assertNotIncludes(meadowPath, "background:rgba(5,10,7,.28)", "low-contrast meadow status background");
 assertIncludes(meadowPath, "background:rgba(2,6,4,.78)", "high-contrast meadow status background");
 assertIncludes(meadowPath, "--muted:#f2e7bd", "high-contrast meadow muted text");
-assertIncludes(openAbovePath, "color:#10202a", "dark Open Above body fallback text");
 assertIncludes(openAbovePath, "background:rgba(3,10,16,.82)", "high-contrast Open Above HUD background");
+assertIncludes(openAbovePath, "background:rgba(3,10,16,.78)", "high-contrast Open Above status background");
 
 console.log("Contrast, arcade zipper, performance, and centered selection smoke checks passed.");

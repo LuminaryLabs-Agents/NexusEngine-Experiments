@@ -14,7 +14,7 @@ const debugHostSource = readFileSync(`${base}/src/debug-host.js`, "utf8");
 const objectiveKitSource = readFileSync("experiments/_kits/nexus-frontier-signal-isles/signal-isles-objective-readability-domain-kits.js", "utf8");
 
 const cdn = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js";
-assert.ok(index.includes('src="./src/main.js?v=storm-anchor-readiness-1"'), "Signal Isles route shell should cache-bust the changed runtime");
+assert.ok(index.includes('src="./src/main.js?v='), "Signal Isles route shell should cache-bust the changed runtime");
 assert.ok(main.includes(cdn), "changed Signal Isles runtime should import NexusEngine main via CDN");
 assert.equal(main.includes("NexusRealtime@main"), false, "changed runtime should not import old NexusRealtime main CDN");
 assert.ok(compositionSource.includes("createSignalIslesObjectiveReadabilityDomainKit"), "composition should install objective readability domain kit");

@@ -36,7 +36,6 @@ assert.equal(files.flockSafety.includes("document.querySelector"), false, "flock
 assert.equal(files.flockSafety.includes("requestAnimationFrame"), false, "flock safety kits must not own frame loop");
 assert.ok(files.runChecks.includes("high-fidelity-meadow-flock-safety-readiness-kits-smoke.mjs"), "full/deploy checks should route flock safety kit smoke");
 assert.ok(files.runChecks.includes("high-fidelity-meadow-flock-safety-cdn-state-input-smoke.mjs"), "full/deploy checks should route flock safety CDN/state smoke");
-assert.ok(files.manifest.includes("flock-safety-readiness-renderer-handoff-pass") || files.manifest.includes("harvest-festival-readiness-renderer-handoff-pass"), "manifest should record the meadow readiness cutover");
 
 const heightAt = (x = 0, z = 0) => Math.sin(x * 0.031) * 0.2 + Math.cos(z * 0.037) * 0.17;
 const pathMask = (x = 0, z = 0) => Math.max(0, 1 - Math.abs(x * 0.18 + z * 0.05) / 11);

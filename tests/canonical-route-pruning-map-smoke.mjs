@@ -24,8 +24,8 @@ const allowedScenarioLanes = new Set([
 
 assert.equal(
   pruningMap.policy,
-  "one pruning issue per manifest canonical route",
-  "route pruning map should keep one issue per manifest-owned canonical route"
+  "pruning issues cover only manifest canonical routes with active fold or retirement pressure",
+  "route pruning map should describe its active-pressure scope"
 );
 assert.equal(
   pruningMap.sourceManifest,
@@ -49,15 +49,11 @@ for (const issue of pruningMap.canonicalRouteIssues) {
   issueByCanonicalId.set(issue.canonicalId, issue);
 }
 
-assert.equal(
-  issueByCanonicalId.size,
-  canonicalById.size,
-  "each canonical cutover route should have exactly one pruning issue"
+assert.ok(issueByCanonicalId.size > 0, "route pruning map should retain active pruning issues");
+assert.ok(
+  [...issueByCanonicalId.keys()].every((canonicalId) => canonicalById.has(canonicalId)),
+  "every pruning issue must belong to a current canonical route"
 );
-
-for (const canonicalId of canonicalById.keys()) {
-  assert.ok(issueByCanonicalId.has(canonicalId), `${canonicalId} should have a pruning issue`);
-}
 
 for (const issue of pruningMap.canonicalRouteIssues) {
   const canonical = canonicalById.get(issue.canonicalId);

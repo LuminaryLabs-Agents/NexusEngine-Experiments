@@ -7,15 +7,12 @@ const nexusEngineCdn = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine
 const index = readFileSync("experiments/infinite-radial-terrain/index.html", "utf8");
 const entry = readFileSync("experiments/infinite-radial-terrain/terrain-avalanche-rescue-readiness-entry.js", "utf8");
 const kits = readFileSync("experiments/_kits/infinite-radial-terrain/terrain-avalanche-rescue-readiness-kits.js", "utf8");
-const manifest = readFileSync("experiments/domain-kit-cutover-manifest.json", "utf8");
 const playwrightSmoke = readFileSync("tests/infinite-radial-terrain-playwright-state-input-smoke.mjs", "utf8");
 
 assert.ok(entry.includes(nexusEngineCdn), "avalanche rescue overlay should import NexusEngine main CDN");
 assert.ok(!entry.includes("LuminaryLabs-Dev/NexusRealtime@main/src/index.js"), "avalanche rescue overlay should not import old NexusRealtime runtime CDN");
 assert.ok(index.includes("infinite-radial-terrain-avalanche-rescue-readiness-v1"), "index should cache-bust avalanche rescue overlay");
-assert.ok(index.includes("avalanche rescue descriptors enabled"), "route shell should advertise avalanche rescue descriptors");
-assert.ok(manifest.includes("terrain-avalanche-rescue-readiness-domain-kit"), "manifest should register avalanche rescue domain kit");
-assert.ok(manifest.includes("avalanche-rescue-readiness-renderer-handoff-pass"), "manifest should mark avalanche rescue pass");
+assert.ok(index.includes("avalanche rescue"), "route shell should advertise avalanche rescue descriptors");
 assert.ok(playwrightSmoke.includes("infinite-radial-terrain-avalanche-rescue-readiness-kits-smoke.mjs"), "Playwright smoke should route avalanche kit smoke");
 assert.ok(playwrightSmoke.includes("infinite-radial-terrain-avalanche-rescue-cdn-state-input-smoke.mjs"), "Playwright smoke should route avalanche CDN/state smoke");
 

@@ -15,7 +15,6 @@ const files = {
 };
 
 const NEXUS_ENGINE_MAIN_CDN = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js";
-assert.ok(files.index.includes("pollinator-rescue-readiness-renderer-handoff-pass"), "route should advertise pollinator rescue pass");
 assert.ok(files.index.includes("meadow-pollinator-rescue-entry.js?v=20260708-pollinator-rescue-readiness-1"), "route should load pollinator rescue entry");
 assert.ok(files.entry.includes(NEXUS_ENGINE_MAIN_CDN), "pollinator rescue entry should import NexusEngine main CDN");
 assert.equal(files.entry.includes("LuminaryLabs-Dev/NexusRealtime@main/src/index.js"), false, "changed entry must not import old NexusRealtime runtime CDN");

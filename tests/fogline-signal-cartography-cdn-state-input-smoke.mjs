@@ -54,7 +54,7 @@ const cases = [
   },
   {
     label: "Route keeps browser module boot",
-    check: () => assert.ok(index.includes("./src/main.js") && index.includes("attachNexusRealtimePageLoader"))
+    check: () => assert.ok(index.includes("./src/main.js") && !index.includes("attachNexusRealtimePageLoader"))
   },
   {
     label: "New cartography checks are wired",

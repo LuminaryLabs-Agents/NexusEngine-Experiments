@@ -7,6 +7,9 @@ import { extname, join, normalize } from "node:path";
 import { chromium } from "playwright";
 
 const root = process.cwd();
+const CORE_CDN_URL = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js";
+const SURVIVAL_KITS_CDN_URL = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusRealtime-ProtoKits@0.0.1/protokits/generic-survival-domain-kits/index.js";
+const ZOMBIE_KITS_CDN_URL = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@zombie-orchard-protokits/protokits/zombie-orchard/index.js";
 const mime = new Map([
   [".html", "text/html; charset=utf-8"],
   [".js", "text/javascript; charset=utf-8"],
@@ -16,8 +19,10 @@ const mime = new Map([
 ]);
 
 function safePath(urlPath) {
-  const clean = normalize(decodeURIComponent(urlPath.split("?")[0])).replace(/^\.\.(\/|\\|$)/, "");
-  return join(root, clean === "/" ? "index.html" : clean);
+  const pathname = decodeURIComponent(urlPath.split("?")[0]);
+  const clean = normalize(pathname).replace(/^\.\.(\/|\\|$)/, "").replace(/^[/\\]+/, "");
+  const filePath = join(root, clean || "index.html");
+  return pathname.endsWith("/") ? join(filePath, "index.html") : filePath;
 }
 
 const kitStackSource = await readFile(join(root, "experiments/zombie-orchard/src/kit-stack.js"), "utf8");
@@ -42,8 +47,16 @@ assert.ok(hordeEntrySource.includes("zombie-orchard-composed-horde-pathing-rende
 const server = createServer(async (request, response) => {
   try {
     const filePath = safePath(request.url ?? "/");
-    const body = await readFile(filePath);
-    response.writeHead(200, { "content-type": mime.get(extname(filePath)) ?? "application/octet-stream" });
+    const contentType = mime.get(extname(filePath)) ?? "application/octet-stream";
+    let body = await readFile(filePath);
+    if (contentType.startsWith("text/") || contentType.includes("javascript")) {
+      body = body
+        .toString("utf8")
+        .replaceAll(CORE_CDN_URL, "/node_modules/nexusrealtime/src/index.js")
+        .replaceAll(SURVIVAL_KITS_CDN_URL, "/node_modules/@luminarylabs/nexusrealtime-protokits/protokits/generic-survival-domain-kits/index.js")
+        .replaceAll(ZOMBIE_KITS_CDN_URL, "/node_modules/@luminarylabs/nexusrealtime-protokits/protokits/zombie-orchard/index.js");
+    }
+    response.writeHead(200, { "content-type": contentType });
     response.end(body);
   } catch {
     response.writeHead(404, { "content-type": "text/plain" });
@@ -60,8 +73,12 @@ try {
   browser = await chromium.launch({ headless: true });
   const page = await browser.newPage();
   await page.goto(`${baseUrl}/experiments/zombie-orchard/`, { waitUntil: "domcontentloaded" });
-  await page.waitForFunction(() => Boolean(globalThis.GameHost?.getRendererHandoff), null, { timeout: 15000 });
-  await page.waitForFunction(() => Boolean(globalThis.GameHost?.getHordePathingReadiness), null, { timeout: 15000 });
+  await page.waitForFunction(() => Boolean(
+    globalThis.GameHost?.tick
+    && globalThis.GameHost?.getRendererHandoff
+    && globalThis.GameHost?.getSurvivalReadability
+    && globalThis.GameHost?.getHordePathingReadiness
+  ), null, { timeout: 15000 });
 
   const stateCases = Array.from({ length: 10 }, (_, index) => ({
     moveX: index % 2 ? 0.5 : -0.25,
@@ -111,8 +128,8 @@ try {
     assert.equal(result.handoff.descriptorCounts.roundPressureBands, 1);
     assert.equal(result.hordePathing.rendererHandoff.policy, "renderer-consumes-descriptors-only");
     assert.ok(result.hordePathing.summary.descriptorCount >= 6);
-    assert.ok(result.handoff.ownership.forbiddenOwners.includes("renderer"));
-    assert.ok(result.handoff.ownership.forbiddenOwners.includes("browser-input"));
+    assert.ok(result.readability.rendererHandoff.ownership.forbiddenOwners.includes("renderer"));
+    assert.ok(result.readability.rendererHandoff.ownership.forbiddenOwners.includes("browser-input"));
     assert.ok(result.stamina01 >= 0 && result.stamina01 <= 1);
     assert.ok(result.health01 >= 0 && result.health01 <= 1);
   }

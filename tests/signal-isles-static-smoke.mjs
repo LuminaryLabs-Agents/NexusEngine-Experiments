@@ -10,7 +10,7 @@ const composition = readFileSync(`${base}/src/game-composition.js`, "utf8");
 
 assert.ok(index.includes("<main"), "Signal Isles route should use semantic main");
 assert.ok(index.includes('id="game"'), "Signal Isles route should expose the game canvas");
-assert.ok(index.includes('src="./src/main.js?v=harbor-relief-readiness-1"'), "Signal Isles route should load the latest cache-busted module entrypoint");
+assert.ok(index.includes('src="./src/main.js?v='), "Signal Isles route should load a cache-busted module entrypoint");
 assert.ok(index.includes('id="status"') && index.includes('id="controls"'), "Signal Isles should keep a tiny two-element HUD");
 assert.ok(!index.includes("sidebar") && !index.includes("dashboard"), "Signal Isles should not add dashboard UI");
 

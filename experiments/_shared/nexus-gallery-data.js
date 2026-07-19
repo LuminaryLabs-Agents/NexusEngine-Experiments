@@ -2,7 +2,7 @@ export const galleryConfig = Object.freeze({
   title: "Experiments",
   subtitle: "Nexus Engine playable routes",
   repoUrl: "https://github.com/LuminaryLabs-Agents/NexusEngine-Experiments",
-  hint: "Browse the 17 collective experiment cards. Older removed routes live under deprecated/."
+  hint: "Browse 17 experiments and 3 complete game routes. Older removed routes live under deprecated/."
 });
 
 export const games = Object.freeze([
@@ -49,6 +49,39 @@ export const games = Object.freeze([
     playLabel: "Play experiment",
     tags: [{ label: "WebGL", tone: "gold" }, { label: "Soil Mycelium", tone: "green" }, { label: "Nexus Engine", tone: "blue" }],
     description: "Procedural meadow scene composed from terrain, wind, vegetation, creature, fur, sky, VFX, visual-target, ecology, creek irrigation, and soil mycelium restoration domains with descriptor-only underground threads, mushroom rings, beetle lanes, hedgerow windbreaks, and dawn soil health ledgers."
+  },
+  {
+    id: "the-open-above",
+    tab: "experiments",
+    title: "The Open Above",
+    route: "./experiments/the-open-above/",
+    kind: "experiment",
+    visual: "sora",
+    playLabel: "Take flight",
+    tags: [{ label: "Bird Flight", tone: "gold" }, { label: "Storm Shelter", tone: "green" }, { label: "Nexus Engine", tone: "blue" }],
+    description: "Open aerial traversal experiment with bird flight, streamed terrain, route readability, courier objectives, and storm-shelter readiness descriptors composed through renderer-neutral NexusEngine domains."
+  },
+  {
+    id: "tropical-island-scene",
+    tab: "experiments",
+    title: "Tropical Island Scene",
+    route: "./experiments/tropical-island-scene/",
+    kind: "experiment",
+    visual: "sora",
+    playLabel: "Explore island",
+    tags: [{ label: "Lagoon", tone: "gold" }, { label: "Reef Rescue", tone: "green" }, { label: "Nexus Engine", tone: "blue" }],
+    description: "Interactive tropical lagoon with orbit controls, fish, coconuts, navigation and shelter cues, reef rescue, tide salvage, storm clinic, and rainwater purification readiness domains."
+  },
+  {
+    id: "cozy-island",
+    tab: "experiments",
+    title: "Cozy Island",
+    route: "./experiments/cozy-island/",
+    kind: "experiment",
+    visual: "sora",
+    playLabel: "Visit island",
+    tags: [{ label: "Island", tone: "gold" }, { label: "Hatchery", tone: "green" }, { label: "Nexus Engine", tone: "blue" }],
+    description: "A calm generated island with foliage, clouds, campfire and smoke, expanded through castaway comfort, tidepool conservation, and sea-turtle hatchery readiness descriptors."
   },
   {
     id: "tiny-diffusion-lab",

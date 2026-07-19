@@ -82,7 +82,6 @@ const cases = [
     check: () => {
       assert.ok(operatorKitSmoke.includes("fogline-survivor-rescue-readiness-kits-smoke.mjs"));
       assert.ok(operatorCdnSmoke.includes("fogline-survivor-rescue-readiness-cdn-state-input-smoke.mjs"));
-      assert.ok(manifest.includes("survivor-rescue-readiness-renderer-handoff-pass"));
       assert.ok(manifest.includes("fogline-survivor-rescue-readiness-domain-kit"));
     }
   },

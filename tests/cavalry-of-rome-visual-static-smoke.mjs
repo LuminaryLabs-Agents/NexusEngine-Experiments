@@ -172,7 +172,8 @@ assert.ok(endpoint.includes("cavalry-campaign-world-actions-pass.js?v=campaign-0
 assert.ok(endpoint.includes("cavalry-campaign-fractal-handoff-pass.js?v=campaign-035"), "live endpoint should load the campaign fractal handoff pass");
 assert.ok(endpoint.includes("cavalry-logistics-readiness-pass.js?v=campaign-035"), "live endpoint should load the logistics readiness pass");
 assert.ok(endpoint.includes("cavalry-diplomatic-command-readiness-pass.js?v=campaign-036"), "live endpoint should load the diplomatic command readiness pass");
-assert.ok(endpoint.includes("Campaign 035"), "live endpoint should identify the upgraded build");
+assert.ok(endpoint.includes("Campaign 041"), "live endpoint should identify the current upgraded build");
+assert.ok(endpoint.includes("campaign-041-standard-bearer-morale"), "live endpoint should expose the current build stamp");
 assert.ok(!endpoint.includes("attachNexusRealtimePageLoader"), "live endpoint should not attach shared page-loader UI");
 assert.ok(!endpoint.includes("nexus-realtime-page-loader.js"), "live endpoint should not import shared page-loader UI");
 

@@ -7,7 +7,7 @@
   "portfolioTarget": {
     "guidanceCount": 20,
     "isRigidQuota": false,
-    "currentManifestOwnedCanonicalCount": 7,
+    "currentManifestOwnedCanonicalCount": 16,
     "seedBacklogRule": "Do not add Harbor Salvage, Cargo Chain, Sky Courier, Trainyard Switcher, Dungeon Relay, Floodplain Rescue, or similar variants as canonical filler until they prove distinct reusable DSK boundaries."
   },
   "canonicalPortfolio": [

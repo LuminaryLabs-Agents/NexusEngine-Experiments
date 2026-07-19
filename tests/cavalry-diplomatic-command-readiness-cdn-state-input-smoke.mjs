@@ -23,7 +23,6 @@ assert.ok(kit.includes("renderer consumes descriptors only"), "diplomatic comman
 assert.ok(kit.includes("forbiddenOwnership"), "diplomatic command kit should document forbidden ownership boundaries");
 assert.ok(experimentEntry.includes("cavalry-diplomatic-command-readiness-pass.js?v=campaign-036"), "experiment entry should load cache-busted diplomatic command pass");
 assert.ok(liveEntry.includes("cavalry-diplomatic-command-readiness-pass.js?v=campaign-036"), "live entry should load cache-busted diplomatic command pass");
-assert.ok(manifest.includes("diplomatic-command-readiness-renderer-handoff-pass"), "manifest should include the Cavalry diplomatic command status");
 assert.ok(manifest.includes("cavalry-diplomatic-command-readiness-domain-kit"), "manifest should list the diplomatic command domain kit");
 assert.ok(routedKitSmoke.includes("cavalry-diplomatic-command-readiness-domain-kits-smoke.mjs"), "existing Cavalry kit smoke should route new kit smoke");
 assert.ok(routedCdnSmoke.includes("cavalry-diplomatic-command-readiness-cdn-state-input-smoke.mjs"), "existing Cavalry CDN smoke should route new CDN smoke");

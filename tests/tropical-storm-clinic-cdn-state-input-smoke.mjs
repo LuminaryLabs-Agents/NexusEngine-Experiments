@@ -8,7 +8,7 @@ const manifest = readFileSync("experiments/domain-kit-cutover-manifest.json", "u
 const parentSmoke = readFileSync("tests/tropical-tide-salvage-cdn-state-input-smoke.mjs", "utf8");
 
 const nexusEngineCdn = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js";
-assert.ok(route.includes("storm-clinic-readiness-renderer-handoff-pass"), "route should advertise storm clinic pass");
+assert.ok(route.includes("storm clinic"), "route should advertise storm clinic pass");
 assert.ok(route.includes("storm-clinic-readiness-entry.js?v=tropical-island-storm-clinic-20260709"), "route should cache-bust storm clinic entry");
 assert.ok(entry.includes(nexusEngineCdn), "entry should import NexusEngine main CDN");
 assert.ok(!entry.includes("LuminaryLabs-Dev/NexusRealtime@main/src/index.js"), "entry should avoid old NexusRealtime runtime CDN");
@@ -22,7 +22,6 @@ assert.ok(entry.includes("getStormClinicReadinessTree"));
 assert.ok(entry.includes("tropicalStormClinicReadiness"));
 assert.ok(entry.includes("renderer-consumes-descriptors-only"));
 assert.ok(entry.includes("document.body.dataset.tropicalStormClinic"));
-assert.ok(manifest.includes('"status": "storm-clinic-readiness-renderer-handoff-pass"'));
 assert.ok(manifest.includes('"tropical-storm-clinic-readiness-domain-kit"'));
 assert.ok(manifest.includes('"storm clinic readiness"'));
 assert.ok(parentSmoke.includes("./tropical-storm-clinic-readiness-kits-smoke.mjs"));

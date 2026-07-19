@@ -18,8 +18,8 @@ const oldRuntimeCdn = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusRealtim
 assert.ok(entrySource.includes(nexusEngineCdn), "stealth extraction entry should import NexusEngine main through the CDN");
 assert.doesNotMatch(entrySource, new RegExp(oldRuntimeCdn.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")), "changed stealth extraction entry must not import old NexusRealtime runtime CDN");
 assert.match(routeShell, /stealth-extraction-readiness-renderer-handoff-pass/, "route shell should identify the stealth extraction readiness pass");
-assert.match(routeShell, /app\/index\.js\?v=stealth-extraction-readiness-v1/, "route shell should cache-bust the stealth extraction route entry");
-assert.match(appEntry, /stealth-extraction-readiness-entry\.js\?v=stealth-extraction-readiness-v1/, "app entry should load the stealth extraction overlay");
+assert.match(routeShell, /app\/index\.js\?v=rooftop-rope-rescue-readiness-v1/, "route shell should use the current cache key");
+assert.match(appEntry, /stealth-extraction-readiness-entry\.js\?v=rooftop-rope-rescue-readiness-v1/, "app entry should load the stealth extraction overlay through the current cache key");
 assert.match(entrySource, /getStealthExtractionReadiness/, "GameHost should expose stealth extraction state");
 assert.match(entrySource, /getThirdPersonStealthExtractionReadiness/, "GameHost should expose route-scoped stealth extraction accessor");
 assert.match(entrySource, /stealthExtraction.*rendererHandoff/s, "composed renderer handoff should include stealth extraction descriptors");

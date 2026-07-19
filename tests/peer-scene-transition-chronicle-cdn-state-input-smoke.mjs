@@ -24,7 +24,7 @@ assert.ok(html.includes("bootPeerScene(\"camp\")"), "camp route must still boot 
 assert.ok(route.includes(cdn), "changed runtime must import NexusEngine main CDN");
 assert.ok(!route.includes(oldRuntime), "changed runtime must not import the old NexusRealtime CDN");
 assert.ok(route.includes("peer-scene-chronicle-handoff-kits.js"), "runtime must import the chronicle domain kit");
-assert.ok(route.includes("const KEY = \"nexus.peerSceneTransition.v5\""), "state key should bump for the chronicle handoff shape");
+assert.ok(route.includes("const KEY = \"nexus.peerSceneTransition.v6\""), "state key should preserve the current peer-scene handoff shape");
 assert.ok(route.includes("document.body.dataset.sceneChronicle"), "route should expose chronicle visual state to presentation only");
 assert.ok(route.includes("globalThis.GameHost"), "route should expose GameHost smoke surface");
 assert.ok(route.includes("getRendererHandoff"), "GameHost should expose renderer handoff counts");

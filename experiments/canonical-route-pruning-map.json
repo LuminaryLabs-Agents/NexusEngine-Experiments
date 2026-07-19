@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "policy": "one pruning issue per manifest canonical route",
+  "policy": "pruning issues cover only manifest canonical routes with active fold or retirement pressure",
   "sourceManifest": "experiments/domain-kit-cutover-manifest.json",
   "decisionRule": "Keep seed/backlog and variant routes non-canonical until they prove reusable DSK pressure through resources, events, methods, snapshots, descriptors, smoke coverage, and deterministic replay direction.",
   "canonicalRouteIssues": [
@@ -92,13 +92,8 @@
       "scenarioLane": "field-engineer-composition",
       "variantsToFold": [
         {
-          "id": "high-fidelity-meadow",
-          "route": "./experiments/high-fidelity-meadow/",
-          "reason": "Meadow presentation and biome cutover should remain renderer/preset validation unless it proves a reusable field-engineer gameplay boundary."
-        },
-        {
           "id": "living-agent-lab",
-          "route": "./experiments/living-agent-lab/",
+          "route": "./experiments/living-agent-lab/market-fire-evacuation.html",
           "reason": "Agent lab behavior should stay a harness/backlog lane until agent memory and dialogue expose rendererless DSK resources/events/snapshots."
         }
       ],
@@ -128,10 +123,6 @@
           "id": "the-open-above-harness",
           "route": "./experiments/the-open-above-harness/",
           "reason": "The harness should feed aerial traversal, terrain-window, and camera descriptor expectations into the base Sora canonical route before becoming separate."
-        },
-        {
-          "id": "the-open-above",
-          "reason": "Open-world flight variance should collapse into a higher-level aerial traversal domain above flight feel, terrain windows, and checkpoints."
         },
         {
           "id": "downhill-prix",

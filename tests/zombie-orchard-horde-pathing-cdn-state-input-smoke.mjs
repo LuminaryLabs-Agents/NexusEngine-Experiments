@@ -19,7 +19,7 @@ assert.ok(!kitStackSource.includes(oldCdn), "Zombie Orchard runtime stack should
 assert.ok(entrySource.includes(cdn), "horde overlay should import NexusEngine main CDN");
 assert.ok(!entrySource.includes(oldCdn), "horde overlay should not import old NexusRealtime runtime CDN");
 assert.ok(indexSource.includes("horde-pathing-readiness-entry.js?v=zombie-orchard-horde-pathing-20260708"));
-assert.ok(indexSource.includes("main.js?v=zombie-orchard-horde-pathing-20260708"));
+assert.ok(indexSource.includes("main.js?v=zombie-orchard-"), "route should cache-bust the current main composition");
 assert.ok(entrySource.includes("getHordePathingReadiness"));
 assert.ok(entrySource.includes("getZombieOrchardHordePathingReadiness"));
 assert.ok(entrySource.includes("getRendererHandoff"));

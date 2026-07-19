@@ -1,18 +1,14 @@
 import assert from "node:assert/strict";
-import { existsSync, readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
 const root = process.cwd();
 const v2Root = join(root, "experiments", "the-open-above-v2");
-const canonicalRoot = join(root, "experiments", "the-open-above-harness");
 const html = readFileSync(join(v2Root, "index.html"), "utf8");
-const canonicalHtml = readFileSync(join(canonicalRoot, "index.html"), "utf8");
 const config = readFileSync(join(v2Root, "open-above-v2.config.js"), "utf8");
 const script = readFileSync(join(v2Root, "open-above-v2.js"), "utf8");
-const combined = `${html}\n${canonicalHtml}\n${config}\n${script}`;
+const combined = `${html}\n${config}\n${script}`;
 
-assert.ok(existsSync(join(canonicalRoot, "index.html")), "canonical Open Above harness route should exist.");
-assert.match(canonicalHtml, /\.\.\/the-open-above-v2\/open-above-v2\.js/, "canonical harness should load the V2 harness implementation.");
 assert.match(html, /open-above-v2\.js/, "V2 shell should load the V2 harness module.");
 assert.match(config, /id:\s*"the-open-above-v2"/, "V2 config should use a separate implementation id.");
 assert.match(config, /controlResponseMode:\s*"direct"/, "V2 should use direct assisted flight response.");
@@ -23,9 +19,9 @@ assert.match(config, /terrainHorizon:/, "V2 should configure terrain horizon LOD
 assert.match(config, /materialPaint:/, "V2 should configure procedural material painting.");
 assert.match(config, /celShading:/, "V2 should configure cel terrain shading.");
 assert.match(config, /mode:\s*"bird-follow"/, "V2 should configure the bird-follow flight camera.");
-assert.match(config, /carveLookWeight:\s*0\.12/, "V2 camera should keep carve authority low.");
-assert.match(config, /positionLag:\s*0\.08/, "V2 camera should have persistent position lag.");
-assert.match(config, /targetLag:\s*0\.10/, "V2 camera should have persistent target lag.");
+assert.match(config, /carveLookWeight:\s*0\.08/, "V2 camera should keep carve authority low.");
+assert.match(config, /positionLag:\s*0\.16/, "V2 camera should have persistent position lag.");
+assert.match(config, /targetLag:\s*0\.14/, "V2 camera should have persistent target lag.");
 assert.match(script, /function buildKits/, "V2 should expose a clear kit composition boundary.");
 assert.match(script, /createFlightMotionKit/, "V2 should compose generic flight motion directly.");
 assert.match(script, /createFlightCameraDomainKit/, "V2 should compose the flight camera domain directly.");

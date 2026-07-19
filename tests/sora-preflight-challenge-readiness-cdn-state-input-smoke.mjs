@@ -14,7 +14,7 @@ assert.equal(entry.includes("LuminaryLabs-Dev/NexusRealtime"), false, "preflight
 assert.ok(indexHtml.includes("sky-rescue-readiness-v1"), "route shell should cache bust current Sora readiness pass");
 assert.ok(indexHtml.includes("sora-preflight-challenge-entry.js"), "route shell should load preflight challenge entry");
 assert.ok(indexHtml.includes("sora-preflight-challenge-style.css"), "route shell should load preflight challenge style");
-assert.ok(indexHtml.includes("sky rescue readiness gateway"), "route shell should describe the latest gateway role");
+assert.ok(indexHtml.includes("sky rescue") && indexHtml.includes("readiness gateway"), "route shell should describe the latest gateway role");
 assert.ok(entry.includes("getPreflightChallengeReadiness"), "GameHost should expose preflight challenge state");
 assert.ok(entry.includes("getSoraPreflightChallengeReadiness"), "GameHost should expose namespaced preflight challenge state");
 assert.ok(entry.includes("preflightChallengeReadiness"), "entry should compose challenge descriptors into renderer handoff");

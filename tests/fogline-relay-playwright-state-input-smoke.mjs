@@ -18,10 +18,14 @@ const mime = new Map([
   [".css", "text/css; charset=utf-8"],
   [".json", "application/json; charset=utf-8"]
 ]);
+const CORE_CDN_URL = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js";
+const RENDER_LAYER_CDN_URL = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@bb3d787da372bf001653635d6e57eb7ce54e3c50/protokits/render-layer-kit/index.js";
 
 function safePath(urlPath) {
-  const clean = normalize(decodeURIComponent(urlPath.split("?")[0])).replace(/^\.\.(\/|\\|$)/, "");
-  return join(root, clean === "/" ? "index.html" : clean);
+  const pathname = decodeURIComponent(urlPath.split("?")[0]);
+  const clean = normalize(pathname).replace(/^\.\.(\/|\\|$)/, "").replace(/^[/\\]+/, "");
+  const filePath = join(root, clean || "index.html");
+  return pathname.endsWith("/") ? join(filePath, "index.html") : filePath;
 }
 
 const urlsSource = await readFile(join(root, "experiments/fogline-relay/src/urls.js"), "utf8");
@@ -61,8 +65,14 @@ assert.ok(mainSource.includes("getRendererHandoff"), "GameHost should expose ren
 const server = createServer(async (request, response) => {
   try {
     const filePath = safePath(request.url ?? "/");
-    const body = await readFile(filePath);
-    response.writeHead(200, { "content-type": mime.get(extname(filePath)) ?? "application/octet-stream" });
+    const contentType = mime.get(extname(filePath)) ?? "application/octet-stream";
+    let body = await readFile(filePath);
+    if (contentType.startsWith("text/") || contentType.includes("javascript")) {
+      body = body.toString("utf8")
+        .replaceAll(CORE_CDN_URL, "/node_modules/nexusrealtime/src/index.js")
+        .replaceAll(RENDER_LAYER_CDN_URL, "/node_modules/@luminarylabs/nexusrealtime-protokits/protokits/render-layer-kit/index.js");
+    }
+    response.writeHead(200, { "content-type": contentType });
     response.end(body);
   } catch {
     response.writeHead(404, { "content-type": "text/plain" });
@@ -78,20 +88,35 @@ let browser;
 try {
   browser = await chromium.launch({ headless: true });
   const page = await browser.newPage();
+  const browserErrors = [];
+  page.on("pageerror", (error) => browserErrors.push(String(error)));
+  page.on("console", (message) => {
+    if (message.type() === "error") browserErrors.push(message.text());
+  });
+  page.on("response", (response) => {
+    if (response.status() >= 400) browserErrors.push(`${response.status()} ${response.url()}`);
+  });
   await page.goto(`${baseUrl}/experiments/fogline-relay/`, { waitUntil: "domcontentloaded" });
-  await page.waitForFunction(() => Boolean(globalThis.GameHost?.getState), null, { timeout: 15000 });
-  await page.waitForFunction(() => Boolean(globalThis.GameHost?.getFoglineRidgeAmbulanceReadiness), null, { timeout: 15000 });
-  await page.waitForFunction(() => Boolean(globalThis.GameHost?.getFoglineFieldClinicReadiness), null, { timeout: 15000 });
+  try {
+    await page.waitForFunction(() => Boolean(globalThis.GameHost?.getState), null, { timeout: 45000 });
+  } catch (error) {
+    const fatalText = await page.locator("#errorText").textContent().catch(() => "");
+    throw new Error(`Fogline GameHost failed to boot: ${fatalText || browserErrors.join(" | ") || error.message}`);
+  }
+  await page.waitForFunction(() => Boolean(globalThis.GameHost?.getFoglineRidgeAmbulanceReadiness), null, { timeout: 45000 });
+  await page.waitForFunction(() => Boolean(globalThis.GameHost?.getFoglineFieldClinicReadiness), null, { timeout: 45000 });
   await page.keyboard.press("KeyW");
   await page.keyboard.press("KeyE");
   await page.keyboard.press("ArrowRight");
 
   const state = await page.evaluate(() => {
     globalThis.GameHost.loop.stop();
+    const beforePlayer = { ...globalThis.GameHost.session.snapshot().game.player };
     globalThis.GameHost.engine.foglineRelay.input({ moveX: 0.15, moveZ: 1, turn: 0.04, pitch: -0.01, scan: true });
     globalThis.GameHost.session.prepareFrame();
     globalThis.GameHost.engine.tick(1 / 30);
     return {
+      beforePlayer,
       snapshot: globalThis.GameHost.session.snapshot(),
       handoff: globalThis.GameHost.getRendererHandoff(),
       ridgeAmbulance: globalThis.GameHost.getFoglineRidgeAmbulanceReadiness(),
@@ -101,7 +126,10 @@ try {
 
   const snapshot = state.snapshot;
   assert.ok(snapshot.game?.player, "Fogline state should expose player state");
-  assert.ok(snapshot.game.player.z > -4, "direct input should move player forward from spawn");
+  assert.ok(
+    Math.hypot(snapshot.game.player.x - state.beforePlayer.x, snapshot.game.player.z - state.beforePlayer.z) > 0,
+    "direct input should move player away from its current spawn"
+  );
   assert.ok(snapshot.visualFractal, "snapshot should expose visual fractal descriptors");
   assert.ok(snapshot.domain?.foglineVisualFractal, "domain snapshot should expose visual fractal descriptors");
   assert.ok(Array.isArray(snapshot.visualFractal.routeThreads));

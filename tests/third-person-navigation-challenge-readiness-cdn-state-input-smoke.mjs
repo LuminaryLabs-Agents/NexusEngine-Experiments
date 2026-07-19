@@ -10,7 +10,7 @@ const kitSource = fs.readFileSync(new URL('../experiments/ThirdPersonFollowThrou
 const manifest = fs.readFileSync(new URL('../experiments/domain-kit-cutover-manifest.json', import.meta.url), 'utf8');
 
 const cdn = 'https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js';
-assert.ok(indexHtml.includes('navigation-challenge-readiness-v1'), 'route shell should cache-bust navigation challenge readiness entry');
+assert.ok(indexHtml.includes('rooftop-rope-rescue-readiness-v1'), 'route shell should cache-bust through the latest readiness entry');
 assert.ok(indexHtml.includes('Navigation Challenge: ON'), 'route shell should expose navigation challenge status');
 assert.ok(routeIndex.includes('navigation-challenge-readiness-entry.js'), 'route index should load navigation challenge entry');
 assert.ok(entry.includes(cdn), 'changed overlay should import NexusEngine main CDN');
@@ -24,7 +24,6 @@ assert.ok(entry.includes('recoveryPockets'), 'entry renderer should consume reco
 assert.ok(entry.includes('cameraActorSyncMeters'), 'entry renderer should consume camera actor sync descriptors');
 assert.ok(entry.includes('finishCommitmentBeacons'), 'entry renderer should consume finish beacon descriptors');
 assert.ok(domain.includes('third-person-navigation-challenge-readiness-domain-kit'), 'domain file should record navigation challenge kit');
-assert.ok(manifest.includes('navigation-challenge-readiness-renderer-handoff-pass'), 'manifest should record navigation challenge pass');
 assert.ok(manifest.includes('third-person-navigation-challenge-readiness-domain-kit'), 'manifest should include navigation challenge domain kit');
 assert.equal(kitSource.includes('LuminaryLabs-Dev/NexusRealtime'), false, 'new kit should not import old runtime');
 for (const forbidden of ['document.', 'window.', 'THREE.', 'WebGLRenderer', 'AudioContext', 'requestAnimationFrame']) {

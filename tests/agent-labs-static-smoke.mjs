@@ -23,13 +23,14 @@ assert.match(livingMarketTrustEntry, /getRendererHandoff/);
 assert.match(livingMarketTrustKits, /living-agent-market-trust-restoration-domain/);
 assert.match(livingMarketTrustKits, /renderer consumes descriptors only/);
 
-assert.match(onnx, /ONNX Companion Workshop/);
-assert.match(onnx, /onnx-community\/Qwen2\.5-0\.5B-Instruct/);
-assert.match(onnx, /createOnnxWorkshopThreeJsKits/);
+assert.match(onnx, /Workshop ONNX Agent/);
+assert.match(onnx, /Load Qwen ONNX Agent/);
+assert.match(onnx, /createBuildingInteriorKit/);
+assert.match(onnx, /createWorkshopObjectKit/);
+assert.match(onnx, /createObjectFocusKit/);
+assert.match(onnx, /createOnnxLocalModelKit/);
 assert.match(onnx, /three\.module\.js/);
-assert.match(onnx, /WASD to walk/);
-assert.match(onnx, /Click objects for ONNX review/);
-assert.match(onnx, /Click away to return/);
+assert.match(onnx, /WASD move/);
 assert.match(onnx, /window\.GameHost/);
 
 assert.match(tiny, /Tiny Diffusion Lab/);

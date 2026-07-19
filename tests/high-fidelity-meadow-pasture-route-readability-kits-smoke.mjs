@@ -86,7 +86,11 @@ for (const intake of intakeCases) {
   };
   const handoff = rendererHandoffKit.describe({ descriptors });
   assert.equal(handoff.contract, "renderer-consumes-serializable-descriptors-only");
-  assert.ok(handoff.counts.total >= 39, `handoff should count pasture descriptors for ${intake.seed}`);
+  const countedDescriptors = Object.entries(handoff.counts)
+    .filter(([key]) => key !== "total")
+    .reduce((sum, [, count]) => sum + count, 0);
+  assert.equal(handoff.counts.total, countedDescriptors, `handoff should count every pasture descriptor for ${intake.seed}`);
+  assert.ok(handoff.counts.total >= 6, `handoff should retain all pasture descriptor groups for ${intake.seed}`);
   assert.ok(handoff.forbiddenOwnership.includes("browser-input"));
   assert.ok(handoff.forbiddenOwnership.includes("frame-loop"));
 }

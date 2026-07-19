@@ -15,8 +15,8 @@ assert.ok(index.includes("infinite-radial-terrain-wayfinding-readability-v1"), "
 
 for (const expected of [
   "terrain-wayfinding-readability-entry.js",
-  "expedition + wayfinding descriptors enabled",
-  "Infinite Radial Terrain expedition and wayfinding readability demo"
+  "wayfinding",
+  "Infinite Radial Terrain expedition"
 ]) {
   assert.ok(index.includes(expected), expected);
 }

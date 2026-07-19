@@ -10,9 +10,9 @@ const domain = fs.readFileSync(new URL('../experiments/ThirdPersonFollowThrough/
 const kitSource = fs.readFileSync(new URL('../experiments/ThirdPersonFollowThrough/kits/third-person-camera-composition-readability-domain-kit.js', import.meta.url), 'utf8');
 
 const cdn = 'https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js';
-assert.ok(indexHtml.includes('navigation-challenge-readiness-v1'), 'route shell should cache-bust latest readability entry');
+assert.ok(indexHtml.includes('rooftop-rope-rescue-readiness-v1'), 'route shell should cache-bust the latest readiness entry');
 assert.ok(indexHtml.includes('Camera Composition: ON'), 'route shell should expose camera composition readability status');
-assert.ok(routeIndex.includes('navigation-challenge-readiness-v1'), 'route index should import cache-busted wrapper');
+assert.ok(routeIndex.includes('rooftop-rope-rescue-readiness-v1'), 'route index should import the current cache-busted wrappers');
 assert.ok(entry.includes(cdn), 'changed wrapper should import NexusEngine main CDN');
 assert.equal(entry.includes('LuminaryLabs-Dev/NexusRealtime'), false, 'changed wrapper should not import old NexusRealtime runtime');
 assert.ok(entry.includes('third-person-camera-composition-readability-domain-kit'), 'entry should import camera composition readability domain kit');

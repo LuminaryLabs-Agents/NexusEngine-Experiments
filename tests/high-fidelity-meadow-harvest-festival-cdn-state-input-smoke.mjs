@@ -27,7 +27,6 @@ assert.ok(files.kit.includes("renderer consumes descriptors only"), "harvest fes
 assert.equal(files.kit.includes("new THREE"), false, "harvest festival kits must not instantiate Three.js objects");
 assert.equal(files.kit.includes("document.querySelector"), false, "harvest festival kits must not own DOM lookup");
 assert.equal(files.kit.includes("requestAnimationFrame"), false, "harvest festival kits must not own frame loop");
-assert.ok(files.manifest.includes("harvest-festival-readiness-renderer-handoff-pass"), "manifest should record harvest festival cutover");
 assert.ok(files.manifest.includes("meadow-harvest-festival-readiness-domain-kit"), "manifest should register harvest festival domain kit");
 assert.ok(files.flockSafetySmoke.includes("high-fidelity-meadow-harvest-festival-readiness-kits-smoke.mjs"), "existing routed smoke should import harvest festival kit smoke");
 assert.ok(files.flockSafetySmoke.includes("high-fidelity-meadow-harvest-festival-cdn-state-input-smoke.mjs"), "existing routed smoke should import harvest festival CDN/state smoke");

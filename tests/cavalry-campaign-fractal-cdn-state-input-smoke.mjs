@@ -28,7 +28,7 @@ assert.ok(liveEntry.includes("cavalry-field-hospital-readiness-pass.js?v=campaig
 assert.ok(experimentEntry.includes("cavalry-field-hospital-readiness-pass.js?v=campaign-037"), "experiment entry should load field hospital readiness pass");
 assert.ok(liveEntry.includes("cavalry-grain-convoy-readiness-pass.js?v=campaign-038"), "live entry should load grain convoy readiness pass");
 assert.ok(experimentEntry.includes("cavalry-grain-convoy-readiness-pass.js?v=campaign-038"), "experiment entry should load grain convoy readiness pass");
-assert.ok(liveEntry.includes("Campaign 038"), "live route should expose the grain convoy build stamp");
+assert.ok(liveEntry.includes("campaign-041-standard-bearer-morale"), "live route should expose the current build stamp");
 assert.ok(manifest.includes("the-cavalry-of-rome"), "manifest should include The Cavalry of Rome canonical entry");
 assert.ok(manifest.includes("cavalry-campaign-fractal-domain-kit"), "manifest should list the Cavalry fractal domain kit");
 assert.ok(manifest.includes("cavalry-battlefield-orders-domain-kit"), "manifest should list the Cavalry battlefield orders domain kit");

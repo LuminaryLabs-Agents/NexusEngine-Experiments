@@ -148,6 +148,7 @@ function composeRendererHandoff(base, horde) {
 }
 
 function patchHost(host, canvas) {
+  if (typeof host?.getState !== "function") return false;
   if (!host || host.__zombieOrchardHordePathingPatched) return Boolean(host?.__zombieOrchardHordePathingPatched);
   const originalGetState = host.getState?.bind(host);
   const originalHandoff = host.getRendererHandoff?.bind(host);

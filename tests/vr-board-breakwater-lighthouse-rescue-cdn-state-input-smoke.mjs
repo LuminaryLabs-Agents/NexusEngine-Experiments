@@ -9,7 +9,7 @@ const packageJson = readFileSync("package.json", "utf8");
 
 assert.ok(route.includes("vr-board-breakwater-lighthouse-rescue-readiness-renderer-handoff-pass"));
 assert.ok(route.includes("breakwater-lighthouse-rescue-entry.js?v=vr-board-breakwater-lighthouse-rescue-1"));
-assert.ok(route.includes("Breakwater lighthouse rescue"));
+assert.match(route, /breakwater lighthouse rescue/i);
 
 assert.ok(entry.includes("https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js"));
 assert.ok(entry.includes("await import(NEXUS_URL)"));

@@ -69,7 +69,7 @@ const cases = [
   },
   {
     label: "Manifest records radio repair cutover",
-    check: () => assert.ok(manifest.includes("fogline-radio-repair-readiness-domain-kit") && manifest.includes("radio-repair-readiness-renderer-handoff-pass"))
+    check: () => assert.ok(manifest.includes("fogline-radio-repair-readiness-domain-kit"))
   },
   {
     label: "Radio repair checks are wired",

@@ -8,7 +8,7 @@ const appIndex = readFileSync(new URL('../experiments/ThirdPersonFollowThrough/a
 const kitSource = readFileSync(new URL('../experiments/ThirdPersonFollowThrough/kits/third-person-afterimage-rescue-readiness-domain-kit.js', import.meta.url), 'utf8');
 
 assert.ok(entry.includes(CDN), 'changed entry imports NexusEngine main CDN');
-assert.ok(appIndex.includes('afterimage-rescue-readiness-entry.js?v=afterimage-rescue-readiness-v1'), 'route app imports afterimage rescue entry');
+assert.ok(appIndex.includes('afterimage-rescue-readiness-entry.js?v=rooftop-rope-rescue-readiness-v1'), 'route app imports the afterimage rescue entry through the current cache key');
 assert.ok(!entry.includes('NexusRealtime@'), 'changed entry must not import old NexusRealtime CDN');
 assert.ok(entry.includes('globalThis.GameHost'), 'entry exposes GameHost');
 assert.ok(entry.includes('getThirdPersonAfterimageRescueReadiness'), 'entry exposes readiness accessor');

@@ -16,7 +16,10 @@ assert.ok(entry.includes("createSceneCluePressureReadinessDomainKit"), "case 2: 
 assert.ok(!entry.includes("LuminaryLabs-Dev/NexusRealtime@main/src/index.js"), "case 3: clue pressure entry avoids old NexusRealtime runtime CDN");
 assert.ok(kitSource.includes("rendererMustNotOwn"), "case 4: kit declares renderer ownership boundary");
 assert.ok(!kitSource.includes("document.") && !kitSource.includes("window."), "case 5: reusable kit does not own DOM or browser input");
-assert.ok(!kitSource.includes("THREE") && !kitSource.includes("WebGL"), "case 6: reusable kit does not import renderer systems");
+assert.ok(
+  !kitSource.includes('from "three') && !kitSource.includes("new THREE") && !kitSource.includes("WebGLRenderer"),
+  "case 6: reusable kit does not import renderer systems"
+);
 for (const [route, html] of routes) {
   assert.ok(html.includes("scene-clue-pressure-readiness-entry.js?v=clue-pressure-readiness-1"), `case 7: ${route} route loads clue pressure overlay`);
 }

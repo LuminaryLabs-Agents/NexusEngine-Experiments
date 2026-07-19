@@ -9,7 +9,7 @@ const entry = readFileSync(new URL('../experiments/ThirdPersonFollowThrough/app/
 const kitSource = readFileSync(new URL('../experiments/ThirdPersonFollowThrough/kits/third-person-traversal-course-readiness-domain-kit.js', import.meta.url), 'utf8');
 
 assert.ok(html.includes('traversal-course-readiness-renderer-handoff-pass'), 'route marker missing');
-assert.ok(appIndex.includes("./traversal-course-readiness-entry.js?v=traversal-course-readiness-v1"), 'entry import missing');
+assert.ok(appIndex.includes("./traversal-course-readiness-entry.js?v=rooftop-rope-rescue-readiness-v1"), 'entry import missing from the current cache-keyed composition');
 assert.ok(entry.includes(CDN), 'NexusEngine main CDN import missing');
 assert.ok(!entry.includes('NexusRealtime@'), 'changed entry must not import old NexusRealtime runtime');
 assert.ok(entry.includes('globalThis.GameHost'), 'GameHost surface missing');

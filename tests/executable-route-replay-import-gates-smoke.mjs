@@ -69,9 +69,10 @@ for (const required of gate.requiredLocalPackageWiring) {
   assert.ok(dependencyText.includes(required.repo), `${required.packageName} dependency should point at ${required.repo}`);
 }
 
-assert.match(bootSource, /cdn\.jsdelivr\.net\/gh\/LuminaryLabs-Dev\/NexusRealtime@main\/src\/index\.js/, "Signal Bastion browser boot can still use the Core CDN import while Node replay uses package wiring");
-assert.match(bootSource, /cdn\.jsdelivr\.net\/gh\/LuminaryLabs-Agents\/NexusRealtime-ProtoKits@main\/protokits\/generic-defense-aaa-dsk-bridge\/index\.js/, "Signal Bastion browser boot should consume the ProtoKits defense DSK bridge CDN import");
-assert.match(bootSource, /cdn\.jsdelivr\.net\/gh\/LuminaryLabs-Agents\/NexusRealtime-ProtoKits@main\/protokits\/generic-defense-presentation-stack-kit\/index\.js/, "Signal Bastion browser boot should consume the ProtoKits presentation CDN import");
+assert.match(bootSource, /cdn\.jsdelivr\.net\/gh\/LuminaryLabs-Dev\/NexusEngine@main\/src\/index\.js/, "Signal Bastion browser boot can still use the Core CDN import while Node replay uses package wiring");
+assert.match(bootSource, /cdn\.jsdelivr\.net\/gh\/LuminaryLabs-Agents\/NexusEngine-ProtoKits@\$\{PROTOKITS_REF\}\/protokits/, "Signal Bastion browser boot should use the pinned NexusEngine ProtoKits CDN base");
+assert.match(bootSource, /generic-defense-aaa-dsk-bridge\/index\.js/, "Signal Bastion browser boot should consume the ProtoKits defense DSK bridge CDN import");
+assert.match(bootSource, /generic-defense-presentation-stack-kit\/index\.js/, "Signal Bastion browser boot should consume the ProtoKits presentation CDN import");
 assert.match(bootSource, /createGenericDefenseDskBundle/, "route boot should compose generic-defense through DSK aliases");
 assert.doesNotMatch(bootSource, /\bcreateGenericDefenseKits\s*\(/, "route boot should not compose the whole broad defense compatibility facade");
 assert.match(bootSource, /import\(NEXUS_URL\)/, "route boot should load Core through the declared dynamic import URL");

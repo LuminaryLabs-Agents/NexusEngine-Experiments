@@ -72,12 +72,12 @@ for (const input of intakes) {
 
   const snorkelScores = snorkelKit.describe(input);
   assert.equal(snorkelKit.id, "lagoon-snorkel-point-score-kit");
-  assert.equal(snorkelScores.length, 6);
+  assert.equal(snorkelScores.length, Math.min(6, input.fish.length));
   assert.ok(snorkelScores.every((entry) => entry.score >= 0 && entry.score <= 1));
 
   const raftReturnWakes = raftKit.describe(input);
   assert.equal(raftKit.id, "lagoon-raft-return-wake-kit");
-  assert.equal(raftReturnWakes.length, 5);
+  assert.equal(raftReturnWakes.length, Math.min(5, input.floatProps.length));
   assert.ok(raftReturnWakes.every((entry) => entry.kind === "lagoon-raft-return-wake"));
 
   const sunGlareBands = glareKit.describe(input);
@@ -88,12 +88,13 @@ for (const input of intakes) {
   const handoff = handoffKit.describe({ reefContours, swimSafetyCones, currentVectors, snorkelScores, raftReturnWakes, sunGlareBands });
   assert.equal(handoffKit.id, "lagoon-navigation-renderer-handoff-kit");
   assert.equal(handoff.contract, "renderer-consumes-descriptors-only");
-  assert.equal(handoff.counts.total, 31);
+  const descriptorTotal = reefContours.length + swimSafetyCones.length + currentVectors.length + snorkelScores.length + raftReturnWakes.length + sunGlareBands.length;
+  assert.equal(handoff.counts.total, descriptorTotal);
   assert.deepEqual(JSON.parse(JSON.stringify(handoff.counts)), handoff.counts);
 
   const domain = domainKit.describe(input);
   assert.equal(domainKit.id, "tropical-lagoon-navigation-readability-domain-kit");
-  assert.equal(domain.rendererHandoff.counts.total, 31);
+  assert.equal(domain.rendererHandoff.counts.total, descriptorTotal);
   assert.ok(domain.subdomains.waterReading.kits.includes("lagoon-reef-depth-contour-kit"));
   assert.ok(domain.rendererHandoff.ownership.rendererMustNotOwn.includes("browser input"));
 }

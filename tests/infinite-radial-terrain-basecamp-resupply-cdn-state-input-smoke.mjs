@@ -13,7 +13,7 @@ const playwrightSmoke = readFileSync("tests/infinite-radial-terrain-playwright-s
 assert.ok(entry.includes(nexusEngineCdn), "basecamp resupply overlay should import NexusEngine main CDN");
 assert.ok(!entry.includes("LuminaryLabs-Dev/NexusRealtime@main/src/index.js"), "basecamp overlay should not import old NexusRealtime runtime CDN");
 assert.ok(index.includes("infinite-radial-terrain-basecamp-resupply-readiness-v1"), "index should cache-bust basecamp resupply overlay");
-assert.ok(index.includes("basecamp resupply descriptors enabled"), "route shell should advertise basecamp resupply descriptors");
+assert.ok(index.includes("basecamp resupply"), "route shell should advertise basecamp resupply descriptors");
 assert.ok(manifest.includes("terrain-basecamp-resupply-readiness-domain-kit"), "manifest should register basecamp resupply domain kit");
 assert.ok(manifest.includes("basecamp-resupply-readiness-renderer-handoff-pass"), "manifest should mark basecamp resupply pass");
 assert.ok(playwrightSmoke.includes("infinite-radial-terrain-basecamp-resupply-readiness-kits-smoke.mjs"), "Playwright smoke should route kit smoke");

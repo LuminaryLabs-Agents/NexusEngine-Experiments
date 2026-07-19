@@ -755,39 +755,6 @@ function drawHighlights(field, size) {
   }
 }
 
-function drawHexFill(ctx, p, color, alpha = 0.35) {
-  ctx.save();
-  ctx.globalAlpha = alpha;
-  ctx.fillStyle = color;
-  ctx.beginPath();
-  for (let i = 0; i < 6; i += 1) {
-    const angle = Math.PI / 6 + i * TAU / 6;
-    const x = p.x + Math.cos(angle) * p.r * 0.92;
-    const y = p.y + Math.sin(angle) * p.r * p.yScale * 0.92;
-    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-  }
-  ctx.closePath();
-  ctx.fill();
-  ctx.restore();
-}
-
-function drawHexStroke(ctx, p, color, width = 3, alpha = 0.85) {
-  ctx.save();
-  ctx.globalAlpha = alpha;
-  ctx.strokeStyle = color;
-  ctx.lineWidth = Math.max(1, width);
-  ctx.beginPath();
-  for (let i = 0; i < 6; i += 1) {
-    const angle = Math.PI / 6 + i * TAU / 6;
-    const x = p.x + Math.cos(angle) * p.r * 0.96;
-    const y = p.y + Math.sin(angle) * p.r * p.yScale * 0.96;
-    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-  }
-  ctx.closePath();
-  ctx.stroke();
-  ctx.restore();
-}
-
 function drawDiceFallback(size) {
   if (!state.dice.active) return;
   const age = performance.now() - state.dice.startedAt;

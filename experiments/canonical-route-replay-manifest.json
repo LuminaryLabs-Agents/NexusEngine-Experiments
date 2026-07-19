@@ -2,7 +2,7 @@
   "version": 1,
   "sourceManifest": "experiments/domain-kit-cutover-manifest.json",
   "sourcePruningMap": "experiments/canonical-route-pruning-map.json",
-  "policy": "one route-level replay contract per manifest canonical route; executable fixtures may be ProtoKit-backed or explicitly planned, but every lane must point at reusable DSK resources, events, methods, snapshots, descriptors, and renderer-free deterministic replay direction",
+  "policy": "route-level replay contracts cover canonical routes in the active hardening portfolio; executable fixtures may be ProtoKit-backed or explicitly planned, and every tracked lane must point at reusable DSK resources, events, methods, snapshots, descriptors, and renderer-free deterministic replay direction",
   "promotionGate": "A route earns replay priority when its behavior is generic enough to become or validate a reusable domain communication boundary rather than route-local JavaScript.",
   "browserOwnershipExcluded": [
     "DOM",

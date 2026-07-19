@@ -11,7 +11,7 @@ import {
   createHighFidelityMeadowContentKit,
   createMeadowVisualTargetKit,
   createMeadowSimulationModeKit
-} from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusRealtime-ProtoKits@0.0.2/protokits/high-fidelity-meadow-kits/index.js";
+} from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@bb3d787da372bf001653635d6e57eb7ce54e3c50/protokits/high-fidelity-meadow-kits/index.js";
 
 export const MEADOW_EXPERIMENT_SCENE_VERSION = "0.0.2-cutover-20260619";
 export const MEADOW_SEED = "high-fidelity-meadow-v0.0.2";

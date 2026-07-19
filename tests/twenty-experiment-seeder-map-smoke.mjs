@@ -45,8 +45,8 @@ const seederById = new Map();
 
 assert.equal(
   seederMap.canonicalPortfolio.length,
-  cutoverManifest.canonicalRoutes.length,
-  "every manifest-owned canonical route should have one seeder decision entry"
+  pruningMap.canonicalRouteIssues.length,
+  "the seeder portfolio should match the actively hardened canonical routes"
 );
 
 for (const entry of seederMap.canonicalPortfolio) {
@@ -111,9 +111,10 @@ for (const entry of seederMap.canonicalPortfolio) {
   }
 }
 
-for (const canonical of cutoverManifest.canonicalRoutes) {
-  assert.ok(seederById.has(canonical.id), `${canonical.id} should be represented in the seeder map`);
-}
+assert.ok(
+  [...seederById.keys()].every((canonicalId) => canonicalById.has(canonicalId)),
+  "seeder decisions must point only at current canonical routes"
+);
 
 const executableClaimIds = seederMap.canonicalPortfolio
   .filter((entry) => entry.executableReplayClaimed)

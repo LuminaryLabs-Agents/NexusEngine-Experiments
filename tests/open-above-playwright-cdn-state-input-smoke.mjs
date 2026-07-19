@@ -23,23 +23,33 @@ const mime = new Map([
   [".css", "text/css; charset=utf-8"],
   [".json", "application/json; charset=utf-8"]
 ]);
+const CORE_CDN_URL = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js";
+const PROTOKIT_CDN_BASE = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@bb3d787da372bf001653635d6e57eb7ce54e3c50/protokits";
 
 function safePath(urlPath) {
-  const clean = normalize(decodeURIComponent(urlPath.split("?")[0])).replace(/^\.\.(\/|\\|$)/, "");
-  return join(root, clean === "/" ? "index.html" : clean);
+  const pathname = decodeURIComponent(urlPath.split("?")[0]);
+  const clean = normalize(pathname).replace(/^\.\.(\/|\\|$)/, "").replace(/^[/\\]+/, "");
+  const filePath = join(root, clean || "index.html");
+  return pathname.endsWith("/") ? join(filePath, "index.html") : filePath;
 }
 
 const config = await readFile(join(root, "experiments/the-open-above/open-above.config.js"), "utf8");
 assert.ok(config.includes("https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js"));
 assert.ok(config.includes("https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js"));
 assert.ok(!config.includes("https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusRealtime@main/src/index.js"));
-assert.ok(config.includes("https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusRealtime-ProtoKits@0.0.1/protokits"));
+assert.ok(config.includes(PROTOKIT_CDN_BASE));
 
 const server = createServer(async (request, response) => {
   try {
     const filePath = safePath(request.url ?? "/");
-    const body = await readFile(filePath);
-    response.writeHead(200, { "content-type": mime.get(extname(filePath)) ?? "application/octet-stream" });
+    const contentType = mime.get(extname(filePath)) ?? "application/octet-stream";
+    let body = await readFile(filePath);
+    if (contentType.startsWith("text/") || contentType.includes("javascript")) {
+      body = body.toString("utf8")
+        .replaceAll(CORE_CDN_URL, "/node_modules/nexusrealtime/src/index.js")
+        .replaceAll(PROTOKIT_CDN_BASE, "/node_modules/@luminarylabs/nexusrealtime-protokits/protokits");
+    }
+    response.writeHead(200, { "content-type": contentType });
     response.end(body);
   } catch {
     response.writeHead(404, { "content-type": "text/plain" });

@@ -10,8 +10,8 @@ const nexusCdn = 'https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/
 
 assert.ok(html.includes('wayfinding-cache-readiness-renderer-handoff-pass'));
 assert.ok(html.includes('Wayfinding Cache: ON'));
-assert.ok(html.includes('app/index.js?v=wayfinding-cache-readiness-v1'));
-assert.ok(appIndex.includes("./wayfinding-cache-readiness-entry.js?v=wayfinding-cache-readiness-v1"));
+assert.ok(html.includes('app/index.js?v=rooftop-rope-rescue-readiness-v1'));
+assert.ok(appIndex.includes("./wayfinding-cache-readiness-entry.js?v=rooftop-rope-rescue-readiness-v1"));
 assert.ok(entry.includes(nexusCdn));
 assert.equal(entry.includes('NexusRealtime@main'), false);
 assert.equal(entry.includes('LuminaryLabs-Dev/NexusRealtime@main'), false);

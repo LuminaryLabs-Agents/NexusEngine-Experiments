@@ -12,7 +12,7 @@ const routeHtml = readFileSync('experiments/ThirdPersonFollowThrough/index.html'
 assert.ok(entry.includes(cdn), 'medevac entry imports NexusEngine main CDN');
 assert.ok(!entry.includes(oldRuntime), 'medevac entry avoids old NexusRealtime runtime CDN');
 assert.ok(!kit.includes(oldRuntime), 'medevac kit avoids old NexusRealtime runtime CDN');
-assert.ok(appIndex.includes("./medevac-readiness-entry.js?v=medevac-readiness-v1"), 'app index imports medevac readiness entry');
+assert.ok(appIndex.includes("./medevac-readiness-entry.js?v=rooftop-rope-rescue-readiness-v1"), 'app index imports the medevac entry through the current cache key');
 assert.ok(routeHtml.includes('Medevac: ON'), 'route HUD advertises medevac readiness');
 assert.ok(routeHtml.includes('medevac-readiness-renderer-handoff-pass'), 'route marks medevac pass');
 assert.ok(entry.includes('getMedevacReadiness'), 'entry exposes medevac GameHost accessor');

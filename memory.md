@@ -27,6 +27,8 @@ NexusEngine-Experiments owns playable browser proof, product-specific content an
 ## Conventions
 
 - Preserve existing public behavior and prefer additive composition, adapters, optional exports, and compatible registrations.
+- Keep transient Playwright CLI output out of the repository through `.playwright-cli/`; durable browser evidence belongs in the owning change packet or automation evidence archive.
+- Keep `npm run check` non-mutating against committed product truth; route and gallery regeneration remains an explicit `npm run generate` action.
 - Keep DOM, Canvas, WebGL, Three.js, browser input, asset loading, frame presentation, and product copy out of reusable ProtoKits.
 - Use seeded randomness and explicit fixed-time inputs; do not use `Math.random()` or wall-clock time in reusable simulation.
 - Do not count placeholders, route shells, duplicate signatures, documentation-only games, or unlaunched gameplay.

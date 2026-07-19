@@ -27,8 +27,7 @@ assert.ok(kit.includes("renderer consumes descriptors only"), "kit tree should d
 assert.ok(kit.includes("forbiddenOwnership"), "kit should document ownership boundaries");
 assert.ok(experimentEntry.includes("cavalry-logistics-readiness-pass.js?v=campaign-035"), "experiment route should load cache-busted logistics pass");
 assert.ok(liveEntry.includes("cavalry-logistics-readiness-pass.js?v=campaign-035"), "live route should load cache-busted logistics pass");
-assert.ok(liveEntry.includes("Campaign 035"), "live route should expose upgraded build stamp");
-assert.ok(manifest.includes("logistics-readiness-renderer-handoff-pass"), "manifest should include logistics readiness status");
+assert.ok(liveEntry.includes("campaign-041-standard-bearer-morale"), "live route should expose the current build stamp");
 assert.ok(manifest.includes("cavalry-logistics-readiness-domain-kit"), "manifest should list the logistics readiness domain kit");
 assert.ok(routedDomainSmoke.includes("./cavalry-logistics-readiness-domain-kits-smoke.mjs"), "existing wired domain smoke should import logistics kit smoke");
 assert.ok(routedCdnSmoke.includes("./cavalry-logistics-readiness-cdn-state-input-smoke.mjs"), "existing wired CDN smoke should import logistics CDN/state smoke");

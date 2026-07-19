@@ -46,11 +46,11 @@ for (const htmlFile of htmlFiles) {
 const rootIndex = join(root, "index.html");
 if (existsSync(rootIndex)) {
   const html = readFileSync(rootIndex, "utf8");
-  const links = [...html.matchAll(/href=["']\.\/(experiments|games)\/([^"'#?]+)\/?["']/gi)];
+  const links = [...html.matchAll(/href=["'](\.\/(?:experiments|games)\/[^"'#?]+)["']/gi)].map((match) => match[1]);
   assert.ok(links.length > 0, "root index should link to at least one experiment or game");
-  for (const [, kind, name] of links) {
-    const indexPath = join(root, kind, name, "index.html");
-    assert.ok(existsSync(indexPath), `root gallery link ./${kind}/${name}/ should have index.html`);
+  for (const link of links) {
+    const path = localPath(rootIndex, link);
+    assert.ok(path && (existsSync(path) || existsSync(join(path, "index.html"))), `root gallery link ${link} should resolve`);
   }
 }
 

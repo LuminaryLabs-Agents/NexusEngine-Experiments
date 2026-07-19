@@ -1,6 +1,6 @@
 # Fogline Relay
 
-Fogline Relay is a NexusRealtime Experiment that validates a first-person fog-forest relay loop with real NexusRealtime runtime-kit composition and the `render-layer-kit` ProtoKit visual pipeline.
+Fogline Relay is a Nexus Engine experiment that validates a first-person fog-forest relay loop with real Nexus Engine runtime-kit composition and the `render-layer-kit` ProtoKit visual pipeline.
 
 ## Player promise
 
@@ -13,8 +13,8 @@ Open `experiments/fogline-relay/index.html` in a browser, or serve the repositor
 This experiment uses CDN module imports:
 
 ```txt
-NexusRealtime@0.0.1
-NexusRealtime-ProtoKits render-layer-kit pinned to commit 0083dde315d094e4406098e4c3004bc6ae149e7a
+NexusEngine@main
+NexusEngine-ProtoKits render-layer-kit pinned to commit bb3d787da372bf001653635d6e57eb7ce54e3c50
 ```
 
 ## Controls
@@ -35,7 +35,7 @@ experiments/fogline-relay/
   README.md
   src/
     main.js              browser boot and error handling
-    session.js           NexusRealtime imports and kit composition
+    session.js           Nexus Engine imports and kit composition
     level.js             declarative level, visual, relay, gate, hazard data
     fogline-relay-kit.js experiment gameplay kit
     input-adapter.js     browser input to kit API

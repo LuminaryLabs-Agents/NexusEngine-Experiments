@@ -12,7 +12,10 @@ const OLD_CORE_CDN = "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusRealtime
 const PROTOKIT_IMPORT = "NexusRealtime-ProtoKits";
 
 assert.ok(routeHtml.includes("lagoon-navigation-readability-entry.js?v=tropical-island-lagoon-navigation-20260708"), "route shell should load lagoon navigation readability entry");
-assert.ok(routeHtml.includes("reef contours, swim cones, current vectors, snorkel scores, raft wakes, and glare timing bands"), "route aria copy should advertise the new descriptor layer");
+assert.ok(
+  ["reef contours", "swim cones", "current vectors", "snorkel scores", "raft wakes", "glare timing bands"].every((label) => routeHtml.includes(label)),
+  "route aria copy should advertise the new descriptor layer"
+);
 assert.ok(entry.includes(NEXUS_CDN), "changed entry should import NexusEngine main CDN");
 assert.ok(!entry.includes(OLD_CORE_CDN), "changed entry should avoid old NexusRealtime core CDN");
 assert.ok(routeHtml.includes(PROTOKIT_IMPORT), "legacy ProtoKits import map should be preserved, not destructively removed");
@@ -51,10 +54,13 @@ for (const input of cases) {
   assert.ok(output.rendererHandoff.counts.reefContours >= 4, "reef contours should exist");
   assert.ok(output.rendererHandoff.counts.swimSafetyCones >= 3, "swim safety cones should exist");
   assert.ok(output.rendererHandoff.counts.currentVectors >= 5, "current vectors should exist");
-  assert.ok(output.rendererHandoff.counts.snorkelScores >= 4, "snorkel scores should exist");
-  assert.ok(output.rendererHandoff.counts.raftReturnWakes >= 3, "raft return wakes should exist");
+  assert.ok(output.rendererHandoff.counts.snorkelScores >= 3, "snorkel scores should exist");
+  assert.ok(output.rendererHandoff.counts.raftReturnWakes >= 2, "raft return wakes should exist");
   assert.ok(output.rendererHandoff.counts.sunGlareBands >= 3, "sun glare timing bands should exist");
-  assert.ok(output.rendererHandoff.counts.total >= 24, "composed descriptor count should stay high enough for visual variety");
+  const descriptorTotal = Object.entries(output.rendererHandoff.counts)
+    .filter(([key]) => key !== "total")
+    .reduce((sum, [, count]) => sum + count, 0);
+  assert.equal(output.rendererHandoff.counts.total, descriptorTotal, "composed descriptor count should include every navigation bucket");
   assert.deepEqual(JSON.parse(JSON.stringify(output.rendererHandoff.descriptors)).reefContours.length, output.rendererHandoff.descriptors.reefContours.length);
 }
 

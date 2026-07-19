@@ -5,7 +5,7 @@ export const OPEN_ABOVE_CONFIG = Object.freeze({
   runtime: {
     threeUrl: "https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js",
     nexusUrl: "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js",
-    protoKitBaseUrl: "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusRealtime-ProtoKits@0.0.1/protokits"
+    protoKitBaseUrl: "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@bb3d787da372bf001653635d6e57eb7ce54e3c50/protokits"
   },
   quality: {
     pixelRatioMax: 1.75,

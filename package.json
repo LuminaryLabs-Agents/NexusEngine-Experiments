@@ -5,7 +5,7 @@
   "private": true,
   "description": "Nexus Engine browser experiments composed from kits.",
   "devDependencies": {
-    "@luminarylabs/nexusrealtime-protokits": "github:LuminaryLabs-Agents/NexusRealtime-ProtoKits#main",
+    "@luminarylabs/nexusrealtime-protokits": "github:LuminaryLabs-Agents/NexusEngine-ProtoKits#main",
     "nexusrealtime": "github:LuminaryLabs-Dev/NexusEngine#main",
     "playwright": "^1.56.0"
   },
@@ -27,7 +27,7 @@
     "check:next-ledge-ridge-stretcher-relay": "node tests/next-ledge-ridge-stretcher-relay-readiness-kits-smoke.mjs && node tests/next-ledge-ridge-stretcher-relay-cdn-state-input-smoke.mjs",
     "check:meadow-skylark-nest-rescue": "node tests/meadow-skylark-nest-rescue-readiness-kits-smoke.mjs && node tests/meadow-skylark-nest-rescue-cdn-state-input-smoke.mjs",
     "check:signal-bastion-beacon-tower-evacuation": "node tests/signal-bastion-beacon-tower-evacuation-readiness-kits-smoke.mjs && node tests/signal-bastion-beacon-tower-evacuation-cdn-state-input-smoke.mjs",
-    "check": "npm run generate && npm run check:control-math && node scripts/run-checks.mjs && npm run check:sora-stormglass-courier && npm run check:vr-board-breakwater-lighthouse && npm run check:vr-board-harbor-crane-evacuation && npm run check:onnx-safehouse-rollback && npm run check:meadow-rainwater-pond-restoration && npm run check:living-agent-canal-brigade && npm run check:next-ledge-ridge-stretcher-relay && npm run check:meadow-skylark-nest-rescue && npm run check:signal-bastion-beacon-tower-evacuation",
+    "check": "npm run check:control-math && node scripts/run-checks.mjs && npm run check:sora-stormglass-courier && npm run check:vr-board-breakwater-lighthouse && npm run check:vr-board-harbor-crane-evacuation && npm run check:onnx-safehouse-rollback && npm run check:meadow-rainwater-pond-restoration && npm run check:living-agent-canal-brigade && npm run check:next-ledge-ridge-stretcher-relay && npm run check:meadow-skylark-nest-rescue && npm run check:signal-bastion-beacon-tower-evacuation",
     "check:deploy": "npm run generate && npm run check:control-math && node scripts/run-checks.mjs --deploy && npm run check:sora-stormglass-courier && npm run check:vr-board-breakwater-lighthouse && npm run check:vr-board-harbor-crane-evacuation && npm run check:onnx-safehouse-rollback && npm run check:meadow-rainwater-pond-restoration && npm run check:living-agent-canal-brigade && npm run check:next-ledge-ridge-stretcher-relay && npm run check:meadow-skylark-nest-rescue && npm run check:signal-bastion-beacon-tower-evacuation"
   },
   "license": "MIT"

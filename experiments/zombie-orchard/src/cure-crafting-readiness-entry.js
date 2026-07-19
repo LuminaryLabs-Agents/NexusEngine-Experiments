@@ -136,6 +136,7 @@ function mergeHandoffs(base, horde, cure) {
 }
 
 function patchHost(host, canvas) {
+  if (typeof host?.getState !== "function") return false;
   if (!host || host.__zombieOrchardCureCraftingPatched) return Boolean(host?.__zombieOrchardCureCraftingPatched);
   const originalGetState = host.getState?.bind(host);
   const originalGetHandoff = host.getRendererHandoff?.bind(host);

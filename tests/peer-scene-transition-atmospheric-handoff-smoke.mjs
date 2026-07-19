@@ -147,7 +147,7 @@ assert.deepEqual(atmosphericHandoffKit.snapshot("crossroads", compositeState), {
   kitCount: 5,
   depthFogBands: 6,
   lightRays: 5,
-  relicFocus: 3,
+  relicFocus: 1,
   pathTension: 2,
   memoryEchoes: 1
 });

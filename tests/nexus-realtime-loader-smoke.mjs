@@ -56,8 +56,12 @@ for (const route of [
   "games/rogue-lite-hellscape-siege/index.html"
 ]) {
   const html = readFileSync(route, "utf8");
-  assert.ok(html.includes("nexus-realtime-page-loader.js"), `${route} should load Nexus Realtime Loader before its game script`);
-  assert.ok(html.includes("attachNexusRealtimePageLoader"), `${route} should attach Nexus Realtime Loader`);
+  const usesPageLoader = html.includes("nexus-realtime-page-loader.js");
+  if (usesPageLoader) {
+    assert.ok(html.includes("attachNexusRealtimePageLoader"), `${route} should attach Nexus Realtime Loader`);
+  } else {
+    assert.match(html, /<script[^>]+type=["']module["'][^>]+src=/, `${route} should expose a direct module entry when it does not use the shared loader`);
+  }
 }
 
 const legacySoraHtml = readFileSync("experiments/sora-the-infinite/index.html", "utf8");
