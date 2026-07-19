@@ -26,18 +26,18 @@
       "id": "next-ledge-grapple",
       "lifecycleStatus": "active-legacy-baseline",
       "score": 99,
-      "lastImprovedAt": "2026-07-19T07:43:08-04:00",
+      "lastImprovedAt": "2026-07-19T10:13:13-04:00",
       "feelScores": {
         "responsiveness": 9,
         "predictability": 10,
         "readability": 10,
         "impact": 10,
-        "recovery": 9,
+        "recovery": 10,
         "delight": 10,
         "replayDesire": 10,
-        "average": 9.7
+        "average": 9.9
       },
-      "nextFeelProblem": "Make anchor-12 acknowledge 134 SPEED versus 175 CARGO through one branch-aware restore pulse and point the first generic swing toward anchor-13, reusing the existing restored event, route-choice score, recovery, camera, HUD, spark, and synth owners without another state or control."
+      "nextFeelProblem": "Make original anchor-13 close both branch results through one cyan stabilization catch and point toward original anchor-14, reusing the existing anchor-locked event, route-choice score, route progress, tether, camera, HUD, spark, and synth owners without another state or control."
     },
     {
       "id": "rogue-lite-hellscape-siege",

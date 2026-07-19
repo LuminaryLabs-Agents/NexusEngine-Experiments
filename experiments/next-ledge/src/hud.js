@@ -1,4 +1,4 @@
-import { describeActiveSwingReleaseCue, describeWindglassRejoinRebound, describeWindglassScoreSettle } from "./climb-anchor-adapter.js?v=score-carry-release-1";
+import { describeActiveSwingReleaseCue, describeScoreRestorePulse, describeWindglassRejoinRebound, describeWindglassScoreSettle } from "./climb-anchor-adapter.js?v=score-restore-pulse-3";
 
 const pct = (value, max = 100) => `${Math.round(Math.max(0, value) / Math.max(1, max) * 100)}%`;
 const number = (value, fallback = 0) => Number.isFinite(Number(value)) ? Number(value) : fallback;
@@ -17,7 +17,7 @@ function confirmationTarget(snapshot) {
   return snapshot.route?.ledges?.find((ledge) => ledge.id === snapshot.routeChoice?.postRejoinAnchorId);
 }
 
-function promptFor(snapshot, swingReleaseCue = describeActiveSwingReleaseCue(snapshot), windglassSettle = describeWindglassScoreSettle(snapshot), windglassRebound = describeWindglassRejoinRebound(snapshot)) {
+function promptFor(snapshot, swingReleaseCue = describeActiveSwingReleaseCue(snapshot), windglassSettle = describeWindglassScoreSettle(snapshot), windglassRebound = describeWindglassRejoinRebound(snapshot), scoreRestorePulse = describeScoreRestorePulse(snapshot)) {
   const transition = snapshot.sectorTransition;
   const choice = snapshot.routeChoice;
   const ledges = snapshot.route?.ledges ?? [];
@@ -115,6 +115,10 @@ function promptFor(snapshot, swingReleaseCue = describeActiveSwingReleaseCue(sna
       : swingReleaseCue.buildPrompt ?? `Carry ${swingReleaseCue.directionLabel} into the score release band`,
     tone: choice?.selectedRole === "pressure-shortcut" ? "amber" : "mint"
   };
+  if (scoreRestorePulse) return {
+    text: scoreRestorePulse.prompt ?? `${scoreRestorePulse.metric} RESTORED — ${scoreRestorePulse.targetId} primed`,
+    tone: choice?.selectedRole === "pressure-shortcut" ? "amber" : "mint"
+  };
   const speed = Math.hypot(number(snapshot.player?.vx), number(snapshot.player?.vy));
   return speed >= 1.7
     ? { text: "Space / click — Release now", tone: "ready" }
@@ -125,7 +129,7 @@ function setMeter(node, value) {
   node?.style?.setProperty("--value", String(Math.max(0, Math.min(100, value))));
 }
 
-function playerStatus(snapshot, swingReleaseCue = null, windglassRebound = describeWindglassRejoinRebound(snapshot)) {
+function playerStatus(snapshot, swingReleaseCue = null, windglassRebound = describeWindglassRejoinRebound(snapshot), scoreRestorePulse = describeScoreRestorePulse(snapshot)) {
   if (swingReleaseCue && snapshot.mode !== "swinging") return swingReleaseCue.status ?? "Release committed. Fire the grapple into the marked ascent anchor.";
   if (snapshot.routeChoice?.status === "rejoin-active" && swingReleaseCue) return swingReleaseCue.ready
     ? "Cyan rejoin aligned. Release upward, then fire for the original ascent anchor."
@@ -134,6 +138,7 @@ function playerStatus(snapshot, swingReleaseCue = null, windglassRebound = descr
   if (swingReleaseCue) return swingReleaseCue.ready
     ? `${Math.round(number(snapshot.routeChoice?.scoreValue))} ${snapshot.routeChoice?.scoreMetric === "cargo-mastery" ? "CARGO" : "SPEED"} aligned. Release toward anchor-12.`
     : swingReleaseCue.objective ?? `Carry the banked score ${swingReleaseCue.directionLabel} into the anchor-12 release band.`;
+  if (scoreRestorePulse) return scoreRestorePulse.status ?? `Anchor-12 restored ${scoreRestorePulse.score} ${scoreRestorePulse.metric}. ${scoreRestorePulse.targetId} is live.`;
   const status = String(snapshot.status ?? "");
   if (!status || status.startsWith("SYS_STATUS")) return "Build flow, release at speed, and fire toward the next cyan anchor.";
   return status;
@@ -157,7 +162,8 @@ export function createHud(nodes = {}) {
       const swingReleaseCue = describeActiveSwingReleaseCue(snapshot);
       const windglassSettle = describeWindglassScoreSettle(snapshot);
       const windglassRebound = describeWindglassRejoinRebound(snapshot);
-      const prompt = promptFor(snapshot, swingReleaseCue, windglassSettle, windglassRebound);
+      const scoreRestorePulse = describeScoreRestorePulse(snapshot);
+      const prompt = promptFor(snapshot, swingReleaseCue, windglassSettle, windglassRebound, scoreRestorePulse);
       const postRejoinTarget = confirmationTarget(snapshot);
       if (status && statusText !== lastStatus) {
         status.textContent = statusText;
@@ -167,7 +173,7 @@ export function createHud(nodes = {}) {
         readout.textContent = readoutText;
         lastReadout = readoutText;
       }
-      if (statusCopy) statusCopy.textContent = playerStatus(snapshot, swingReleaseCue, windglassRebound);
+      if (statusCopy) statusCopy.textContent = playerStatus(snapshot, swingReleaseCue, windglassRebound, scoreRestorePulse);
       const transition = snapshot.sectorTransition;
       if (objective) objective.textContent = transition?.active
         ? transition.phase === "opening"
@@ -213,6 +219,8 @@ export function createHud(nodes = {}) {
           ? swingReleaseCue.committed
             ? "Anchor-12 is highlighted. Fire the grapple now, then hold through the catch."
             : swingReleaseCue.objective ?? "Carry the preserved score through one first-swing release toward anchor-12."
+        : scoreRestorePulse
+          ? scoreRestorePulse.objective ?? `Ride the ${scoreRestorePulse.metric.toLowerCase()} restore pulse ${scoreRestorePulse.directionLabel} and fire for ${scoreRestorePulse.targetId}.`
         : snapshot.completed
           ? "Signal delivered. The summit relay is broadcasting through the storm."
         : cargoAmount > 0

@@ -46,6 +46,45 @@ function activeWindglassRejoinRebound(snapshot = {}) {
   return null;
 }
 
+export function describeScoreRestorePulse(snapshot = {}) {
+  const events = snapshot.recentEvents ?? [];
+  for (let index = events.length - 1; index >= 0; index -= 1) {
+    const event = events[index];
+    if (event.type !== "restored" || !event.restorePulseStyle || !event.restoreTargetId) continue;
+    const frames = Math.max(1, Math.floor(finite(event.restorePulseFrames, 1)));
+    const age = finite(snapshot.frame) - finite(event.at);
+    if (age < 0 || age > frames) return null;
+    const metric = event.scoreMetric === "cargo-mastery" ? "CARGO" : "SPEED";
+    const score = Math.max(0, Math.round(finite(event.scoreValue)));
+    const directionLabel = finite(event.restoreDirection, 1) < 0 ? "left" : "right";
+    const copy = (value) => typeof value === "string"
+      ? value.replaceAll("{score}", String(score)).replaceAll("{metric}", metric).replaceAll("{direction}", directionLabel)
+      : value;
+    return {
+      sourceId: event.targetId,
+      targetId: event.restoreTargetId,
+      style: event.restorePulseStyle,
+      frames,
+      age,
+      strength: Math.max(0, Math.min(1, 1 - age / frames)),
+      direction: finite(event.restoreDirection, 1),
+      directionLabel,
+      color: Math.max(0, Math.floor(finite(event.restorePulseColor, 0x3dffa3))),
+      scaleX: Math.max(0.35, Math.min(2, finite(event.restorePulseScaleX, 1))),
+      scaleY: Math.max(0.35, Math.min(2, finite(event.restorePulseScaleY, 1))),
+      aimAssistBonus: Math.max(0, finite(event.restoreAimAssistBonus)),
+      aimAssistLeadY: finite(event.restoreAimAssistLeadY),
+      failFloorBonus: Math.max(0, finite(event.restoreFailFloorBonus)),
+      prompt: copy(event.restorePulsePrompt),
+      objective: copy(event.restorePulseObjective),
+      status: copy(event.restorePulseStatus),
+      score,
+      metric
+    };
+  }
+  return null;
+}
+
 function describeDirectedReleaseCue(snapshot, source, target, prefix, defaultColor, descriptor = null) {
   const choice = snapshot.routeChoice;
   const metadata = source?.metadata;
@@ -274,6 +313,10 @@ function choiceBeatLedge(source, beat, choiceId, defaultStaminaRestore = 45) {
       routeChoiceGenericRejoinFirstSwingRelease: beat.rejoinFirstSwingRelease ? {
         safe: { ...(beat.rejoinFirstSwingRelease.safe ?? {}) },
         shortcut: { ...(beat.rejoinFirstSwingRelease.shortcut ?? {}) }
+      } : null,
+      routeChoiceGenericRestorePulse: beat.rejoinRestorePulse ? {
+        safe: { ...(beat.rejoinRestorePulse.safe ?? {}) },
+        shortcut: { ...(beat.rejoinRestorePulse.shortcut ?? {}) }
       } : null,
       routeChoiceStatus: beat.status ?? null,
       routeChoiceResolvedStatus: beat.resolvedStatus ?? null,

@@ -72,6 +72,8 @@ The first payoff swing now resolves that recoil into one authored release window
 
 After Windglass resolves the route and original `anchor-11` confirms the score, the first generic swing now carries that branch identity into `anchor-12`. Safe recovery exposes a mint `134 SPEED` release band with extra lift; the shortcut exposes a faster amber `175 CARGO` drive. One nested descriptor, the existing release event, and the existing tether, camera, target, HUD, spark, atmosphere, and synth owners present the handoff without another state, control, entity, material, or diagnostic surface.
 
+Original `anchor-12` now answers that handoff with one branch-aware restore pulse and points the climb into original `anchor-13`. Mint returns `134 SPEED` as a longer buoyant lift; amber returns `175 CARGO` as a shorter compressed drive. Descriptor tuning extends the existing restored event and recovery/aim path, while the original target, consequence line, camera, HUD, sparks, player light, and synth present the one-shot continuation without another state, control, event type, entity, material, or diagnostic surface.
+
 ### Fogline Relay
 
 `experiments/fogline-relay/` is a first-person fog-forest relay experiment. It composes reusable kit surfaces, keeps the Canvas renderer presentation-only, and validates renderer-agnostic visual buckets, fog volumes, volumetric light descriptors, relay scanning, objective flow, and wraith hazards.

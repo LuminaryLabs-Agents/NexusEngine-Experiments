@@ -3,8 +3,8 @@ import { createGenericAnchorDescriptorKit } from "https://cdn.jsdelivr.net/gh/Lu
 import { createGenericModeProjectedRoute, createProjectedRoute } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-mode-projected-route/index.js";
 import { createGenericRouteProgressKit } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-route-progress-kit/index.js";
 import { createGenericTetherTraversalDomainKits, createGenericTetherTraversalPreset } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusEngine-ProtoKits@04d34f049f58ae359cf71d43466c429dac2a6d08/protokits/generic-tether-traversal-domain-kits/index.js";
-import { createNextLedgeClimbPreset } from "./climb-preset.js?v=score-carry-release-1";
-import { adaptProjectedRouteToClimbRoute, describeActiveSwingReleaseCue, describeWindglassRejoinRebound } from "./climb-anchor-adapter.js?v=score-carry-release-1";
+import { createNextLedgeClimbPreset } from "./climb-preset.js?v=score-restore-pulse-3";
+import { adaptProjectedRouteToClimbRoute, describeActiveSwingReleaseCue, describeScoreRestorePulse, describeWindglassRejoinRebound } from "./climb-anchor-adapter.js?v=score-restore-pulse-3";
 import { createClimbActionAdapter } from "./climb-action-adapter.js";
 
 const clamp = (v, a, b) => Math.max(a, Math.min(b, Number.isFinite(Number(v)) ? Number(v) : a));
@@ -15,6 +15,10 @@ const scoreCopy = (template, score) => String(template ?? "Windglass Relay score
 const reboundCopy = (template, score, metric) => String(template ?? "Anchor-11 rebound confirmed. {score} {metric} held.")
   .replaceAll("{score}", String(Math.max(0, Math.round(n(score)))))
   .replaceAll("{metric}", metric === "cargo-mastery" ? "CARGO" : "SPEED");
+const restoreCopy = (template, score, metric, direction) => String(template ?? "Anchor-12 restored {score} {metric}. Anchor-13 is live.")
+  .replaceAll("{score}", String(Math.max(0, Math.round(n(score)))))
+  .replaceAll("{metric}", metric === "cargo-mastery" ? "CARGO" : "SPEED")
+  .replaceAll("{direction}", direction < 0 ? "left" : "right");
 
 const PLAYER_UPGRADE_PRESET = Object.freeze({
   routePacing: { summitPerSectorY: 760, sampleSpacingY: 118, minAnchors: 16, jitterX: 158, jitterY: 34, restEvery: 4, maxEdgeDistance: 202 },
@@ -443,8 +447,18 @@ function genericRejoinRecoveryWindow(state) {
   } : null;
 }
 
+function scoreRestoreRecoveryWindow(state) {
+  const pulse = describeScoreRestorePulse(state);
+  return pulse && state.currentAnchorId === pulse.sourceId ? {
+    targetId: pulse.targetId,
+    failFloorBonus: pulse.failFloorBonus,
+    aimAssistBonus: pulse.aimAssistBonus,
+    aimAssistLeadY: pulse.aimAssistLeadY
+  } : null;
+}
+
 function activeRecoveryWindow(state) {
-  return protectedRecoveryWindow(state) ?? genericRejoinRecoveryWindow(state);
+  return protectedRecoveryWindow(state) ?? genericRejoinRecoveryWindow(state) ?? scoreRestoreRecoveryWindow(state);
 }
 
 function authoredAimProfile(state, target) {
@@ -472,6 +486,8 @@ function authoredAimProfile(state, target) {
 function authoredAimTuning(state, target) {
   if (!target) return { aimAssistBonus: 0, aimAssistLeadX: 0, aimAssistLeadY: 0, buildWindowActive: false };
   const profile = authoredAimProfile(state, target);
+  const recoveryWindow = activeRecoveryWindow(state);
+  const recoveryProfile = recoveryWindow?.targetId === target.id ? recoveryWindow : null;
   const minBuildAngle = profile.minBuildAngle;
   const anchor = state.anchorLedge ?? ledgeMap(state)[state.currentAnchorId];
   const targetDirection = Math.sign(target.x - n(anchor?.x, state.player.x)) || 1;
@@ -482,7 +498,7 @@ function authoredAimTuning(state, target) {
   return {
     aimAssistBonus: profile.aimAssistBonus,
     aimAssistLeadX: profile.aimAssistLeadX,
-    aimAssistLeadY: profile.aimAssistLeadY,
+    aimAssistLeadY: n(recoveryProfile?.aimAssistLeadY, profile.aimAssistLeadY),
     buildWindowActive,
     kind: profile.kind
   };
@@ -568,6 +584,42 @@ function windglassRejoinRebound(state, convergence, target) {
     prompt: metadata.routeChoiceGenericRejoinReboundPrompt,
     objective: metadata.routeChoiceGenericRejoinReboundObjective,
     status: metadata.routeChoiceGenericRejoinReboundStatus
+  };
+}
+
+function scoreRestorePulse(state, ledge) {
+  const choice = state.routeChoice;
+  if (choice?.status !== "resolved" || !choice.genericRejoinAnchorId) return null;
+  const ledges = state.route?.ledges ?? [];
+  const rejoinIndex = ledges.findIndex((candidate) => candidate.id === choice.genericRejoinAnchorId);
+  const restoreAnchor = rejoinIndex >= 0 ? ledges[rejoinIndex + 1] : null;
+  const restoreTarget = rejoinIndex >= 0 ? ledges[rejoinIndex + 2] : null;
+  const convergence = ledgeMap(state)[choice.convergenceAnchorId];
+  const descriptor = convergence?.metadata?.routeChoiceGenericRestorePulse?.[
+    choice.selectedRole === "pressure-shortcut" ? "shortcut" : "safe"
+  ];
+  if (!descriptor?.style || ledge?.id !== restoreAnchor?.id || !restoreTarget) return null;
+  const direction = Math.sign(n(restoreTarget.x) - n(restoreAnchor.x)) || 1;
+  return {
+    targetId: restoreTarget.id,
+    style: descriptor.style,
+    frames: Math.max(1, Math.floor(n(descriptor.frames, 1))),
+    direction,
+    angularImpulse: Math.max(0, n(descriptor.angularImpulse)),
+    velocityRetention: clamp(n(descriptor.velocityRetention, 0.75), 0, 1),
+    cameraImpulse: clamp(n(descriptor.cameraImpulse, 0.24), 0, 1),
+    color: Math.max(0, Math.floor(n(descriptor.color, choice.selectedRole === "pressure-shortcut" ? 0xffb83d : 0x3dffa3))),
+    scaleX: clamp(n(descriptor.scaleX, 1), 0.35, 2),
+    scaleY: clamp(n(descriptor.scaleY, 1), 0.35, 2),
+    aimAssistBonus: Math.max(0, n(descriptor.aimAssistBonus)),
+    aimAssistLeadY: n(descriptor.aimAssistLeadY),
+    failFloorBonus: Math.max(0, n(descriptor.failFloorBonus)),
+    sparkCount: Math.max(0, Math.floor(n(descriptor.sparkCount, 96))),
+    sparkSpeed: Math.max(0, n(descriptor.sparkSpeed, 54)),
+    sparkScale: Math.max(0.5, n(descriptor.sparkScale, 1.3)),
+    prompt: descriptor.prompt,
+    objective: descriptor.objective,
+    status: descriptor.status
   };
 }
 
@@ -787,6 +839,7 @@ function lock(state, ledge) {
   } else {
     state.mode = "swinging";
     if (ledge.type === "rest") {
+      const restorePulse = scoreRestorePulse(state, ledge);
       state.stamina = clamp(state.stamina + n(ledge.staminaRestore, n(state.tuning.restRestore, 58)), 0, state.constants.maxStamina);
       state.stats.rests += 1;
       state.status = ledge.metadata?.openingRole === "opening-rest"
@@ -794,7 +847,40 @@ function lock(state, ledge) {
         : ledge.metadata?.masteryRole === "crest-rest"
         ? "Stormbreak rest secured. Build a clean arc for the commit perch."
         : state.tuning.restHint ?? "Restore unit synchronized. Stamina replenished.";
-      addEvent(state, "restored", { targetId: ledge.id });
+      if (restorePulse) {
+        state.player.aVel = clamp(
+          state.player.aVel * restorePulse.velocityRetention + restorePulse.direction * restorePulse.angularImpulse,
+          -n(state.tuning.maxAngularSpeed, 0.15),
+          n(state.tuning.maxAngularSpeed, 0.15)
+        );
+        state.camera.trauma = Math.max(state.camera.trauma ?? 0, restorePulse.cameraImpulse);
+        state.status = restoreCopy(restorePulse.status, state.routeChoice.scoreValue, state.routeChoice.scoreMetric, restorePulse.direction);
+      }
+      addEvent(state, "restored", {
+        targetId: ledge.id,
+        routeChoiceId: restorePulse ? state.routeChoice.id : null,
+        selectedRole: restorePulse ? state.routeChoice.selectedRole : null,
+        scoreMetric: restorePulse ? state.routeChoice.scoreMetric : null,
+        scoreValue: restorePulse ? state.routeChoice.scoreValue : 0,
+        restoreTargetId: restorePulse?.targetId ?? null,
+        restorePulseStyle: restorePulse?.style ?? null,
+        restorePulseFrames: restorePulse?.frames ?? 0,
+        restoreDirection: restorePulse?.direction ?? 0,
+        restoreAngularImpulse: restorePulse?.angularImpulse ?? 0,
+        restoreVelocityRetention: restorePulse?.velocityRetention ?? 0,
+        restorePulseColor: restorePulse?.color ?? null,
+        restorePulseScaleX: restorePulse?.scaleX ?? 1,
+        restorePulseScaleY: restorePulse?.scaleY ?? 1,
+        restoreAimAssistBonus: restorePulse?.aimAssistBonus ?? 0,
+        restoreAimAssistLeadY: restorePulse?.aimAssistLeadY ?? 0,
+        restoreFailFloorBonus: restorePulse?.failFloorBonus ?? 0,
+        restoreSparkCount: restorePulse?.sparkCount ?? 0,
+        restoreSparkSpeed: restorePulse?.sparkSpeed ?? 0,
+        restoreSparkScale: restorePulse?.sparkScale ?? 1,
+        restorePulsePrompt: restorePulse?.prompt ?? null,
+        restorePulseObjective: restorePulse?.objective ?? null,
+        restorePulseStatus: restorePulse?.status ?? null
+      });
       if (ledge.metadata?.openingRole === "opening-rest") {
         state.camera.trauma = Math.max(state.camera.trauma ?? 0, 0.14);
         addEvent(state, "counterwind-recovered", {
@@ -1105,6 +1191,7 @@ function stepReeling(state, dt) {
 function updateDerived(state) {
   const latchRecoil = activePayoffLatchRecoil(state);
   const rejoinRebound = describeWindglassRejoinRebound(state);
+  const restorePulse = describeScoreRestorePulse(state);
   state.player.scaleX = clamp(1 + Math.abs(state.player.vx) * 0.038, 0.35, 2);
   state.player.scaleY = clamp(1 + Math.abs(state.player.vy) * 0.038, 0.35, 2);
   if (latchRecoil) {
@@ -1114,6 +1201,10 @@ function updateDerived(state) {
   if (rejoinRebound) {
     state.player.scaleX = clamp(state.player.scaleX * (1 + (rejoinRebound.scaleX - 1) * rejoinRebound.strength), 0.35, 2);
     state.player.scaleY = clamp(state.player.scaleY * (1 + (rejoinRebound.scaleY - 1) * rejoinRebound.strength), 0.35, 2);
+  }
+  if (restorePulse) {
+    state.player.scaleX = clamp(state.player.scaleX * (1 + (restorePulse.scaleX - 1) * restorePulse.strength), 0.35, 2);
+    state.player.scaleY = clamp(state.player.scaleY * (1 + (restorePulse.scaleY - 1) * restorePulse.strength), 0.35, 2);
   }
   state.player.rotationX += 0.035;
   state.player.rotationY += state.player.vx * 0.04;

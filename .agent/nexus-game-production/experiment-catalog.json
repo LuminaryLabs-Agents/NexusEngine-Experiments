@@ -69,9 +69,9 @@
         "generic-route-cargo-extraction-kit"
       ],
       "feelAverageBefore": 9.3,
-      "feelAverageAfter": 9.7,
-      "validation": "Playwright completed safe and shortcut routes through the 134-speed / 175-cargo Windglass scores, original anchor-11, branch-aware first-swing releases, and original anchor-12. Physical release input, failure, keyboard retry, Advanced closed/open/closed, bounded DOM/canvas/descriptor/scene behavior, and the matched starting-commit performance gate passed with zero console or page errors. Human View passed first-screen, mint/amber build-ready-release, catch, failure, and recovery frames with diagnostics closed.",
-      "packetId": "2026-07-19-next-ledge-score-carry-release"
+      "feelAverageAfter": 9.9,
+      "validation": "Playwright completed safe and shortcut routes through the 134-speed / 175-cargo Windglass scores, original anchor-11, branch-aware first-swing releases, original anchor-12 restore pulses, and physical original anchor-13 latches. Physical release input, failure, keyboard retry, Advanced closed/open/closed, post-cleanup safe replay, bounded DOM/canvas/descriptor/scene behavior, and the matched detached-starting-code performance gate passed with zero console errors. Human View passed the first screen plus mint and amber restore frames with diagnostics closed.",
+      "packetId": "2026-07-19-next-ledge-score-restore-pulse"
     }
   ],
   "experiments": []

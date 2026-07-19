@@ -52,6 +52,17 @@ export function createCinematicSynth() {
       }
     }
     else if (type === "released" || type === "wall-bounce") tone(110, 0.15, "triangle", 0.16, 45);
+    else if (type === "restored" && event.restorePulseStyle) {
+      if (String(event.restorePulseStyle).includes("amber")) {
+        tone(110, 0.42, "sawtooth", 0.105, 55);
+        setTimeout(() => tone(739.99, 0.24, "triangle", 0.075, 369.99), 42);
+        setTimeout(() => tone(987.77, 0.28, "sine", 0.06, 1480), 108);
+      } else {
+        tone(329.63, 0.46, "sine", 0.075, 659.25);
+        setTimeout(() => tone(783.99, 0.34, "triangle", 0.065, 1174.66), 62);
+        setTimeout(() => tone(1567.98, 0.32, "sine", 0.052, 2093), 132);
+      }
+    }
     else if (type === "restored") tone(440, 0.5, "sine", 0.08, 880);
     else if (type === "failed") tone(150, 1.0, "sawtooth", 0.22, 30);
     else if (type === "summit-reached") {

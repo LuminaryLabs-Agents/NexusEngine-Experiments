@@ -142,9 +142,9 @@
     "result": "Accepted 10 genuinely new natural-language kit contracts after six additional duplicate, catalog-overlap, or blurred-scope rejections; no implementation was created."
   },
   "lastCreationUnit": {
-    "packetId": "2026-07-19-next-ledge-score-carry-release",
+    "packetId": "2026-07-19-next-ledge-score-restore-pulse",
     "scope": "legacy-active-experiment-player-visible-upgrade",
-    "result": "Upgraded Next Ledge so original anchor-11 carries 134 SPEED through a lifted mint release or 175 CARGO through a faster amber drive into original anchor-12 using existing release, tether, target, camera, HUD, effects, and synth owners; production creation counts remain unchanged."
+    "result": "Upgraded Next Ledge so original anchor-12 returns 134 SPEED through a longer mint restore pulse or 175 CARGO through a shorter amber drive and physically points both branches into original anchor-13 using the existing restored event, recovery/aim, tether, target, camera, HUD, effects, and synth owners; production creation counts remain unchanged."
   },
   "lastRefinementUnit": {
     "packetId": "2026-07-19-hellscape-crystal-sentry-choice",
@@ -152,23 +152,24 @@
     "result": "A surviving Emberplate wall through Siege 2 now unlocks one readable 5 crystal plus 3 energy specialist recipe; the existing build action deploys exactly one core-side Sentry, and wall-less failure restores the starter-wall recovery action."
   },
   "lastCompletedUnit": {
-    "packetId": "2026-07-19-hellscape-crystal-sentry-choice",
-    "scope": "Hellscape post-Emberplate Crystal Sentry choice",
-    "result": "A surviving Emberplate wall through Siege 2 now unlocks one readable 5 crystal plus 3 energy specialist recipe; the existing build action deploys exactly one core-side Sentry, and wall-less failure restores the starter-wall recovery action.",
-    "validation": "All 22 existing Hellscape test entrypoints, affected JavaScript syntax, production JSON parsing, and diff hygiene passed. Playwright physically completed build, Siege 1, Grove/Ashes harvest, Emberplate forge, Siege 2, Crystal harvest/return, Sentry deployment, Siege 3 active fire, failure, rebuild, same-number retry, and Advanced closed/open/closed with zero console messages. Human View passed the first screen, pre-choice return, deployed/active Sentry, and failure recovery with diagnostics closed. Matched starting-commit performance measured 33.333 to 33.335 ms average frame time, 30.000 to 29.998 FPS, and 34.3 to 34.2 ms p95; 52 DOM nodes, one Canvas, 214 active descriptors, and zero long tasks remained bounded.",
+    "packetId": "2026-07-19-next-ledge-score-restore-pulse",
+    "scope": "Next Ledge anchor-12 branch-aware restore pulse into original anchor-13",
+    "result": "Original anchor-12 now acknowledges 134 SPEED with a 36-frame mint lift or 175 CARGO with a 26-frame amber drive, then routes both branches through the existing assist and cable owners into a physical one-shot anchor-13 catch.",
+    "validation": "All 28 existing Next Ledge test entrypoints, affected JavaScript syntax, production JSON parsing, and diff hygiene passed. Playwright completed both full routes through branch-aware restore pulses and anchor-13 latches, proved failure and physical keyboard recovery, checked Advanced closed/open/closed, replayed the full safe route after cleanup, and reported zero console messages. Human View passed the first screen plus mint and amber restore frames with diagnostics closed. Matched detached starting-code performance improved 204.686 to 193.957 ms average frame time, 4.886 to 5.156 FPS, and 304.3 to 284.3 ms p95; 69 DOM nodes, one canvas, 76 descriptors, 236 scene nodes, bounded line capacities, and non-monotonic heap checkpoints remained bounded.",
     "commits": {
       "coreReadOnly": "a5882b47bd5a9284550bb3af1f0cd8580c62665e",
       "protokitsStart": "194d37714d7c23984970e09015b5dd4bffbbab7b",
       "protokitsProductionUnit": "194d37714d7c23984970e09015b5dd4bffbbab7b",
       "experimentsStart": "d5b3ba42d377da6744ef61cec857e5dbfb29f035",
-      "experimentsProductionUnit": "453d76e4981b35aadf4988d91751045ab006c7c7"
+      "experimentsIntegrationBase": "2b5e5eebe1c616a4a504500dce6667b2d0f59943",
+      "experimentsProductionUnit": null
     },
-    "publication": "Experiments production commit 453d76e4981b35aadf4988d91751045ab006c7c7 published to resolved default branch main after fetch-before-push verification; this repository commit records the publication receipt. ProtoKits remained unchanged and synchronized at 194d37714d7c23984970e09015b5dd4bffbbab7b."
+    "publication": "Validated production commit and publication receipt pending. ProtoKits remain unchanged and synchronized at 194d37714d7c23984970e09015b5dd4bffbbab7b."
   },
   "exactNextUnit": {
     "phase": "playable-experiment-upgrade",
     "epoch": 0,
-    "scope": "next-ledge-anchor-12-score-acknowledgement",
-    "goal": "Make anchor-12 acknowledge 134 SPEED versus 175 CARGO through one branch-aware restore pulse and point the first generic swing toward anchor-13, reusing the existing restored event, route-choice score, recovery, camera, HUD, spark, and synth owners without another state or control."
+    "scope": "next-ledge-anchor-13-cyan-stabilization",
+    "goal": "Make original anchor-13 close both branch results through one cyan stabilization catch and point toward original anchor-14, reusing the existing anchor-locked event, route-choice score, route progress, tether, camera, HUD, spark, and synth owners without another state or control."
   }
 }

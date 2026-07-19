@@ -294,6 +294,46 @@ export function createNextLedgeClimbPreset(options = {}) {
           status: "Amber score drive released. {score} {metric} is committed toward anchor-12."
         }
       },
+      rejoinRestorePulse: {
+        safe: {
+          style: "mint-score-restored",
+          frames: 36,
+          angularImpulse: 0.028,
+          velocityRetention: 0.82,
+          cameraImpulse: 0.24,
+          color: 0x3dffa3,
+          scaleX: 0.82,
+          scaleY: 1.34,
+          aimAssistBonus: 26,
+          aimAssistLeadY: -64,
+          failFloorBonus: 170,
+          sparkCount: 112,
+          sparkSpeed: 66,
+          sparkScale: 1.42,
+          prompt: "MINT {score} {metric} RESTORED — Anchor-13 primed",
+          objective: "Anchor-12 returned the mint lift. Build {direction} through the pulse, then fire for original anchor-13.",
+          status: "Anchor-12 restored {score} {metric}. Mint lift is pointing {direction} toward anchor-13."
+        },
+        shortcut: {
+          style: "amber-score-restored",
+          frames: 26,
+          angularImpulse: 0.044,
+          velocityRetention: 0.68,
+          cameraImpulse: 0.38,
+          color: 0xffb83d,
+          scaleX: 1.34,
+          scaleY: 0.78,
+          aimAssistBonus: 20,
+          aimAssistLeadY: -72,
+          failFloorBonus: 120,
+          sparkCount: 132,
+          sparkSpeed: 54,
+          sparkScale: 1.62,
+          prompt: "AMBER {score} {metric} RESTORED — Anchor-13 locked",
+          objective: "Anchor-12 converted the cargo drive into a hard {direction} line. Compress once, then fire for original anchor-13.",
+          status: "Anchor-12 restored {score} {metric}. Amber drive is locked {direction} toward anchor-13."
+        }
+      },
       safeStatus: "Windglass Relay is reading the Slipstream overcharge. Preserve the mint velocity into the shared catch.",
       shortcutStatus: "Windglass Relay is reading the Cacheline transfer. Carry the amber cargo mastery into the shared catch.",
       resolvedSafeStatus: "Windglass Relay scored {score} SPEED. Slipstream velocity preserved—generic ascent restored.",
