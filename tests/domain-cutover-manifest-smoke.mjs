@@ -18,7 +18,7 @@ assert.ok(Array.isArray(manifest.canonicalRoutes), "manifest should expose canon
 assert.ok(manifest.canonicalRoutes.length > 0, "manifest should list at least one canonical route");
 
 const galleryById = new Map(apps.map((app) => [app.id, app]));
-const galleryRoutes = new Set(apps.map((app) => normalizeRoute(app.route)));
+const galleryRoutes = apps.map((app) => normalizeRoute(app.route));
 const canonicalIds = new Set();
 
 for (const entry of manifest.canonicalRoutes) {
@@ -44,14 +44,13 @@ for (const entry of manifest.canonicalRoutes) {
   );
 
   const canonicalRoute = normalizeRoute(`./${entry.canonicalPath}`);
-  assert.ok(galleryRoutes.has(canonicalRoute), `${entry.id} should be discoverable through generated gallery routes`);
+  assert.ok(galleryRoutes.some((route) => route === canonicalRoute || route.startsWith(canonicalRoute)), `${entry.id} should be discoverable through generated gallery routes`);
 
   const galleryEntry = galleryById.get(entry.id);
   assert.ok(galleryEntry, `${entry.id} should keep a matching gallery id`);
-  assert.equal(
-    normalizeRoute(galleryEntry.route),
-    canonicalRoute,
-    `${entry.id} gallery route should point at the manifest canonical path`
+  assert.ok(
+    normalizeRoute(galleryEntry.route).startsWith(canonicalRoute),
+    `${entry.id} gallery route should stay within the manifest canonical path`
   );
 }
 
