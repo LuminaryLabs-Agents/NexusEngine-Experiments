@@ -2,8 +2,8 @@
 
 - Packet: `2026-07-19-next-ledge-score-restore-pulse`
 - Date: 2026-07-19
-- Status: validated; production commit and publication pending
-- Active Work Table row: completed by this bounded unit; remove after publication and queue the exact next unit
+- Status: validated, committed, and published
+- Active Work Table row: completed by this bounded unit; remove and queue the exact next unit
 - Experiment-game: `experiments/next-ledge/`
 - Change: materially upgraded existing playable experiment
 
@@ -116,8 +116,8 @@ Primary average frame time improved `5.24%`; FPS improved `5.53%`; p95 improved 
 - ProtoKits start/final: `194d37714d7c23984970e09015b5dd4bffbbab7b` / unchanged
 - Experiments run start: `d5b3ba42d377da6744ef61cec857e5dbfb29f035`
 - Experiments integration base after the non-overlapping Hellscape lane published: `2b5e5eebe1c616a4a504500dce6667b2d0f59943`
-- Experiments production commit: pending
-- Push: pending fetch-before-push verification
+- Experiments production commit: `aacb20ccc1423d0062814c1b5979c68d76002d75`
+- Push: production commit published to resolved default branch `main` after fetch-before-push verification; this receipt commit records publication
 
 ## Exact Next Playable Improvement
 
