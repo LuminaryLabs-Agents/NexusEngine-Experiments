@@ -1,24 +1,24 @@
-# Nexus Engine Game Production Goal
+# Nexus Engine Capability Saturation Goal
 
-Status: active
+Status: complete
 
-## Intent
+## Mission
 
-Build and deepen visibly playable Nexus Engine experiments first, extracting the smallest reusable ProtoKits needed by each coherent player fantasy while preserving the historical bootstrap catalog and lifetime ledgers as nonblocking inventory.
+Produce semantically distinct, playable Nexus Engine stress experiments until five consecutive validated experiments require zero genuinely new atomic capabilities after complete domain consolidation.
 
 ## Success Criteria
 
 - Treat `/Users/crimsonwheeler/Documents/GitHub/NexusEngine` as read-only Core authority.
-- Keep reusable renderer-agnostic behavior in NexusEngine-ProtoKits; keep browser input, content, tuning, presentation, routes, and playable proof in NexusEngine-Experiments.
-- Treat the 100-kit, 50-experiment, and 10-game bootstrap plan as tracked reference inventory rather than a gate that can replace playable work.
-- After bootstrap, every numbered epoch adds exactly 10 accepted and implemented kits, 5 playable experiments, 1 documented game, and 1 bounded refinement-and-pruning slice.
-- Track bootstrap separately from lifetime-created, active, merged, archived, and retired totals; never hide pruning by reducing lifetime counts.
-- Preserve valuable source features through explicit `keep`, `upgrade`, `merge`, or `drop` dispositions and successor proof before any source retirement.
-- Validate affected playable work through existing checks, launch proof, Playwright, and Human View before gameplay claims.
-- Commit and push every completed bounded unit on each repository's resolved default branch.
+- Build exactly one bounded experiment at a time in NexusEngine-Experiments.
+- Reuse Core first, compose canonical NexusEngine-ProtoKits domains second, and accept a new atomic capability only with negative Core/domain evidence and multiple plausible consumers.
+- Define the experiment boundary, player loop, quality bar, performance budget, and proof requirements before implementation.
+- Classify every observed capability as `Core-reused`, `domain-reused`, `newly accepted`, `merged duplicate`, `specialization`, `adapter-only`, `local-only`, or `rejected`.
+- Complete ownership assignment, migration, parity, duplicate removal, and evidence reconciliation before computing the experiment's newly accepted capability count.
+- Count only validated, semantically distinct experiments. Failed, incomplete, repeated, or weak experiments remain lessons and do not affect the streak.
+- Increment the streak only for a validated zero-new-capability result; reset it to zero for any validated result with one or more newly accepted atomic capabilities.
+- Preserve validated experiments and their proof unless a later domain change invalidates them.
+- Stop when the durable saturation ledger records five consecutive qualifying zero-new-capability experiments.
 
 ## Current Gate
 
-`next-ledge` is the active playable experiment. It exposes the hero verb and resources on the first screen, completes a five-beat mastery crest and 25-checkpoint route, supports midair miss recovery, broadcasts the restored relay through a visible route handshake, and opens sector two with a forecast counterwind crescendo. Counterwind Rest becomes a readable fork: neutral/low release favors the larger mint Shelter Rise recovery, while an explicit high-build amber window prioritizes the smaller Signal Cut for one crisp launch without protection. Signal Cut carries its `46%` pressure through Fork Relay, then Stormlock visibly drains the same authoritative channel through four reel-time pulses. Lock holds one `24`-frame branch-aware confirmation; its final `12` frames grow the existing consequence line toward the selected Slipstream or Cacheline target, and the payoff grapple carries that choice through fire, latch, and first-swing release. Mint Slipstream pulls into a buoyant glide window; amber Cacheline compresses into a tighter aftershock window. Windglass answers the score with a `24`-frame mint float-settle or `16`-frame amber brake-settle, then both lines share one cyan high-build release-ready cue into original `anchor-11`. That catch answers with one `18`-frame score-preserving rebound, resolves into a score-aware first generic swing toward original `anchor-12`, then returns a branch-aware restore pulse that points the same score into original `anchor-13`: safe carries `134 SPEED` through a longer mint lift, while shortcut carries `175 CARGO` through a shorter amber drive. Existing secured/released/restored events, route-choice score, tether, recovery/aim, camera, target, consequence line, player light, atmosphere, HUD, spark, and synth owners present the continuation without new state, timer, control, event type, entity, material, effect pool, or diagnostic ownership. The exact next playable unit is one cyan stabilization catch at original `anchor-13` that confirms both branch results before pointing toward original `anchor-14`, reusing the existing anchor-locked event, route-choice score, route progress, tether, camera, HUD, spark, and synth owners without another state or control.
-
-Latest bounded refiner result: `rogue-lite-hellscape-siege` now spends the guaranteed one-Crystal remainder after its first Sentry on one readable, in-place six-shot Siege 3 surge. The existing `B`, inventory, build, Sentry structure, turret cooldown, wave, HUD, Canvas, and FX owners carry ready, armed, active, spent, wall-loss rebuild, and failure/retry states without another control, world resource, event type, DOM node, Canvas, or diagnostic owner. The exact next safe refiner candidate is Signal Bastion's older `8.6` feel baseline: one post-clear second-command choice between upgrading the starter line and adding a specialist tower through existing economy, session, wave-preview, descriptor, HUD, and Canvas owners.
+The saturation streak is `5 / 5`. SAT-001 through SAT-005 are validated and preserved with zero newly accepted atomic capabilities after complete consolidation. The mission stop condition is satisfied; no sixth experiment is authorized by this goal.

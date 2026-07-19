@@ -12,14 +12,25 @@ NexusEngine-Experiments owns playable browser proof, product-specific content an
 - Reusable behavior found in experiments must move to ProtoKits instead of being copied across routes.
 - Existing experiments and games are legacy inventory. They do not count toward the production pipeline's new 100-kit, 50-experiment, or 10-game totals.
 
-## Production Pipeline
+## Capability Saturation Series
 
-- Durable state lives under `.agent/nexus-game-production/`.
+- Durable saturation state lives under `.agent/saturation-series/`; the existing production ledgers remain preserved historical inventory.
+- The series is strictly sequential. One experiment may be active, and no later experiment is selected until the active unit has validation, lessons, capability classification, ownership reconciliation, and a computed new-capability count.
+- Legacy playables do not count retroactively because they lack the complete saturation classification and consolidation gate.
+- The streak starts at zero, increments only after a validated experiment accepts zero new atomic capabilities, and resets to zero after any validated experiment accepts one or more.
+- Capability dispositions are exactly `Core-reused`, `domain-reused`, `newly accepted`, `merged duplicate`, `specialization`, `adapter-only`, `local-only`, or `rejected`.
+- New atomic capability acceptance requires one semantic responsibility, a canonical owner, multiple plausible consumers, negative Core/domain evidence, deterministic lifecycle expectations, and player-visible proof. A proposal alone never counts.
+- Every active experiment defines its route-domain boundary, player loop, quality bar, performance budget, failure/recovery proof, and evidence contract before implementation.
+- Keep NexusEngine Core read-only. Reusable renderer-agnostic behavior belongs in NexusEngine-ProtoKits; experiment content, input, browser lifecycle, Canvas/DOM presentation, and route-specific win/loss composition stay local.
+
+## Historical Production Pipeline
+
+- Historical production state lives under `.agent/nexus-game-production/`.
 - Each run creates one `.agent/change-packets/<packet-id>/PACKET.md`; global and repository lock artifacts are deprecated and must not be created, inspected, or honored.
 - Playable experience is the production driver. Historical catalog and staged bootstrap gates are reference inventory and bookkeeping, never blockers for a coherent playable upgrade.
 - Implement or extract only the reusable ProtoKits required by the active experience, then preserve and update prior ledgers and counts after the playable result.
 - Bootstrap epoch 0 requires 100 accepted and implemented kits, 50 playable seeded experiments, and 10 documented games. These are minimums, not terminal caps.
-- After bootstrap, numbered production epochs continue forever. Each epoch adds exactly 10 accepted and implemented kits, 5 playable seeded experiments, 1 documented game that merges those five experiments, and 1 bounded refinement-and-pruning slice.
+- The former numbered-epoch quota remains historical inventory and does not override the active capability-saturation goal.
 - Every experiment records epoch, lifecycle status, seed, draws, rejections, accepted signature, coherence, fantasy, verb, pressure, objective, visual identity, interaction structure, and validation.
 - Source experiments and superseded games may be removed only after their complete feature union is inventoried, mapped to a validated successor, cleared from references, and recorded in the retirement ledger.
 - Track bootstrap progress separately from lifetime-created, active, merged, archived, and retired totals. Accepted definitions do not count as created kits.

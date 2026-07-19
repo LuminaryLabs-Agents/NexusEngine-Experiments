@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <meta name="description" content="Correct distorted testimony, bind verified pledges, and rally a blackout council." />
+  <title>Glasshouse Accord — Nexus Engine</title>
+  <link rel="icon" href="data:," />
+  <style>
+    :root{color-scheme:dark;--ink:#100c18;--panel:rgba(24,17,34,.91);--line:rgba(236,190,255,.22);--violet:#dca7ff;--rose:#ff91b9;--gold:#ffd479;--mint:#8ff0ca;--danger:#ff6e89;--muted:#aa98b5}
+    *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--ink);color:#fff9f2;font-family:Inter,ui-sans-serif,system-ui,-apple-system,sans-serif}button{font:inherit}canvas{position:fixed;inset:0;width:100vw;height:100vh;display:block;background:#100c18}
+    #ui{position:fixed;inset:0;z-index:3;pointer-events:none;padding:clamp(14px,2vw,26px);display:grid;grid-template-columns:minmax(300px,410px) 1fr minmax(260px,340px);grid-template-rows:auto 1fr auto;gap:14px}.glass{background:linear-gradient(145deg,rgba(27,19,39,.96),rgba(14,11,24,.9));border:1px solid var(--line);box-shadow:0 22px 64px rgba(0,0,0,.35),inset 0 1px rgba(255,255,255,.04);backdrop-filter:blur(10px)}
+    #hero{grid-column:1;grid-row:1;border-radius:22px;padding:18px;pointer-events:auto}.eyebrow{margin:0 0 7px;color:var(--gold);font:800 10px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.16em;text-transform:uppercase}h1{margin:0;font-size:clamp(29px,3.2vw,44px);line-height:.9;letter-spacing:-.055em}#objective{margin:11px 0 12px;color:rgba(248,235,252,.76);font-size:13px;line-height:1.42}#prompt{margin:0 0 13px;min-height:2.7em;color:#fff0c9;font-size:12px;line-height:1.4}.controls{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}.action{border:1px solid rgba(220,167,255,.24);border-radius:12px;background:rgba(220,167,255,.075);color:#fff7ff;padding:9px 10px;text-align:left;cursor:pointer;transition:.15s}.action:hover,.action:focus-visible{outline:none;transform:translateY(-1px);background:rgba(220,167,255,.15);border-color:rgba(220,167,255,.55)}.action b{display:block;font-size:12px}.action span{color:var(--muted);font:700 9px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em}.action[data-action="correct"]{border-color:rgba(143,240,202,.3)}.action[data-action="pledge"]{border-color:rgba(255,212,121,.32)}.action[data-action="rally"]{border-color:rgba(255,145,185,.34)}
+    #envoys{grid-column:3;grid-row:1/3;display:grid;align-content:start;gap:9px;pointer-events:auto}.envoy{border-radius:17px;padding:14px;cursor:pointer;text-align:left;color:inherit;min-height:112px;position:relative}.envoy::before{content:"";position:absolute;left:-1px;top:16px;bottom:16px;width:3px;border-radius:8px;background:var(--tone)}.envoy[aria-pressed="true"]{border-color:var(--tone);box-shadow:0 22px 64px rgba(0,0,0,.35),0 0 0 1px color-mix(in srgb,var(--tone) 32%,transparent)}.envoy header{display:flex;justify-content:space-between;gap:8px}.envoy strong{font-size:14px}.envoy small{color:var(--muted);font:750 9px ui-monospace,SFMono-Regular,Menlo,monospace;text-transform:uppercase;letter-spacing:.08em}.envoy p{margin:8px 0 0;color:rgba(246,231,250,.72);font-size:11px;line-height:1.38}.sigils{display:flex;gap:6px;margin-top:10px}.sigil{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.1)}.sigil.on{background:var(--tone);box-shadow:0 0 12px var(--tone)}
+    #status{grid-column:1;grid-row:3;border-radius:17px;padding:12px 14px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.stat span{display:block;color:var(--muted);font:700 9px ui-monospace,SFMono-Regular,Menlo,monospace;text-transform:uppercase;letter-spacing:.09em}.stat strong{display:block;margin-top:4px;font-size:14px}#log{grid-column:2;grid-row:3;justify-self:center;align-self:end;width:min(580px,100%);border-radius:999px;padding:11px 18px;text-align:center;color:#fff5ff;font:750 11px/1.35 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.035em}
+    #advanced{position:fixed;z-index:5;right:clamp(14px,2vw,26px);bottom:clamp(14px,2vw,26px);width:min(345px,calc(100vw - 28px));border-radius:14px;overflow:hidden;pointer-events:auto}#advanced summary{cursor:pointer;list-style:none;padding:10px 12px;color:rgba(241,222,248,.64);font:750 10px ui-monospace,SFMono-Regular,Menlo,monospace;text-transform:uppercase;letter-spacing:.09em}#advanced summary::-webkit-details-marker{display:none}#advanced[open] summary{color:var(--violet);border-bottom:1px solid var(--line)}#advancedBody{padding:12px;max-height:35vh;overflow:auto;white-space:pre-wrap;color:rgba(238,219,246,.7);font:11px/1.45 ui-monospace,SFMono-Regular,Menlo,monospace}
+    #ending{position:fixed;z-index:8;inset:0;display:grid;place-items:center;background:rgba(8,5,13,.76);padding:20px}#ending[hidden]{display:none}.ending-card{width:min(540px,100%);border-radius:28px;padding:30px;text-align:center;border-color:rgba(143,240,202,.5)}.ending-card[data-result="lost"]{border-color:rgba(255,110,137,.58)}.mark{width:78px;height:78px;margin:0 auto 17px;transform:rotate(45deg);border:2px solid var(--mint);box-shadow:0 0 0 10px rgba(143,240,202,.07),0 0 50px rgba(143,240,202,.18)}.ending-card[data-result="lost"] .mark{border-color:var(--danger);box-shadow:0 0 0 10px rgba(255,110,137,.07),0 0 50px rgba(255,110,137,.18)}#ending h2{margin:0;font-size:clamp(34px,6vw,58px);line-height:.9;letter-spacing:-.055em}#ending p{color:rgba(247,233,251,.72);line-height:1.45}.restart{border:1px solid rgba(220,167,255,.48);border-radius:999px;background:rgba(220,167,255,.12);color:#fff;padding:11px 21px;font-weight:800;cursor:pointer}#error{position:fixed;z-index:10;left:16px;right:16px;bottom:16px;border-radius:14px;background:#4a1021;color:#fff;padding:14px;white-space:pre-wrap;font:12px ui-monospace,SFMono-Regular,Menlo,monospace}#error[hidden]{display:none}
+    @media(max-width:900px){#ui{grid-template-columns:minmax(280px,1fr) minmax(220px,.7fr)}#envoys{grid-column:2}#status{grid-column:1}#log{display:none}#advanced{display:none}}@media(max-width:650px){#ui{padding:10px;grid-template-columns:1fr;grid-template-rows:auto 1fr auto}#hero{padding:13px}#objective{display:none}#envoys{grid-column:1;grid-row:2;grid-template-columns:repeat(3,1fr);align-self:end}.envoy{min-height:86px;padding:9px}.envoy p{display:none}.controls{grid-template-columns:repeat(4,1fr)}.action{padding:8px 4px;text-align:center}.action span{display:none}#status{grid-column:1;padding:9px}h1{font-size:29px}}@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+  </style>
+</head>
+<body>
+  <canvas id="game" role="img" aria-label="Circular blackout council chamber with three illuminated envoy seats"></canvas>
+  <main id="ui" aria-label="Glasshouse Accord council surface">
+    <section id="hero" class="glass">
+      <p class="eyebrow">SAT-002 · Blackout council</p>
+      <h1>Glasshouse Accord</h1>
+      <p id="objective">Secure three verified relief pledges. Hear each envoy, correct any distorted record, rally a broken chamber, then bind the promise.</p>
+      <p id="prompt" aria-live="polite">Select an envoy and hear the first testimony.</p>
+      <div class="controls" aria-label="Hero controls">
+        <button class="action" data-action="hear"><b>1 · Hear</b><span>expose testimony</span></button>
+        <button class="action" data-action="correct"><b>2 · Correct</b><span>restore record</span></button>
+        <button class="action" data-action="pledge"><b>3 · Bind pledge</b><span>settle obligation</span></button>
+        <button class="action" data-action="rally"><b>4 · Rally</b><span>restore resolve</span></button>
+      </div>
+    </section>
+    <section id="envoys" aria-label="Council envoys"></section>
+    <section id="status" class="glass" aria-label="Accord status">
+      <div class="stat"><span>Chamber</span><strong id="resolveValue">Steady</strong></div>
+      <div class="stat"><span>Resolve</span><strong id="scoreValue">82%</strong></div>
+      <div class="stat"><span>Pledges</span><strong id="pledgesValue">0 / 3</strong></div>
+    </section>
+    <div id="log" class="glass" aria-live="polite">Q / E selects envoys · R restarts</div>
+  </main>
+  <details id="advanced" class="glass"><summary>Advanced domain evidence</summary><div id="advancedBody">Booting pinned domains…</div></details>
+  <section id="ending" hidden><article class="ending-card glass" data-result="won"><div class="mark"></div><p class="eyebrow" id="endingEyebrow">Record aligned</p><h2 id="endingTitle">Unanimous Accord</h2><p id="endingCopy">Three corrected claims became three fulfilled promises.</p><button id="restart" class="restart">R · Convene again</button></article></section>
+  <pre id="error" role="alert" hidden></pre>
+  <script type="module" src="./src/main.js?v=sat-002-1"></script>
+</body>
+</html>

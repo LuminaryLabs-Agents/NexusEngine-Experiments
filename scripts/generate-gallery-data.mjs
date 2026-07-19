@@ -5,8 +5,25 @@ import { aaaBatchGames } from "../experiments/aaa-batch/host/game-registry.js";
 const ROOT = process.cwd();
 const DATA_PATH = join(ROOT, "experiments/_shared/nexus-gallery-data.js");
 const INDEX_PATH = join(ROOT, "index.html");
+const CUTOVER_MANIFEST_PATH = join(ROOT, "experiments/domain-kit-cutover-manifest.json");
+const PRUNING_MAP_PATH = join(ROOT, "experiments/canonical-route-pruning-map.json");
 const PROMOTED_APP_BY_ID = new Map(aaaBatchGames.map((app) => [app.id, app]));
 const PROMOTED_APP_IDS = new Set(PROMOTED_APP_BY_ID.keys());
+const CUTOVER_MANIFEST = existsSync(CUTOVER_MANIFEST_PATH)
+  ? JSON.parse(readFileSync(CUTOVER_MANIFEST_PATH, "utf8"))
+  : { canonicalRoutes: [] };
+const CANONICAL_ID_BY_ROUTE = new Map(
+  (CUTOVER_MANIFEST.canonicalRoutes ?? []).map((entry) => [`./${entry.canonicalPath}`, entry.id])
+);
+const PRUNING_MAP = existsSync(PRUNING_MAP_PATH)
+  ? JSON.parse(readFileSync(PRUNING_MAP_PATH, "utf8"))
+  : { canonicalRouteIssues: [] };
+const PREFERRED_VARIANT_ROUTE_BY_ID = new Map(
+  (PRUNING_MAP.canonicalRouteIssues ?? [])
+    .flatMap((issue) => issue.variantsToFold ?? [])
+    .filter((variant) => variant.id && variant.route)
+    .map((variant) => [variant.id, variant.route])
+);
 const IGNORE = new Set(["_shared", "aaa-batch", "assets"]);
 const SEARCH_ROOTS = [
   { dir: "experiments", kind: "experiment", subtype: "experiment", tab: "experiments", tabLabel: "Experiments", playLabel: "Open experiment", source: "experiment" },
@@ -145,6 +162,11 @@ function routeExists(route) {
 
 function shouldSkipEntry(root, entryName) {
   if (IGNORE.has(entryName) || entryName.startsWith(".")) return true;
+  if (/-v\d+$/i.test(entryName)) return true;
+  const preferredVariantRoute = PREFERRED_VARIANT_ROUTE_BY_ID.get(entryName);
+  if (preferredVariantRoute && PROMOTED_APP_IDS.has(entryName)) return true;
+  if (preferredVariantRoute && preferredVariantRoute !== `./${posix.join(root.dir, entryName)}/`) return true;
+  if (preferredVariantRoute) return false;
   return root.dir === "experiments" && PROMOTED_APP_IDS.has(entryName);
 }
 
@@ -192,6 +214,7 @@ function searchTextFor(app, spec) {
 function discoverRoutes() {
   const routes = [];
   const seen = new Set();
+  const routeIndexById = new Map();
   for (const root of SEARCH_ROOTS) {
     const absRoot = join(ROOT, root.dir);
     if (!existsSync(absRoot)) continue;
@@ -199,9 +222,9 @@ function discoverRoutes() {
       if (!entry.isDirectory() || shouldSkipEntry(root, entry.name)) continue;
       const indexPath = join(absRoot, entry.name, "index.html");
       if (!existsSync(indexPath)) continue;
-      const id = entry.name;
-      const route = `./${posix.join(root.dir, id)}/`;
-      const key = `${root.dir}:${id}`;
+      const route = `./${posix.join(root.dir, entry.name)}/`;
+      const id = CANONICAL_ID_BY_ROUTE.get(route) ?? entry.name;
+      const key = `${root.dir}:${entry.name}`;
       if (seen.has(key)) continue;
       seen.add(key);
       const html = readFileSync(indexPath, "utf8");
@@ -238,7 +261,13 @@ function discoverRoutes() {
       };
       app.searchText = searchTextFor(app, spec);
       if (!routeExists(app.route)) throw new Error(`Generated missing route: ${app.route}`);
-      routes.push(app);
+      const existingIndex = routeIndexById.get(app.id);
+      if (existingIndex === undefined) {
+        routeIndexById.set(app.id, routes.length);
+        routes.push(app);
+      } else {
+        routes[existingIndex] = app;
+      }
     }
   }
   const tabOrder = { experiments: 0, games: 1, workshops: 2, simulations: 3, tools: 4 };
@@ -268,6 +297,7 @@ function buildTabs(routes) {
 
 function jsString(value) {
   return JSON.stringify(value, null, 2)
+    .replace(/^(\s*)"([A-Za-z_$][\w$]*)":/gm, "$1$2:")
     .replace(/\u2028/g, "\\u2028")
     .replace(/\u2029/g, "\\u2029");
 }
@@ -278,10 +308,10 @@ function writeGalleryData(routes) {
 // Do not hand-curate this file; add real experiments/apps with index.html or update the generator metadata.
 
 export const galleryConfig = Object.freeze({
-  title: "Nexus Engine Applications",
-  subtitle: "Experiments, apps, tools, workshops, simulations, and realtime routes",
-  repoUrl: "https://github.com/LuminaryLabs-Agents/NexusRealtime-Experiments",
-  hint: "Search, select, and open any realtime route."
+  title: "Experiments",
+  subtitle: "Nexus Engine playable routes",
+  repoUrl: "https://github.com/LuminaryLabs-Agents/NexusEngine-Experiments",
+  hint: "Search, select, and open any Nexus Engine route."
 });
 
 export const tabs = Object.freeze(${jsString(tabs)});
