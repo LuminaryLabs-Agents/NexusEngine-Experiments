@@ -262,6 +262,38 @@ export function createNextLedgeClimbPreset(options = {}) {
       rejoinReboundPrompt: "CYAN SCORE HELD — {score} {metric} · Rebound online",
       rejoinReboundObjective: "Original anchor-11 answered the cyan release. Ride the short rebound upward with the branch score preserved.",
       rejoinReboundStatus: "Anchor-11 rebound confirmed. {score} {metric} held—generic ascent is live.",
+      rejoinFirstSwingRelease: {
+        safe: {
+          style: "mint-score-carry",
+          minDirectedAngle: 0.42,
+          maxDirectedAngle: 0.9,
+          minDirectedSpeed: 0.034,
+          velocityMultiplier: 1.12,
+          horizontalVelocityMultiplier: 0.86,
+          liftImpulse: 0.56,
+          cameraImpulse: 0.2,
+          color: 0x3dffa3,
+          buildPrompt: "MINT {score} {metric} — Carry {direction} into the release band",
+          prompt: "MINT {score} {metric} READY — Release to anchor-12",
+          objective: "Anchor-11 preserved {score} {metric}. Carry the rebound {direction} until mint flashes, then release toward anchor-12.",
+          status: "Mint score carry released. {score} {metric} is climbing toward anchor-12."
+        },
+        shortcut: {
+          style: "amber-score-drive",
+          minDirectedAngle: 0.56,
+          maxDirectedAngle: 1.02,
+          minDirectedSpeed: 0.045,
+          velocityMultiplier: 1.18,
+          horizontalVelocityMultiplier: 1.02,
+          liftImpulse: 0.26,
+          cameraImpulse: 0.34,
+          color: 0xffb83d,
+          buildPrompt: "AMBER {score} {metric} — Compress {direction} into the release band",
+          prompt: "AMBER {score} {metric} READY — Drive to anchor-12",
+          objective: "Anchor-11 banked {score} {metric}. Compress the rebound {direction} until amber flashes, then drive the cargo line toward anchor-12.",
+          status: "Amber score drive released. {score} {metric} is committed toward anchor-12."
+        }
+      },
       safeStatus: "Windglass Relay is reading the Slipstream overcharge. Preserve the mint velocity into the shared catch.",
       shortcutStatus: "Windglass Relay is reading the Cacheline transfer. Carry the amber cargo mastery into the shared catch.",
       resolvedSafeStatus: "Windglass Relay scored {score} SPEED. Slipstream velocity preserved—generic ascent restored.",

@@ -70,6 +70,8 @@ The payoff latch now finishes the same branch beat physically. Slipstream applie
 
 The first payoff swing now resolves that recoil into one authored release window. Slipstream exposes a buoyant mint glide band; Cacheline exposes a tighter amber aftershock band. Existing swing angle and angular velocity determine readiness, the existing release event carries the branch impulse, and the existing HUD, spark pool, player light, atmosphere, camera, and synth owners present it without another state, timer, control, event type, entity, or diagnostic surface.
 
+After Windglass resolves the route and original `anchor-11` confirms the score, the first generic swing now carries that branch identity into `anchor-12`. Safe recovery exposes a mint `134 SPEED` release band with extra lift; the shortcut exposes a faster amber `175 CARGO` drive. One nested descriptor, the existing release event, and the existing tether, camera, target, HUD, spark, atmosphere, and synth owners present the handoff without another state, control, entity, material, or diagnostic surface.
+
 ### Fogline Relay
 
 `experiments/fogline-relay/` is a first-person fog-forest relay experiment. It composes reusable kit surfaces, keeps the Canvas renderer presentation-only, and validates renderer-agnostic visual buckets, fog volumes, volumetric light descriptors, relay scanning, objective flow, and wraith hazards.

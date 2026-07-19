@@ -1,7 +1,7 @@
 import * as NexusEngine from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Dev/NexusEngine@main/src/index.js";
 import { createParallaxKit } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusRealtime-ProtoKits@0.0.2/protokits/parallax-kit/index.js";
 import { createConfigurableRenderLayerKit } from "https://cdn.jsdelivr.net/gh/LuminaryLabs-Agents/NexusRealtime-ProtoKits@0.0.2/protokits/configurable-render-layer-kit/index.js";
-import { createNextLedgeSession as createBaseNextLedgeSession } from "./session.js?v=windglass-score-rebound-1";
+import { createNextLedgeSession as createBaseNextLedgeSession } from "./session.js?v=score-carry-release-1";
 import {
   createNextLedgeParallaxInput,
   createNextLedgeRenderStyleInput,

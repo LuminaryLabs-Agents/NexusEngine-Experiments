@@ -43,7 +43,7 @@ export function createCinematicSynth() {
       if (event.releaseCueStyle === "cyan-high-build-window") {
         tone(523.25, 0.28, "triangle", 0.085, 1046.5);
         setTimeout(() => tone(1567.98, 0.22, "sine", 0.06, 2093), 46);
-      } else if (event.releaseCueStyle === "amber-aftershock") {
+      } else if (String(event.releaseCueStyle ?? "").includes("amber")) {
         tone(98, 0.34, "sawtooth", 0.13, 49);
         setTimeout(() => tone(987.77, 0.16, "triangle", 0.08, 493.88), 42);
       } else {

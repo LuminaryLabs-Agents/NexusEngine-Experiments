@@ -68,10 +68,10 @@
         "generic-traversal-feedback-kit",
         "generic-route-cargo-extraction-kit"
       ],
-      "feelAverageBefore": 9.1,
-      "feelAverageAfter": 9.3,
-      "validation": "Playwright physically completed safe and shortcut routes through 134-speed / 175-cargo Windglass scores, the shared cyan release, original anchor-11, and one score-preserving rebound. Failure, keyboard retry, Advanced closed/open/closed, bounded DOM/canvas/descriptor/scene behavior, and the matched starting-commit performance gate passed with zero console or page errors. Human View passed both secured-score identities, failure, and recovery with diagnostics closed.",
-      "packetId": "2026-07-17-next-ledge-score-preserving-rebound"
+      "feelAverageBefore": 9.3,
+      "feelAverageAfter": 9.7,
+      "validation": "Playwright completed safe and shortcut routes through the 134-speed / 175-cargo Windglass scores, original anchor-11, branch-aware first-swing releases, and original anchor-12. Physical release input, failure, keyboard retry, Advanced closed/open/closed, bounded DOM/canvas/descriptor/scene behavior, and the matched starting-commit performance gate passed with zero console or page errors. Human View passed first-screen, mint/amber build-ready-release, catch, failure, and recovery frames with diagnostics closed.",
+      "packetId": "2026-07-19-next-ledge-score-carry-release"
     }
   ],
   "experiments": []

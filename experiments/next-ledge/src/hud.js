@@ -1,4 +1,4 @@
-import { describeActiveSwingReleaseCue, describeWindglassRejoinRebound, describeWindglassScoreSettle } from "./climb-anchor-adapter.js?v=windglass-score-rebound-1";
+import { describeActiveSwingReleaseCue, describeWindglassRejoinRebound, describeWindglassScoreSettle } from "./climb-anchor-adapter.js?v=score-carry-release-1";
 
 const pct = (value, max = 100) => `${Math.round(Math.max(0, value) / Math.max(1, max) * 100)}%`;
 const number = (value, fallback = 0) => Number.isFinite(Number(value)) ? Number(value) : fallback;
@@ -109,6 +109,12 @@ function promptFor(snapshot, swingReleaseCue = describeActiveSwingReleaseCue(sna
     text: windglassRebound.prompt ?? `CYAN SCORE HELD — ${windglassRebound.score} ${windglassRebound.metric}`,
     tone: "cyan"
   };
+  if (swingReleaseCue) return {
+    text: swingReleaseCue.ready
+      ? swingReleaseCue.prompt ?? "SCORE CARRY READY — Release to anchor-12"
+      : swingReleaseCue.buildPrompt ?? `Carry ${swingReleaseCue.directionLabel} into the score release band`,
+    tone: choice?.selectedRole === "pressure-shortcut" ? "amber" : "mint"
+  };
   const speed = Math.hypot(number(snapshot.player?.vx), number(snapshot.player?.vy));
   return speed >= 1.7
     ? { text: "Space / click — Release now", tone: "ready" }
@@ -125,6 +131,9 @@ function playerStatus(snapshot, swingReleaseCue = null, windglassRebound = descr
     ? "Cyan rejoin aligned. Release upward, then fire for the original ascent anchor."
     : `Load ${swingReleaseCue.directionLabel} and high until the shared cyan release cue flashes.`;
   if (windglassRebound) return windglassRebound.status ?? `Anchor-11 rebound confirmed. ${windglassRebound.score} ${windglassRebound.metric} held.`;
+  if (swingReleaseCue) return swingReleaseCue.ready
+    ? `${Math.round(number(snapshot.routeChoice?.scoreValue))} ${snapshot.routeChoice?.scoreMetric === "cargo-mastery" ? "CARGO" : "SPEED"} aligned. Release toward anchor-12.`
+    : swingReleaseCue.objective ?? `Carry the banked score ${swingReleaseCue.directionLabel} into the anchor-12 release band.`;
   const status = String(snapshot.status ?? "");
   if (!status || status.startsWith("SYS_STATUS")) return "Build flow, release at speed, and fire toward the next cyan anchor.";
   return status;
@@ -200,6 +209,10 @@ export function createHud(nodes = {}) {
           ? `Windglass banked ${Math.round(number(snapshot.routeChoice.scoreValue))} ${snapshot.routeChoice.scoreMetric === "cargo-mastery" ? "cargo mastery" : "speed"}. Build above the relay and fire for the bright cyan ascent anchor; this catch has a protected recovery window.`
         : windglassRebound
           ? windglassRebound.objective ?? "Original anchor-11 answered the cyan release. Ride the short rebound upward with the branch score preserved."
+        : swingReleaseCue
+          ? swingReleaseCue.committed
+            ? "Anchor-12 is highlighted. Fire the grapple now, then hold through the catch."
+            : swingReleaseCue.objective ?? "Carry the preserved score through one first-swing release toward anchor-12."
         : snapshot.completed
           ? "Signal delivered. The summit relay is broadcasting through the storm."
         : cargoAmount > 0

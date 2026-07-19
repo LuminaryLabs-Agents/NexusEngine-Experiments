@@ -29,8 +29,8 @@
   "synchronizedStartingCommits": {
     "coreRemoteDefault": "a5882b47bd5a9284550bb3af1f0cd8580c62665e",
     "coreLocalReadOnly": "a5882b47bd5a9284550bb3af1f0cd8580c62665e",
-    "protokits": "bb3d787da372bf001653635d6e57eb7ce54e3c50",
-    "experiments": "10e1c998ce0582238dcb236093e727a05b63b2b5",
+    "protokits": "194d37714d7c23984970e09015b5dd4bffbbab7b",
+    "experiments": "1b9108958f02b29db7bb97f4a8ff0edb0351cc41",
     "experimentsBaseline": "615a7e1e2170164acef0edebdbe0b88b8c01fd1b"
   },
   "baseline": {
@@ -142,9 +142,9 @@
     "result": "Accepted 10 genuinely new natural-language kit contracts after six additional duplicate, catalog-overlap, or blurred-scope rejections; no implementation was created."
   },
   "lastCreationUnit": {
-    "packetId": "2026-07-17-next-ledge-score-preserving-rebound",
+    "packetId": "2026-07-19-next-ledge-score-carry-release",
     "scope": "legacy-active-experiment-player-visible-upgrade",
-    "result": "Upgraded Next Ledge so original anchor-11 answers the shared cyan release with one bounded score-preserving rebound, keeping 134 SPEED or 175 CARGO visible through existing tether, camera, target-material, player-scale, HUD, spark, and synth owners; production creation counts remain unchanged."
+    "result": "Upgraded Next Ledge so original anchor-11 carries 134 SPEED through a lifted mint release or 175 CARGO through a faster amber drive into original anchor-12 using existing release, tether, target, camera, HUD, effects, and synth owners; production creation counts remain unchanged."
   },
   "lastRefinementUnit": {
     "packetId": "2026-07-19-hellscape-return-fortification-choice",
@@ -152,23 +152,23 @@
     "result": "Siege 1 now carries into a visible 5 wood plus 3 obsidian recipe that upgrades the surviving Spike Wall in place to 300 HP with 35 percent guard, while destroyed defenses require starter-cache rebuilding before the same siege number can retry."
   },
   "lastCompletedUnit": {
-    "packetId": "2026-07-19-hellscape-return-fortification-choice",
-    "scope": "Hellscape post-clear Grove/Ashes Emberplate choice",
-    "result": "The first clear now exposes one 5 wood plus 3 obsidian recipe, narrows realm guidance as materials arrive, and upgrades the surviving Spike Wall in place to 300 HP with 35 percent guard. Breaches retry the same siege number and destroyed defenses require starter-cache rebuilding before restart.",
-    "validation": "All 22 existing Hellscape test entrypoints, affected JavaScript syntax, JSON parsing, and diff hygiene passed. Playwright physically cleared Siege 1, harvested Grove and Ashes, forged Emberplate, proved guarded pressure, natural breach, destroyed-defense rebuild, same-number retry, and Advanced closed/open/closed with zero console messages. Human View passed the first screen, recipe progression, forge-ready wall, completed Emberplate, and recovery frames with diagnostics closed. Matched performance measured 16.663 to 16.661 ms average frame time, 60.014 to 60.020 FPS, and 18.3 to 17.6 ms p95; one canvas stayed constant, no long tasks appeared, and three post-failure checkpoints held bounded counts.",
+    "packetId": "2026-07-19-next-ledge-score-carry-release",
+    "scope": "Next Ledge anchor-11-to-anchor-12 score-carry release",
+    "result": "The safe route now carries 134 SPEED through a lifted mint first-swing release and the shortcut carries 175 CARGO through a tighter amber drive; both highlight and lock original anchor-12 without adding state, controls, entities, or diagnostic ownership.",
+    "validation": "All 28 existing Next Ledge test entrypoints, affected JavaScript syntax, JSON parsing, and diff hygiene passed. Playwright completed both routes through their score-aware release and anchor-12, proved physical release input, failure, keyboard recovery, and Advanced closed/open/closed with zero console messages or page errors. Human View passed the first screen plus mint/amber build, ready, release, catch, failure, and recovery frames with diagnostics closed. Matched starting-commit performance measured 93.388 to 93.846 ms average frame time, 10.708 to 10.656 FPS, and 131.3 to 133.3 ms p95; 69 DOM nodes, one canvas, 76 descriptors, and 277 scene nodes remained bounded across three active checkpoints.",
     "commits": {
       "coreReadOnly": "a5882b47bd5a9284550bb3af1f0cd8580c62665e",
       "protokitsStart": "194d37714d7c23984970e09015b5dd4bffbbab7b",
       "protokitsProductionUnit": "194d37714d7c23984970e09015b5dd4bffbbab7b",
-      "experimentsStart": "e1606c3f9215fd6360470935ab78fa53adea6a74",
-      "experimentsProductionUnit": "cfee398f3ba9e6e75ea52a1729d03f86afca5633"
+      "experimentsStart": "1b9108958f02b29db7bb97f4a8ff0edb0351cc41",
+      "experimentsProductionUnit": "pending-production-commit"
     },
-    "publication": "Experiments production commit cfee398f3ba9e6e75ea52a1729d03f86afca5633 published to resolved default branch main after fetch-before-push verification; this repository commit records the publication receipt. ProtoKits remained unchanged and synchronized at 194d37714d7c23984970e09015b5dd4bffbbab7b."
+    "publication": "Publication pending final fetch-before-push verification. ProtoKits remains unchanged and synchronized at 194d37714d7c23984970e09015b5dd4bffbbab7b."
   },
   "exactNextUnit": {
     "phase": "playable-experiment-upgrade",
     "epoch": 0,
-    "scope": "next-ledge-anchor-11-to-anchor-12-score-release",
-    "goal": "Turn the anchor-11 rebound into one score-aware first-swing release toward anchor-12, reusing the existing route-choice score, release, tether, camera, HUD, spark, and synth owners without another state or control."
+    "scope": "next-ledge-anchor-12-score-acknowledgement",
+    "goal": "Make anchor-12 acknowledge 134 SPEED versus 175 CARGO through one branch-aware restore pulse and point the first generic swing toward anchor-13, reusing the existing restored event, route-choice score, recovery, camera, HUD, spark, and synth owners without another state or control."
   }
 }

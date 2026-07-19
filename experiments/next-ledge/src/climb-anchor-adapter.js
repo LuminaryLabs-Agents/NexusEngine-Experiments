@@ -46,10 +46,12 @@ function activeWindglassRejoinRebound(snapshot = {}) {
   return null;
 }
 
-function describeDirectedReleaseCue(snapshot, source, target, prefix, defaultColor) {
+function describeDirectedReleaseCue(snapshot, source, target, prefix, defaultColor, descriptor = null) {
   const choice = snapshot.routeChoice;
   const metadata = source?.metadata;
-  const value = (name, fallback) => metadata?.[`${prefix}${name}`] ?? fallback;
+  const value = (name, fallback) => descriptor?.[`${name.charAt(0).toLowerCase()}${name.slice(1)}`]
+    ?? (prefix ? metadata?.[`${prefix}${name}`] : undefined)
+    ?? fallback;
   const style = value("Style");
   if (!style || !target) return null;
   const direction = Math.sign(finite(target.x) - finite(source.x)) || 1;
@@ -59,7 +61,11 @@ function describeDirectedReleaseCue(snapshot, source, target, prefix, defaultCol
   const directedAngle = direction * finite(snapshot.player?.angle);
   const directedSpeed = direction * finite(snapshot.player?.aVel);
   const directionLabel = direction < 0 ? "left" : "right";
-  const directionalCopy = (value) => typeof value === "string" ? value.replaceAll("{direction}", directionLabel) : value;
+  const metric = choice?.scoreMetric === "cargo-mastery" ? "CARGO" : "SPEED";
+  const score = Math.max(0, Math.round(finite(choice?.scoreValue)));
+  const directionalCopy = (copy) => typeof copy === "string"
+    ? copy.replaceAll("{direction}", directionLabel).replaceAll("{score}", String(score)).replaceAll("{metric}", metric)
+    : copy;
   return {
     targetId: target.id,
     style,
@@ -95,6 +101,29 @@ export function describeActiveSwingReleaseCue(snapshot = {}) {
     const convergence = ledges.find((ledge) => ledge.id === choice.convergenceAnchorId);
     const rejoin = ledges.find((ledge) => ledge.id === choice.genericRejoinAnchorId);
     return describeDirectedReleaseCue(snapshot, convergence, rejoin, "routeChoiceGenericRejoinRelease", 0x77e8ff);
+  }
+  if (choice?.status === "resolved" && snapshot.currentAnchorId === choice.genericRejoinAnchorId) {
+    const events = snapshot.recentEvents ?? [];
+    let firstSwingPhase = null;
+    for (let index = events.length - 1; index >= 0; index -= 1) {
+      const event = events[index];
+      if (event.type === "released") {
+        if (["mint-score-carry", "amber-score-drive"].includes(event.releaseCueStyle)) firstSwingPhase = { committed: true, event };
+        break;
+      }
+      if (event.type === "windglass-rejoin-secured") { firstSwingPhase = { committed: false, event }; break; }
+    }
+    if (firstSwingPhase) {
+      const sourceIndex = ledges.findIndex((ledge) => ledge.id === choice.genericRejoinAnchorId);
+      const source = ledges[sourceIndex];
+      const target = sourceIndex >= 0 ? ledges[sourceIndex + 1] : null;
+      const convergence = ledges.find((ledge) => ledge.id === choice.convergenceAnchorId);
+      const scoreRelease = convergence?.metadata?.routeChoiceGenericRejoinFirstSwingRelease?.[
+        choice.selectedRole === "pressure-shortcut" ? "shortcut" : "safe"
+      ];
+      const cue = describeDirectedReleaseCue(snapshot, source, target, "", undefined, scoreRelease);
+      return cue ? { ...cue, committed: firstSwingPhase.committed } : null;
+    }
   }
   return null;
 }
@@ -242,6 +271,10 @@ function choiceBeatLedge(source, beat, choiceId, defaultStaminaRestore = 45) {
       routeChoiceGenericRejoinReboundPrompt: beat.rejoinReboundPrompt ?? null,
       routeChoiceGenericRejoinReboundObjective: beat.rejoinReboundObjective ?? null,
       routeChoiceGenericRejoinReboundStatus: beat.rejoinReboundStatus ?? null,
+      routeChoiceGenericRejoinFirstSwingRelease: beat.rejoinFirstSwingRelease ? {
+        safe: { ...(beat.rejoinFirstSwingRelease.safe ?? {}) },
+        shortcut: { ...(beat.rejoinFirstSwingRelease.shortcut ?? {}) }
+      } : null,
       routeChoiceStatus: beat.status ?? null,
       routeChoiceResolvedStatus: beat.resolvedStatus ?? null,
       routeChoiceSafeStatus: beat.safeStatus ?? null,

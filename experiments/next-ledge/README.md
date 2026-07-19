@@ -26,6 +26,8 @@ When that settle ends, both scores now feed one branch-neutral cyan release wind
 
 Original `anchor-11` now answers that shot with one short cyan score rebound. The route descriptor authors the bounded impulse, velocity retention, camera kick, color, scale, and copy; the existing `windglass-rejoin-secured` event carries the preserved `134 SPEED` or `175 CARGO` score through the existing tether, player-scale, anchor material, HUD, spark, and synth owners. One shared event-age descriptor drives the beat, so no rebound state, timer, event type, control, entity, material, or effect pool is added.
 
+That rebound now resolves into one score-aware first-swing release toward original `anchor-12`. The safe line exposes a mint band that preserves `134 SPEED` with stronger lift; the shortcut exposes a tighter amber drive carrying `175 CARGO`. A nested safe/shortcut descriptor authors readiness, motion, camera response, color, and copy. The existing route-choice score and `released` event carry evidence through the existing tether, consequence line, target material, player light, atmosphere, HUD, spark, camera, and synth owners; no new state, timer, control, event type, entity, material, effect pool, or diagnostic surface is added.
+
 The amber shortcut now vents its retained pressure visibly during the physical Stormlock reel. Four descriptor-authored pulses route recovery through the existing route-cargo pressure facade, while the authoritative pressure meter, one pulse-stage status, the existing consequence line and beam, bounded sparks, camera response, and audio expose progress before lock. No second pressure value, meter, entity, or control is introduced.
 
 Stormlock lock now holds one branch-aware confirmation for `24` deterministic route frames before the next payoff opens. The shortcut keeps its explicit zero-pressure result on screen while Cacheline accepts the banked cargo; the safe route confirms its protected catch while Slipstream charges. Authored timing and copy stay in the route descriptor, and the existing route-choice phase, frame counter, target, beam, HUD, and payoff event remain the only owners.
@@ -116,5 +118,7 @@ The Windglass score uses descriptor-authored branch settle tuning. Presentation 
 The Windglass-to-`anchor-11` release uses descriptor-authored convergence tuning. The existing release command consumes its vertical response and lateral damping, and the existing released event plus presentation owners expose the cue without another state or control.
 
 The secured `anchor-11` rebound also remains descriptor-authored convergence tuning. The existing secured event carries the score and bounded presentation values; one event-age descriptor drives scale and feedback before generic ascent resumes.
+
+The first generic swing after `anchor-11` remains descriptor-authored score-carry tuning. Derive the safe/shortcut cue from the resolved route choice plus existing secured/released event order, apply its motion only through the existing release command, and reuse the original `anchor-12` target, consequence line, camera, HUD, effects, and synth rather than creating a score-carry state or presentation owner.
 
 See `PLAN.md` plus the route progress and route-cargo manifests for the remaining deterministic replay promotion gate.
