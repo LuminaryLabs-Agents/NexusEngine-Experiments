@@ -59,19 +59,19 @@
     {
       "id": "signal-bastion",
       "lifecycleStatus": "active-legacy-baseline",
-      "score": 88,
-      "lastImprovedAt": "2026-07-17T13:36:35-04:00",
+      "score": 91,
+      "lastImprovedAt": "2026-07-19T16:36:01-04:00",
       "feelScores": {
         "responsiveness": 9,
-        "predictability": 9,
-        "readability": 9,
+        "predictability": 10,
+        "readability": 10,
         "impact": 8,
         "recovery": 9,
         "delight": 8,
-        "replayDesire": 8,
-        "average": 8.6
+        "replayDesire": 9,
+        "average": 9
       },
-      "nextFeelProblem": "After the first clear, present one authored second-command choice between upgrading the line and adding a specialist tower, reusing the existing economy, session, wave-preview, and descriptor owners without adding another first-screen control or state owner."
+      "nextFeelProblem": "During Dense Braid, let the first Brute break visibly confirm the selected command with one focused Bolt break flash or rapid Volt crossfire beat through existing combat-VFX descriptors and Canvas feedback, without another state or control owner."
     },
     {
       "id": "stonewake-depths",

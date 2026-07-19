@@ -1,5 +1,11 @@
 # Cycle State
 
+## 2026-07-19 Signal Bastion Second-Command Choice
+
+`games/signal-bastion/` now turns the first clear into one explicit Dense Braid command: spend the real `87 CR` bank on a `38 CR` Bolt Spire upgrade or a `76 CR` Volt Web specialist. The choice is authored in preset data and derived from existing economy, structures, session, and wave state; mission/HUD and one Canvas ring project it without another control or persistent state owner. ProtoKits now settles late wave rewards in cleanup and exposes the one real level-scaled upgrade instead of three unimplemented presentation branches. Playwright physically cleared Wave 2 with both choices at full core health, breached/rebuilt hard mode, proved Advanced closed/open/closed, and recorded zero console messages. The matched active gate moved `33.333 -> 16.667 ms` average frame time (`30 -> 60 FPS`), held `108` DOM nodes / one Canvas / zero long tasks, and repeated idle samples held DOM/descriptors constant with normal heap collection.
+
+Exact next playable unit: during Dense Braid, let the first Brute break visibly confirm the selected command with one focused Bolt break flash or rapid Volt crossfire beat through existing combat-VFX descriptors and Canvas feedback, without another state or control owner.
+
 ## 2026-07-19 Hellscape Crystal Overflow Overcharge
 
 `games/rogue-lite-hellscape-siege/` now turns the guaranteed one Crystal left after its first Sentry into one finite Siege 3 surge. The existing `B` action arms exactly six `30`-damage shots at a `0.3s` cooldown; turret cooldown, beam, flash, shake, particles, HUD, and Canvas show ready, armed, active, and spent states on the same Sentry. Physical Playwright completed the surge and Siege 3, then converted its observed wall loss into a first-screen rebuild route with unique structure IDs; failure/rebuild/retry and Advanced closed/open/closed also passed with zero console messages. Matched active performance improved `16.6666 -> 16.6641 ms` average frame time (`60.000 -> 60.009 FPS`), p95 improved `17.6 -> 17.4 ms`, and `52` DOM nodes / one Canvas / zero long tasks stayed bounded.
