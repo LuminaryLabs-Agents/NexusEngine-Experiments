@@ -1,6 +1,6 @@
 # Hellscape Crystal Sentry Choice
 
-Status: validated playable production unit; publication receipt pending
+Status: validated playable production unit; production published; receipt pending
 Packet ID: `2026-07-19-hellscape-crystal-sentry-choice`
 Experiment-game: `games/rogue-lite-hellscape-siege/`
 Run type: bounded legacy-game feel refinement; no production-count claim
@@ -73,9 +73,9 @@ Playwright physically completed build, Siege 1, Grove/Ashes harvest, Emberplate 
 ## Publication
 
 - Starting commits: Core read-only `a5882b47bd5a9284550bb3af1f0cd8580c62665e`; ProtoKits `194d37714d7c23984970e09015b5dd4bffbbab7b`; Experiments `d5b3ba42d377da6744ef61cec857e5dbfb29f035`.
-- Experiments production commit: pending.
-- Experiments receipt/final commit: pending.
-- ProtoKits: unchanged; synchronized verification pending final fetch.
-- Push: pending final clean-handoff and fetch-before-push gate.
+- Experiments production commit: `453d76e4981b35aadf4988d91751045ab006c7c7`.
+- Experiments receipt/final commit: this publication-receipt commit.
+- ProtoKits: unchanged and synchronized at `194d37714d7c23984970e09015b5dd4bffbbab7b` after final fetch.
+- Push: production commit published to resolved default branch `main` after fetch-before-push verification; this receipt update follows.
 
 Exact next playable improvement: let Crystal overflow after the first Sentry fund one bounded in-place overcharge for Siege 3 through the existing inventory, build, turret cooldown, wave, HUD, and Canvas owners without another control, state owner, or visible diagnostic layer.

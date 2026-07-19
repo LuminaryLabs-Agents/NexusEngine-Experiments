@@ -152,18 +152,18 @@
     "result": "A surviving Emberplate wall through Siege 2 now unlocks one readable 5 crystal plus 3 energy specialist recipe; the existing build action deploys exactly one core-side Sentry, and wall-less failure restores the starter-wall recovery action."
   },
   "lastCompletedUnit": {
-    "packetId": "2026-07-19-next-ledge-score-carry-release",
-    "scope": "Next Ledge anchor-11-to-anchor-12 score-carry release",
-    "result": "The safe route now carries 134 SPEED through a lifted mint first-swing release and the shortcut carries 175 CARGO through a tighter amber drive; both highlight and lock original anchor-12 without adding state, controls, entities, or diagnostic ownership.",
-    "validation": "All 28 existing Next Ledge test entrypoints, affected JavaScript syntax, JSON parsing, and diff hygiene passed. Playwright completed both routes through their score-aware release and anchor-12, proved physical release input, failure, keyboard recovery, and Advanced closed/open/closed with zero console messages or page errors. Human View passed the first screen plus mint/amber build, ready, release, catch, failure, and recovery frames with diagnostics closed. Matched starting-commit performance measured 93.388 to 93.846 ms average frame time, 10.708 to 10.656 FPS, and 131.3 to 133.3 ms p95; 69 DOM nodes, one canvas, 76 descriptors, and 277 scene nodes remained bounded across three active checkpoints.",
+    "packetId": "2026-07-19-hellscape-crystal-sentry-choice",
+    "scope": "Hellscape post-Emberplate Crystal Sentry choice",
+    "result": "A surviving Emberplate wall through Siege 2 now unlocks one readable 5 crystal plus 3 energy specialist recipe; the existing build action deploys exactly one core-side Sentry, and wall-less failure restores the starter-wall recovery action.",
+    "validation": "All 22 existing Hellscape test entrypoints, affected JavaScript syntax, production JSON parsing, and diff hygiene passed. Playwright physically completed build, Siege 1, Grove/Ashes harvest, Emberplate forge, Siege 2, Crystal harvest/return, Sentry deployment, Siege 3 active fire, failure, rebuild, same-number retry, and Advanced closed/open/closed with zero console messages. Human View passed the first screen, pre-choice return, deployed/active Sentry, and failure recovery with diagnostics closed. Matched starting-commit performance measured 33.333 to 33.335 ms average frame time, 30.000 to 29.998 FPS, and 34.3 to 34.2 ms p95; 52 DOM nodes, one Canvas, 214 active descriptors, and zero long tasks remained bounded.",
     "commits": {
       "coreReadOnly": "a5882b47bd5a9284550bb3af1f0cd8580c62665e",
       "protokitsStart": "194d37714d7c23984970e09015b5dd4bffbbab7b",
       "protokitsProductionUnit": "194d37714d7c23984970e09015b5dd4bffbbab7b",
-      "experimentsStart": "1b9108958f02b29db7bb97f4a8ff0edb0351cc41",
-      "experimentsProductionUnit": "45b1f007e4df39855e59592c810fc29ff3f11f47"
+      "experimentsStart": "d5b3ba42d377da6744ef61cec857e5dbfb29f035",
+      "experimentsProductionUnit": "453d76e4981b35aadf4988d91751045ab006c7c7"
     },
-    "publication": "Experiments production commit 45b1f007e4df39855e59592c810fc29ff3f11f47 published to resolved default branch main after fetch-before-push verification; this repository commit records the publication receipt. ProtoKits remained unchanged and synchronized at 194d37714d7c23984970e09015b5dd4bffbbab7b."
+    "publication": "Experiments production commit 453d76e4981b35aadf4988d91751045ab006c7c7 published to resolved default branch main after fetch-before-push verification; this repository commit records the publication receipt. ProtoKits remained unchanged and synchronized at 194d37714d7c23984970e09015b5dd4bffbbab7b."
   },
   "exactNextUnit": {
     "phase": "playable-experiment-upgrade",
