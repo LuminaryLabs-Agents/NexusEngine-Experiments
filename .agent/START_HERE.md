@@ -1,35 +1,31 @@
 # Agent Start Here
 
-`.agent/` is the repo-local source of truth for agent work in `NexusRealtime-Experiments`.
+`.agent/` is the repo-local source of truth for NexusEngine-Experiments.
 
-Before architecture, route, pruning, kit, experiment, validation, replay, or test decisions:
+Before architecture, domain, route, extraction, retirement, validation, or automation work:
 
-1. Read `.agent/START_HERE.md`.
-2. Read `.agent/cycle-state.md` for the current project state.
-3. Read `.agent/route-canonicalization.md` when touching canonical routes, route folds, route additions, replay lanes, or seeder pressure.
-4. Read the latest relevant `.agent/cycle-reports/*` file when a prior cycle report exists for the current concern.
-5. Make one bounded change that advances the current ledge.
-6. Record the result in `.agent/turn-ledger/`, `.agent/cycle-state.md`, or a cycle report.
+1. Read `goal.md` and repository `memory.md`.
+2. Read `.agent/forward-abstraction/stage-ledger.md` for the current artifact, layer, proof state, and next stage.
+3. Read `.agent/forward-abstraction/contracts.md` before extraction, export, migration, or purge decisions.
+4. Read `.agent/cycle-state.md` and the latest relevant change packet for player-visible history.
+5. Advance one bounded artifact by one stage, then record proof and the exact next stage.
 
 ## Operating Rule
 
-Agent work should preserve the current NexusRealtime direction:
-
-- Grow reusable ProtoKit domain layers.
-- Shrink local experiment JavaScript over time.
-- Keep reusable implementation in ProtoKits, not Experiments.
-- Keep browser, renderer, DOM, Canvas, WebGL, Three.js, audio, pointer input, and asset loading out of reusable kit logic.
-- Keep route additions, destructive folds, canonical-route changes, and replay-lane claims documented before or with the change.
+- Consume the prior validated output; do not invent an unrelated experiment while its forward stage is unfinished.
+- Keep reusable deterministic behavior in ProtoKits, stable primitives in read-only Core, and application/browser/presentation ownership local here.
+- Promote reusable semantics exactly one layer per cycle.
+- Stop before retirement whenever parity, migration, references, or consumer proof is incomplete.
+- Preserve historical ledgers and playables; cleanup means consolidation with successor proof, not blanket deletion.
 
 ## Minimum Read Set
 
 ```txt
+goal.md
+memory.md
 .agent/START_HERE.md
+.agent/forward-abstraction/stage-ledger.md
+.agent/forward-abstraction/contracts.md
 .agent/cycle-state.md
-.agent/route-canonicalization.md when route-related
-latest relevant .agent/cycle-reports/* when available
+latest relevant .agent/change-packets/*/PACKET.md
 ```
-
-## Leave the Next Ledge
-
-Every meaningful agent turn should end with a specific next ledge: the next smallest safe patch, check, audit, or decision that another agent can pick up without rediscovering the whole state.

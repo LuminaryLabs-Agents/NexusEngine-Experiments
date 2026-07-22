@@ -1,0 +1,71 @@
+{
+  "schema": "nexusengine.forward-abstraction-record/1",
+  "artifactId": "SAT-005-counterweight-cathedral",
+  "source": "experiments/counterweight-cathedral/",
+  "sourceStage": "validated-playable",
+  "currentStage": "application-domain-kit",
+  "status": "validated",
+  "applicationDomainKit": "experiments/counterweight-cathedral/application-domain-kit.js",
+  "canonicalDependencies": {
+    "core": "a5882b47bd5a9284550bb3af1f0cd8580c62665e",
+    "protokits": "5986b69b047d622ea2efe58d12876033f3de2291",
+    "domains": [
+      "physics-body-lite",
+      "weighted-trigger"
+    ]
+  },
+  "ownership": {
+    "coreReused": [
+      "engine lifecycle",
+      "fixed deterministic tick",
+      "domain installation"
+    ],
+    "domainReused": [
+      "body position, mass, impulse, velocity, and friction",
+      "weighted source aggregation and trigger activation"
+    ],
+    "adapterOnly": [
+      "settled body position translated into a weighted trigger source"
+    ],
+    "localOnly": [
+      "cathedral fantasy and scene",
+      "stone selection and rail controls",
+      "exact bowl arrangement",
+      "overload loss and all-exact success",
+      "browser input, Canvas, DOM, and diagnostics"
+    ],
+    "newlyAccepted": [],
+    "mergedDuplicate": [
+      "exact-weight trigger variant"
+    ],
+    "specialization": [
+      "overload and all-exact outcome policy"
+    ],
+    "rejected": [
+      "counterweight-puzzle-domain",
+      "balance-mobile-domain"
+    ]
+  },
+  "parity": {
+    "playable": "passed-overload-and-exact-success",
+    "deterministicReplay": "passed-byte-identical-domain-states",
+    "console": "passed-zero-messages",
+    "performance": {
+      "status": "passed",
+      "beforeAverageFrameMs": 16.668,
+      "afterAverageFrameMs": 16.594,
+      "beforeFps": 59.99,
+      "afterFps": 60.26,
+      "beforeP95FrameMs": 18.7,
+      "afterP95FrameMs": 17.7,
+      "domNodes": 77,
+      "canvases": 1,
+      "longTasks": 0
+    }
+  },
+  "purge": {
+    "eligible": false,
+    "reason": "No reusable successor or consumer migration has been selected; preserve the playable as proof."
+  },
+  "nextStage": "atomic-responsibility-map"
+}

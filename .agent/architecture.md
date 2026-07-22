@@ -2,28 +2,22 @@
 
 ## Core
 
-Stable runtime, ECS, deterministic ticking, promoted DSK contracts, and mature reusable primitives.
+Stable runtime primitives and already-promoted capabilities. Read-only from this workflow.
 
-## ProtoKits
+## Engine Domains
 
-Reusable domain kits before Core promotion. Reusable kit implementation belongs here.
+NexusEngine-ProtoKits owns reusable deterministic behavior behind small domain-service APIs. Semantic promotion proceeds one layer at a time: implementation, behavior, kit, subdomain, domain, cross-domain capability.
 
-## Experiments
+## Application Domains
 
-Thin hosts for canonical routes, presets, bridges, manifests, docs, tests, and renderer presentation.
+Each full-game kit is a thin local composition boundary: player fantasy, loop, scene descriptors, policies, selected domains, authored tuning, quality budget, and proof contract. It may compose engine domains but must not copy their logic.
 
-## Expansion
+Browser input, renderer, camera, audio playback, visual effects, DOM/interface rendering, network transport, storage, authored scenes, and authored tuning are valid application/local domains. They stay explicit and replaceable rather than being mislabeled as reusable simulation domains.
 
-When experiment behavior becomes reusable, move it toward ProtoKits.
+## Forward Abstraction
 
-## Higher domains
+The current artifact advances one stage per cycle. Extraction records atomic responsibilities and consumers; consolidation assigns one natural owner; promotion raises exactly one reusable layer; migration proves parity; purge removes only superseded ownership with complete successor proof.
 
-When multiple domains combine, look for the higher-level domain above them.
+## Validation
 
-## Portfolio
-
-Harden toward about 20 strong canonical experiments without making the number rigid.
-
-## Testing
-
-Move meaningful domains toward headless tick smoke tests and deterministic replay.
+Every stage preserves the playable route, deterministic replay where available, visible failure/recovery and completion, default-closed diagnostics, console cleanliness, and the existing performance budget.

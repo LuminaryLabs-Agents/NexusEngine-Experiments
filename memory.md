@@ -14,6 +14,7 @@ NexusEngine-Experiments owns playable browser proof, product-specific content an
 
 ## Capability Saturation Series
 
+- The capability-saturation mission is complete at `5 / 5`; it remains historical proof and must not be extended with SAT-006.
 - Durable saturation state lives under `.agent/saturation-series/`; the existing production ledgers remain preserved historical inventory.
 - The series is strictly sequential. One experiment may be active, and no later experiment is selected until the active unit has validation, lessons, capability classification, ownership reconciliation, and a computed new-capability count.
 - Legacy playables do not count retroactively because they lack the complete saturation classification and consolidation gate.
@@ -22,6 +23,15 @@ NexusEngine-Experiments owns playable browser proof, product-specific content an
 - New atomic capability acceptance requires one semantic responsibility, a canonical owner, multiple plausible consumers, negative Core/domain evidence, deterministic lifecycle expectations, and player-visible proof. A proposal alone never counts.
 - Every active experiment defines its route-domain boundary, player loop, quality bar, performance budget, failure/recovery proof, and evidence contract before implementation.
 - Keep NexusEngine Core read-only. Reusable renderer-agnostic behavior belongs in NexusEngine-ProtoKits; experiment content, input, browser lifecycle, Canvas/DOM presentation, and route-specific win/loss composition stay local.
+
+## Forward Abstraction Pipeline
+
+- Active stage authority lives under `.agent/forward-abstraction/`. Every bounded cycle consumes the previous validated artifact and advances exactly one declared stage.
+- A full-game application-domain kit is a thin local declarative boundary over authored fantasy, loop, scene content, tuning, policies, selected engine domains, and proof budgets. It is not a reusable monolith and does not duplicate Core or ProtoKit behavior.
+- Reusable semantic promotion proceeds exactly one layer per cycle: `implementation -> behavior -> kit -> subdomain -> domain -> cross-domain capability`.
+- Export records must carry ownership, dependencies, known consumers, capability dispositions, validation evidence, unresolved gaps, and the exact next stage.
+- Purge is a final migration decision, never an intake action. Require successor coverage, consumer migration, reference cleanup, deterministic and playable parity, performance parity, and retirement-ledger evidence before removing a source.
+- New stress experiments are derived from the promoted domain boundary only after the preceding migration/parity stage passes; unrelated experiment generation does not advance this pipeline.
 
 ## Historical Production Pipeline
 

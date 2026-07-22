@@ -1,25 +1,19 @@
-# NexusRealtime Agent Memory
+# Nexus Engine Agent Memory
 
-This folder is durable memory for cumulative NexusRealtime automation. Every scheduled task should review this folder before making decisions.
+This folder holds durable repository coordination and proof for NexusEngine-Experiments.
 
-## Repos
+## Repositories
 
-- Core: https://github.com/LuminaryLabs-Dev/NexusRealtime
-- ProtoKits: https://github.com/LuminaryLabs-Agents/NexusRealtime-ProtoKits
-- Experiments: https://github.com/LuminaryLabs-Agents/NexusRealtime-Experiments
+- Core, read-only: `/Users/crimsonwheeler/Documents/GitHub/NexusEngine`
+- Reusable engine domains: `/Users/crimsonwheeler/Documents/GitHub/NexusEngine-ProtoKits`
+- Playable applications and proof: `/Users/crimsonwheeler/Documents/GitHub/NexusEngine-Experiments`
 
-## Intent
+## Current Authority
 
-Grow reusable ProtoKit domain layers while shrinking local experiment JavaScript.
+- `goal.md` defines the active output-forward mission.
+- `.agent/forward-abstraction/` owns current stage, extraction/export/purge contracts, and per-artifact records.
+- `.agent/saturation-series/` preserves the completed five-experiment capability proof.
+- `.agent/nexus-game-production/` preserves historical production inventory and ledgers.
+- `.agent/change-packets/` owns bounded change evidence.
 
-DSKs are layered domain communication boundaries. They let domains compose through resources, events, methods, snapshots, and descriptors.
-
-## Standing constraints
-
-- Use `.agent/` as guiding memory.
-- Reusable kit implementation belongs in ProtoKits.
-- Experiments harden canonical routes, bridges, presets, docs, manifests, and tests.
-- Aim for about 20 strong canonical experiments without making 20 brittle.
-- Merge features and kits into higher-level cumulative domains where possible.
-- Keep renderers presentation-only.
-- Move meaningful boundaries toward headless tick tests and deterministic replay.
+Grow reusable semantic domains while keeping playables thin, legible, and preserved as parity proof. No source is retired without a validated successor and complete reference cleanup.

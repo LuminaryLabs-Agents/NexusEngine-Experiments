@@ -1,9 +1,7 @@
 # Cumulative Intent
 
-Use Experiments as thin validation hosts for reusable ProtoKit domains.
+Use each validated experiment as the input to the next abstraction stage.
 
-Reusable kit implementation belongs in ProtoKits. Experiments should focus on canonical routes, presets, bridges, manifests, docs, and tests.
+First package the full game as a thin local application-domain kit. Then classify its responsibilities, consolidate canonical ownership, promote one reusable semantic layer, migrate consumers, prove parity, and only then retire duplicates or derive the next stress experiment.
 
-Aim for about 20 strong canonical experiments. Treat this as guidance, not a rigid quota.
-
-Use DSKs as domain communication layers that compose through resources, events, methods, snapshots, and descriptors.
+Core remains the stable primitive authority, ProtoKits owns reusable deterministic engine domains, and Experiments owns application domains, authored scenes/tuning, browser/presentation adapters, playable proof, and the forward-stage ledger.
