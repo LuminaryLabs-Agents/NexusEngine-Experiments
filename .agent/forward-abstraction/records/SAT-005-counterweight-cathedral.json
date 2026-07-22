@@ -3,10 +3,11 @@
   "artifactId": "SAT-005-counterweight-cathedral",
   "source": "experiments/counterweight-cathedral/",
   "sourceStage": "validated-playable",
-  "currentStage": "atomic-responsibility-map",
+  "currentStage": "canonical-kit-subdomain-taxonomy",
   "status": "validated",
   "applicationDomainKit": "experiments/counterweight-cathedral/application-domain-kit.js",
   "atomicResponsibilityMap": ".agent/forward-abstraction/records/SAT-005-counterweight-cathedral-atomic-responsibility-map.json",
+  "canonicalTaxonomy": ".agent/forward-abstraction/records/SAT-005-counterweight-cathedral-canonical-taxonomy.json",
   "canonicalDependencies": {
     "core": "a5882b47bd5a9284550bb3af1f0cd8580c62665e",
     "protokits": "5986b69b047d622ea2efe58d12876033f3de2291",
@@ -71,10 +72,11 @@
     "currentRun": {
       "runtimeFilesChanged": false,
       "pointerOverloadAndRestart": "passed",
-      "keyboardExactSuccess": "passed",
-      "deterministicReplay": "passed-byte-identical-domain-states",
+      "keyboardExactSuccess": "passed-twice",
+      "deterministicReplay": "passed-byte-identical-2576-byte-domain-state-and-3470-byte-public-state",
       "advancedDisclosure": "passed-closed-open-closed",
-      "humanView": "passed",
+      "behavioralHumanView": "passed",
+      "overlayRejectionGate": "failed-pre-existing-card-debt",
       "consoleMessages": 0,
       "boundedCounts": {
         "domNodes": 77,
@@ -84,17 +86,23 @@
         "descriptors": 6,
         "activePlayLongTasks": 0
       },
-      "evidencePacket": ".agent/change-packets/2026-07-22-forward-abstraction-sat-005-atomic-map/PACKET.md"
+      "evidencePacket": ".agent/change-packets/2026-07-22-forward-abstraction-sat-005-taxonomy/PACKET.md"
     }
   },
   "purge": {
     "eligible": false,
     "reason": "No reusable successor or consumer migration has been selected; preserve the playable as proof."
   },
-  "taxonomyReviewCandidate": "settled-body-weight-source-projection",
+  "taxonomyDecision": {
+    "responsibilityId": "settled-body-weight-source-projection",
+    "canonicalParentDomain": "weighted-trigger",
+    "canonicalSubdomain": "weighted-source-ingestion",
+    "canonicalKit": "physics-body-weight-source-projection-kit",
+    "status": "taxonomy-selected-not-implemented"
+  },
   "capabilityCount": {
     "mappedResponsibilities": 17,
     "newlyAccepted": 0
   },
-  "nextStage": "canonical-kit-subdomain-taxonomy"
+  "nextStage": "engine-domain-consolidation"
 }

@@ -1,0 +1,306 @@
+{
+  "schema": "nexusengine.canonical-kit-subdomain-taxonomy/1",
+  "artifactId": "SAT-005-counterweight-cathedral",
+  "version": 1,
+  "source": "experiments/counterweight-cathedral/",
+  "sourceCommit": "9d46f7cf0d0f80302f327a176135fa6e0b1f2edd",
+  "currentLayer": "atomic-responsibility-map",
+  "targetLayer": "canonical-kit-subdomain-taxonomy",
+  "status": "validated",
+  "behaviorChanged": false,
+  "atomicResponsibilityMap": ".agent/forward-abstraction/records/SAT-005-counterweight-cathedral-atomic-responsibility-map.json",
+  "playerContract": {
+    "fantasy": "Tune a suspended cathedral mobile until three weighted bowls sing in exact balance.",
+    "heroVerb": "shift and settle a physical counterweight",
+    "semanticBoundary": "settled-body-weight-source-projection",
+    "qualityBar": "Preserve the diagnostics-closed loop, deterministic endpoint state, validated feel scores, and one Canvas/DOM owner.",
+    "performanceBudget": {
+      "targetFps": 60,
+      "maximumAverageFrameMs": 20,
+      "maximumP95FrameMs": 30,
+      "maximumDomNodes": 85,
+      "maximumCanvases": 1,
+      "maximumLongTasks": 0,
+      "maximumRegressionPercent": 10
+    },
+    "requiredProof": [
+      "enter and understand with Advanced closed",
+      "pointer overload loss and restart",
+      "keyboard exact-balance success",
+      "byte-identical deterministic replay",
+      "Advanced closed-open-closed",
+      "diagnostics-closed Human View",
+      "zero console messages and bounded runtime metrics"
+    ]
+  },
+  "canonicalDependencies": {
+    "core": {
+      "commit": "a5882b47bd5a9284550bb3af1f0cd8580c62665e",
+      "exports": ["createEngine", "defineRuntimeKit", "defineResource", "defineEvent"]
+    },
+    "protokits": {
+      "commit": "5986b69b047d622ea2efe58d12876033f3de2291",
+      "exports": ["./physics-body-lite-domain-kit", "./weighted-trigger-domain-kit"]
+    }
+  },
+  "candidateDecision": {
+    "responsibilityId": "settled-body-weight-source-projection",
+    "currentOwner": "experiments/counterweight-cathedral/src/main.js",
+    "currentLayer": "implementation",
+    "proposedNextLayer": "behavior",
+    "disposition": "adapter-only",
+    "decisionStatus": "taxonomy-selected-not-implemented",
+    "canonicalParentDomain": "weighted-trigger",
+    "canonicalSubdomain": "weighted-source-ingestion",
+    "canonicalKit": "physics-body-weight-source-projection-kit",
+    "proposedRepository": "NexusEngine-ProtoKits",
+    "selectionReason": "The responsibility means translating authoritative body facts into the receiving weighted-source vocabulary. Weighted Trigger owns source ingestion and aggregation; Physics Body Lite remains the read-only fact provider. A sibling integration kit under weighted-source-ingestion preserves that dependency direction without making either endpoint own the other's lifecycle.",
+    "semanticContract": {
+      "owns": [
+        "read one canonical Physics Body Lite body by id",
+        "map body id, position, and mass to one Weighted Trigger source upsert",
+        "preserve caller-supplied source tags",
+        "replace the same source id idempotently"
+      ],
+      "doesNotOwn": [
+        "the settled decision",
+        "body or trigger state",
+        "engine tick scheduling",
+        "trigger registration or outcome policy",
+        "reset, snapshots, events, rendering, input, scene content, or presentation"
+      ],
+      "invariants": [
+        "source id equals authoritative body id",
+        "position and mass come from the same canonical body snapshot",
+        "repeated projection replaces rather than duplicates",
+        "missing bodies fail explicitly without manufacturing state",
+        "the adapter does not call engine.tick"
+      ],
+      "lifecycle": {
+        "state": "none",
+        "reset": "delegated to endpoint domains",
+        "snapshot": "delegated to endpoint domains",
+        "events": "delegated to Weighted Trigger resolution",
+        "scheduling": "host or existing Core lifecycle"
+      }
+    },
+    "dependencies": [
+      {"capability": "physics:body-lite", "role": "authoritative body fact provider"},
+      {"capability": "trigger:weighted", "role": "weight-source receiver and resolver"}
+    ],
+    "consumers": {
+      "current": ["Counterweight Cathedral"],
+      "plausible": [
+        "a body-driven pressure-plate host",
+        "a cargo or vehicle mass-sensor host",
+        "a reusable balance-scale host"
+      ]
+    }
+  },
+  "kitUsageLedger": [
+    {
+      "id": "nexusengine-core-runtime",
+      "usage": ["createEngine", "install runtime kits", "explicit deterministic tick"],
+      "meaning": "runtime lifecycle and scheduling",
+      "stateOwner": "NexusEngine Core",
+      "consumers": ["Counterweight Cathedral", "Physics Body Lite", "Weighted Trigger"],
+      "taxonomyDisposition": "external-core-dependency"
+    },
+    {
+      "id": "physics-body-lite-domain-kit",
+      "usage": ["registerBody", "applyImpulse", "getBody", "getState"],
+      "meaning": "authoritative lightweight body position, mass, velocity, friction, and collision facts",
+      "stateOwner": "Physics Body Lite",
+      "consumers": ["Counterweight Cathedral", "physics-body-weight-source-projection-kit candidate"],
+      "taxonomyDisposition": "existing-canonical-kit"
+    },
+    {
+      "id": "weighted-trigger-domain-kit",
+      "usage": ["registerTrigger", "setWeightSource", "getState"],
+      "meaning": "weighted source ingestion, spatial aggregation, and activation facts",
+      "stateOwner": "Weighted Trigger",
+      "consumers": ["Counterweight Cathedral", "pressure plates", "balance systems"],
+      "taxonomyDisposition": "existing-canonical-kit"
+    },
+    {
+      "id": "counterweight-cathedral-application-domain-kit",
+      "usage": ["fantasy", "scene", "controls", "tuning", "outcomes", "proof budgets"],
+      "meaning": "one game's declarative application contract",
+      "stateOwner": "NexusEngine-Experiments",
+      "consumers": ["Counterweight Cathedral route", "forward-abstraction records"],
+      "taxonomyDisposition": "retained-application-owner"
+    }
+  ],
+  "semanticTaxonomy": [
+    {
+      "id": "runtime-lifecycle",
+      "kind": "core-capability",
+      "owner": "NexusEngine Core",
+      "children": ["engine composition", "deterministic tick scheduling"]
+    },
+    {
+      "id": "physical-body-state",
+      "kind": "engine-domain",
+      "owner": "physics-body-lite-domain-kit",
+      "children": ["body registration", "impulse integration", "authoritative body snapshots"]
+    },
+    {
+      "id": "weighted-trigger",
+      "kind": "engine-domain",
+      "owner": "weighted-trigger-domain-kit",
+      "children": [
+        {
+          "id": "weighted-source-ingestion",
+          "kind": "subdomain",
+          "owner": "weighted-trigger-domain-kit",
+          "children": [
+            {
+              "id": "physics-body-weight-source-projection-kit",
+              "kind": "integration-kit",
+              "status": "taxonomy-selected-not-implemented",
+              "owner": "NexusEngine-ProtoKits",
+              "dependsOn": ["physics-body-lite-domain-kit", "weighted-trigger-domain-kit"]
+            }
+          ]
+        },
+        "spatial weight aggregation",
+        "activation and release facts"
+      ]
+    },
+    {
+      "id": "counterweight-cathedral-application",
+      "kind": "application-domain",
+      "owner": "counterweight-cathedral-application-domain-kit",
+      "children": ["settled policy", "authored bowl matching", "outcome policy", "browser and presentation adapters"]
+    }
+  ],
+  "ownershipMatrix": [
+    {"responsibility": "body position, mass, velocity, and friction", "primaryOwner": "physics-body-lite-domain-kit", "dependency": "NexusEngine Core", "excludedOwners": ["projection kit", "application UI"]},
+    {"responsibility": "weighted sources, aggregation, activation, and release", "primaryOwner": "weighted-trigger-domain-kit", "dependency": "NexusEngine Core", "excludedOwners": ["projection kit", "application outcome policy"]},
+    {"responsibility": "authoritative body-to-weight-source mapping", "primaryOwner": "physics-body-weight-source-projection-kit taxonomy node", "dependency": "both endpoint public APIs", "excludedOwners": ["NexusEngine Core", "Physics Body Lite state", "Counterweight Cathedral policy"]},
+    {"responsibility": "decide when a stone becomes settled", "primaryOwner": "Counterweight Cathedral application", "dependency": "player command and authored scene", "excludedOwners": ["projection kit", "Weighted Trigger"]},
+    {"responsibility": "schedule domain resolution", "primaryOwner": "existing Core/application lifecycle", "dependency": "engine tick", "excludedOwners": ["projection kit"]},
+    {"responsibility": "render, input, audio, diagnostics, and proof", "primaryOwner": "NexusEngine-Experiments adapters", "dependency": "canonical domain snapshots", "excludedOwners": ["Core", "ProtoKits"]}
+  ],
+  "adapterAndHostExclusions": [
+    "browser commands and keyboard mappings",
+    "DOM guidance and outcome overlays",
+    "Canvas scene and camera projection",
+    "audio and VFX playback",
+    "authored stones, bowls, rail tuning, and exact-win policy",
+    "diagnostics, telemetry collection, and evidence capture"
+  ],
+  "ambiguityAndOverlapLedger": [
+    {
+      "question": "Should projection remain local or enter reusable taxonomy?",
+      "decision": "Select one stateless integration-kit node under weighted-source-ingestion because the seam is deterministic, idempotent, absent from Core and ProtoKits, and has three plausible consumer families.",
+      "remainingGate": "Engine-domain consolidation must confirm the namespace, API, and dependency contract before promotion."
+    },
+    {
+      "question": "Does the projection kit own engine.tick?",
+      "decision": "No. Tick scheduling remains with the existing Core/application lifecycle so the adapter does not couple endpoint lifecycles.",
+      "remainingGate": "Consolidation must keep the behavior API command-only and stateless."
+    },
+    {
+      "question": "Does the reusable boundary own the settled decision?",
+      "decision": "No. Settled is authored application policy; the reusable boundary only projects a body after the caller chooses to invoke it.",
+      "remainingGate": "Migration must preserve the route's explicit settled flags and outcome policy."
+    },
+    {
+      "question": "Do syncStone and settle represent two owners?",
+      "decision": "They are duplicate local implementations of one semantic mapping, not two capabilities.",
+      "remainingGate": "Retain both until a promoted successor exists and migration parity passes."
+    }
+  ],
+  "uncoveredResponsibilities": [],
+  "recommendedConsolidationCandidates": [
+    {
+      "id": "physics-body-weight-source-projection-kit",
+      "scope": "Only the stateless body snapshot to weight-source upsert behavior.",
+      "entryGate": [
+        "reconcile against the current ProtoKits domain atlas and package exports",
+        "freeze one command-only API and capability namespace",
+        "preserve endpoint lifecycle ownership and application settled policy",
+        "do not implement, migrate, or purge during consolidation"
+      ]
+    }
+  ],
+  "capabilityDispositions": {
+    "mappedResponsibilities": 17,
+    "CoreReused": 2,
+    "domainReused": 2,
+    "newlyAccepted": 0,
+    "mergedDuplicate": 1,
+    "specialization": 3,
+    "adapterOnly": 5,
+    "localOnly": 4,
+    "rejected": 2,
+    "taxonomySelected": 1
+  },
+  "validation": {
+    "sourceBehavior": "unchanged",
+    "runtimeFilesChanged": false,
+    "preservedFeelScores": {
+      "responsiveness": 8,
+      "predictability": 9,
+      "readability": 9,
+      "impact": 8,
+      "recovery": 8,
+      "delight": 8,
+      "replayDesire": 8,
+      "average": 8.29
+    },
+    "baselinePerformance": {
+      "averageFrameMs": 16.594,
+      "fps": 60.26,
+      "p95FrameMs": 17.7,
+      "domNodes": 77,
+      "canvases": 1,
+      "longTasks": 0,
+      "consoleMessages": 0
+    },
+    "currentRunParity": {
+      "runtimeFilesChanged": false,
+      "pointerOverloadAndRestart": "passed",
+      "keyboardExactSuccess": "passed-twice",
+      "deterministicReplay": "passed-byte-identical-2576-byte-domain-state-and-3470-byte-public-state",
+      "advancedDisclosure": "passed-closed-open-closed",
+      "behavioralHumanView": "passed",
+      "overlayRejectionGate": "failed-pre-existing-card-debt",
+      "consoleMessages": 0,
+      "activePlayTelemetry": {
+        "averageFrameMs": 33.08,
+        "fps": 30.23,
+        "p95FrameMs": 34.3,
+        "domNodes": 77,
+        "canvases": 1,
+        "bodies": 3,
+        "weightSources": 3,
+        "descriptors": 6,
+        "activePlayLongTaskDelta": 0,
+        "usedJSHeapSize": 11589549,
+        "totalJSHeapSize": 15784481
+      },
+      "timingAssessment": "The local headed browser remained compositor-capped near 30 FPS and is not comparable to the authoritative 60.26 FPS baseline. Runtime files are byte-identical, so change-induced primary-metric regression is 0%."
+    },
+    "evidenceImages": [
+      ".agent/change-packets/2026-07-22-forward-abstraction-sat-005-taxonomy/evidence/diagnostics-closed-active-play.png",
+      ".agent/change-packets/2026-07-22-forward-abstraction-sat-005-taxonomy/evidence/pointer-overload-loss.png",
+      ".agent/change-packets/2026-07-22-forward-abstraction-sat-005-taxonomy/evidence/keyboard-exact-success.png"
+    ],
+    "evidencePacket": ".agent/change-packets/2026-07-22-forward-abstraction-sat-005-taxonomy/PACKET.md"
+  },
+  "unresolvedGaps": [
+    "The taxonomy-selected integration kit has not been consolidated against the live ProtoKits domain atlas.",
+    "No reusable behavior implementation or consumer migration is authorized yet.",
+    "The preserved playable remains the parity owner and is not purge-eligible.",
+    "Pre-existing active-play overlay cards remain visual debt; resolve them before any new player-visible feature or derived experiment."
+  ],
+  "nextStage": "engine-domain-consolidation",
+  "nextStageEntryGate": [
+    "Use this taxonomy export as the sole intake.",
+    "Consolidate only physics-body-weight-source-projection-kit under weighted-source-ingestion.",
+    "Confirm one command-only API, namespace, dependencies, exclusions, and at least two plausible consumers.",
+    "Do not implement promotion, migrate consumers, purge the playable, or derive a new experiment."
+  ]
+}

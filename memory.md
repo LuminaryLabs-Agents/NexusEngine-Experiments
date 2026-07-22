@@ -48,6 +48,7 @@ NexusEngine-Experiments owns playable browser proof, product-specific content an
 ## Conventions
 
 - Preserve existing public behavior and prefer additive composition, adapters, optional exports, and compatible registrations.
+- Authoritative body-to-weight-source projection belongs taxonomically under Weighted Trigger's `weighted-source-ingestion` subdomain as a stateless integration kit. Physics Body Lite remains the body fact owner; applications decide when projection is semantically allowed; the adapter must not own endpoint lifecycle or call `engine.tick`.
 - Keep transient Playwright CLI output out of the repository through `.playwright-cli/`; durable browser evidence belongs in the owning change packet or automation evidence archive.
 - Keep `npm run check` non-mutating against committed product truth; route and gallery regeneration remains an explicit `npm run generate` action.
 - Keep DOM, Canvas, WebGL, Three.js, browser input, asset loading, frame presentation, and product copy out of reusable ProtoKits.

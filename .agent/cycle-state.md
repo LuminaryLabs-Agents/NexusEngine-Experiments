@@ -1,5 +1,11 @@
 # Cycle State
 
+## 2026-07-22 SAT-005 Canonical Kit/Subdomain Taxonomy
+
+`settled-body-weight-source-projection` now has one canonical taxonomy position: the unimplemented `physics-body-weight-source-projection-kit` under Weighted Trigger's `weighted-source-ingestion` subdomain. Physics Body Lite remains the authoritative body fact provider; Weighted Trigger remains the source and aggregation owner; Counterweight Cathedral retains its settled and outcome policies; Core/application lifecycle retains tick scheduling. The candidate stays `adapter-only`, taxonomy-selected rather than newly accepted, and no runtime, consumer, or endpoint implementation changed. The preserved playable remains the parity owner and is not purge-eligible. The stricter overlay gate records pre-existing active-play card debt; this structural stage makes no presentation-quality claim.
+
+Exact next stage: consolidate only `physics-body-weight-source-projection-kit` against the live ProtoKits domain atlas and freeze its command-only API, namespace, dependencies, exclusions, and consumer evidence. Do not implement promotion, migrate, purge, or derive a new experiment in that cycle.
+
 ## 2026-07-22 SAT-005 Atomic Responsibility Map
 
 Counterweight Cathedral's validated application-domain kit is now mapped into 17 atomic responsibilities: 2 Core-reused, 2 domain-reused, 0 newly accepted, 1 merged duplicate, 3 specializations, 5 adapters, and 4 local-only responsibilities. The only selected taxonomy candidate is `settled-body-weight-source-projection`, the deterministic idempotent seam that projects a canonical Physics Body Lite body snapshot into a canonical Weighted Trigger source. Pinned Core has no matching bridge; ProtoKits owns both endpoints but no cross-domain adapter. No behavior, reusable implementation, consumer, or playable source changed, so the preserved route remains the parity owner and is not purge-eligible.
