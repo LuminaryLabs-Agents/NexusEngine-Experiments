@@ -1,5 +1,11 @@
 # Cycle State
 
+## 2026-07-22 SAT-005 Projection Behavior Promotion
+
+`physics-body-weight-source-projection-kit` now implements the frozen command in ProtoKits at `engine.n.weightedTrigger.sourceIngestion.projectPhysicsBody({ bodyId, tags, disabled })`. The package-exported behavior reads one canonical Physics Body Lite snapshot, upserts one same-id Weighted Trigger source, returns serializable accepted or rejected results, rejects caller-owned body overrides, and owns no state, event, system, descriptor, lifecycle, settled policy, or tick. Targeted checks, real NexusEngine composition, and the full ProtoKits check passed. Counterweight Cathedral source bytes stayed unchanged; pointer overload/restart, keyboard exact success, byte-identical replay, diagnostics closure, Human View behavior, console, feel, and performance parity passed. The world-first overlay verdict remains a pre-existing FAIL and blocks another player-visible feature or derived experiment.
+
+Exact next stage: promote only the validated behavior from behavior to kit by adding README, manifest, discoverability, status, and atlas reconciliation in ProtoKits. Do not change command behavior, promote to subdomain, migrate Counterweight Cathedral, resolve player-visible debt in the structural cycle, purge, or derive a new experiment.
+
 ## 2026-07-22 SAT-005 Engine-Domain Consolidation
 
 `physics-body-weight-source-projection-kit` is now consolidated against pinned Core and the live ProtoKits package/source/atlas without implementing behavior. The frozen child surface is `engine.n.weightedTrigger.sourceIngestion.projectPhysicsBody({ bodyId, tags, disabled })`; it requires `physics:body-lite` plus `trigger:weighted`, provides `trigger:weighted-source-ingestion:physics-body`, performs one same-id source upsert, and owns no state, event, system, snapshot, descriptor, reset, alias, settled policy, or tick. Counterweight Cathedral remains the only current consumer; three distinct plausible consumer families pass the reuse test. The route, endpoints, feel scores, and authoritative performance baseline remain unchanged. The pre-existing overlay-card FAIL remains presentation debt and blocks another player-visible feature or derived experiment.

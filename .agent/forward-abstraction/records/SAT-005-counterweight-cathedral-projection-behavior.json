@@ -1,0 +1,276 @@
+{
+  "schema": "nexusengine.semantic-promotion/1",
+  "artifactId": "SAT-005-counterweight-cathedral",
+  "version": 1,
+  "source": ".agent/forward-abstraction/records/SAT-005-counterweight-cathedral-engine-domain-consolidation.json",
+  "sourceCommit": "d9ce1bbbba00e51da5fecb8aaa714d8a9799a9d7",
+  "currentLayer": "implementation",
+  "targetLayer": "behavior",
+  "status": "validated",
+  "playerVisibleChange": false,
+  "playerContract": {
+    "fantasy": "Tune a suspended cathedral mobile until three weighted bowls sing in exact balance.",
+    "heroVerb": "shift and settle a physical counterweight",
+    "semanticBoundary": "authoritative Physics Body Lite body snapshot to same-id Weighted Trigger source upsert",
+    "currentConsumer": "Counterweight Cathedral",
+    "plausibleConsumers": [
+      "body-driven pressure-plate host",
+      "cargo or vehicle mass-sensor host",
+      "reusable balance-scale host"
+    ],
+    "qualityBar": "Preserve the diagnostics-closed loop, deterministic endpoint state, validated feel scores, and one Canvas/DOM owner.",
+    "performanceBudget": {
+      "targetFps": 60,
+      "maximumAverageFrameMs": 20,
+      "maximumP95FrameMs": 30,
+      "maximumDomNodes": 85,
+      "maximumCanvases": 1,
+      "maximumActivePlayLongTasks": 0,
+      "maximumRegressionPercent": 10
+    },
+    "requiredProof": [
+      "targeted behavior and real-engine composition checks",
+      "full ProtoKits check",
+      "pointer overload loss and restart",
+      "keyboard exact-balance success",
+      "byte-identical deterministic replay",
+      "Advanced closed-open-closed",
+      "diagnostics-closed Human View",
+      "zero console messages and bounded runtime metrics"
+    ]
+  },
+  "implementationArtifact": {
+    "repository": "NexusEngine-ProtoKits",
+    "commit": "e803b7e3fad75c41dc79d754851eb4a7e6a02d25",
+    "source": "protokits/physics-body-weight-source-projection-kit/index.js",
+    "packageExport": "./physics-body-weight-source-projection-kit",
+    "kitId": "physics-body-weight-source-projection-kit",
+    "factory": "createPhysicsBodyWeightSourceProjectionKit",
+    "version": "0.1.0",
+    "sha256": "f3a07161bfea2afba21e89c2a8aa393fcd95809598f838d898f91055673772d9"
+  },
+  "capabilityContract": {
+    "requires": ["physics:body-lite", "trigger:weighted"],
+    "provides": ["trigger:weighted-source-ingestion:physics-body"],
+    "engineNamespace": "engine.n.weightedTrigger.sourceIngestion",
+    "command": "projectPhysicsBody({ bodyId, tags, disabled })",
+    "success": {
+      "accepted": true,
+      "bodyId": "authoritative body id",
+      "source": {
+        "id": "authoritative body id",
+        "position": "cloned authoritative body position",
+        "weight": "authoritative body mass",
+        "tags": "string-only normalized caller tags",
+        "disabled": "normalized caller flag"
+      }
+    },
+    "failures": [
+      {"accepted": false, "reason": "body-id-required"},
+      {"accepted": false, "reason": "physics-body-not-found", "bodyId": "requested id"}
+    ],
+    "forbiddenOverrides": ["sourceId", "position", "weight", "mass"],
+    "resources": [],
+    "events": [],
+    "systems": [],
+    "snapshots": [],
+    "descriptors": [],
+    "compatibilityAliases": [],
+    "ownsState": false,
+    "ownsTick": false,
+    "deterministicInvariants": [
+      "body position and mass are read from one canonical Physics Body Lite snapshot",
+      "repeated projection performs same-id replacement rather than duplicate creation",
+      "returned values are JSON serializable and cloned away from endpoint storage",
+      "the command does not tick either domain or decide settled eligibility"
+    ]
+  },
+  "ownership": {
+    "coreReused": [
+      "engine lifecycle and domain installation",
+      "fixed deterministic tick"
+    ],
+    "domainReused": [
+      "Physics Body Lite authoritative body state and getBody endpoint",
+      "Weighted Trigger source storage and setWeightSource endpoint"
+    ],
+    "newlyAccepted": [],
+    "mergedDuplicate": ["exact-weight trigger variant"],
+    "specialization": [
+      "rail impulse action policy",
+      "authored bowl spatial and weight matching",
+      "overload and all-exact outcome policy"
+    ],
+    "adapterOnly": [
+      "settled body position translated into a weighted trigger source",
+      "browser command input",
+      "DOM guidance, progress, and outcome projection",
+      "Canvas mobile-scene projection",
+      "diagnostics, metrics, and public proof"
+    ],
+    "localOnly": [
+      "immutable application contract",
+      "authored fantasy, scene, tuning, and proof budgets",
+      "stone selection and session progress",
+      "deterministic session restart"
+    ],
+    "rejected": ["counterweight-puzzle-domain", "balance-mobile-domain"],
+    "doesNotOwn": [
+      "body or trigger state, lifecycle, aggregation, facts, or descriptors",
+      "settled eligibility, invocation timing, tick scheduling, or application outcomes",
+      "browser, renderer, camera, audio, VFX, DOM, diagnostics, telemetry, or authored tuning"
+    ]
+  },
+  "capabilityDispositions": {
+    "mappedResponsibilities": 17,
+    "CoreReused": 2,
+    "domainReused": 2,
+    "newlyAccepted": 0,
+    "mergedDuplicate": 1,
+    "specialization": 3,
+    "adapterOnly": 5,
+    "localOnly": 4,
+    "rejected": 2,
+    "taxonomySelected": 1,
+    "consolidatedContracts": 1,
+    "implementedPromotions": 1
+  },
+  "implementationValidation": {
+    "targetedExistingTest": "passed-stonewake-systems-domain-kits-smoke",
+    "packageSelfExportImport": "passed",
+    "realNexusEngineComposition": "passed",
+    "fullProtoKitsCheck": {
+      "status": "passed",
+      "javascriptModules": 688,
+      "nonblockingLegacyWarnings": 804,
+      "expectedNextStageGaps": [
+        "new behavior has no kit README",
+        "new behavior has no kit manifest or atlas/status mapping"
+      ]
+    },
+    "assertions": [
+      "missing and unknown bodies reject without mutation",
+      "authoritative id, position, and mass override caller attempts",
+      "tags and disabled normalize deterministically",
+      "same-id projections replace idempotently",
+      "returned data remains serializable and clone-isolated",
+      "command adds no tick or frame advancement",
+      "runtime kit owns zero resources, events, and systems"
+    ]
+  },
+  "playableParity": {
+    "owner": "experiments/counterweight-cathedral/",
+    "runtimeFilesChanged": false,
+    "runtimeFileHashes": {
+      "experiments/counterweight-cathedral/application-domain-kit.js": "3cb22a1d8cadf7d6f535db2bafb60a93ae8af3cce4969a99a9a536d4b5376dd0",
+      "experiments/counterweight-cathedral/src/main.js": "a92a1bbe619ebc325a300e67dbc7a0e1eefd334618c8c3f31d3b3e58faf37a19",
+      "experiments/counterweight-cathedral/index.html": "825909919a1b457d3af6f0c9a6a0a3f092f6244ac619c71b993c0fd25c914e31"
+    },
+    "pointerOverloadAndRestart": "passed-three-at-dawn-produced-3-of-2-overload",
+    "keyboardExactSuccess": "passed-two-at-dawn-three-at-zenith-one-at-vesper",
+    "deterministicReplay": "passed-byte-identical-2576-byte-domain-state-and-3470-byte-public-state",
+    "advancedDisclosure": "passed-closed-open-closed",
+    "consoleMessages": 0,
+    "diagnosticsClosed": true,
+    "preservedFeelScores": {
+      "responsiveness": 8,
+      "predictability": 9,
+      "readability": 9,
+      "impact": 8,
+      "recovery": 8,
+      "delight": 8,
+      "replayDesire": 8,
+      "average": 8.29
+    },
+    "performance": {
+      "authoritativeBaseline": {
+        "averageFrameMs": 16.594,
+        "fps": 60.26,
+        "p95FrameMs": 17.7,
+        "domNodes": 77,
+        "canvases": 1,
+        "longTasks": 0
+      },
+      "stableWarmup": {
+        "frames": 1200,
+        "averageFrameMs": 16.667,
+        "fps": 60,
+        "p95FrameMs": 17.8,
+        "domNodes": 77,
+        "canvases": 1,
+        "pageLoadLongTasks": 1,
+        "usedJSHeapSize": 7538523,
+        "totalJSHeapSize": 13856307
+      },
+      "activePlay": {
+        "frames": 1200,
+        "averageFrameMs": 16.667,
+        "fps": 60,
+        "p95FrameMs": 17.9,
+        "domNodes": 77,
+        "canvases": 1,
+        "bodies": 3,
+        "weightSources": 3,
+        "descriptors": 6,
+        "activePlayLongTaskDelta": 0,
+        "usedJSHeapSize": 7170565,
+        "totalJSHeapSize": 14120553
+      },
+      "baselineDeltaPercent": {
+        "averageFrameMs": 0.44,
+        "fps": -0.431,
+        "p95FrameMs": 1.13
+      },
+      "assessment": "passed within the 10 percent budget; playable runtime bytes are unchanged, so change-induced regression is 0 percent"
+    }
+  },
+  "humanView": {
+    "surface": "browser game interactive scene",
+    "task": "identify matching bowl, shift and settle, recover overload, finish exact balance, replay",
+    "behavioralDecision": "PASS",
+    "presentationDecision": "FAIL-pre-existing",
+    "diagnosticsClosedEvidence": [
+      ".agent/change-packets/2026-07-22-forward-abstraction-sat-005-projection-behavior/evidence/diagnostics-closed-active-play.png",
+      ".agent/change-packets/2026-07-22-forward-abstraction-sat-005-projection-behavior/evidence/pointer-overload-loss.png",
+      ".agent/change-packets/2026-07-22-forward-abstraction-sat-005-projection-behavior/evidence/keyboard-exact-success.png"
+    ]
+  },
+  "worldFirstGate": {
+    "decision": "FAIL-pre-existing",
+    "offendingRegions": [
+      "upper-left hero objective and permanent control card",
+      "upper-right detached stone cards",
+      "lower-left detached status card",
+      "lower-center detached bowl strip",
+      "centered terminal result card",
+      "lower-right persistent Advanced shell"
+    ],
+    "smallestNextPresentationEdit": "In an authorized presentation stage, remove the persistent right stone cards and bottom status/bowl strips, put selection and weight facts on stones and bowls, then replay.",
+    "publicationConsequence": "Behavioral parity is publishable; presentation completion remains withheld and no new player-visible feature or derived experiment is authorized."
+  },
+  "migrationAndPurge": {
+    "migrationAuthorized": false,
+    "knownLocalDuplicates": ["syncStone", "settle"],
+    "purgeEligible": false,
+    "recoveryPath": "preserved Counterweight Cathedral route at the pinned Experiments commit",
+    "blockers": [
+      "the behavior has not advanced to kit-level documentation, manifest, or atlas discoverability",
+      "Counterweight Cathedral has not migrated to the reusable behavior",
+      "successor reference cleanup and deterministic/playable/performance parity have not run",
+      "no retirement evidence exists"
+    ]
+  },
+  "unresolvedGaps": [
+    "The behavior package lacks kit-level README, manifest, status matrix, map, promotion-ledger, and catalog reconciliation.",
+    "No consumer migration or successor parity is authorized yet.",
+    "The preserved playable remains the parity owner and is not purge-eligible.",
+    "Pre-existing active-play overlay cards remain visual debt and block another player-visible feature or derived experiment."
+  ],
+  "nextStage": "semantic-promotion-behavior-to-kit",
+  "nextStageEntryGate": [
+    "Use this validated behavior export and the pushed ProtoKits package as the sole intake.",
+    "Add only the kit-level README, manifest, discoverability, status, and atlas reconciliation needed to promote behavior to kit.",
+    "Preserve the exact command semantics, namespace, dependencies, provided token, serializable results, and zero-state/event/system/descriptor/tick contract.",
+    "Do not promote to subdomain, migrate Counterweight Cathedral, alter player-visible code, purge sources, or derive a new experiment."
+  ]
+}
