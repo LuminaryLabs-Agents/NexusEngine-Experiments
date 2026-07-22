@@ -3,11 +3,12 @@
   "artifactId": "SAT-005-counterweight-cathedral",
   "source": "experiments/counterweight-cathedral/",
   "sourceStage": "validated-playable",
-  "currentStage": "canonical-kit-subdomain-taxonomy",
+  "currentStage": "engine-domain-consolidation",
   "status": "validated",
   "applicationDomainKit": "experiments/counterweight-cathedral/application-domain-kit.js",
   "atomicResponsibilityMap": ".agent/forward-abstraction/records/SAT-005-counterweight-cathedral-atomic-responsibility-map.json",
   "canonicalTaxonomy": ".agent/forward-abstraction/records/SAT-005-counterweight-cathedral-canonical-taxonomy.json",
+  "engineDomainConsolidation": ".agent/forward-abstraction/records/SAT-005-counterweight-cathedral-engine-domain-consolidation.json",
   "canonicalDependencies": {
     "core": "a5882b47bd5a9284550bb3af1f0cd8580c62665e",
     "protokits": "5986b69b047d622ea2efe58d12876033f3de2291",
@@ -86,7 +87,15 @@
         "descriptors": 6,
         "activePlayLongTasks": 0
       },
-      "evidencePacket": ".agent/change-packets/2026-07-22-forward-abstraction-sat-005-taxonomy/PACKET.md"
+      "activePlayTelemetry": {
+        "averageFrameMs": 16.562,
+        "fps": 60.38,
+        "p95FrameMs": 18.7,
+        "usedJSHeapSize": 6492086,
+        "totalJSHeapSize": 18575022
+      },
+      "timingAssessment": "Fresh active play stayed inside budget at -0.193% average-frame change, +0.199% FPS change, and +5.650% p95 change versus the authoritative baseline; runtime bytes are unchanged.",
+      "evidencePacket": ".agent/change-packets/2026-07-22-forward-abstraction-sat-005-consolidation/PACKET.md"
     }
   },
   "purge": {
@@ -98,11 +107,20 @@
     "canonicalParentDomain": "weighted-trigger",
     "canonicalSubdomain": "weighted-source-ingestion",
     "canonicalKit": "physics-body-weight-source-projection-kit",
-    "status": "taxonomy-selected-not-implemented"
+    "status": "consolidated-contract-frozen-not-implemented"
+  },
+  "consolidationDecision": {
+    "capability": "trigger:weighted-source-ingestion:physics-body",
+    "engineNamespace": "engine.n.weightedTrigger.sourceIngestion",
+    "command": "projectPhysicsBody({ bodyId, tags, disabled })",
+    "requires": ["physics:body-lite", "trigger:weighted"],
+    "ownsState": false,
+    "ownsTick": false,
+    "status": "contract-frozen-not-implemented"
   },
   "capabilityCount": {
     "mappedResponsibilities": 17,
     "newlyAccepted": 0
   },
-  "nextStage": "engine-domain-consolidation"
+  "nextStage": "semantic-promotion-implementation-to-behavior"
 }

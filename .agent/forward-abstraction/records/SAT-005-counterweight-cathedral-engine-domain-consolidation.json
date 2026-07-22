@@ -1,0 +1,320 @@
+{
+  "schema": "nexusengine.engine-domain-consolidation/1",
+  "artifactId": "SAT-005-counterweight-cathedral",
+  "version": 1,
+  "source": "experiments/counterweight-cathedral/",
+  "sourceCommit": "5b55f98c1dfb44ebf23c6eb7203d4a683ae166b2",
+  "currentLayer": "canonical-kit-subdomain-taxonomy",
+  "targetLayer": "engine-domain-consolidation",
+  "status": "validated",
+  "behaviorChanged": false,
+  "canonicalTaxonomy": ".agent/forward-abstraction/records/SAT-005-counterweight-cathedral-canonical-taxonomy.json",
+  "playerContract": {
+    "fantasy": "Tune a suspended cathedral mobile until three weighted bowls sing in exact balance.",
+    "heroVerb": "shift and settle a physical counterweight",
+    "semanticBoundary": "settled-body-weight-source-projection",
+    "qualityBar": "Preserve the diagnostics-closed loop, deterministic endpoint state, validated feel scores, and one Canvas/DOM owner.",
+    "performanceBudget": {
+      "targetFps": 60,
+      "maximumAverageFrameMs": 20,
+      "maximumP95FrameMs": 30,
+      "maximumDomNodes": 85,
+      "maximumCanvases": 1,
+      "maximumLongTasks": 0,
+      "maximumRegressionPercent": 10
+    },
+    "requiredProof": [
+      "enter and understand with Advanced closed",
+      "pointer overload loss and restart",
+      "keyboard exact-balance success",
+      "byte-identical deterministic replay",
+      "Advanced closed-open-closed",
+      "diagnostics-closed Human View",
+      "zero console messages and bounded runtime metrics"
+    ]
+  },
+  "atlasBaseline": {
+    "core": {
+      "commit": "a5882b47bd5a9284550bb3af1f0cd8580c62665e",
+      "exports": ["createEngine", "defineRuntimeKit", "defineResource", "defineEvent"],
+      "bridgeSearch": {
+        "terms": [
+          "physics body lite",
+          "weighted trigger",
+          "weight source",
+          "setWeightSource",
+          "settled body",
+          "mass sensor",
+          "pressure plate"
+        ],
+        "result": "No matching bridge responsibility or export exists at the pinned Core commit."
+      }
+    },
+    "protokits": {
+      "commit": "5986b69b047d622ea2efe58d12876033f3de2291",
+      "packageExports": [
+        "./physics-body-lite-domain-kit",
+        "./weighted-trigger-domain-kit"
+      ],
+      "endpointContracts": [
+        {
+          "kit": "physics-body-lite-domain-kit",
+          "provides": ["physics:body-lite", "motion:body-state", "render:body-descriptors"],
+          "namespace": "engine.n.physicsBodyLite",
+          "requiredMethod": "getBody(bodyId)"
+        },
+        {
+          "kit": "weighted-trigger-domain-kit",
+          "provides": ["trigger:weighted", "condition:fact-source", "render:trigger-descriptors"],
+          "namespace": "engine.n.weightedTrigger",
+          "requiredMethod": "setWeightSource(payload)"
+        }
+      ],
+      "bridgeSearchResult": "No package export, source implementation, status-matrix row, ProtoKit-map row, candidate-promotion entry, or catalog entry owns physics-body-to-weight-source projection.",
+      "atlasCoverageNote": "The two implemented endpoint wrappers are package-exported but absent from the current kit-status matrix and ProtoKit map; this consolidation records the gap and does not infer promotion readiness."
+    }
+  },
+  "consolidatedBoundary": {
+    "responsibilityId": "settled-body-weight-source-projection",
+    "domainMeaning": "Translate one authoritative Physics Body Lite snapshot into one idempotent Weighted Trigger source upsert after a host has chosen to invoke the command.",
+    "scope": "atomic-adapter-domain",
+    "parentDomain": "weighted-trigger",
+    "subdomain": "weighted-source-ingestion",
+    "kitId": "physics-body-weight-source-projection-kit",
+    "factory": "createPhysicsBodyWeightSourceProjectionKit",
+    "repository": "NexusEngine-ProtoKits",
+    "packageExport": "./physics-body-weight-source-projection-kit",
+    "status": "contract-frozen-not-implemented",
+    "semanticPromotion": {
+      "currentLayer": "implementation",
+      "nextLayer": "behavior",
+      "authorizedNow": false
+    }
+  },
+  "capabilityContract": {
+    "requires": ["physics:body-lite", "trigger:weighted"],
+    "provides": ["trigger:weighted-source-ingestion:physics-body"],
+    "engineNamespace": "engine.n.weightedTrigger.sourceIngestion",
+    "compatibilityAliases": [],
+    "commands": [
+      {
+        "name": "projectPhysicsBody",
+        "call": "engine.n.weightedTrigger.sourceIngestion.projectPhysicsBody({ bodyId, tags, disabled })",
+        "input": {
+          "bodyId": "required stable string id",
+          "tags": "optional JSON-compatible string array; defaults to []",
+          "disabled": "optional boolean; defaults to false"
+        },
+        "forbiddenOverrides": ["sourceId", "position", "weight", "mass"],
+        "success": {
+          "accepted": true,
+          "bodyId": "the requested body id",
+          "source": {
+            "id": "the authoritative body id",
+            "position": "a clone of the authoritative body position",
+            "weight": "the authoritative body mass",
+            "tags": "the normalized caller tags",
+            "disabled": "the normalized caller flag"
+          }
+        },
+        "failures": [
+          {"accepted": false, "reason": "body-id-required"},
+          {"accepted": false, "reason": "physics-body-not-found", "bodyId": "the requested id"}
+        ]
+      }
+    ],
+    "resources": [],
+    "events": [],
+    "systems": [],
+    "snapshots": [],
+    "descriptors": [],
+    "lifecycle": {
+      "state": "none",
+      "reset": "none; endpoint domains own reset",
+      "snapshot": "none; endpoint domains own snapshots",
+      "events": "none; Weighted Trigger emits facts after its normal resolution tick",
+      "scheduling": "none; the host or existing Core lifecycle calls engine.tick"
+    },
+    "invariants": [
+      "the source id equals the authoritative body id",
+      "position and mass come from the same canonical body snapshot",
+      "repeated projection replaces rather than duplicates the same source id",
+      "a missing or absent body id returns an explicit rejected result without manufacturing state",
+      "the command never calls engine.tick",
+      "the command never decides whether a body is settled"
+    ]
+  },
+  "ownershipAndExclusions": {
+    "owns": [
+      "read one body through engine.n.physicsBodyLite.getBody",
+      "normalize caller tags and disabled state",
+      "upsert one source through engine.n.weightedTrigger.setWeightSource",
+      "return one serializable accepted or rejected command result"
+    ],
+    "doesNotOwn": [
+      "body registration, position, velocity, mass, friction, collision, or lifecycle",
+      "trigger registration, bounds, source storage, aggregation, activation, events, descriptors, or lifecycle",
+      "settled eligibility or command timing",
+      "engine tick scheduling",
+      "application outcomes, restart, authored content, tuning, or player policy",
+      "browser input, DOM, Canvas, renderer, camera, audio, VFX, diagnostics, telemetry, or evidence capture"
+    ],
+    "stateOwners": {
+      "bodyFacts": "physics-body-lite-domain-kit",
+      "weightSourcesAndTriggerFacts": "weighted-trigger-domain-kit",
+      "settledAndOutcomePolicy": "Counterweight Cathedral application",
+      "tickScheduling": "existing Core/application lifecycle"
+    }
+  },
+  "consumerEvidence": {
+    "current": [
+      {
+        "consumer": "Counterweight Cathedral",
+        "source": "experiments/counterweight-cathedral/src/main.js",
+        "evidence": "syncStone and settle both read the canonical body and upsert the same-id weighted source before an explicit host tick."
+      }
+    ],
+    "plausible": [
+      {
+        "consumer": "body-driven pressure-plate host",
+        "distinctPolicy": "projects eligible grounded bodies, while the host owns contact eligibility and door or hazard outcomes",
+        "evidence": "Weighted Trigger explicitly owns plate facts and Physics Body Lite exposes renderer-agnostic body snapshots."
+      },
+      {
+        "consumer": "cargo or vehicle mass-sensor host",
+        "distinctPolicy": "projects loaded bodies, while the host owns cargo attachment and capacity consequences",
+        "evidence": "The command depends only on stable body id, position, and mass rather than Counterweight Cathedral content."
+      },
+      {
+        "consumer": "reusable balance-scale host",
+        "distinctPolicy": "projects bodies placed on pans, while the host owns comparison and completion policy",
+        "evidence": "Weighted Trigger metadata names counterweight and balance-system consumers independently of this route."
+      }
+    ],
+    "diversityDecision": "passed-three-distinct-policy-families",
+    "acceptanceDecision": "Consumer evidence is sufficient to freeze the boundary but does not count as implementation, downstream adoption, or a newly accepted capability."
+  },
+  "capabilityDispositions": {
+    "mappedResponsibilities": 17,
+    "CoreReused": 2,
+    "domainReused": 2,
+    "newlyAccepted": 0,
+    "mergedDuplicate": 1,
+    "specialization": 3,
+    "adapterOnly": 5,
+    "localOnly": 4,
+    "rejected": 2,
+    "taxonomySelected": 1,
+    "consolidatedContracts": 1,
+    "implementedPromotions": 0
+  },
+  "migrationAndPurge": {
+    "migrationAuthorized": false,
+    "knownLocalDuplicates": ["syncStone", "settle"],
+    "purgeEligible": false,
+    "blockers": [
+      "the reusable command is not implemented",
+      "the Counterweight Cathedral consumer is not migrated",
+      "reference cleanup and deterministic/playable/performance parity have not run against a successor",
+      "no retirement record or recovery path exists"
+    ]
+  },
+  "validation": {
+    "sourceBehavior": "unchanged",
+    "runtimeFilesChanged": false,
+    "runtimeFileHashes": {
+      "experiments/counterweight-cathedral/application-domain-kit.js": "3cb22a1d8cadf7d6f535db2bafb60a93ae8af3cce4969a99a9a536d4b5376dd0",
+      "experiments/counterweight-cathedral/src/main.js": "a92a1bbe619ebc325a300e67dbc7a0e1eefd334618c8c3f31d3b3e58faf37a19",
+      "experiments/counterweight-cathedral/index.html": "825909919a1b457d3af6f0c9a6a0a3f092f6244ac619c71b993c0fd25c914e31"
+    },
+    "preservedFeelScores": {
+      "responsiveness": 8,
+      "predictability": 9,
+      "readability": 9,
+      "impact": 8,
+      "recovery": 8,
+      "delight": 8,
+      "replayDesire": 8,
+      "average": 8.29
+    },
+    "baselinePerformance": {
+      "averageFrameMs": 16.594,
+      "fps": 60.26,
+      "p95FrameMs": 17.7,
+      "domNodes": 77,
+      "canvases": 1,
+      "longTasks": 0,
+      "consoleMessages": 0
+    },
+    "currentRunParity": {
+      "status": "passed-structural-stage-with-pre-existing-presentation-fail",
+      "runtimeFilesChanged": false,
+      "pointerOverloadAndRestart": "passed",
+      "keyboardExactSuccess": "passed-twice",
+      "deterministicReplay": "passed-byte-identical-2576-byte-domain-state-and-3470-byte-public-state",
+      "advancedDisclosure": "passed-closed-open-closed",
+      "behavioralHumanView": "passed",
+      "overlayRejectionGate": "failed-pre-existing-card-debt",
+      "consoleMessages": 0,
+      "warmupTelemetry": {
+        "averageFrameMs": 16.436,
+        "fps": 60.84,
+        "p95FrameMs": 18.7,
+        "frames": 143,
+        "longTasks": 0,
+        "usedJSHeapSize": 11966323,
+        "totalJSHeapSize": 20766635
+      },
+      "activePlayTelemetry": {
+        "averageFrameMs": 16.562,
+        "fps": 60.38,
+        "p95FrameMs": 18.7,
+        "frames": 317,
+        "domNodes": 77,
+        "canvases": 1,
+        "bodies": 3,
+        "weightSources": 3,
+        "descriptors": 6,
+        "activePlayLongTaskDelta": 0,
+        "usedJSHeapSize": 6492086,
+        "totalJSHeapSize": 18575022
+      },
+      "timingAssessment": "Against the authoritative 16.594 ms / 60.26 FPS / 17.7 ms p95 baseline, the fresh active window changed -0.193% / +0.199% / +5.650%. The primary average-frame metric improved, all values remained inside budget, and byte-identical runtime files mean change-induced regression is 0%."
+    },
+    "evidenceImages": [
+      ".agent/change-packets/2026-07-22-forward-abstraction-sat-005-consolidation/evidence/diagnostics-closed-active-play.png",
+      ".agent/change-packets/2026-07-22-forward-abstraction-sat-005-consolidation/evidence/pointer-overload-loss.png",
+      ".agent/change-packets/2026-07-22-forward-abstraction-sat-005-consolidation/evidence/keyboard-exact-success.png"
+    ],
+    "evidencePacket": ".agent/change-packets/2026-07-22-forward-abstraction-sat-005-consolidation/PACKET.md"
+  },
+  "worldFirstGate": {
+    "playerVisibleChange": false,
+    "decision": "FAIL-pre-existing",
+    "offendingRegions": [
+      "upper-left hero objective and permanent control card",
+      "upper-right detached stone cards",
+      "lower-left detached status card",
+      "lower-center detached bowl strip",
+      "centered terminal result card",
+      "lower-right persistent Advanced shell"
+    ],
+    "smallestNextPresentationEdit": "In an authorized presentation-debt stage, remove the persistent right-side stone cards and bottom status/bowl strips, keep selection and weight facts on the stones and bowls, then replay before addressing the hero and ending cards.",
+    "publicationConsequence": "This structural consolidation does not claim presentation completion and cannot authorize another player-visible feature or derived experiment."
+  },
+  "unresolvedGaps": [
+    "The contract-frozen integration behavior has not been implemented or package-exported from ProtoKits.",
+    "The current ProtoKits status matrix, ProtoKit map, promotion ledger, and DSM catalog do not enumerate the endpoint family or candidate.",
+    "No consumer migration or successor parity is authorized yet.",
+    "The preserved playable remains the parity owner and is not purge-eligible.",
+    "Pre-existing active-play overlay cards remain visual debt and must be resolved before another player-visible feature or derived experiment."
+  ],
+  "nextStage": "semantic-promotion-implementation-to-behavior",
+  "nextStageEntryGate": [
+    "Use this consolidation export as the sole intake.",
+    "In NexusEngine-ProtoKits, implement only the frozen projectPhysicsBody command and package export behind physics-body-weight-source-projection-kit.",
+    "Advance exactly one semantic layer from implementation to behavior; do not broaden to kit, subdomain, domain, or cross-domain promotion.",
+    "Preserve the exact capability requirements, provided token, engine namespace, serializable command results, and zero-state/event/system/descriptor contract.",
+    "Do not migrate Counterweight Cathedral, remove syncStone or settle, call engine.tick inside the command, resolve presentation debt, purge sources, or derive a new experiment."
+  ]
+}

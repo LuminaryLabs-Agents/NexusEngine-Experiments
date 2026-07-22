@@ -1,5 +1,11 @@
 # Cycle State
 
+## 2026-07-22 SAT-005 Engine-Domain Consolidation
+
+`physics-body-weight-source-projection-kit` is now consolidated against pinned Core and the live ProtoKits package/source/atlas without implementing behavior. The frozen child surface is `engine.n.weightedTrigger.sourceIngestion.projectPhysicsBody({ bodyId, tags, disabled })`; it requires `physics:body-lite` plus `trigger:weighted`, provides `trigger:weighted-source-ingestion:physics-body`, performs one same-id source upsert, and owns no state, event, system, snapshot, descriptor, reset, alias, settled policy, or tick. Counterweight Cathedral remains the only current consumer; three distinct plausible consumer families pass the reuse test. The route, endpoints, feel scores, and authoritative performance baseline remain unchanged. The pre-existing overlay-card FAIL remains presentation debt and blocks another player-visible feature or derived experiment.
+
+Exact next stage: implement only the frozen command and package export in ProtoKits, advancing one semantic layer from implementation to behavior. Do not migrate Counterweight Cathedral, widen promotion, call `engine.tick`, purge, resolve presentation debt, or derive a new experiment in that cycle.
+
 ## 2026-07-22 SAT-005 Canonical Kit/Subdomain Taxonomy
 
 `settled-body-weight-source-projection` now has one canonical taxonomy position: the unimplemented `physics-body-weight-source-projection-kit` under Weighted Trigger's `weighted-source-ingestion` subdomain. Physics Body Lite remains the authoritative body fact provider; Weighted Trigger remains the source and aggregation owner; Counterweight Cathedral retains its settled and outcome policies; Core/application lifecycle retains tick scheduling. The candidate stays `adapter-only`, taxonomy-selected rather than newly accepted, and no runtime, consumer, or endpoint implementation changed. The preserved playable remains the parity owner and is not purge-eligible. The stricter overlay gate records pre-existing active-play card debt; this structural stage makes no presentation-quality claim.
