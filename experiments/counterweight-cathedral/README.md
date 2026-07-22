@@ -10,4 +10,4 @@ Serve the repository root and open `/experiments/counterweight-cathedral/`.
 
 Controls: `Q/E` select stone, `1` shift left, `2` shift right, `3` settle, `R` restart.
 
-Forward stage: `validated playable -> application-domain kit`. The next separate stage maps its atomic responsibilities; no promotion or purge is implied by this packaging step.
+Forward stage: `validated playable -> application-domain kit -> atomic responsibility map`. The next separate stage reviews only the selected body-to-weight-source projection boundary for canonical kit/subdomain taxonomy; no promotion or purge is implied.

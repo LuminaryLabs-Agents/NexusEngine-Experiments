@@ -3,9 +3,10 @@
   "artifactId": "SAT-005-counterweight-cathedral",
   "source": "experiments/counterweight-cathedral/",
   "sourceStage": "validated-playable",
-  "currentStage": "application-domain-kit",
+  "currentStage": "atomic-responsibility-map",
   "status": "validated",
   "applicationDomainKit": "experiments/counterweight-cathedral/application-domain-kit.js",
+  "atomicResponsibilityMap": ".agent/forward-abstraction/records/SAT-005-counterweight-cathedral-atomic-responsibility-map.json",
   "canonicalDependencies": {
     "core": "a5882b47bd5a9284550bb3af1f0cd8580c62665e",
     "protokits": "5986b69b047d622ea2efe58d12876033f3de2291",
@@ -16,29 +17,33 @@
   },
   "ownership": {
     "coreReused": [
-      "engine lifecycle",
-      "fixed deterministic tick",
-      "domain installation"
+      "engine lifecycle and domain installation",
+      "fixed deterministic tick"
     ],
     "domainReused": [
       "body position, mass, impulse, velocity, and friction",
       "weighted source aggregation and trigger activation"
     ],
     "adapterOnly": [
-      "settled body position translated into a weighted trigger source"
+      "settled body position translated into a weighted trigger source",
+      "browser command input",
+      "DOM guidance, progress, and outcome projection",
+      "Canvas mobile-scene projection",
+      "diagnostics, metrics, and public proof"
     ],
     "localOnly": [
-      "cathedral fantasy and scene",
-      "stone selection and rail controls",
-      "exact bowl arrangement",
-      "overload loss and all-exact success",
-      "browser input, Canvas, DOM, and diagnostics"
+      "immutable application contract",
+      "authored fantasy, scene, tuning, and proof budgets",
+      "stone selection and session progress",
+      "deterministic session restart"
     ],
     "newlyAccepted": [],
     "mergedDuplicate": [
       "exact-weight trigger variant"
     ],
     "specialization": [
+      "rail impulse action policy",
+      "authored bowl spatial and weight matching",
       "overload and all-exact outcome policy"
     ],
     "rejected": [
@@ -47,6 +52,7 @@
     ]
   },
   "parity": {
+    "behaviorChanged": false,
     "playable": "passed-overload-and-exact-success",
     "deterministicReplay": "passed-byte-identical-domain-states",
     "console": "passed-zero-messages",
@@ -61,11 +67,34 @@
       "domNodes": 77,
       "canvases": 1,
       "longTasks": 0
+    },
+    "currentRun": {
+      "runtimeFilesChanged": false,
+      "pointerOverloadAndRestart": "passed",
+      "keyboardExactSuccess": "passed",
+      "deterministicReplay": "passed-byte-identical-domain-states",
+      "advancedDisclosure": "passed-closed-open-closed",
+      "humanView": "passed",
+      "consoleMessages": 0,
+      "boundedCounts": {
+        "domNodes": 77,
+        "canvases": 1,
+        "bodies": 3,
+        "weightSources": 3,
+        "descriptors": 6,
+        "activePlayLongTasks": 0
+      },
+      "evidencePacket": ".agent/change-packets/2026-07-22-forward-abstraction-sat-005-atomic-map/PACKET.md"
     }
   },
   "purge": {
     "eligible": false,
     "reason": "No reusable successor or consumer migration has been selected; preserve the playable as proof."
   },
-  "nextStage": "atomic-responsibility-map"
+  "taxonomyReviewCandidate": "settled-body-weight-source-projection",
+  "capabilityCount": {
+    "mappedResponsibilities": 17,
+    "newlyAccepted": 0
+  },
+  "nextStage": "canonical-kit-subdomain-taxonomy"
 }

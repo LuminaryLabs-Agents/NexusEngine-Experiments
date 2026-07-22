@@ -1,5 +1,11 @@
 # Cycle State
 
+## 2026-07-22 SAT-005 Atomic Responsibility Map
+
+Counterweight Cathedral's validated application-domain kit is now mapped into 17 atomic responsibilities: 2 Core-reused, 2 domain-reused, 0 newly accepted, 1 merged duplicate, 3 specializations, 5 adapters, and 4 local-only responsibilities. The only selected taxonomy candidate is `settled-body-weight-source-projection`, the deterministic idempotent seam that projects a canonical Physics Body Lite body snapshot into a canonical Weighted Trigger source. Pinned Core has no matching bridge; ProtoKits owns both endpoints but no cross-domain adapter. No behavior, reusable implementation, consumer, or playable source changed, so the preserved route remains the parity owner and is not purge-eligible.
+
+Exact next stage: review only `settled-body-weight-source-projection` for canonical kit/subdomain taxonomy ownership. Do not promote, migrate, purge, or derive a new experiment in that cycle.
+
 ## 2026-07-21 Forward-Abstraction Cutover
 
 The completed `5 / 5` capability-saturation result is preserved as the baseline. The active workflow now consumes the last validated output and advances it one stage at a time through application-domain packaging, atomic mapping, taxonomy, consolidation, one-layer semantic promotion, migration/parity, proven duplicate retirement, and evidence-derived stress testing. SAT-005 Counterweight Cathedral remains the only active artifact: its authored composition is now a validated thin local application-domain kit consumed by the preserved route. The route also projects one data-driven matching-bowl guide without adding DOM or state owners. No reusable domain promotion or purge is authorized yet.

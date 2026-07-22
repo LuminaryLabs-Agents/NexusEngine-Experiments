@@ -40,6 +40,7 @@ Reusable semantic promotion follows `implementation -> behavior -> kit -> subdom
 
 - Last completed stage: SAT-005 Counterweight Cathedral advanced from validated playable with inline composition to the thin local `counterweight-cathedral-application-domain-kit` consumed by the preserved route.
 - Parity: overload loss, exact-balance success, restart/replay, diagnostics default-closed, bounded runtime counts, console cleanliness, and performance passed.
-- Current artifact stage: validated application-domain kit.
-- Next bounded stage: map the application kit into atomic responsibilities and select one candidate boundary for taxonomy review.
+- Current artifact stage: validated atomic responsibility map with 17 classified responsibilities and zero newly accepted capabilities.
+- Selected boundary: `settled-body-weight-source-projection`, currently an application-owned adapter seam with negative Core/domain bridge evidence.
+- Next bounded stage: review that one boundary for canonical kit/subdomain taxonomy ownership.
 - Not yet authorized: reusable promotion, source retirement/purge, or an unrelated new experiment.
